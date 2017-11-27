@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection;
+package com.fortify.api.ssc.connection.api;
 
 import java.util.HashMap;
 import java.util.Map;

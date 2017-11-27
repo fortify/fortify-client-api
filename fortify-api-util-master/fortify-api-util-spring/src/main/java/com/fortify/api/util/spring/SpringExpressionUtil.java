@@ -62,7 +62,7 @@ public class SpringExpressionUtil {
 	 * @return
 	 */
 	private static final List<PropertyAccessor> getPropertyAccessors() {
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("com.fortify.util.spring.propertyaccessor");
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("com.fortify.api.util.spring.propertyaccessor");
 		try {
 			// Initialize list with discovered PropertyAccessors
 			List<PropertyAccessor> result = new ArrayList<PropertyAccessor>(ctx.getBeansOfType(PropertyAccessor.class).values());

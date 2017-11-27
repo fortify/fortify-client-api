@@ -62,6 +62,7 @@ import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.ClientResponse;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -175,6 +176,20 @@ public class RestConnection implements IRestConnection {
 	 *                   in {@link HttpMethod}
 	 * @param builder	 The builder used to execute the request. Usually this builder is created
 	 *                   using {@link #getBaseResource()}.path(...).entity(...).accept(...)...
+	 * @param returnType The return type for the data returned by the request.
+	 * @return The result of executing the HTTP request.
+	 */
+	public <T> T executeRequest(String httpMethod, Builder builder, Class<T> returnType) {
+		return executeRequest(httpMethod, builder, null, returnType);
+	}
+	
+	/**
+	 * Execute a request for the given method using the given builder.
+	 * @param httpMethod The HTTP method to be used, as specified by one of the constants
+	 *                   in {@link HttpMethod}
+	 * @param builder	 The builder used to execute the request. Usually this builder is created
+	 *                   using {@link #getBaseResource()}.path(...).builder(...)...
+	 * @param entity     The entity to be submitted, may be null
 	 * @param returnType The return type for the data returned by the request.
 	 * @return The result of executing the HTTP request.
 	 */
@@ -395,6 +410,7 @@ public class RestConnection implements IRestConnection {
 		config.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
 		config.connectorProvider(new ApacheConnectorProvider());
 		config.register(JacksonFeature.class);
+		config.register(MultiPartFeature.class);
 		config.register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME), Level.FINE, LoggingFeature.Verbosity.PAYLOAD_ANY, 10000));
 		return config;
 	}

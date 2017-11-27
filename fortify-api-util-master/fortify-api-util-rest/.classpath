@@ -32,5 +32,15 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/WORK/Repositories/maven/org/glassfish/jersey/media/jersey-media-multipart/2.25.1/jersey-media-multipart-2.25.1.jar" sourcepath="C:/WORK/Repositories/maven/org/glassfish/jersey/media/jersey-media-multipart/2.25.1/jersey-media-multipart-2.25.1-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="javadoc_location" value="jar:file:/C:/WORK/Repositories/maven/org/glassfish/jersey/media/jersey-media-multipart/2.25.1/jersey-media-multipart-2.25.1-javadoc.jar!/"/>
+			<attribute name="maven.groupId" value="org.glassfish.jersey.media"/>
+			<attribute name="maven.artifactId" value="jersey-media-multipart"/>
+			<attribute name="maven.version" value="2.25.1"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
