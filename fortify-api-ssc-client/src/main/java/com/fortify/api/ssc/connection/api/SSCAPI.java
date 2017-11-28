@@ -35,6 +35,7 @@ public class SSCAPI extends AbstractSSCAPI {
 	private final SSCApplicationVersionAPI applicationVersion;
 	private final SSCArtifactAPI artifact;
 	private final SSCJobAPI job;
+	private final SSCMetricsAPI metrics;
 	
 	public SSCAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
@@ -46,6 +47,7 @@ public class SSCAPI extends AbstractSSCAPI {
 		this.applicationVersion = new SSCApplicationVersionAPI(conn);
 		this.artifact = new SSCArtifactAPI(conn);
 		this.job = new SSCJobAPI(conn);
+		this.metrics = new SSCMetricsAPI(conn);
 	}
 	
 	public final SSCBugTrackerAPI bugTracker() {
@@ -78,6 +80,10 @@ public class SSCAPI extends AbstractSSCAPI {
 	
 	public SSCJobAPI job() {
 		return job;
+	}
+	
+	public SSCMetricsAPI metrics() {
+		return metrics;
 	}
 
 }

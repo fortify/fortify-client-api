@@ -22,28 +22,56 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query;
+
+import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionQuery;
 
-public class SSCApplicationVersionAPI extends AbstractSSCAPI {
-	public SSCApplicationVersionAPI(SSCAuthenticatingRestConnection conn) {
+public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery<SSCApplicationVersionQuery> {
+	public SSCApplicationVersionQuery(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
-	
-	public SSCApplicationVersionQuery query() {
-		return new SSCApplicationVersionQuery(conn());
-	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(1);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").fields("id", "name").getAll());
-		System.out.println(2);
-		System.out.println(conn.api().applicationVersion().query().id("6").getAll());
-		System.out.println(3);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").versionName("5.0").getUnique());
+
+	public SSCApplicationVersionQuery id(String id) {
+		return queryAppend("id", id);
 	}
 
+	public SSCApplicationVersionQuery applicationName(String applicationName) {
+		return queryAppend("project.name", applicationName);
+	}
+
+	public SSCApplicationVersionQuery versionName(String versionName) {
+		return queryAppend("name", versionName);
+	}
+	
+	@Override
+	public SSCApplicationVersionQuery fields(String... fields) {
+		return super.fields(fields);
+	}
+	
+	@Override
+	public SSCApplicationVersionQuery queryAppend(String field, String value) {
+		return super.queryAppend(field, value);
+	}
+	
+	@Override
+	public SSCApplicationVersionQuery orderBy(String orderByField) {
+		return super.orderBy(orderByField);
+	}
+	
+	@Override
+	public SSCApplicationVersionQuery maxResults(int maxResults) {
+		return super.maxResults(maxResults);
+	}
+	
+	@Override
+	protected boolean isPagingSupported() {
+		return true;
+	}
+
+	@Override
+	protected WebTarget getBaseWebTarget() {
+		return conn().getBaseResource().path("api/v1/projectVersions");
+	}
 }

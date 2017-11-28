@@ -24,9 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
-import javax.ws.rs.client.WebTarget;
-
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCJobQuery;
 
 public class SSCJobAPI extends AbstractSSCAPI {
 
@@ -36,37 +35,6 @@ public class SSCJobAPI extends AbstractSSCAPI {
 	
 	public SSCJobQuery query() {
 		return new SSCJobQuery(conn());
-	}
-	
-	public static final class SSCJobQuery extends AbstractQuery<SSCJobQuery> {
-		protected SSCJobQuery(SSCAuthenticatingRestConnection conn) {
-			super(conn);
-		}
-
-		public SSCJobQuery id(String id) {
-			return queryAppend("id", id);
-		}
-
-		@Override
-		protected WebTarget getBaseWebTarget() {
-			return conn().getBaseResource().path("api/v1/jobs");
-		}
-		
-		@Override
-		public SSCJobQuery queryAppend(String field, String value) {
-			return super.queryAppend(field, value);
-		}
-		
-		@Override
-		public SSCJobQuery fields(String... fields) {
-			return super.fields(fields);
-		}
-		
-		@Override
-		public SSCJobQuery orderBy(String orderByField) {
-			return super.orderBy(orderByField);
-		}
-		
 	}
 
 }

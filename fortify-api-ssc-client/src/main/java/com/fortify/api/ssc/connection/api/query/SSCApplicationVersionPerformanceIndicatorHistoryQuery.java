@@ -22,28 +22,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query;
+
+import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionQuery;
 
-public class SSCApplicationVersionAPI extends AbstractSSCAPI {
-	public SSCApplicationVersionAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
+public class SSCApplicationVersionPerformanceIndicatorHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery<SSCApplicationVersionPerformanceIndicatorHistoryQuery> {
+
+	public SSCApplicationVersionPerformanceIndicatorHistoryQuery(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
+		super(conn, applicationVersionId);
+	}
+
+	@Override
+	protected WebTarget addChildEntityPath(WebTarget target) {
+		return target.path("performanceIndicatorHistories");
 	}
 	
-	public SSCApplicationVersionQuery query() {
-		return new SSCApplicationVersionQuery(conn());
+	@Override
+	public SSCApplicationVersionPerformanceIndicatorHistoryQuery queryAppend(String field, String value) {
+		return super.queryAppend(field, value);
 	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(1);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").fields("id", "name").getAll());
-		System.out.println(2);
-		System.out.println(conn.api().applicationVersion().query().id("6").getAll());
-		System.out.println(3);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").versionName("5.0").getUnique());
+
+	@Override
+	protected boolean isPagingSupported() {
+		return false;
 	}
 
 }

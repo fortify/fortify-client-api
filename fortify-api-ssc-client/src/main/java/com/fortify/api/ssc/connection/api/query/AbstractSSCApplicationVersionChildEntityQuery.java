@@ -22,28 +22,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query;
+
+import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionQuery;
 
-public class SSCApplicationVersionAPI extends AbstractSSCAPI {
-	public SSCApplicationVersionAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
+public abstract class AbstractSSCApplicationVersionChildEntityQuery<Q extends AbstractSSCEntityQuery<Q>> extends AbstractSSCChildEntityQuery<Q> {
+
+	public AbstractSSCApplicationVersionChildEntityQuery(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
+		super(conn, applicationVersionId);
 	}
 	
-	public SSCApplicationVersionQuery query() {
-		return new SSCApplicationVersionQuery(conn());
+	@Override
+	protected WebTarget getBaseWebTarget() {
+		WebTarget target = conn().getBaseResource().path("api/v1/projectVersions").path(getParentId());
+		target = addChildEntityPath(target);
+		return target;
 	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(1);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").fields("id", "name").getAll());
-		System.out.println(2);
-		System.out.println(conn.api().applicationVersion().query().id("6").getAll());
-		System.out.println(3);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").versionName("5.0").getUnique());
-	}
+
+	protected abstract WebTarget addChildEntityPath(WebTarget target);
 
 }

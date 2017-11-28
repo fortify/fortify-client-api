@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.WebTarget;
@@ -56,7 +56,7 @@ import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
  *
  * @param <Q> Subclass type
  */
-public abstract class AbstractQuery<Q extends AbstractQuery<Q>> {
+public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>> {
 	private final SSCAuthenticatingRestConnection conn;
 	private int maxResults = -1;
 	private String query;
@@ -65,7 +65,7 @@ public abstract class AbstractQuery<Q extends AbstractQuery<Q>> {
 	private String groupBy;
 	private String embed;
 
-	protected AbstractQuery(SSCAuthenticatingRestConnection conn) {
+	protected AbstractSSCEntityQuery(SSCAuthenticatingRestConnection conn) {
 		this.conn = conn;
 	}
 	
@@ -123,6 +123,7 @@ public abstract class AbstractQuery<Q extends AbstractQuery<Q>> {
 		webTarget = addParameterOrderBy(webTarget);
 		webTarget = addParameterGroupBy(webTarget);
 		webTarget = addParameterEmbed(webTarget);
+		webTarget = addExtraParameters(webTarget);
 		return webTarget;
 	}
 
@@ -161,7 +162,32 @@ public abstract class AbstractQuery<Q extends AbstractQuery<Q>> {
 		return webTarget;
 	}
 	
+	/**
+	 * Subclasses can override this method to add any additional
+	 * request parameters that are not supported by this base class.
+	 * 
+	 * @param webTarget
+	 * @return
+	 */
+	protected WebTarget addExtraParameters(WebTarget webTarget) {
+		return webTarget;
+	}
+	
+	/**
+	 * Get the base web target identifying the SSC resource to use.
+	 * Usually this should return something like
+	 * conn().getBaseResource().path("api/v1/entity") for top-level
+	 * entities, or 
+	 * conn().getBaseResource().path("api/v1/parentEntity").path(parentId).path("childEntity")
+	 * @return
+	 */
 	protected abstract WebTarget getBaseWebTarget();
+	
+	/**
+	 * Identify whether paging is supported by the current SSC resource.
+	 * @return
+	 */
+	protected abstract boolean isPagingSupported();
 
 	public void processAll(IJSONMapProcessor processor) {
 		processAll(getWebTargetWithFieldsAndQueryParam(), new PagingData().max(this.maxResults), processor);
@@ -197,26 +223,38 @@ public abstract class AbstractQuery<Q extends AbstractQuery<Q>> {
 
 	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
-	 * This method supports multi-page results.
-	 * @param target
-	 * @param pageSize
-	 * @param processor
+	 * Depending on the return value of {@link #isPagingSupported()}, this method will either directly invoke
+	 * the given web target (paging not supported), or retrieve all data page by page (paging is supported).
+	 * 
 	 */
 	protected void processAll(WebTarget target, PagingData pagingData, IJSONMapProcessor processor) {
-		do {
-			processor.nextPage();
-			WebTarget resource = target.queryParam("start", ""+pagingData.start).queryParam("limit", ""+pagingData.pageSize);
-			JSONMap data = conn().executeRequest(HttpMethod.GET, resource, JSONMap.class);
-			pagingData.total = data.get("count", Integer.class);
-			JSONList list = data.get("data", JSONList.class);
-			pagingData.setLastPageSize( list.size() );
-			pagingData.start(pagingData.getStart() + pagingData.getLastPageSize());
-			if ( processor != null ) {
-				for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
-					processor.process(obj);
-				}
+		if ( !isPagingSupported() ) {
+			processAll(target, processor);
+		} else {
+			do {
+				processor.nextPage();
+				target = target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
+				JSONMap data = processAll(target, processor);
+				pagingData.setTotal( data.get("count", Integer.class) );
+				pagingData.setLastPageSize( data.get("data", JSONList.class).size() );
+				pagingData.start(pagingData.getStart() + pagingData.getLastPageSize());
+				
+			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getLastPageSize() >= pagingData.getPageSize() );
+		}
+	}
+	
+	/**
+	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
+	 */
+	protected JSONMap processAll(WebTarget target, IJSONMapProcessor processor) {
+		JSONMap data = conn().executeRequest(HttpMethod.GET, target, JSONMap.class);
+		JSONList list = data.get("data", JSONList.class);
+		if ( processor != null ) {
+			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
+				processor.process(obj);
 			}
-		} while ( pagingData.start < pagingData.total && pagingData.start < pagingData.total );
+		}
+		return data;
 	}
 
 	protected class PagingData {
