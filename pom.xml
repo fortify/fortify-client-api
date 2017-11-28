@@ -54,8 +54,8 @@
 	</properties>
 	<modules>
 		<module>fortify-api-util-master</module>
-		<module>fortify-api-fod</module>
-		<module>fortify-api-ssc</module>
+		<module>fortify-api-fod-client</module>
+		<module>fortify-api-ssc-client</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
@@ -73,13 +73,13 @@
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.api</groupId>
-				<artifactId>fortify-api-fod</artifactId>
+				<artifactId>fortify-api-fod-client</artifactId>
 				<version>4.0</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.api</groupId>
-				<artifactId>fortify-api-ssc</artifactId>
+				<artifactId>fortify-api-ssc-client</artifactId>
 				<version>4.0</version>
 				<scope>compile</scope>
 			</dependency>

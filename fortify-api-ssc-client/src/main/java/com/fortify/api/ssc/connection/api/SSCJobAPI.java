@@ -28,47 +28,45 @@ import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 
-public class SSCApplicationVersionAPI extends AbstractSSCAPI {
-	public SSCApplicationVersionAPI(SSCAuthenticatingRestConnection conn) {
+public class SSCJobAPI extends AbstractSSCAPI {
+
+	public SSCJobAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
 	
-	public SSCApplicationVersionQuery query() {
-		return new SSCApplicationVersionQuery(conn());
+	public SSCJobQuery query() {
+		return new SSCJobQuery(conn());
 	}
 	
-	public static final class SSCApplicationVersionQuery extends AbstractPagingQuery<SSCApplicationVersionQuery> {
-		protected SSCApplicationVersionQuery(SSCAuthenticatingRestConnection conn) {
+	public static final class SSCJobQuery extends AbstractQuery<SSCJobQuery> {
+		protected SSCJobQuery(SSCAuthenticatingRestConnection conn) {
 			super(conn);
 		}
 
-		public SSCApplicationVersionQuery id(String id) {
+		public SSCJobQuery id(String id) {
 			return queryAppend("id", id);
 		}
 
-		public SSCApplicationVersionQuery applicationName(String applicationName) {
-			return queryAppend("project.name", applicationName);
-		}
-
-		public SSCApplicationVersionQuery versionName(String versionName) {
-			return queryAppend("name", versionName);
-		}
-
 		@Override
-		protected WebTarget getWebTarget() {
-			return conn().getBaseResource().path("api/v1/projectVersions");
+		protected WebTarget getBaseWebTarget() {
+			return conn().getBaseResource().path("api/v1/jobs");
 		}
 		
-	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(1);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").fields("id", "name").getAll());
-		System.out.println(2);
-		System.out.println(conn.api().applicationVersion().query().id("6").getAll());
-		System.out.println(3);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").versionName("5.0").getUnique());
+		@Override
+		public SSCJobQuery queryAppend(String field, String value) {
+			return super.queryAppend(field, value);
+		}
+		
+		@Override
+		public SSCJobQuery fields(String... fields) {
+			return super.fields(fields);
+		}
+		
+		@Override
+		public SSCJobQuery orderBy(String orderByField) {
+			return super.orderBy(orderByField);
+		}
+		
 	}
 
 }

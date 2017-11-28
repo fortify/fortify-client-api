@@ -35,13 +35,37 @@ import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
 
-public abstract class AbstractPagingQuery<Q extends AbstractPagingQuery<Q>> {
+/**
+ * This abstract class is used to query entity data from SSC. It supports the following
+ * standard SSC query parameters:
+ * <ul>
+ *  <li>q: {@link #queryAppend(String, String)} and {@link #queryAppend(String, String)}</li>
+ *  <li>fields: {@link #fields(String...)}</li>
+ *  <li>orderby: {@link #orderBy(String)}</li>
+ *  <li>groupby: {@link #groupBy(String)}</li>
+ *  <li>embed: {@link #embed(String)}</li>
+ * </ul>
+ * All of these methods are defined as 'protected' in this class. Depending on the query
+ * parameters that are supported for a specific SSC entity, the corresponding subclass
+ * can override these methods to make them public.
+ * 
+ * TODO: Describe Paging
+ * TODO: Describe methods for retrieving/processing results
+ * 
+ * @author Ruud Senden
+ *
+ * @param <Q> Subclass type
+ */
+public abstract class AbstractQuery<Q extends AbstractQuery<Q>> {
 	private final SSCAuthenticatingRestConnection conn;
 	private int maxResults = -1;
 	private String query;
 	private String[] fields;
+	private String orderBy;
+	private String groupBy;
+	private String embed;
 
-	protected AbstractPagingQuery(SSCAuthenticatingRestConnection conn) {
+	protected AbstractQuery(SSCAuthenticatingRestConnection conn) {
 		this.conn = conn;
 	}
 	
@@ -49,17 +73,17 @@ public abstract class AbstractPagingQuery<Q extends AbstractPagingQuery<Q>> {
 		return conn;
 	}
 
-	public Q maxResults(int maxResults) {
+	protected Q maxResults(int maxResults) {
 		this.maxResults = maxResults;
 		return getThis();
 	}
 
-	public Q queryReplace(String queryReplace) {
+	protected Q queryReplace(String queryReplace) {
 		this.query = queryReplace;
 		return getThis();
 	}
 	
-	public Q queryAppend(String field, String value) {
+	protected Q queryAppend(String field, String value) {
 		String queryAppend = field+":\""+value+"\"";
 		if ( this.query == null || StringUtils.isBlank(this.query) ) {
 			this.query = queryAppend;
@@ -69,23 +93,75 @@ public abstract class AbstractPagingQuery<Q extends AbstractPagingQuery<Q>> {
 		return getThis();
 	}
 
-	public Q fields(String... fields) {
+	protected Q fields(String... fields) {
 		this.fields = fields;
 		return getThis();
 	}
 	
-	private WebTarget getWebTargetWithFieldsAndQueryParam() {
-		WebTarget result = getWebTarget();
-		if ( this.fields != null && this.fields.length > 0 ) {
-			result = result.queryParam("fields", String.join(",", this.fields));
-		}
-		if ( this.query != null && StringUtils.isNotBlank(this.query) ) {
-			result = result.queryParam("q", this.query);
-		}
-		return result;
+	protected Q orderBy(String orderByField) {
+		this.orderBy = orderByField;
+		return getThis();
+	}
+	
+	protected Q groupBy(String groupByField) {
+		this.groupBy = groupByField;
+		return getThis();
+	}
+	
+	protected Q embed(String embed) {
+		this.embed = embed;
+		return getThis();
+	}
+	
+	protected WebTarget getWebTargetWithFieldsAndQueryParam() {
+		return addParameters(getBaseWebTarget());
+	}
+	
+	protected WebTarget addParameters(WebTarget webTarget) {
+		webTarget = addParameterFields(webTarget);
+		webTarget = addParameterQuery(webTarget);
+		webTarget = addParameterOrderBy(webTarget);
+		webTarget = addParameterGroupBy(webTarget);
+		webTarget = addParameterEmbed(webTarget);
+		return webTarget;
 	}
 
-	protected abstract WebTarget getWebTarget();
+	protected WebTarget addParameterQuery(WebTarget webTarget) {
+		if ( StringUtils.isNotBlank(this.query) ) {
+			webTarget = webTarget.queryParam("q", this.query);
+		}
+		return webTarget;
+	}
+
+	protected WebTarget addParameterFields(WebTarget webTarget) {
+		if ( this.fields != null && this.fields.length > 0 ) {
+			webTarget = webTarget.queryParam("fields", String.join(",", this.fields));
+		}
+		return webTarget;
+	}
+	
+	protected WebTarget addParameterOrderBy(WebTarget webTarget) {
+		if ( StringUtils.isNotBlank(this.orderBy) ) {
+			webTarget = webTarget.queryParam("orderby", this.orderBy);
+		}
+		return webTarget;
+	}
+	
+	protected WebTarget addParameterGroupBy(WebTarget webTarget) {
+		if ( StringUtils.isNotBlank(this.groupBy) ) {
+			webTarget = webTarget.queryParam("groupby", this.groupBy);
+		}
+		return webTarget;
+	}
+	
+	protected WebTarget addParameterEmbed(WebTarget webTarget) {
+		if ( StringUtils.isNotBlank(this.embed) ) {
+			webTarget = webTarget.queryParam("embed", this.embed);
+		}
+		return webTarget;
+	}
+	
+	protected abstract WebTarget getBaseWebTarget();
 
 	public void processAll(IJSONMapProcessor processor) {
 		processAll(getWebTargetWithFieldsAndQueryParam(), new PagingData().max(this.maxResults), processor);
