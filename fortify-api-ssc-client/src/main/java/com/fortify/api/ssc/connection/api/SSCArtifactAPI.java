@@ -47,6 +47,7 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.spring.SpringExpressionUtil;
 
 public class SSCArtifactAPI extends AbstractSSCAPI {
 	private static final Log LOG = LogFactory.getLog(SSCArtifactAPI.class);
@@ -90,15 +91,25 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 					.request("application/xml"),
 				Entity.entity(multiPart, multiPart.getMediaType()), String.class);
 		return xml2json(new ByteArrayInputStream(xml.getBytes()));
-		// With 'id' field we can query http://localhost:1710/ssc/api/v1/jobs/JOB_ARTIFACTUPLOAD%2479cc0be0-1f39-4e95-ada9-36b96496dff9
-		// to get job state and artifact id; artifact id can be used to check artifact processing status (complete, approval req, error, ...)
+	}
+	
+	// TODO Add optional time-out
+	public final JSONMap uploadArtifactAndWaitProcessingCompletion(String applicationVersionId, File fprFile) {
+		JSONMap upload = uploadArtifact(applicationVersionId, fprFile);
+		String jobId = upload.get("id", String.class);
+		JSONMap job = conn().api().job().waitForJobCompletion(jobId);
+		String artifactId = SpringExpressionUtil.evaluateExpression(job, "jobData.PARAM_ARTIFACT_ID", String.class);
+		return getArtifactById(artifactId);
+	}
+	
+	public final JSONMap getArtifactById(String artifactId) {
+		JSONMap data = conn().executeRequest(HttpMethod.GET, conn().getBaseResource().path("/api/v1/artifacts").path(artifactId), JSONMap.class);
+		return data.get("data", JSONMap.class);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		JSONMap upload = conn.api().artifact().uploadArtifact("6", new File("c:/work/Programs/HP/SCA/17.20/samples/basic/sampleOutput/WebGoat5.0.fpr"));
-		System.out.println(upload);
-		JSONMap job = conn.api().job().query().id(upload.get("id", String.class)).getUnique();
-		System.out.println(job);
+		JSONMap artifact = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion("6", new File("c:/work/Programs/HP/SCA/17.20/samples/basic/sampleOutput/WebGoat5.0.fpr"));
+		System.out.println(artifact);
 	}
 }
