@@ -93,13 +93,21 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return xml2json(new ByteArrayInputStream(xml.getBytes()));
 	}
 	
-	// TODO Add optional time-out
-	public final JSONMap uploadArtifactAndWaitProcessingCompletion(String applicationVersionId, File fprFile) {
-		JSONMap upload = uploadArtifact(applicationVersionId, fprFile);
-		String jobId = upload.get("id", String.class);
-		JSONMap job = conn().api().job().waitForJobCompletion(jobId);
+	public final JSONMap getJobForUpload(JSONMap uploadResult, int secondsToWaitForCompletion) {
+		String jobId = uploadResult.get("id", String.class);
+		return conn().api().job().waitForJobCompletion(jobId, secondsToWaitForCompletion);
+	}
+	
+	public final JSONMap getArtifactForUploadJob(JSONMap job) {
 		String artifactId = SpringExpressionUtil.evaluateExpression(job, "jobData.PARAM_ARTIFACT_ID", String.class);
 		return getArtifactById(artifactId);
+	}
+	
+	// TODO Add optional time-out
+	public final JSONMap uploadArtifactAndWaitProcessingCompletion(String applicationVersionId, File fprFile, int timeOutSeconds) {
+		JSONMap uploadResult = uploadArtifact(applicationVersionId, fprFile);
+		JSONMap job = getJobForUpload(uploadResult, timeOutSeconds);
+		return getArtifactForUploadJob(job);
 	}
 	
 	public final JSONMap getArtifactById(String artifactId) {
@@ -109,7 +117,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 
 	public static void main(String[] args) throws InterruptedException {
 		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		JSONMap artifact = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion("6", new File("c:/work/Programs/HP/SCA/17.20/samples/basic/sampleOutput/WebGoat5.0.fpr"));
+		JSONMap artifact = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion("6", new File("c:/work/Programs/HP/SCA/17.20/samples/basic/sampleOutput/WebGoat5.0.fpr"), 60);
 		System.out.println(artifact);
 	}
 }

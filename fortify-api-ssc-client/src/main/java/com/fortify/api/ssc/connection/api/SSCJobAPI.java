@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
+import java.util.Date;
+
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCJobQuery;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -38,14 +40,15 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		return new SSCJobQuery(conn());
 	}
 	
-	public JSONMap waitForJobCompletion(String jobId) {
-		JSONMap job;
-		do { 
-			job = query().id(jobId).getUnique();
+	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {
+		long startTime = new Date().getTime();
+		JSONMap job = query().id(jobId).getUnique();
+		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && "RUNNING".equals(job.get("state", String.class)) ) {
 			try {
-				Thread.sleep(500L);
+				Thread.sleep(1000L);
 			} catch ( InterruptedException ignore ) {}
-		} while ( "RUNNING".equals(job.get("state", String.class)) );
+			job = query().id(jobId).getUnique();
+		}
 		return job;
 	}
 
