@@ -34,15 +34,15 @@ public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery<SSC
 	}
 
 	public SSCApplicationVersionQuery id(String id) {
-		return queryAppend("id", id);
+		return queryAnd("id", id);
 	}
 
 	public SSCApplicationVersionQuery applicationName(String applicationName) {
-		return queryAppend("project.name", applicationName);
+		return queryAnd("project.name", applicationName);
 	}
 
 	public SSCApplicationVersionQuery versionName(String versionName) {
-		return queryAppend("name", versionName);
+		return queryAnd("name", versionName);
 	}
 	
 	@Override
@@ -51,8 +51,8 @@ public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery<SSC
 	}
 	
 	@Override
-	public SSCApplicationVersionQuery queryAppend(String field, String value) {
-		return super.queryAppend(field, value);
+	public SSCApplicationVersionQuery queryAnd(String field, String value) {
+		return super.queryAnd(field, value);
 	}
 	
 	@Override

@@ -39,7 +39,7 @@ import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
  * This abstract class is used to query entity data from SSC. It supports the following
  * standard SSC query parameters:
  * <ul>
- *  <li>q: {@link #queryAppend(String, String)} and {@link #queryAppend(String, String)}</li>
+ *  <li>q: {@link #queryAnd(String, String)} and {@link #queryReplace(String, String)}</li>
  *  <li>fields: {@link #fields(String...)}</li>
  *  <li>orderby: {@link #orderBy(String)}</li>
  *  <li>groupby: {@link #groupBy(String)}</li>
@@ -83,7 +83,7 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 		return getThis();
 	}
 	
-	protected Q queryAppend(String field, String value) {
+	protected Q queryAnd(String field, String value) {
 		String queryAppend = field+":\""+value+"\"";
 		if ( this.query == null || StringUtils.isBlank(this.query) ) {
 			this.query = queryAppend;

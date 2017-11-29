@@ -34,12 +34,12 @@ public final class SSCJobQuery extends AbstractSSCEntityQuery<SSCJobQuery> {
 	}
 
 	public SSCJobQuery id(String id) {
-		return queryAppend("id", id);
+		return queryAnd("id", id);
 	}
 	
 	@Override
-	public SSCJobQuery queryAppend(String field, String value) {
-		return super.queryAppend(field, value);
+	public SSCJobQuery queryAnd(String field, String value) {
+		return super.queryAnd(field, value);
 	}
 	
 	@Override

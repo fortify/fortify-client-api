@@ -40,8 +40,8 @@ public class SSCApplicationVersionPerformanceIndicatorHistoryQuery extends Abstr
 	}
 	
 	@Override
-	public SSCApplicationVersionPerformanceIndicatorHistoryQuery queryAppend(String field, String value) {
-		return super.queryAppend(field, value);
+	public SSCApplicationVersionPerformanceIndicatorHistoryQuery queryAnd(String field, String value) {
+		return super.queryAnd(field, value);
 	}
 
 	@Override

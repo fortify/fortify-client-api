@@ -103,7 +103,6 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return getArtifactById(artifactId);
 	}
 	
-	// TODO Add optional time-out
 	public final JSONMap uploadArtifactAndWaitProcessingCompletion(String applicationVersionId, File fprFile, int timeOutSeconds) {
 		JSONMap uploadResult = uploadArtifact(applicationVersionId, fprFile);
 		JSONMap job = getJobForUpload(uploadResult, timeOutSeconds);

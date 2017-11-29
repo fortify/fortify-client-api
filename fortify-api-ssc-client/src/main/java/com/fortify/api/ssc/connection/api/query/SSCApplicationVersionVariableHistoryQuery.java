@@ -40,8 +40,8 @@ public class SSCApplicationVersionVariableHistoryQuery extends AbstractSSCApplic
 	}
 	
 	@Override
-	public SSCApplicationVersionVariableHistoryQuery queryAppend(String field, String value) {
-		return super.queryAppend(field, value);
+	public SSCApplicationVersionVariableHistoryQuery queryAnd(String field, String value) {
+		return super.queryAnd(field, value);
 	}
 
 	@Override
