@@ -27,7 +27,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fortify.api</groupId>
 	<artifactId>fortify-api-master</artifactId>
-	<version>4.0</version>
+	<version>4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<organization>
 		<name>HPE Security Fortify</name>
@@ -62,25 +62,25 @@
 			<dependency>
 				<groupId>com.fortify.api.util</groupId>
 				<artifactId>fortify-api-util-spring</artifactId>
-				<version>4.0</version>
+				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.api.util</groupId>
 				<artifactId>fortify-api-util-rest</artifactId>
-				<version>4.0</version>
+				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.api</groupId>
 				<artifactId>fortify-api-fod-client</artifactId>
-				<version>4.0</version>
+				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.api</groupId>
 				<artifactId>fortify-api-ssc-client</artifactId>
-				<version>4.0</version>
+				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
@@ -154,7 +154,7 @@
 					<includes>
 						<include>**/*</include>
 					</includes>
-					<repositoryName>FortifyMavenRepoTest</repositoryName>      <!-- github repo name -->
+					<repositoryName>FortifyMavenRepo</repositoryName>      <!-- github repo name -->
 					<repositoryOwner>rsenden</repositoryOwner>    <!-- github username -->
 					<oauth2Token>${GITHUB_OAUTH_TOKEN}</oauth2Token>
 				</configuration>

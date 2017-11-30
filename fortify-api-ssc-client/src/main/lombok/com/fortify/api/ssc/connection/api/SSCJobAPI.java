@@ -79,6 +79,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		SSCJobQuery query = conn.api().job().query()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				.filter(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, new Date(), true)).build();
+		System.out.println(query.toString());
 		System.out.println(conn.api().job().waitForJobCreation(query, 60));
 	}
 

@@ -29,6 +29,7 @@ import java.util.Arrays;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionQuery;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionQuery.SSCApplicationVersionQueryBuilder;
+import com.fortify.api.util.rest.json.JSONMap;
 
 public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	public SSCApplicationVersionAPI(SSCAuthenticatingRestConnection conn) {
@@ -37,6 +38,27 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	
 	public SSCApplicationVersionQueryBuilder query() {
 		return SSCApplicationVersionQuery.builder().conn(conn());
+	}
+	
+	public JSONMap getApplicationVersionById(String applicationVersionId) {
+		return query().id(applicationVersionId).build().getUnique();
+	}
+	
+	public JSONMap getApplicationVersionByName(String applicationName, String versionName) {
+		return query().applicationName(applicationName).versionName(versionName).build().getUnique();
+	}
+	
+	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
+		JSONMap result = null;
+		String[] appVersionElements = nameOrId.split(separator);
+		if ( appVersionElements.length == 1 ) {
+			result = getApplicationVersionById(appVersionElements[0]);
+		} else if ( appVersionElements.length == 2 ) {
+			result = getApplicationVersionByName(appVersionElements[0], appVersionElements[1]);
+		} else {
+			throw new IllegalArgumentException("Applications or versions containing a ':' can only be specified by id");
+		}
+		return result;
 	}
 	
 	public static void main(String[] args) {

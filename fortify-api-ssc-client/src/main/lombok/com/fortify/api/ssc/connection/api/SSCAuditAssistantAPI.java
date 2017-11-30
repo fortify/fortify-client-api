@@ -81,7 +81,7 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 			.filter(new JSONMapFilterRegEx("projectVersionId", applicationVersionId, true))
 				// Only for artifact names starting with 'AA_' (Audit Assistant)
 			.filter(new JSONMapFilterRegEx("artifactName", "AA_.*\\.fpr", true))
-				// Only include jobs finished after now
+				// Only include jobs finished after now (to wait for processing completion)
 			.filter(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, now, true))
 				// Only include jobs started after now
 			.filter(new JSONMapFilterDateCompare("startTime", DateComparisonOperator.gt, now, true))
