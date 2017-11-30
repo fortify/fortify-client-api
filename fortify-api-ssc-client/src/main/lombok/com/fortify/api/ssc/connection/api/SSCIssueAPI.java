@@ -28,11 +28,17 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCIssueQuery;
+import com.fortify.api.ssc.connection.api.query.SSCIssueQuery.SSCIssueQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 
 public class SSCIssueAPI extends AbstractSSCAPI {
 	public SSCIssueAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
+	}
+	
+	public SSCIssueQueryBuilder query(String applicationVersionId) {
+		return SSCIssueQuery.builder().conn(conn()).parentId(applicationVersionId);
 	}
 	
 	/**
@@ -45,5 +51,11 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 				conn().getBaseResource().path("/api/v1/projectVersions")
 				.path(applicationVersionId).path("issueSearchOptions"),
 				Entity.entity(issueSearchOptions.getJSONRequestData(), "application/json"), JSONMap.class);
+	}
+	
+	public static void main(String[] args) {
+		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
+		System.out.println(conn.api().issue().query("6").build().getAll());
+		System.out.println(conn.api().issue().query("6").maxResults(2).build().getAll());
 	}
 }

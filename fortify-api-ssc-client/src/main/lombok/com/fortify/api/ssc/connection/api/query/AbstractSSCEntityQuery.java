@@ -108,6 +108,13 @@ public abstract class AbstractSSCEntityQuery {
 		webTarget = addExtraParameters(webTarget);
 		return webTarget;
 	}
+	
+	protected WebTarget addParameterIfNotBlank(WebTarget target, String name, String value) {
+		if ( StringUtils.isNotBlank(value) ) {
+			target = target.queryParam(name, value);
+		}
+		return target;
+	}
 
 	protected WebTarget addParameterQuery(WebTarget webTarget) {
 		if ( MapUtils.isNotEmpty(paramQAnds) ) {
@@ -133,24 +140,15 @@ public abstract class AbstractSSCEntityQuery {
 	}
 	
 	protected WebTarget addParameterOrderBy(WebTarget webTarget) {
-		if ( StringUtils.isNotBlank(paramOrderBy) ) {
-			webTarget = webTarget.queryParam("orderby", paramOrderBy);
-		}
-		return webTarget;
+		return addParameterIfNotBlank(webTarget, "orderby", paramOrderBy);
 	}
 	
 	protected WebTarget addParameterGroupBy(WebTarget webTarget) {
-		if ( StringUtils.isNotBlank(paramGroupBy) ) {
-			webTarget = webTarget.queryParam("groupby", paramGroupBy);
-		}
-		return webTarget;
+		return addParameterIfNotBlank(webTarget, "groupby", paramGroupBy);
 	}
 	
 	protected WebTarget addParameterEmbed(WebTarget webTarget) {
-		if ( StringUtils.isNotBlank(paramEmbed) ) {
-			webTarget = webTarget.queryParam("embed", paramEmbed);
-		}
-		return webTarget;
+		return addParameterIfNotBlank(webTarget, "embed", paramEmbed);
 	}
 	
 	/**
@@ -213,14 +211,15 @@ public abstract class AbstractSSCEntityQuery {
 	 * the given web target (paging not supported), or retrieve all data page by page (paging is supported).
 	 * 
 	 */
-	protected void processAll(WebTarget target, PagingData pagingData, IJSONMapProcessor processor) {
+	private void processAll(WebTarget target, PagingData pagingData, IJSONMapProcessor processor) {
+		initRequest();
 		if ( !isPagingSupported() ) {
 			processAll(target, processor);
 		} else {
 			do {
 				processor.nextPage();
-				target = target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
-				JSONMap data = processAll(target, processor);
+				WebTarget pagingTarget = target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
+				JSONMap data = processAll(pagingTarget, processor);
 				pagingData.setTotal( data.get("count", Integer.class) );
 				pagingData.setLastPageSize( data.get("data", JSONList.class).size() );
 			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getPageSize()>0 );
@@ -228,9 +227,16 @@ public abstract class AbstractSSCEntityQuery {
 	}
 	
 	/**
+	 * Subclasses can override this method to do some initialization before calling the target endpoint,
+	 * for example to perform some additional REST requests to modify SSC settings required for correct
+	 * target endpoint invocation.
+	 */
+	protected void initRequest() {}
+
+	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
 	 */
-	protected JSONMap processAll(WebTarget target, IJSONMapProcessor processor) {
+	private JSONMap processAll(WebTarget target, IJSONMapProcessor processor) {
 		JSONMap data = conn().executeRequest(HttpMethod.GET, target, JSONMap.class);
 		JSONList list = data.get("data", JSONList.class);
 		if ( processor != null ) {
