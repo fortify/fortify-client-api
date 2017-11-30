@@ -24,13 +24,20 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.json;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
+
+import com.fortify.api.util.spring.SpringExpressionUtil;
 
 /**
  * This class represents JSON objects as a standard Java
@@ -67,7 +74,15 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	}
 
 	public <T> T get(String key, Class<T> type) {
-		return new DefaultConversionService().convert(super.get(key), type);
+		return getConversionService().convert(super.get(key), type);
+	}
+	
+	public <T> T getPath(String path, Class<T> type) {
+		return getConversionService().convert(getPath(path), type);
+	}
+	
+	public Object getPath(String path) {
+		return SpringExpressionUtil.evaluateExpression(this, path, Object.class);
 	}
 	
 	public JSONMap getOrCreateJSONMap(String key) {
@@ -107,5 +122,20 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 			}
 			intermediate.putPath(path.subList(1, path.size()), value);
 		}
+	}
+	
+	private ConversionService getConversionService() {
+		DefaultConversionService result = new DefaultConversionService();
+		result.addConverter(String.class, Date.class, new Converter<String, Date>() {
+			@Override
+			public Date convert(String source) {
+				try {
+					return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(source);
+				} catch ( ParseException e ) {
+					throw new RuntimeException("Error parsing date format pattern", e);
+				}
+			}
+		});
+		return result;
 	}
 }

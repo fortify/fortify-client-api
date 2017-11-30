@@ -24,54 +24,20 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
-import javax.ws.rs.client.WebTarget;
-
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 
-public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery<SSCApplicationVersionQuery> {
-	public SSCApplicationVersionQuery(SSCAuthenticatingRestConnection conn) {
+public abstract class AbstractSSCChildEntityQuery extends AbstractSSCEntityQuery {
+	private final String parentId;
+	
+	protected AbstractSSCChildEntityQuery(SSCAuthenticatingRestConnection conn, String parentId) {
 		super(conn);
-	}
-
-	public SSCApplicationVersionQuery id(String id) {
-		return queryAnd("id", id);
-	}
-
-	public SSCApplicationVersionQuery applicationName(String applicationName) {
-		return queryAnd("project.name", applicationName);
-	}
-
-	public SSCApplicationVersionQuery versionName(String versionName) {
-		return queryAnd("name", versionName);
+		this.parentId = parentId;
 	}
 	
-	@Override
-	public SSCApplicationVersionQuery fields(String... fields) {
-		return super.fields(fields);
+	protected String getParentId() {
+		return parentId;
 	}
 	
-	@Override
-	public SSCApplicationVersionQuery queryAnd(String field, String value) {
-		return super.queryAnd(field, value);
-	}
 	
-	@Override
-	public SSCApplicationVersionQuery orderBy(String orderByField) {
-		return super.orderBy(orderByField);
-	}
 	
-	@Override
-	public SSCApplicationVersionQuery maxResults(int maxResults) {
-		return super.maxResults(maxResults);
-	}
-	
-	@Override
-	protected boolean isPagingSupported() {
-		return true;
-	}
-
-	@Override
-	protected WebTarget getBaseWebTarget() {
-		return conn().getBaseResource().path("api/v1/projectVersions");
-	}
 }

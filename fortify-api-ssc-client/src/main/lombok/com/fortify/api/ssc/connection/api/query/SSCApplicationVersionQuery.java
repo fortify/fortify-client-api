@@ -24,23 +24,66 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 
-public abstract class AbstractSSCApplicationVersionChildEntityQuery<Q extends AbstractSSCEntityQuery<Q>> extends AbstractSSCChildEntityQuery<Q> {
+import lombok.Builder;
+import lombok.Singular;
 
-	public AbstractSSCApplicationVersionChildEntityQuery(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
-		super(conn, applicationVersionId);
+public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery {
+	
+	/**
+	 * 
+	 * @param conn SSC connection
+	 * @param paramQAnds Add elements to SSC's 'q' request parameter
+	 * @param paramFields Set the entity fields to be returned by SSC
+	 * @param paramOrderBy Specify the field to order the result by
+	 * @param maxResults Maximum number of results to return
+	 */
+	@Builder
+	private SSCApplicationVersionQuery(
+			SSCAuthenticatingRestConnection conn, 
+			@Singular Map<String, String> paramQAnds,
+			List<String> paramFields, 
+			String paramOrderBy, 
+			Integer maxResults) {
+		super(conn);
+		setParamQAnds(paramQAnds);
+		setParamFields(paramFields);
+		setParamOrderBy(paramOrderBy);
+		setMaxResults(maxResults);
+	}
+	
+	/**
+	 * Test
+	 * @author Ruud Senden
+	 *
+	 */
+	public static class SSCApplicationVersionQueryBuilder {
+		public SSCApplicationVersionQueryBuilder id(String id) {
+			return paramQAnd("id", id);
+		}
+
+		public SSCApplicationVersionQueryBuilder applicationName(String applicationName) {
+			return paramQAnd("project.name", applicationName);
+		}
+
+		public SSCApplicationVersionQueryBuilder versionName(String versionName) {
+			return paramQAnd("name", versionName);
+		}
 	}
 	
 	@Override
-	protected WebTarget getBaseWebTarget() {
-		WebTarget target = conn().getBaseResource().path("api/v1/projectVersions").path(getParentId());
-		target = addChildEntityPath(target);
-		return target;
+	protected boolean isPagingSupported() {
+		return true;
 	}
 
-	protected abstract WebTarget addChildEntityPath(WebTarget target);
-
+	@Override
+	protected WebTarget getBaseWebTarget() {
+		return conn().getBaseResource().path("api/v1/projectVersions");
+	}
 }

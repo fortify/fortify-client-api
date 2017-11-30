@@ -22,34 +22,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.util.rest.json;
 
-import java.util.Date;
-
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCJobQuery;
-import com.fortify.api.util.rest.json.JSONMap;
-
-public class SSCJobAPI extends AbstractSSCAPI {
-
-	public SSCJobAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
-	}
-	
-	public SSCJobQuery query() {
-		return new SSCJobQuery(conn());
-	}
-	
-	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {
-		long startTime = new Date().getTime();
-		JSONMap job = query().id(jobId).getUnique();
-		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && "RUNNING".equals(job.get("state", String.class)) ) {
-			try {
-				Thread.sleep(1000L);
-			} catch ( InterruptedException ignore ) {}
-			job = query().id(jobId).getUnique();
-		}
-		return job;
-	}
-
+/**
+ * This interface is used to indicate whether a given {@link JSONMap} instance
+ * should be included or excluded.
+ * 
+ * @author Ruud Senden
+ *
+ */
+public interface IJSONMapFilter {
+	/**
+	 * This method indicates whether the given {@link JSONMap} should be included
+	 * @param json
+	 * @return true if the given {@link JSONMap} should be included, false otherwise
+	 */
+	public boolean include(JSONMap json);
 }

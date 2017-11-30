@@ -22,29 +22,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.util.rest.json;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionPerformanceIndicatorHistoryQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionVariableHistoryQuery;
+import java.util.Date;
 
-public class SSCMetricsAPI extends AbstractSSCAPI {
-	public SSCMetricsAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
+public class JSONMapFilterDateCompare extends JSONMapFilterSpEL {
+	public static enum DateComparisonOperator {
+		lt, gt, le, ge, eq, ne
 	}
 	
-	public SSCApplicationVersionVariableHistoryQuery queryVariableHistory(String applicationVersionId) {
-		return new SSCApplicationVersionVariableHistoryQuery(conn(), applicationVersionId);
-	}
-	
-	public SSCApplicationVersionPerformanceIndicatorHistoryQuery queryPerformanceIndicatorHistory(String applicationVersionId) {
-		return new SSCApplicationVersionPerformanceIndicatorHistoryQuery(conn(), applicationVersionId);
-	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(conn.api().metrics().queryVariableHistory("6").getAll());
-		System.out.println(conn.api().metrics().queryPerformanceIndicatorHistory("6").getAll());
+	public JSONMapFilterDateCompare(String fieldPath, DateComparisonOperator operator, Date compareDate, boolean includeMatching) {
+		super(getDateExpression(fieldPath, operator, compareDate), includeMatching);
 	}
 
+	private static String getDateExpression(String fieldPath, DateComparisonOperator operator, Date compareDate) {
+		String expression = "getPath('"+fieldPath+"', T(java.util.Date))?.getTime() "+operator.name()+" "+compareDate.getTime()+"L";
+		System.out.println(expression);
+		return expression;
+	}
+	
+	
 }

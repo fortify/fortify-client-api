@@ -24,73 +24,53 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Collections;
+import java.util.Date;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.glassfish.jersey.media.multipart.Boundary;
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-import org.glassfish.jersey.media.multipart.MultiPart;
-import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.SSCFileUpDownloadAPI.FileTokenType;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
 public class SSCArtifactAPI extends AbstractSSCAPI {
-	private static final Log LOG = LogFactory.getLog(SSCArtifactAPI.class);
-
 	public SSCArtifactAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
 	
-	public final long downloadApplicationFile(String applicationVersionId, Path target) {
-		InputStream is = conn().executeRequest(HttpMethod.POST, 
-				conn().getBaseResource()
+	public final long downloadApplicationFile(String applicationVersionId, Path target, boolean includeSource) {
+		WebTarget webTarget = conn().getBaseResource()
 				.path("/download/currentStateFprDownload.html")
 				.queryParam("id", ""+applicationVersionId)
-				.queryParam("mat", getFileToken(FileTokenType.DOWNLOAD))
-				.request("*/*"), InputStream.class);
-		try {
-			return Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			throw new RuntimeException("Error downloading application file", e);
-		} finally {
-			try {
-				is.close();
-			} catch ( IOException ioe ) {
-				LOG.warn("Error closing response stream, subsequent requests may fail", ioe);
-			}
-		}
+				.queryParam("includeSource", includeSource);
+		return conn().api().fileUpDownload().downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
+	}
+	
+	public final long downloadArtifact(String artifactId, Path target) {
+		WebTarget webTarget = conn().getBaseResource()
+				.path("/download/artifactDownload.html")
+				.queryParam("id", ""+artifactId);
+		return conn().api().fileUpDownload().downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
 	}
 	
 	public final JSONMap uploadArtifact(String applicationVersionId, File fprFile) {
-		MultiPart multiPart = new FormDataMultiPart();
-		multiPart.type(new MediaType("multipart", "form-data",
-	    		Collections.singletonMap(Boundary.BOUNDARY_PARAMETER, Boundary.createBoundary())));
-		multiPart.bodyPart(new FormDataBodyPart("Filename", fprFile.getName()));
-		multiPart.bodyPart(new FileDataBodyPart(fprFile.getName(), fprFile, MediaType.APPLICATION_OCTET_STREAM_TYPE));
-		
-		String xml = conn().executeRequest(HttpMethod.POST, 
-				conn().getBaseResource()
-					.path("/upload/resultFileUpload.html")
-					.queryParam("entityId", ""+applicationVersionId)
-					.queryParam("mat", getFileToken(FileTokenType.UPLOAD))
-					.request("application/xml"),
-				Entity.entity(multiPart, multiPart.getMediaType()), String.class);
-		return xml2json(new ByteArrayInputStream(xml.getBytes()));
+		WebTarget webTarget = conn().getBaseResource()
+				.path("/upload/resultFileUpload.html")
+				.queryParam("entityId", ""+applicationVersionId);
+		return conn().api().fileUpDownload().uploadFile(webTarget, FileTokenType.UPLOAD, fprFile);
+	}
+	
+	public final JSONMap approveArtifact(String artifactId, String comment) {
+		JSONMap data = new JSONMap();
+		data.putPath("type", "approve");
+		data.putPath("values.comment", comment);
+		return conn().executeRequest(HttpMethod.POST,
+				conn().getBaseResource().path("/api/v1/artifacts/").path(artifactId).path("/action"), 
+				Entity.entity(data, "application/json"), JSONMap.class);
 	}
 	
 	public final JSONMap getJobForUpload(JSONMap uploadResult, int secondsToWaitForCompletion) {
@@ -118,5 +98,6 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
 		JSONMap artifact = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion("6", new File("c:/work/Programs/HP/SCA/17.20/samples/basic/sampleOutput/WebGoat5.0.fpr"), 60);
 		System.out.println(artifact);
+		System.out.println(artifact.get("uploadDate", Date.class).getClass().getName());
 	}
 }

@@ -26,6 +26,11 @@ package com.fortify.api.ssc.connection.api;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Accessors(fluent = true)
+@Getter
 public class SSCAPI extends AbstractSSCAPI {
 	private final SSCBugTrackerAPI bugTracker;
 	private final SSCCustomTagAPI customTag;
@@ -36,6 +41,7 @@ public class SSCAPI extends AbstractSSCAPI {
 	private final SSCArtifactAPI artifact;
 	private final SSCJobAPI job;
 	private final SSCMetricsAPI metrics;
+	private final SSCFileUpDownloadAPI fileUpDownload;
 	
 	public SSCAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
@@ -48,42 +54,7 @@ public class SSCAPI extends AbstractSSCAPI {
 		this.artifact = new SSCArtifactAPI(conn);
 		this.job = new SSCJobAPI(conn);
 		this.metrics = new SSCMetricsAPI(conn);
-	}
-	
-	public final SSCBugTrackerAPI bugTracker() {
-		return this.bugTracker;
-	}
-	
-	public SSCCustomTagAPI customTag() {
-		return customTag;
-	}
-	
-	public SSCAttributeAPI attribute() {
-		return attribute;
-	}
-
-	public SSCIssueTemplateAPI issueTemplate() {
-		return issueTemplate;
-	}
-
-	public SSCIssueAPI issue() {
-		return issue;
-	}
-
-	public SSCApplicationVersionAPI applicationVersion() {
-		return applicationVersion;
-	}
-
-	public SSCArtifactAPI artifact() {
-		return artifact;
-	}
-	
-	public SSCJobAPI job() {
-		return job;
-	}
-	
-	public SSCMetricsAPI metrics() {
-		return metrics;
+		this.fileUpDownload = new SSCFileUpDownloadAPI(conn);
 	}
 
 }

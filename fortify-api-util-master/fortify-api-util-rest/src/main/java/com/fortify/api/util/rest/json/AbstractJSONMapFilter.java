@@ -22,28 +22,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.util.rest.json;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionQuery;
+public abstract class AbstractJSONMapFilter implements IJSONMapFilter {
+	private final boolean includeMatching;
+	public AbstractJSONMapFilter(boolean includeMatching) {
+		this.includeMatching = includeMatching;
+	}
 
-public class SSCApplicationVersionAPI extends AbstractSSCAPI {
-	public SSCApplicationVersionAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
+	@Override
+	public boolean include(JSONMap json) {
+		return includeMatching == isMatching(json);
 	}
 	
-	public SSCApplicationVersionQuery query() {
-		return new SSCApplicationVersionQuery(conn());
-	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(1);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").fields("id", "name").getAll());
-		System.out.println(2);
-		System.out.println(conn.api().applicationVersion().query().id("6").getAll());
-		System.out.println(3);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").versionName("5.0").getUnique());
-	}
-
+	protected abstract boolean isMatching(JSONMap json);
 }

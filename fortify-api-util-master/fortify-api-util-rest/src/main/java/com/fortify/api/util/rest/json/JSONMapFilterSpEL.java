@@ -22,22 +22,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.util.rest.json;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 
-public abstract class AbstractSSCChildEntityQuery<Q extends AbstractSSCEntityQuery<Q>> extends AbstractSSCEntityQuery<Q> {
-	private final String parentId;
+import com.fortify.api.util.spring.SpringExpressionUtil;
+
+public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
+	private final Expression expression;
 	
-	public AbstractSSCChildEntityQuery(SSCAuthenticatingRestConnection conn, String parentId) {
-		super(conn);
-		this.parentId = parentId;
+	public JSONMapFilterSpEL(Expression expression, boolean includeMatching) {
+		super(includeMatching);
+		this.expression = expression;
 	}
 	
-	protected String getParentId() {
-		return parentId;
+	public JSONMapFilterSpEL(String expression, boolean includeMatching) {
+		this(new SpelExpressionParser().parseExpression(expression), includeMatching);
 	}
-	
-	
-	
+
+	@Override
+	protected boolean isMatching(JSONMap json) {
+		return SpringExpressionUtil.evaluateExpression(json, expression, Boolean.class);
+	}
 }

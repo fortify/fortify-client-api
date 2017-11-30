@@ -24,16 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONList;
@@ -72,50 +63,5 @@ public class AbstractSSCAPI {
 				.path(""+applicationVersionId)
 				.path(entityName), JSONMap.class).get("data", JSONList.class);
 	}
-	
-	protected final String getFileToken(FileTokenType type) {
-		JSONMap entity = new JSONMap();
-		entity.put("fileTokenType", type.toString());
-		JSONMap data = conn().executeRequest(HttpMethod.POST, 
-				conn().getBaseResource().path("/api/v1/fileTokens"),
-				Entity.entity(entity, "application/json"), JSONMap.class);
-		return SpringExpressionUtil.evaluateExpression(data, "data.token", String.class);
-	}
-	
-	protected JSONMap xml2json(InputStream is) {
-	    try {
-	    	final DataCollector handler = new DataCollector();
-			SAXParserFactory.newInstance().newSAXParser().parse(is, handler);
-			return handler.result;
-		} catch (SAXException | IOException | ParserConfigurationException e) {
-			throw new RuntimeException("Error converting XML to JSONMap", e);
-		}
-	}
-
-	/**
-	 * Enumeration for SSC file token types, to be used for {@link #getFileToken(FileTokenType)}
-	 */
-	protected static enum FileTokenType {
-		UPLOAD, DOWNLOAD, PREVIEW_FILE, REPORT_FILE
-	}
-
-	private static class DataCollector extends DefaultHandler {
-	        private final StringBuilder buffer = new StringBuilder();
-	        private final JSONMap result = new JSONMap();
-	
-	        @Override
-	        public void endElement(String uri, String localName, String qName) throws SAXException {
-	            final String value = buffer.toString().trim();
-	            if (value.length() > 0) {
-	                result.put(qName.substring(Math.max(0,qName.indexOf(':')+1)), value);
-	            }
-	            buffer.setLength(0);
-	        }
-	
-	        @Override
-	        public void characters(char[] ch, int start, int length) throws SAXException {
-	            buffer.append(ch, start, length);
-	        }
-	    }
 
 }

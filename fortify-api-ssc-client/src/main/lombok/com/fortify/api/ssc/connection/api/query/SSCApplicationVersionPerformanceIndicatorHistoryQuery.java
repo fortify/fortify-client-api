@@ -24,26 +24,31 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
+import java.util.Map;
+
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 
-public class SSCApplicationVersionVariableHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery<SSCApplicationVersionVariableHistoryQuery> {
+import lombok.Builder;
+import lombok.Singular;
 
-	public SSCApplicationVersionVariableHistoryQuery(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
+public class SSCApplicationVersionPerformanceIndicatorHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery {
+
+	@Builder
+	private SSCApplicationVersionPerformanceIndicatorHistoryQuery(
+			SSCAuthenticatingRestConnection conn, 
+			String applicationVersionId,
+			@Singular Map<String,String> paramQAnds) {
 		super(conn, applicationVersionId);
+		setParamQAnds(paramQAnds);
 	}
 
 	@Override
 	protected WebTarget addChildEntityPath(WebTarget target) {
-		return target.path("variableHistories");
+		return target.path("performanceIndicatorHistories");
 	}
 	
-	@Override
-	public SSCApplicationVersionVariableHistoryQuery queryAnd(String field, String value) {
-		return super.queryAnd(field, value);
-	}
-
 	@Override
 	protected boolean isPagingSupported() {
 		return false;

@@ -22,31 +22,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.ssc.connection.api;
 
-import javax.ws.rs.client.WebTarget;
+import java.util.Arrays;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionQuery;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionQuery.SSCApplicationVersionQueryBuilder;
 
-public class SSCApplicationVersionPerformanceIndicatorHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery<SSCApplicationVersionPerformanceIndicatorHistoryQuery> {
-
-	public SSCApplicationVersionPerformanceIndicatorHistoryQuery(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
-		super(conn, applicationVersionId);
-	}
-
-	@Override
-	protected WebTarget addChildEntityPath(WebTarget target) {
-		return target.path("performanceIndicatorHistories");
+public class SSCApplicationVersionAPI extends AbstractSSCAPI {
+	public SSCApplicationVersionAPI(SSCAuthenticatingRestConnection conn) {
+		super(conn);
 	}
 	
-	@Override
-	public SSCApplicationVersionPerformanceIndicatorHistoryQuery queryAnd(String field, String value) {
-		return super.queryAnd(field, value);
+	public SSCApplicationVersionQueryBuilder query() {
+		return SSCApplicationVersionQuery.builder().conn(conn());
 	}
-
-	@Override
-	protected boolean isPagingSupported() {
-		return false;
+	
+	public static void main(String[] args) {
+		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
+		System.out.println(1);
+		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").paramFields(Arrays.asList("id", "name")).build().getAll());
+		System.out.println(2);
+		System.out.println(conn.api().applicationVersion().query().id("6").build().getAll());
+		System.out.println(3);
+		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").versionName("5.0").build().getUnique());
 	}
 
 }

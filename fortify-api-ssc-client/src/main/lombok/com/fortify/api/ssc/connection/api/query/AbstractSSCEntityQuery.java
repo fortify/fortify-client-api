@@ -24,47 +24,69 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.WebTarget;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.util.rest.json.IJSONMapFilter;
 import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Setter;
+
 /**
- * This abstract class is used to query entity data from SSC. It supports the following
+ * <p>This abstract class can be used as a base class for querying entity data from SSC. It supports the following
  * standard SSC query parameters:
  * <ul>
- *  <li>q: {@link #queryAnd(String, String)} and {@link #queryReplace(String, String)}</li>
- *  <li>fields: {@link #fields(String...)}</li>
- *  <li>orderby: {@link #orderBy(String)}</li>
- *  <li>groupby: {@link #groupBy(String)}</li>
- *  <li>embed: {@link #embed(String)}</li>
- * </ul>
- * All of these methods are defined as 'protected' in this class. Depending on the query
- * parameters that are supported for a specific SSC entity, the corresponding subclass
- * can override these methods to make them public.
+ *  <li>q: {@link #setParamQAnds(Map)} sets a map of field names and corresponding values to filter the results by</li>
+ *  <li>fields: {@link #setParamFields(List)} sets the list of fields to be returned by SSC</li>
+ *  <li>orderby: {@link #setParamOrderBy(String)} sets the field to order the results by</li>
+ *  <li>groupby: {@link #setParamGroupBy(String)} sets the field used to group the results</li>
+ *  <li>embed: {@link #setParamEmbed(String)} allows for embedding additional entities in the results</li>
+ * </ul></p>
  * 
- * TODO: Describe Paging
- * TODO: Describe methods for retrieving/processing results
+ * <p>In addition, the following methods are available for client-side filtering:
+ * <ul>
+ *  <li>TODO Implement regex filtering, SpEL, before/after, ...</li>
+ * </ul></p>
+ * 
+ * <p>All of the methods mentioned above are defined as 'protected' in this class, and should only be called when initializing
+ * a new instance of this class, before calling any of the methods that actually execute the requests. Subclasses would 
+ * usually define a constructor that calls the various setters based on constructor arguments. This constructor would then
+ * be annotated with the {@link Builder} annotation to generate a corresponding Builder class that can be used by API clients
+ * to build queries. Please see the various example implementations in this package.</p>
+ * 
+ * <pre>
+ * TODO Describe Paging
+ * TODO Describe methods for retrieving/processing results
+ * TODO Add support for caching?
+ * </pre>
  * 
  * @author Ruud Senden
- *
- * @param <Q> Subclass type
  */
-public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>> {
+@Setter(AccessLevel.PROTECTED)
+public abstract class AbstractSSCEntityQuery {
 	private final SSCAuthenticatingRestConnection conn;
-	private int maxResults = -1;
-	private String query;
-	private String[] fields;
-	private String orderBy;
-	private String groupBy;
-	private String embed;
-
+	private Map<String, String> paramQAnds;
+	private List<String> paramFields;
+	private String paramOrderBy;
+	private String paramGroupBy;
+	private String paramEmbed;
+	private List<IJSONMapFilter> filters;
+	private Integer maxResults;
+	
 	protected AbstractSSCEntityQuery(SSCAuthenticatingRestConnection conn) {
 		this.conn = conn;
 	}
@@ -72,48 +94,8 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 	protected final SSCAuthenticatingRestConnection conn() {
 		return conn;
 	}
-
-	protected Q maxResults(int maxResults) {
-		this.maxResults = maxResults;
-		return getThis();
-	}
-
-	protected Q queryReplace(String queryReplace) {
-		this.query = queryReplace;
-		return getThis();
-	}
 	
-	protected Q queryAnd(String field, String value) {
-		String queryAppend = field+":\""+value+"\"";
-		if ( this.query == null || StringUtils.isBlank(this.query) ) {
-			this.query = queryAppend;
-		} else {
-			this.query += "+and+"+queryAppend;
-		}
-		return getThis();
-	}
-
-	protected Q fields(String... fields) {
-		this.fields = fields;
-		return getThis();
-	}
-	
-	protected Q orderBy(String orderByField) {
-		this.orderBy = orderByField;
-		return getThis();
-	}
-	
-	protected Q groupBy(String groupByField) {
-		this.groupBy = groupByField;
-		return getThis();
-	}
-	
-	protected Q embed(String embed) {
-		this.embed = embed;
-		return getThis();
-	}
-	
-	protected WebTarget getWebTargetWithFieldsAndQueryParam() {
+	protected WebTarget getWebTarget() {
 		return addParameters(getBaseWebTarget());
 	}
 	
@@ -128,36 +110,45 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 	}
 
 	protected WebTarget addParameterQuery(WebTarget webTarget) {
-		if ( StringUtils.isNotBlank(this.query) ) {
-			webTarget = webTarget.queryParam("q", this.query);
+		if ( MapUtils.isNotEmpty(paramQAnds) ) {
+			StringBuffer q = new StringBuffer();
+			for ( Map.Entry<String, String> entry : paramQAnds.entrySet() ) {
+				String qAppend = entry.getKey()+":\""+entry.getValue()+"\"";
+				if ( q.length() == 0 ) {
+					q.append(qAppend);
+				} else {
+					q.append("+and+"+qAppend);
+				}
+			}
+			webTarget = webTarget.queryParam("q", q.toString());
 		}
 		return webTarget;
 	}
 
 	protected WebTarget addParameterFields(WebTarget webTarget) {
-		if ( this.fields != null && this.fields.length > 0 ) {
-			webTarget = webTarget.queryParam("fields", String.join(",", this.fields));
+		if ( CollectionUtils.isNotEmpty(paramFields) ) {
+			webTarget = webTarget.queryParam("fields", StringUtils.join(paramFields, ","));
 		}
 		return webTarget;
 	}
 	
 	protected WebTarget addParameterOrderBy(WebTarget webTarget) {
-		if ( StringUtils.isNotBlank(this.orderBy) ) {
-			webTarget = webTarget.queryParam("orderby", this.orderBy);
+		if ( StringUtils.isNotBlank(paramOrderBy) ) {
+			webTarget = webTarget.queryParam("orderby", paramOrderBy);
 		}
 		return webTarget;
 	}
 	
 	protected WebTarget addParameterGroupBy(WebTarget webTarget) {
-		if ( StringUtils.isNotBlank(this.groupBy) ) {
-			webTarget = webTarget.queryParam("groupby", this.groupBy);
+		if ( StringUtils.isNotBlank(paramGroupBy) ) {
+			webTarget = webTarget.queryParam("groupby", paramGroupBy);
 		}
 		return webTarget;
 	}
 	
 	protected WebTarget addParameterEmbed(WebTarget webTarget) {
-		if ( StringUtils.isNotBlank(this.embed) ) {
-			webTarget = webTarget.queryParam("embed", this.embed);
+		if ( StringUtils.isNotBlank(paramEmbed) ) {
+			webTarget = webTarget.queryParam("embed", paramEmbed);
 		}
 		return webTarget;
 	}
@@ -190,7 +181,7 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 	protected abstract boolean isPagingSupported();
 
 	public void processAll(IJSONMapProcessor processor) {
-		processAll(getWebTargetWithFieldsAndQueryParam(), new PagingData().max(this.maxResults), processor);
+		processAll(getWebTarget(), new PagingData().max(this.maxResults==null?-1:this.maxResults), processor);
 	}
 
 	public JSONList getAll() {
@@ -201,7 +192,7 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 	
 	public JSONMap getUnique() {
 		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(getWebTargetWithFieldsAndQueryParam(), new PagingData().max(1), processor);
+		processAll(getWebTarget(), new PagingData().max(1), processor);
 		JSONList list = processor.getJsonList();
 		if ( list == null || list.size() == 0 ) {
 			return null;
@@ -214,11 +205,6 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 	
 	public int getCount() {
 		return -1; // TODO
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected Q getThis() {
-		return (Q)this;
 	}
 
 	/**
@@ -237,9 +223,7 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 				JSONMap data = processAll(target, processor);
 				pagingData.setTotal( data.get("count", Integer.class) );
 				pagingData.setLastPageSize( data.get("data", JSONList.class).size() );
-				pagingData.start(pagingData.getStart() + pagingData.getLastPageSize());
-				
-			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getLastPageSize() >= pagingData.getPageSize() );
+			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getPageSize()>0 );
 		}
 	}
 	
@@ -251,12 +235,26 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 		JSONList list = data.get("data", JSONList.class);
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
-				processor.process(obj);
+				if ( isIncluded(obj) ) {
+					processor.process(obj);
+				}
 			}
 		}
 		return data;
 	}
 
+	private boolean isIncluded(JSONMap json) {
+		boolean result = true;
+		if ( CollectionUtils.isNotEmpty(filters) ) {
+			for ( IJSONMapFilter filter : filters ) {
+				result &= filter.include(json);
+				if ( !result ) { break; }
+			}
+		}
+		return result;
+	}
+
+	@Data
 	protected class PagingData {
 		private int start = 0;
 		private int pageSize = 50;
@@ -264,13 +262,6 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 		private int total = -1;
 		private int lastPageSize = -1;
 		
-		public int getStart() {
-			return start;
-		}
-		public PagingData start(int start) {
-			this.start = start;
-			return this;
-		}
 		public int getPageSize() {
 			if ( this.max==-1 ) {
 				return pageSize; 
@@ -278,29 +269,15 @@ public abstract class AbstractSSCEntityQuery<Q extends AbstractSSCEntityQuery<Q>
 				return Math.min(pageSize, max-start);
 			}
 		}
-		public PagingData pageSize(int pageSize) {
-			this.pageSize = pageSize;
-			return this;
-		}
-		public int getMax() {
-			return max;
-		}
-		public PagingData max(int max) {
-			this.max = max;
-			return this;
-		}
-		public int getTotal() {
-			return total;
-		}
-		protected void setTotal(int total) {
-			this.total = total;
-		}
-		public int getLastPageSize() {
-			return lastPageSize;
-		}
+		
 		public void setLastPageSize(int lastPageSize) {
 			this.lastPageSize = lastPageSize;
+			this.start = this.start + lastPageSize;
 		}
 		
+		public PagingData max(int max) {
+			setMax(max);
+			return this;
+		}
 	}
 }

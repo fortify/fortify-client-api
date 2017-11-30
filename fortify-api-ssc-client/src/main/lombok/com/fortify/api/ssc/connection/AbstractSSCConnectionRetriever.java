@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,49 +22,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.ssc.connection;
 
-import javax.ws.rs.client.WebTarget;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
+import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import lombok.Getter;
+import lombok.Setter;
 
-public final class SSCJobQuery extends AbstractSSCEntityQuery<SSCJobQuery> {
-	public SSCJobQuery(SSCAuthenticatingRestConnection conn) {
-		super(conn);
-	}
-
-	public SSCJobQuery id(String id) {
-		return queryAnd("id", id);
-	}
-	
-	@Override
-	public SSCJobQuery queryAnd(String field, String value) {
-		return super.queryAnd(field, value);
-	}
-	
-	@Override
-	public SSCJobQuery fields(String... fields) {
-		return super.fields(fields);
-	}
-	
-	@Override
-	public SSCJobQuery orderBy(String orderByField) {
-		return super.orderBy(orderByField);
-	}
-	
-	@Override
-	public SSCJobQuery maxResults(int maxResults) {
-		return super.maxResults(maxResults);
-	}
-	
-	@Override
-	protected boolean isPagingSupported() {
-		return true;
-	}
-	
-	@Override
-	protected WebTarget getBaseWebTarget() {
-		return conn().getBaseResource().path("api/v1/jobs");
-	}
-	
+/**
+ * <p>This abstract {@link IRestConnectionRetriever} will create 
+ * an authenticated SSC REST connection based on the configured 
+ * properties like base URL, proxy configuration and authentication 
+ * data.</p>
+ * 
+ * <p>Subclasses will need to provide the actual authentication
+ * data.</p>  
+ * 
+ * @author Ruud Senden
+ *
+ */
+@Getter @Setter
+public abstract class AbstractSSCConnectionRetriever extends AbstractRestConnectionRetriever<SSCAuthenticatingRestConnection> implements ISSCConnectionRetriever {
+	private String baseUrl = "https://localhost:8080/ssc";
 }

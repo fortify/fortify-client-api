@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,31 +22,36 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection;
+package com.fortify.api.ssc.connection.api.query;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
-import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
+import java.util.Map;
 
-/**
- * <p>This abstract {@link IRestConnectionRetriever} will create 
- * an authenticated SSC REST connection based on the configured 
- * properties like base URL, proxy configuration and authentication 
- * data.</p>
- * 
- * <p>Subclasses will need to provide the actual authentication
- * data.</p>  
- * 
- * @author Ruud Senden
- *
- */
-public abstract class AbstractSSCConnectionRetriever extends AbstractRestConnectionRetriever<SSCAuthenticatingRestConnection> implements ISSCConnectionRetriever {
-	private String baseUrl = "https://localhost:8080/ssc";
-	
-	public String getBaseUrl() {
-		return baseUrl;
+import javax.ws.rs.client.WebTarget;
+
+import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+
+import lombok.Builder;
+import lombok.Singular;
+
+public class SSCApplicationVersionVariableHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery {
+
+	@Builder
+	private SSCApplicationVersionVariableHistoryQuery(
+			SSCAuthenticatingRestConnection conn, 
+			String applicationVersionId,
+			@Singular Map<String,String> paramQAnds) {
+		super(conn, applicationVersionId);
+		setParamQAnds(paramQAnds);
 	}
 
-	public void setBaseUrl(String baseUrl) {
-		this.baseUrl = baseUrl;
+	@Override
+	protected WebTarget addChildEntityPath(WebTarget target) {
+		return target.path("variableHistories");
 	}
+
+	@Override
+	protected boolean isPagingSupported() {
+		return false;
+	}
+
 }
