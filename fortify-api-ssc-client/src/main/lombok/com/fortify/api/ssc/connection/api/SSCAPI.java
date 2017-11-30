@@ -42,6 +42,7 @@ public class SSCAPI extends AbstractSSCAPI {
 	private final SSCJobAPI job;
 	private final SSCMetricsAPI metrics;
 	private final SSCFileUpDownloadAPI fileUpDownload;
+	private final SSCAuditAssistantAPI auditAssistant;
 	
 	public SSCAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
@@ -55,6 +56,7 @@ public class SSCAPI extends AbstractSSCAPI {
 		this.job = new SSCJobAPI(conn);
 		this.metrics = new SSCMetricsAPI(conn);
 		this.fileUpDownload = new SSCFileUpDownloadAPI(conn);
+		this.auditAssistant = new SSCAuditAssistantAPI(conn);
 	}
 
 }

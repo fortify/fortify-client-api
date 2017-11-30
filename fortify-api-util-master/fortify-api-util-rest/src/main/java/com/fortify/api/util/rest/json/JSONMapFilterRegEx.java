@@ -42,6 +42,7 @@ public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
 
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		return pattern.matcher(json.getPath(fieldPath, CharSequence.class)).matches();
+		String value = json.getPath(fieldPath, String.class);
+		return value==null ? false : pattern.matcher(value).matches();
 	}
 }

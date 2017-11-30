@@ -40,8 +40,6 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.glassfish.jersey.media.multipart.Boundary;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -54,9 +52,11 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
+import lombok.extern.apachecommons.CommonsLog;
+
+
+@CommonsLog
 public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
-	private static final Log LOG = LogFactory.getLog(SSCFileUpDownloadAPI.class);
-	
 	/**
 	 * Enumeration for SSC file token types, to be used for {@link #getFileToken(FileTokenType)}
 	 */
@@ -105,7 +105,7 @@ public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
 			try {
 				is.close();
 			} catch ( IOException ioe ) {
-				LOG.warn("Error closing response stream, subsequent requests may fail", ioe);
+				log.warn("Error closing response stream, subsequent requests may fail", ioe);
 			}
 		}
 	}
