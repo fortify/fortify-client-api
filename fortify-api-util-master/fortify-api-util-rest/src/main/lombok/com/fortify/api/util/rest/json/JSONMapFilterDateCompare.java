@@ -37,7 +37,6 @@ public class JSONMapFilterDateCompare extends JSONMapFilterSpEL {
 
 	private static String getDateExpression(String fieldPath, DateComparisonOperator operator, Date compareDate) {
 		String expression = "getPath('"+fieldPath+"', T(java.util.Date))?.getTime() "+operator.name()+" "+compareDate.getTime()+"L";
-		System.out.println(expression);
 		return expression;
 	}
 	
