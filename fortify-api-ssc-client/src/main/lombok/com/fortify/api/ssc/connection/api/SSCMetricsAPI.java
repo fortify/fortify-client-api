@@ -25,28 +25,26 @@
 package com.fortify.api.ssc.connection.api;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionPerformanceIndicatorHistoryQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionPerformanceIndicatorHistoryQuery.SSCApplicationVersionPerformanceIndicatorHistoryQueryBuilder;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionVariableHistoryQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionVariableHistoryQuery.SSCApplicationVersionVariableHistoryQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionMetricHistoryQuery;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionMetricHistoryQuery.SSCApplicationVersionMetricHistoryQueryBuilder;
 
 public class SSCMetricsAPI extends AbstractSSCAPI {
+	public static enum MetricType {
+		performanceIndicator, variable
+	}
+	
 	public SSCMetricsAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
 	
-	public SSCApplicationVersionVariableHistoryQueryBuilder queryVariableHistory(String applicationVersionId) {
-		return SSCApplicationVersionVariableHistoryQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
-	}
-	
-	public SSCApplicationVersionPerformanceIndicatorHistoryQueryBuilder queryPerformanceIndicatorHistory(String applicationVersionId) {
-		return SSCApplicationVersionPerformanceIndicatorHistoryQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+	public SSCApplicationVersionMetricHistoryQueryBuilder queryMetricHistory(String applicationVersionId, MetricType metricType) {
+		return SSCApplicationVersionMetricHistoryQuery.builder().conn(conn()).applicationVersionId(applicationVersionId).metricType(metricType);
 	}
 	
 	public static void main(String[] args) {
 		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(conn.api().metrics().queryVariableHistory("6").build().getAll());
-		System.out.println(conn.api().metrics().queryPerformanceIndicatorHistory("6").build().getAll());
+		System.out.println(conn.api().metrics().queryMetricHistory("6", MetricType.variable).useCache(true).build().getAll());
+		System.out.println(conn.api().metrics().queryMetricHistory("6", MetricType.performanceIndicator).useCache(true).build().getAll());
 	}
 
 }

@@ -29,27 +29,32 @@ import java.util.Map;
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
 
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Singular;
 
 // TODO Merge performance indicator and variable classes? (Add MetricType enum, add MetricType constructor parameter)
-public class SSCApplicationVersionPerformanceIndicatorHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery {
-
+public class SSCApplicationVersionMetricHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery {
+	private MetricType metricType;
+	
 	@Builder
-	private SSCApplicationVersionPerformanceIndicatorHistoryQuery(
+	private SSCApplicationVersionMetricHistoryQuery(
 			SSCAuthenticatingRestConnection conn, 
+			@NonNull MetricType metricType,
 			String applicationVersionId,
 			@Singular Map<String,String> paramQAnds,
 			boolean useCache) {
 		super(conn, applicationVersionId);
 		setParamQAnds(paramQAnds);
 		setUseCache(useCache);
+		this.metricType = metricType;
 	}
 
 	@Override
 	protected WebTarget addChildEntityPath(WebTarget target) {
-		return target.path("performanceIndicatorHistories");
+		return target.path(metricType.name()+"Histories");
 	}
 	
 	@Override
