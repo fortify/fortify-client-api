@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,24 +22,33 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.query;
 
-import com.fortify.api.util.rest.query.PagingData;
+import lombok.Data;
 
-/**
- * Abstract base class for {@link IJSONMapProcessor} implementations.
- * 
- * @author Ruud Senden
- *
- */
-public abstract class AbstractJSONMapProcessor implements IJSONMapProcessor {
-
-	/**
-	 * This default implementation does nothing; subclasses can override this method
-	 * to get informed whenever a next page of results is loaded.
-	 */
-	public <T extends PagingData> void nextPage(T pagingData) {
-		// Do nothing
+@Data 
+public class PagingData {
+	private int start = 0;
+	private int pageSize = 50;
+	private int max = -1;
+	private int total = -1;
+	private int lastPageSize = -1;
+	
+	public int getPageSize() {
+		if ( this.max==-1 ) {
+			return pageSize; 
+		} else {
+			return Math.min(pageSize, max-start);
+		}
 	}
-
+	
+	public void setLastPageSize(int lastPageSize) {
+		this.lastPageSize = lastPageSize;
+		this.start = this.start + lastPageSize;
+	}
+	
+	public PagingData max(int max) {
+		setMax(max);
+		return this;
+	}
 }

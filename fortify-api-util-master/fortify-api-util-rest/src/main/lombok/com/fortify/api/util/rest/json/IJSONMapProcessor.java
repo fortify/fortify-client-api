@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.json;
 
+import com.fortify.api.util.rest.query.PagingData;
+
 /**
  * Interface for processing (possibly multi-page) lists of JSON objects.
  * 
@@ -42,5 +44,5 @@ public interface IJSONMapProcessor {
 	 * loading the next page. For example this allows implementations
 	 * to display progress information.
 	 */
-	public void nextPage();
+	public <T extends PagingData> void nextPage(T pagingData);
 }

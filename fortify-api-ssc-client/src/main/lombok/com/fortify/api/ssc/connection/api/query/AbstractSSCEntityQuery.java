@@ -27,7 +27,6 @@ package com.fortify.api.ssc.connection.api.query;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.WebTarget;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -36,14 +35,13 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.IJSONMapFilter;
-import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
+import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
+import com.fortify.api.util.rest.query.PagingData;
 
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Setter;
 
 /**
@@ -77,30 +75,19 @@ import lombok.Setter;
  * @author Ruud Senden
  */
 @Setter(AccessLevel.PROTECTED)
-public abstract class AbstractSSCEntityQuery {
-	private final SSCAuthenticatingRestConnection conn;
+public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithCacheQuery<SSCAuthenticatingRestConnection, JSONMap> {
 	private Map<String, String> paramQAnds;
 	private List<String> paramFields;
 	private String paramOrderBy;
 	private String paramGroupBy;
 	private String paramEmbed;
-	private List<IJSONMapFilter> filters;
-	private Integer maxResults;
-	private boolean useCache;
 	
 	protected AbstractSSCEntityQuery(SSCAuthenticatingRestConnection conn) {
-		this.conn = conn;
+		super(conn);
 	}
 	
-	protected final SSCAuthenticatingRestConnection conn() {
-		return conn;
-	}
-	
-	protected WebTarget getWebTarget() {
-		return addParameters(getBaseWebTarget());
-	}
-	
-	protected WebTarget addParameters(WebTarget webTarget) {
+	@Override
+	protected WebTarget updateBaseWebTarget(WebTarget webTarget) {
 		webTarget = addParameterFields(webTarget);
 		webTarget = addParameterQuery(webTarget);
 		webTarget = addParameterOrderBy(webTarget);
@@ -108,13 +95,6 @@ public abstract class AbstractSSCEntityQuery {
 		webTarget = addParameterEmbed(webTarget);
 		webTarget = addExtraParameters(webTarget);
 		return webTarget;
-	}
-	
-	protected WebTarget addParameterIfNotBlank(WebTarget target, String name, String value) {
-		if ( StringUtils.isNotBlank(value) ) {
-			target = target.queryParam(name, value);
-		}
-		return target;
 	}
 
 	protected WebTarget addParameterQuery(WebTarget webTarget) {
@@ -163,134 +143,24 @@ public abstract class AbstractSSCEntityQuery {
 		return webTarget;
 	}
 	
-	/**
-	 * Get the base web target identifying the SSC resource to use.
-	 * Usually this should return something like
-	 * conn().getBaseResource().path("api/v1/entity") for top-level
-	 * entities, or 
-	 * conn().getBaseResource().path("api/v1/parentEntity").path(parentId).path("childEntity")
-	 * @return
-	 */
-	protected abstract WebTarget getBaseWebTarget();
-	
-	/**
-	 * Identify whether paging is supported by the current SSC resource.
-	 * @return
-	 */
-	protected abstract boolean isPagingSupported();
-
-	public void processAll(IJSONMapProcessor processor) {
-		processAll(getWebTarget(), new PagingData().max(this.maxResults==null?-1:this.maxResults), processor);
-	}
-
-	public JSONList getAll() {
-		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(processor);
-		return processor.getJsonList();
+	@Override
+	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
+		return target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
 	}
 	
-	public JSONMap getUnique() {
-		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(getWebTarget(), new PagingData().max(1), processor);
-		JSONList list = processor.getJsonList();
-		if ( list == null || list.size() == 0 ) {
-			return null;
-		}
-		if ( list.size() > 1 ) {
-			throw new RuntimeException("More than one object found: "+list); // TODO Use less generic exception type
-		}
-		return list.asValueType(JSONMap.class).get(0);
+	@Override
+	protected void updatePagingDataFromResponse(PagingData pagingData, JSONMap data) {
+		pagingData.setTotal( data.get("count", Integer.class) );
+		pagingData.setLastPageSize( data.get("data", JSONList.class).size() );
 	}
 	
-	public int getCount() {
-		return -1; // TODO
-	}
-
-	/**
-	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
-	 * Depending on the return value of {@link #isPagingSupported()}, this method will either directly invoke
-	 * the given web target (paging not supported), or retrieve all data page by page (paging is supported).
-	 * 
-	 */
-	private void processAll(WebTarget target, PagingData pagingData, IJSONMapProcessor processor) {
-		initRequest();
-		if ( !isPagingSupported() ) {
-			processAll(target, processor);
-		} else {
-			do {
-				processor.nextPage();
-				WebTarget pagingTarget = target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
-				JSONMap data = processAll(pagingTarget, processor);
-				pagingData.setTotal( data.get("count", Integer.class) );
-				pagingData.setLastPageSize( data.get("data", JSONList.class).size() );
-			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getPageSize()>0 );
-		}
+	@Override
+	protected JSONList getJSONListFromResponse(JSONMap data) {
+		return data.get("data", JSONList.class);
 	}
 	
-	/**
-	 * Subclasses can override this method to do some initialization before calling the target endpoint,
-	 * for example to perform some additional REST requests to modify SSC settings required for correct
-	 * target endpoint invocation.
-	 */
-	protected void initRequest() {}
-
-	/**
-	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
-	 */
-	private JSONMap processAll(WebTarget target, IJSONMapProcessor processor) {
-		JSONMap data = useCache 
-				? conn().executeRequest(HttpMethod.GET, target, JSONMap.class, getCacheName())
-				: conn().executeRequest(HttpMethod.GET, target, JSONMap.class);
-		JSONList list = data.get("data", JSONList.class);
-		if ( processor != null ) {
-			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
-				if ( isIncluded(obj) ) {
-					processor.process(obj);
-				}
-			}
-		}
-		return data;
-	}
-
-	protected String getCacheName() {
-		return this.getClass().getName();
-	}
-
-	private boolean isIncluded(JSONMap json) {
-		boolean result = true;
-		if ( CollectionUtils.isNotEmpty(filters) ) {
-			for ( IJSONMapFilter filter : filters ) {
-				result &= filter.include(json);
-				if ( !result ) { break; }
-			}
-		}
-		return result;
-	}
-
-	@Data
-	protected class PagingData {
-		private int start = 0;
-		private int pageSize = 50;
-		private int max = -1;
-		private int total = -1;
-		private int lastPageSize = -1;
-		
-		public int getPageSize() {
-			if ( this.max==-1 ) {
-				return pageSize; 
-			} else {
-				return Math.min(pageSize, max-start);
-			}
-		}
-		
-		public void setLastPageSize(int lastPageSize) {
-			this.lastPageSize = lastPageSize;
-			this.start = this.start + lastPageSize;
-		}
-		
-		public PagingData max(int max) {
-			setMax(max);
-			return this;
-		}
+	@Override
+	protected Class<JSONMap> getResponseTypeClass() {
+		return JSONMap.class;
 	}
 }
