@@ -41,11 +41,11 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	}
 	
 	public JSONMap getApplicationVersionById(String applicationVersionId) {
-		return query().id(applicationVersionId).build().getUnique();
+		return query().id(applicationVersionId).useCache(true).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByName(String applicationName, String versionName) {
-		return query().applicationName(applicationName).versionName(versionName).build().getUnique();
+		return query().applicationName(applicationName).versionName(versionName).useCache(true).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
@@ -63,12 +63,14 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	
 	public static void main(String[] args) {
 		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(1);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").paramFields(Arrays.asList("id", "name")).build().getAll());
-		System.out.println(2);
-		System.out.println(conn.api().applicationVersion().query().id("6").build().getAll());
-		System.out.println(3);
-		System.out.println(conn.api().applicationVersion().query().applicationName("WebGoat").versionName("5.0").build().getUnique());
+		SSCApplicationVersionAPI api = conn.api().applicationVersion();
+		for ( int i = 0 ; i < 10 ; i++ ) {
+			System.out.println(api.query().applicationName("WebGoat").paramFields(Arrays.asList("id", "name")).useCache(true).build().getAll());
+			System.out.println(api.query().id("6").useCache(true).build().getAll());
+			System.out.println(api.query().applicationName("WebGoat").versionName("5.0").useCache(true).build().getUnique());
+			System.out.println(api.getApplicationVersionByNameOrId("WebGoat:5.0", ":"));
+			System.out.println(api.query().useCache(true).build().getAll());
+		}
 	}
 
 }

@@ -50,18 +50,18 @@ public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery {
 			@Singular Map<String, String> paramQAnds,
 			List<String> paramFields, 
 			String paramOrderBy, 
-			Integer maxResults) {
+			Integer maxResults,
+			boolean useCache) {
 		super(conn);
 		setParamQAnds(paramQAnds);
 		setParamFields(paramFields);
 		setParamOrderBy(paramOrderBy);
 		setMaxResults(maxResults);
+		setUseCache(useCache);
 	}
 	
 	/**
-	 * Test
 	 * @author Ruud Senden
-	 *
 	 */
 	public static class SSCApplicationVersionQueryBuilder {
 		public SSCApplicationVersionQueryBuilder id(String id) {

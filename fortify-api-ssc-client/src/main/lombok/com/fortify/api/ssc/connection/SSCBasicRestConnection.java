@@ -28,6 +28,7 @@ import javax.ws.rs.client.Invocation.Builder;
 
 import com.fortify.api.util.rest.connection.ProxyConfiguration;
 import com.fortify.api.util.rest.connection.RestConnection;
+import com.fortify.api.util.rest.connection.RestConnectionWithCache;
 
 /**
  * This class provides a basic, non-authenticating REST connection
@@ -38,7 +39,7 @@ import com.fortify.api.util.rest.connection.RestConnection;
  * @author Ruud Senden
  *
  */
-public class SSCBasicRestConnection extends RestConnection {
+public class SSCBasicRestConnection extends RestConnectionWithCache {
 	public SSCBasicRestConnection(String baseUrl, ProxyConfiguration proxy) {
 		super(baseUrl);
 		setProxy(proxy);

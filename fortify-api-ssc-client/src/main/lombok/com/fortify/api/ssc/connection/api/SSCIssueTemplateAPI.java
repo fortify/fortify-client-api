@@ -30,6 +30,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+// TODO Update this class and introduce Query class
 public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	public SSCIssueTemplateAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

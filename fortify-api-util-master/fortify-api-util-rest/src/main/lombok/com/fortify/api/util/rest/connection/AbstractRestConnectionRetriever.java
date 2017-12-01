@@ -24,6 +24,9 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This abstract {@link IRestConnectionRetriever} implementation can be used as a base
  * class for {@link IRestConnectionRetriever} implementations.
@@ -33,7 +36,7 @@ package com.fortify.api.util.rest.connection;
  */
 public abstract class AbstractRestConnectionRetriever<C extends IRestConnection> implements IRestConnectionRetriever<C> {
 	private C connection;
-	private ProxyConfiguration proxy;
+	@Setter @Getter private ProxyConfiguration proxy;
 	
 	public final C getConnection() {
 		if ( connection == null ) {
@@ -44,12 +47,4 @@ public abstract class AbstractRestConnectionRetriever<C extends IRestConnection>
 	}
 
 	protected abstract C createConnection();
-
-	public ProxyConfiguration getProxy() {
-		return proxy;
-	}
-
-	public void setProxy(ProxyConfiguration proxy) {
-		this.proxy = proxy;
-	}
 }

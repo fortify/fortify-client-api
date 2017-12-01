@@ -49,7 +49,6 @@ import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
 import org.apache.commons.lang.CharEncoding;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.client.CookieStore;
@@ -72,6 +71,11 @@ import com.fortify.api.util.rest.connection.connector.ApacheConnectorProvider;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Utility for working with a REST API. Instances of this class can be configured
  * with a base URL, optional proxy configuration, and optional credentials for 
@@ -84,13 +88,14 @@ import com.fortify.api.util.rest.json.JSONMap;
  *      
  * TODO Update JavaDoc for executeRequest methods
  */
+@ToString
 public class RestConnection implements IRestConnection {
-	//private static final Log LOG = LogFactory.getLog(RestConnection.class);
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
-	private final CredentialsProvider credentialsProvider = createCredentialsProvider();
-	private final String baseUrl;
+	@Getter(value=AccessLevel.PROTECTED) private final CredentialsProvider credentialsProvider = createCredentialsProvider();
+	@Getter private final String baseUrl;
+	@Getter @Setter private ProxyConfiguration proxy;
 	private Client client;
-	private ProxyConfiguration proxy;
+	
 
 	/**
 	 * This constructor is used to specify the base URL for this connection.
@@ -110,22 +115,6 @@ public class RestConnection implements IRestConnection {
 	public RestConnection(String baseUrl, Credentials credentials) {
 		this(baseUrl);
 		getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
-	}
-	
-	
-	
-	public String getBaseUrl() {
-		return baseUrl;
-	}
-	
-	/**
-	 * Get the {@link CredentialsProvider} used to execute requests.
-	 * Clients can use this method to add credentials to the 
-	 * {@link CredentialsProvider}.
-	 * @return {@link CredentialsProvider} used to authenticate with the bug tracker
-	 */
-	protected final CredentialsProvider getCredentialsProvider() {
-		return credentialsProvider;
 	}
 
 	/**
@@ -491,28 +480,6 @@ public class RestConnection implements IRestConnection {
 			throw new RuntimeException("Unable to encode value "+input, e);
 		}
 	}
-
-	/**
-	 * Get the proxy configuration to use for the connection.
-	 * @return The proxy configuration
-	 */
-	public ProxyConfiguration getProxy() {
-		return proxy;
-	}
-	
-	/**
-	 * Set the proxy configuration to use for the connection.
-	 * @param proxy The proxy configuration to use for the connection.
-	 */
-	public void setProxy(ProxyConfiguration proxy) {
-		this.proxy = proxy;
-	}
-	
-	@Override
-	public String toString() {
-		return new ReflectionToStringBuilder(this).toString();
-	}
-
 	
 	protected static class JacksonFeature implements Feature {
 

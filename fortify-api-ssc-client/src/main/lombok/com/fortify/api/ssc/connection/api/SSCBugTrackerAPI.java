@@ -44,6 +44,7 @@ import com.fortify.api.util.spring.SpringExpressionUtil;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 
+// TODO Update this class and introduce Query class(es)
 public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	/** Memoized supplier for bug trackers */
 	private final Supplier<JSONList> bugTrackersSupplier = Suppliers.memoize(new Supplier<JSONList>() {

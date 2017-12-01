@@ -40,6 +40,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+// TODO Update this class and introduce SSCAttributeQuery class
 public class SSCAttributeAPI extends AbstractSSCAPI {
 	public SSCAttributeAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

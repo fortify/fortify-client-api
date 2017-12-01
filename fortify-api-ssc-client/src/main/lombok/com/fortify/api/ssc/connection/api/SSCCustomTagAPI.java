@@ -43,6 +43,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+// TODO Update this class and introduce Query class(es)
 public class SSCCustomTagAPI extends AbstractSSCAPI {
 	
 	public SSCCustomTagAPI(SSCAuthenticatingRestConnection conn) {

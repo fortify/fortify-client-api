@@ -53,7 +53,6 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.jvnet/mimepull -->
 		<dependency>
 			<groupId>org.jvnet</groupId>
 			<artifactId>mimepull</artifactId>
@@ -62,31 +61,8 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.16.18</version>
-			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok-maven-plugin</artifactId>
-				<version>1.16.18.1</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>delombok</goal>
-						</goals>
-						<configuration>
-							<encoding>cp1252</encoding>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<description>This module contains various utility classes for working with Fortify SSC.</description>
 </project>

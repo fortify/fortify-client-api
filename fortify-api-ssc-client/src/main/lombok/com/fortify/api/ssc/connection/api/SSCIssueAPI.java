@@ -24,12 +24,16 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCIssueQuery;
 import com.fortify.api.ssc.connection.api.query.SSCIssueQuery.SSCIssueQueryBuilder;
+import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
 public class SSCIssueAPI extends AbstractSSCAPI {
@@ -57,5 +61,48 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
 		System.out.println(conn.api().issue().query("6").build().getAll());
 		System.out.println(conn.api().issue().query("6").maxResults(2).build().getAll());
+	}
+	
+	/**
+	 * This class describes the SSC issue search options, allowing to either 
+	 * include or exclude removed, hidden and suppressed issues.
+	 * @author Ruud Senden
+	 *
+	 */
+	public static class IssueSearchOptions {
+		private Map<String, Boolean> searchOptions = new HashMap<String, Boolean>();
+		
+		public boolean isIncludeRemoved() {
+			return searchOptions.getOrDefault("REMOVED", false);
+		}
+		public void setIncludeRemoved(boolean includeRemoved) {
+			searchOptions.put("REMOVED", includeRemoved);
+		}
+		public boolean isIncludeSuppressed() {
+			return searchOptions.getOrDefault("SUPPRESSED", false);
+		}
+		public void setIncludeSuppressed(boolean includeSuppressed) {
+			searchOptions.put("SUPPRESSED", includeSuppressed);
+		}
+		public boolean isIncludeHidden() {
+			return searchOptions.getOrDefault("HIDDEN", false);
+		}
+		public void setIncludeHidden(boolean includeHidden) {
+			searchOptions.put("HIDDEN", includeHidden);
+		}
+		
+		JSONList getJSONRequestData() {
+			JSONList result = new JSONList();
+			result.add(getOption("REMOVED"));
+			result.add(getOption("SUPPRESSED"));
+			result.add(getOption("HIDDEN"));
+			return result;
+		}
+		private JSONMap getOption(String optionType) {
+			JSONMap result = new JSONMap();
+			result.put("optionType", optionType);
+			result.put("optionValue", searchOptions.getOrDefault(optionType, false));
+			return result;
+		}
 	}
 }

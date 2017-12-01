@@ -44,13 +44,15 @@ public final class SSCJobQuery extends AbstractSSCEntityQuery {
 			@Singular Map<String, String> paramQAnds,
 			List<String> paramFields,
 			String paramOrderBy,
-			Integer maxResults) {
+			Integer maxResults,
+			boolean useCache) {
 		super(conn);
 		setFilters(filters);
 		setParamQAnds(paramQAnds);
 		setParamFields(paramFields);
 		setParamOrderBy(paramOrderBy);
 		setMaxResults(maxResults);
+		setUseCache(useCache);
 	}
 	
 	public static class SSCJobQueryBuilder {

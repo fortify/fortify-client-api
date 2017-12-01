@@ -33,15 +33,18 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import lombok.Builder;
 import lombok.Singular;
 
+// TODO Merge performance indicator and variable classes? (Add MetricType enum, add MetricType constructor parameter)
 public class SSCApplicationVersionPerformanceIndicatorHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 
 	@Builder
 	private SSCApplicationVersionPerformanceIndicatorHistoryQuery(
 			SSCAuthenticatingRestConnection conn, 
 			String applicationVersionId,
-			@Singular Map<String,String> paramQAnds) {
+			@Singular Map<String,String> paramQAnds,
+			boolean useCache) {
 		super(conn, applicationVersionId);
 		setParamQAnds(paramQAnds);
+		setUseCache(useCache);
 	}
 
 	@Override

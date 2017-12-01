@@ -39,9 +39,11 @@ public class SSCApplicationVersionVariableHistoryQuery extends AbstractSSCApplic
 	private SSCApplicationVersionVariableHistoryQuery(
 			SSCAuthenticatingRestConnection conn, 
 			String applicationVersionId,
-			@Singular Map<String,String> paramQAnds) {
+			@Singular Map<String,String> paramQAnds,
+			boolean useCache) {
 		super(conn, applicationVersionId);
 		setParamQAnds(paramQAnds);
+		setUseCache(useCache);
 	}
 
 	@Override

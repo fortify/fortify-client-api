@@ -57,9 +57,10 @@ import lombok.Setter;
  *  <li>embed: {@link #setParamEmbed(String)} allows for embedding additional entities in the results</li>
  * </ul></p>
  * 
- * <p>In addition, the following methods are available for client-side filtering:
+ * <p>In addition, the following methods are available:
  * <ul>
- *  <li>TODO Implement regex filtering, SpEL, before/after, ...</li>
+ *  <li>{@link #setFilters(List)} for client-side filtering of results using {@link IJSONMapFilter} instances</li>
+ *  <li>{@link #setUseCache(boolean)} to cache responses for REST requests</li>
  * </ul></p>
  * 
  * <p>All of the methods mentioned above are defined as 'protected' in this class, and should only be called when initializing
@@ -71,7 +72,6 @@ import lombok.Setter;
  * <pre>
  * TODO Describe Paging
  * TODO Describe methods for retrieving/processing results
- * TODO Add support for caching?
  * </pre>
  * 
  * @author Ruud Senden
@@ -86,6 +86,7 @@ public abstract class AbstractSSCEntityQuery {
 	private String paramEmbed;
 	private List<IJSONMapFilter> filters;
 	private Integer maxResults;
+	private boolean useCache;
 	
 	protected AbstractSSCEntityQuery(SSCAuthenticatingRestConnection conn) {
 		this.conn = conn;
@@ -237,7 +238,9 @@ public abstract class AbstractSSCEntityQuery {
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
 	 */
 	private JSONMap processAll(WebTarget target, IJSONMapProcessor processor) {
-		JSONMap data = conn().executeRequest(HttpMethod.GET, target, JSONMap.class);
+		JSONMap data = useCache 
+				? conn().executeRequest(HttpMethod.GET, target, JSONMap.class, getCacheName())
+				: conn().executeRequest(HttpMethod.GET, target, JSONMap.class);
 		JSONList list = data.get("data", JSONList.class);
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
@@ -247,6 +250,10 @@ public abstract class AbstractSSCEntityQuery {
 			}
 		}
 		return data;
+	}
+
+	protected String getCacheName() {
+		return this.getClass().getName();
 	}
 
 	private boolean isIncluded(JSONMap json) {

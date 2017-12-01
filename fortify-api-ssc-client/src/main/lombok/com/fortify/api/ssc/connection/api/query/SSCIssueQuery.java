@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.IssueSearchOptions;
+import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
 
 import lombok.Builder;
 import lombok.Singular;
@@ -59,11 +59,13 @@ public class SSCIssueQuery extends AbstractSSCApplicationVersionChildEntityQuery
 			String paramFilter,
 			QueryMode paramQm,
 			IssueSearchOptions issueSearchOptions,
-			Integer maxResults) {
+			Integer maxResults,
+			boolean useCache) {
 		super(conn, parentId);
 		setParamQAnds(paramQAnds);
 		setParamOrderBy(paramOrderBy);
 		setMaxResults(maxResults);
+		setUseCache(useCache);
 		this.paramGroupId = paramGroupId;
 		this.paramGroupingType = paramGroupingType;
 		this.paramFilterSetId = paramFilterSetId;
