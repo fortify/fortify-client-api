@@ -32,55 +32,51 @@ import javax.ws.rs.client.WebTarget;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.IJSONMapFilter;
 
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Singular;
 
+@Getter(AccessLevel.PROTECTED)
+@Builder
 public final class SSCJobQuery extends AbstractSSCEntityQuery {
-	
-	@Builder
-	private SSCJobQuery(
-			SSCAuthenticatingRestConnection conn,
-			@Singular List<IJSONMapFilter> filters,
-			@Singular Map<String, String> paramQAnds,
-			List<String> paramFields,
-			String paramOrderBy,
-			Integer maxResults,
-			boolean useCache) {
-		super(conn);
-		setFilters(filters);
-		setParamQAnds(paramQAnds);
-		setParamFields(paramFields);
-		setParamOrderBy(paramOrderBy);
-		setMaxResults(maxResults);
-		setUseCache(useCache);
-	}
-	
+	// Fields supported by AbstractRestConnectionWithCacheQuery
+	private final SSCAuthenticatingRestConnection conn;
+	private final @Singular List<IJSONMapFilter> filters;
+	private final boolean useCache;
+	private final Integer maxResults;
+
+	// Fields supported by AbstractSSCEntityQuery
+	private final List<String> paramFields;
+	private final String paramOrderBy;
+	private final @Singular Map<String, String> paramQAnds;
+
 	public static class SSCJobQueryBuilder {
 		public SSCJobQueryBuilder id(String id) {
 			return paramQAnd("id", id);
 		}
-		
+
 		public SSCJobQueryBuilder jobClassName(String jobClassName) {
 			return paramQAnd("jobClassName", jobClassName);
 		}
-		
+
 		public SSCJobQueryBuilder priority(int priority) {
-			return paramQAnd("priority", ""+priority);
+			return paramQAnd("priority", "" + priority);
 		}
-		
+
 		public SSCJobQueryBuilder state(String state) {
 			return paramQAnd("state", state);
 		}
 	}
-	
+
 	@Override
 	protected boolean isPagingSupported() {
 		return true;
 	}
-	
+
 	@Override
 	protected WebTarget getBaseWebTarget() {
-		return conn().getBaseResource().path("api/v1/jobs");
+		return getConn().getBaseResource().path("api/v1/jobs");
 	}
-	
+
 }

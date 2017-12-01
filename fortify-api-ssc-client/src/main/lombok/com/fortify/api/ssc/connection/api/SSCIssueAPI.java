@@ -42,7 +42,7 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	}
 	
 	public SSCIssueQueryBuilder query(String applicationVersionId) {
-		return SSCIssueQuery.builder().conn(conn()).parentId(applicationVersionId);
+		return SSCIssueQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
 	}
 	
 	/**

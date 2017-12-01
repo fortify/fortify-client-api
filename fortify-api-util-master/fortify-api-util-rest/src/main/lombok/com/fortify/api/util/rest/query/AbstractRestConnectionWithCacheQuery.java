@@ -33,9 +33,12 @@ import lombok.AccessLevel;
 import lombok.Setter;
 
 /**
- * <p>This abstract class can be used as a base class for querying data from a REST API. 
- * 
- * TODO Update JavaDoc
+ * <p>This abstract class extends {@link AbstractRestConnectionQuery} by adding optional support for
+ * caching, based on the caching functionality provided by {@link RestConnectionWithCache}. Based
+ * on the Lombok annotations described in {@link AbstractRestConnectionQuery}, concrete implementations
+ * can provide optional caching support by defining an instance field <code>private final boolean useCache;</code>.
+ * Lombok will then override our {@link #isUseCache()} method to return the value configured through the
+ * Builder.</p>  
  * 
  * @author Ruud Senden
  */
@@ -43,17 +46,15 @@ import lombok.Setter;
 public abstract class AbstractRestConnectionWithCacheQuery<ConnType 
 	extends RestConnectionWithCache, ResponseType> extends AbstractRestConnectionQuery<ConnType, ResponseType>
 {	
-	private boolean useCache;
-	
-	protected AbstractRestConnectionWithCacheQuery(ConnType conn) {
-		super(conn);
+	protected boolean isUseCache() {
+		return false;
 	}
 
 	@Override
 	protected ResponseType executeRequest(WebTarget target) {
-		return useCache 
-				? conn().executeRequest(HttpMethod.GET, target, getResponseTypeClass(), getCacheName())
-				: conn().executeRequest(HttpMethod.GET, target, getResponseTypeClass());
+		return isUseCache() 
+				? getConn().executeRequest(HttpMethod.GET, target, getResponseTypeClass(), getCacheName())
+				: getConn().executeRequest(HttpMethod.GET, target, getResponseTypeClass());
 	}
 	
 	protected String getCacheName() {

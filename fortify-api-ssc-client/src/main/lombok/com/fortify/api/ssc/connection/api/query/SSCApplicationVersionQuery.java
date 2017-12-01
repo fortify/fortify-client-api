@@ -30,36 +30,30 @@ import java.util.Map;
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.util.rest.json.IJSONMapFilter;
 
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Singular;
 
+@Getter(AccessLevel.PROTECTED)
+@Builder
 public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery {
-	
-	/**
-	 * 
-	 * @param conn SSC connection
-	 * @param paramQAnds Add elements to SSC's 'q' request parameter
-	 * @param paramFields Set the entity fields to be returned by SSC
-	 * @param paramOrderBy Specify the field to order the result by
-	 * @param maxResults Maximum number of results to return
-	 */
-	@Builder
-	private SSCApplicationVersionQuery(
-			SSCAuthenticatingRestConnection conn, 
-			@Singular Map<String, String> paramQAnds,
-			List<String> paramFields, 
-			String paramOrderBy, 
-			Integer maxResults,
-			boolean useCache) {
-		super(conn);
-		setParamQAnds(paramQAnds);
-		setParamFields(paramFields);
-		setParamOrderBy(paramOrderBy);
-		setMaxResults(maxResults);
-		setUseCache(useCache);
-	}
-	
+	// Fields supported by AbstractRestConnectionWithCacheQuery
+	private final SSCAuthenticatingRestConnection conn;
+	private final @Singular List<IJSONMapFilter> filters;
+	private final boolean useCache;
+	private final Integer maxResults;
+
+	// Fields supported by AbstractSSCChildEntityQuery
+	private final String parentId;
+
+	// Fields supported by AbstractSSCEntityQuery
+	private final List<String> paramFields;
+	private final String paramOrderBy;
+	private final @Singular Map<String, String> paramQAnds;
+
 	/**
 	 * @author Ruud Senden
 	 */
@@ -76,7 +70,7 @@ public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery {
 			return paramQAnd("name", versionName);
 		}
 	}
-	
+
 	@Override
 	protected boolean isPagingSupported() {
 		return true;
@@ -84,6 +78,6 @@ public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery {
 
 	@Override
 	protected WebTarget getBaseWebTarget() {
-		return conn().getBaseResource().path("api/v1/projectVersions");
+		return getConn().getBaseResource().path("api/v1/projectVersions");
 	}
 }

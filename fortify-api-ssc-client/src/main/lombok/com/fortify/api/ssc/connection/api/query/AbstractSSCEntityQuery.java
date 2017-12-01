@@ -34,56 +34,37 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapFilter;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
 import com.fortify.api.util.rest.query.PagingData;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Setter;
-
 /**
- * <p>This abstract class can be used as a base class for querying entity data from SSC. It supports the following
- * standard SSC query parameters:
- * <ul>
- *  <li>q: {@link #setParamQAnds(Map)} sets a map of field names and corresponding values to filter the results by</li>
- *  <li>fields: {@link #setParamFields(List)} sets the list of fields to be returned by SSC</li>
- *  <li>orderby: {@link #setParamOrderBy(String)} sets the field to order the results by</li>
- *  <li>groupby: {@link #setParamGroupBy(String)} sets the field used to group the results</li>
- *  <li>embed: {@link #setParamEmbed(String)} allows for embedding additional entities in the results</li>
- * </ul></p>
+ * <p>This abstract class can be used as a base class for querying entity data from SSC. </p>
  * 
- * <p>In addition, the following methods are available:
- * <ul>
- *  <li>{@link #setFilters(List)} for client-side filtering of results using {@link IJSONMapFilter} instances</li>
- *  <li>{@link #setUseCache(boolean)} to cache responses for REST requests</li>
- * </ul></p>
- * 
- * <p>All of the methods mentioned above are defined as 'protected' in this class, and should only be called when initializing
- * a new instance of this class, before calling any of the methods that actually execute the requests. Subclasses would 
- * usually define a constructor that calls the various setters based on constructor arguments. This constructor would then
- * be annotated with the {@link Builder} annotation to generate a corresponding Builder class that can be used by API clients
- * to build queries. Please see the various example implementations in this package.</p>
- * 
- * <pre>
- * TODO Describe Paging
- * TODO Describe methods for retrieving/processing results
- * </pre>
+ * TODO Add more JavaDoc
  * 
  * @author Ruud Senden
  */
-@Setter(AccessLevel.PROTECTED)
 public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithCacheQuery<SSCAuthenticatingRestConnection, JSONMap> {
-	private Map<String, String> paramQAnds;
-	private List<String> paramFields;
-	private String paramOrderBy;
-	private String paramGroupBy;
-	private String paramEmbed;
-	
-	protected AbstractSSCEntityQuery(SSCAuthenticatingRestConnection conn) {
-		super(conn);
+	protected Map<String, String> getParamQAnds() {
+		return null;
+	}
+
+	protected List<String> getParamFields() {
+		return null;
+	}
+
+	protected String getParamOrderBy() {
+		return null;
+	}
+
+	protected String getParamGroupBy() {
+		return null;
+	}
+
+	protected String getParamEmbed() {
+		return null;
 	}
 	
 	@Override
@@ -98,6 +79,7 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 	}
 
 	protected WebTarget addParameterQuery(WebTarget webTarget) {
+		Map<String,String> paramQAnds = getParamQAnds();
 		if ( MapUtils.isNotEmpty(paramQAnds) ) {
 			StringBuffer q = new StringBuffer();
 			for ( Map.Entry<String, String> entry : paramQAnds.entrySet() ) {
@@ -114,6 +96,7 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 	}
 
 	protected WebTarget addParameterFields(WebTarget webTarget) {
+		List<String> paramFields = getParamFields();
 		if ( CollectionUtils.isNotEmpty(paramFields) ) {
 			webTarget = webTarget.queryParam("fields", StringUtils.join(paramFields, ","));
 		}
@@ -121,15 +104,15 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 	}
 	
 	protected WebTarget addParameterOrderBy(WebTarget webTarget) {
-		return addParameterIfNotBlank(webTarget, "orderby", paramOrderBy);
+		return addParameterIfNotBlank(webTarget, "orderby", getParamOrderBy());
 	}
 	
 	protected WebTarget addParameterGroupBy(WebTarget webTarget) {
-		return addParameterIfNotBlank(webTarget, "groupby", paramGroupBy);
+		return addParameterIfNotBlank(webTarget, "groupby", getParamGroupBy());
 	}
 	
 	protected WebTarget addParameterEmbed(WebTarget webTarget) {
-		return addParameterIfNotBlank(webTarget, "embed", paramEmbed);
+		return addParameterIfNotBlank(webTarget, "embed", getParamEmbed());
 	}
 	
 	/**

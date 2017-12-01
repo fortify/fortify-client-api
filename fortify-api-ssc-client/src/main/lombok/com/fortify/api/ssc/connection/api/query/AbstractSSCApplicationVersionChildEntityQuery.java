@@ -26,21 +26,23 @@ package com.fortify.api.ssc.connection.api.query;
 
 import javax.ws.rs.client.WebTarget;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-
 public abstract class AbstractSSCApplicationVersionChildEntityQuery extends AbstractSSCChildEntityQuery {
-
-	protected AbstractSSCApplicationVersionChildEntityQuery(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
-		super(conn, applicationVersionId);
-	}
-	
 	@Override
 	protected WebTarget getBaseWebTarget() {
-		WebTarget target = conn().getBaseResource().path("api/v1/projectVersions").path(getParentId());
+		WebTarget target = getConn().getBaseResource().path("api/v1/projectVersions").path(getParentId());
 		target = addChildEntityPath(target);
 		return target;
 	}
+	
+	@Override
+	protected final String getParentId() {
+		return getApplicationVersionId();
+	}
+
+	protected abstract String getApplicationVersionId();
 
 	protected abstract WebTarget addChildEntityPath(WebTarget target);
+	
+	
 
 }

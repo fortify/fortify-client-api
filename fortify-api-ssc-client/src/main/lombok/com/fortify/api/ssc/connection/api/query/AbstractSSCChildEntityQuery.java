@@ -24,20 +24,6 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-
 public abstract class AbstractSSCChildEntityQuery extends AbstractSSCEntityQuery {
-	private final String parentId;
-	
-	protected AbstractSSCChildEntityQuery(SSCAuthenticatingRestConnection conn, String parentId) {
-		super(conn);
-		this.parentId = parentId;
-	}
-	
-	protected String getParentId() {
-		return parentId;
-	}
-	
-	
-	
+	protected abstract String getParentId();
 }

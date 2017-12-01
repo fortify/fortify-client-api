@@ -31,52 +31,42 @@ import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
+import com.fortify.api.util.rest.json.IJSONMapFilter;
 
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Singular;
 
+@Getter(AccessLevel.PROTECTED) @Builder
 public class SSCIssueQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	public enum QueryMode {
 		adv, issues
 	}
-	private IssueSearchOptions issueSearchOptions;
-	private String paramGroupId;
-	private String paramGroupingType;
-	private String paramFilterSetId;
-	private String paramFilter;
-	private QueryMode paramQm;
-
-	@Builder
-	protected SSCIssueQuery(
-			SSCAuthenticatingRestConnection conn, 
-			String parentId,
-			@Singular Map<String, String> paramQAnds,
-			List<String> paramFields, 
-			String paramOrderBy,
-			String paramGroupId,
-			String paramGroupingType,
-			String paramFilterSetId,
-			String paramFilter,
-			QueryMode paramQm,
-			IssueSearchOptions issueSearchOptions,
-			Integer maxResults,
-			boolean useCache) {
-		super(conn, parentId);
-		setParamQAnds(paramQAnds);
-		setParamOrderBy(paramOrderBy);
-		setMaxResults(maxResults);
-		setUseCache(useCache);
-		this.paramGroupId = paramGroupId;
-		this.paramGroupingType = paramGroupingType;
-		this.paramFilterSetId = paramFilterSetId;
-		this.paramFilter = paramFilter;
-		this.paramQm = paramQm;
-		this.issueSearchOptions = issueSearchOptions;
-	}
+	
+	// Fields supported by AbstractRestConnectionWithCacheQuery
+	private final SSCAuthenticatingRestConnection conn; 
+	private final @Singular List<IJSONMapFilter> filters;
+	private final boolean useCache;
+	private final Integer maxResults;
+	
+	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
+	private final String applicationVersionId;
+	
+	// Fields supported by AbstractSSCEntityQuery
+	private final List<String> paramFields;
+	private final String paramOrderBy;
+	private final @Singular Map<String, String> paramQAnds;
+	
+	// Fields supported by this class
+	private final String paramGroupId;
+	private final String paramGroupingType;
+	private final String paramFilterSetId;
+	private final String paramFilter;
+	private final QueryMode paramQm;
+	@Builder.Default private final IssueSearchOptions issueSearchOptions = new IssueSearchOptions();
 	
 	public static class SSCIssueQueryBuilder {
-		private IssueSearchOptions issueSearchOptions = new IssueSearchOptions();
-		
 		public SSCIssueQueryBuilder includeHidden() {
 			issueSearchOptions.setIncludeHidden(true);
 			return this;
@@ -115,6 +105,6 @@ public class SSCIssueQuery extends AbstractSSCApplicationVersionChildEntityQuery
 	
 	@Override
 	protected void initRequest() {
-		conn().api().issue().updateApplicationVersionIssueSearchOptions(getParentId(), this.issueSearchOptions);
+		getConn().api().issue().updateApplicationVersionIssueSearchOptions(getParentId(), this.issueSearchOptions);
 	}
 }

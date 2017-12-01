@@ -39,32 +39,50 @@ import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
 
-import lombok.AccessLevel;
-import lombok.Setter;
-
 /**
- * <p>This abstract class can be used as a base class for querying data from a REST API. 
+ * <p>This abstract class can be used as a base class for querying data from a REST API.
+ * It optionally supports paging and filtering results, depending on concrete implementations
+ * of this class. Concrete implementations of this class will need to implement the various
+ * abstract methods, for example for defining the base {@link WebTarget} to be invoked, updating
+ * the base {@link WebTarget} to generate the actual request, and handling system-specific paging 
+ * functionality.</p>
  * 
- * TODO Update JavaDoc
+ * <p>Implementations for the {@link #getConn()}, {@link #getFilters()} and {@link #getMaxResults()} 
+ * are usually generated using Lombok annotations as follows:
+ * <pre>
+ * {@literal @}Getter(AccessLevel.PROTECTED)
+ * {@literal @}Builder
+ * public final class MyConcreteQuery extends AbstractRestConnectionQuery {
+ *		// Fields supported by AbstractRestConnectionWithCacheQuery
+ *		private final SSCAuthenticatingRestConnection conn;
+ *		private final @Singular List<IJSONMapFilter> filters;
+ *		private final Integer maxResults;
+ *
+ * 		...
+ * }
+ * </pre>
+ * The Getter annotation will override the corresponding methods in this abstract class, and the
+ * Builder annotation will generate a builder implementation that allows for configuring these
+ * fields. This approach allows us to:
+ * <ul>
+ *  <li>Easily apply the Builder pattern to fields required by this abstract base class and abstract child classes.</li>
+ *  <li>Allows the concrete implementation to only provide Builder methods for functionality that is actually supported by the endpoint,
+ *      by simply not defining any fields for unsupported functionality.</li>
+ * </ul></p> 
  * 
  * @author Ruud Senden
  */
-@Setter(AccessLevel.PROTECTED)
 public abstract class AbstractRestConnectionQuery<ConnType extends RestConnection, ResponseType> {
-	private final ConnType conn;
-	private List<IJSONMapFilter> filters;
-	private Integer maxResults;
-	
-	protected AbstractRestConnectionQuery(ConnType conn) {
-		this.conn = conn;
-	}
+	protected abstract ConnType getConn();
+	protected List<IJSONMapFilter> getFilters() { return null; }
+	protected Integer getMaxResults() { return -1; }
 	
 	/**
 	 * Process all results from the REST API call
 	 * @param processor
 	 */
 	public void processAll(IJSONMapProcessor processor) {
-		processAll(getWebTarget(), new PagingData().max(this.maxResults==null?-1:this.maxResults), processor);
+		processAll(getWebTarget(), new PagingData().max(getMaxResults()==null?-1:getMaxResults()), processor);
 	}
 
 	/**
@@ -85,7 +103,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	 */
 	public JSONMap getUnique() {
 		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(getWebTarget(), new PagingData().max(Math.min(2, maxResults)), processor);
+		processAll(getWebTarget(), new PagingData().max(Math.min(2, getMaxResults())), processor);
 		JSONList list = processor.getJsonList();
 		if ( list == null || list.size() == 0 ) {
 			return null;
@@ -98,10 +116,6 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	
 	public int getCount() {
 		return -1; // TODO
-	}
-	
-	protected final ConnType conn() {
-		return conn;
 	}
 	
 	protected final WebTarget getWebTarget() {
@@ -134,7 +148,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	}
 	
 	protected ResponseType executeRequest(WebTarget target) {
-		return conn().executeRequest(HttpMethod.GET, target, getResponseTypeClass());
+		return getConn().executeRequest(HttpMethod.GET, target, getResponseTypeClass());
 	}
 	
 	/**
@@ -207,6 +221,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 
 	private boolean isIncluded(JSONMap json) {
 		boolean result = true;
+		List<IJSONMapFilter> filters = getFilters();
 		if ( CollectionUtils.isNotEmpty(filters) ) {
 			for ( IJSONMapFilter filter : filters ) {
 				result &= filter.include(json);
