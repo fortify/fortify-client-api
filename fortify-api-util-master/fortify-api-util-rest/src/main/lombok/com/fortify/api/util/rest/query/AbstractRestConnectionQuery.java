@@ -103,7 +103,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	 */
 	public JSONMap getUnique() {
 		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(getWebTarget(), new PagingData().max(Math.min(2, getMaxResults())), processor);
+		processAll(getWebTarget(), new PagingData().max(Math.min(2, getMaxResults()==null?-1:getMaxResults())), processor);
 		JSONList list = processor.getJsonList();
 		if ( list == null || list.size() == 0 ) {
 			return null;
