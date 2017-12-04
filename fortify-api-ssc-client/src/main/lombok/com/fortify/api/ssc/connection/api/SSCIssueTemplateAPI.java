@@ -24,10 +24,13 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
+import java.text.MessageFormat;
+
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionFilterSetsQuery;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionFilterSetsQuery.SSCApplicationVersionFilterSetsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
+import com.fortify.api.util.rest.json.JSONMap;
 
 public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	public SSCIssueTemplateAPI(SSCAuthenticatingRestConnection conn) {
@@ -40,5 +43,21 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	
 	public JSONList getApplicationVersionFilterSets(String applicationVersionId) {
 		return queryApplicationVersionFilterSets(applicationVersionId).build().getAll();
+	}
+	
+	/**
+	 * @param guidOrTitle filter set GUID or title
+	 * @return filter set matching the given GUID or title, or null if not found
+	 */
+	public final JSONMap findFilterSetByGuidOrTitle(String applicationVersionId, String filterSetGuidOrTitle) {
+		String matchExpr = MessageFormat.format("guid==''{0}'' || title==''{0}''", new Object[]{filterSetGuidOrTitle});
+		return getApplicationVersionFilterSets(applicationVersionId).find(matchExpr, true, JSONMap.class);
+	}
+	
+	/**
+	 * @return default filter set
+	 */
+	public final JSONMap findDefaultFilterSet(String applicationVersionId) {
+		return getApplicationVersionFilterSets(applicationVersionId).find("defaultFilterSet", true, JSONMap.class);
 	}
 }

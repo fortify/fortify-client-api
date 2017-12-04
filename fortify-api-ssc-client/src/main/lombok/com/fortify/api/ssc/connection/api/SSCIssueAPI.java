@@ -56,6 +56,14 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 		return queryIssueDetails().id(issueId).useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getUnique();
 	}
 	
+	public final String getIssueDeepLink(String applicationVersionId, String issueId) {
+		return conn().api().applicationVersion().getApplicationVersionDeepLink(applicationVersionId)+"/"+issueId+"/";
+	}
+	
+	public final String getIssueDeepLink(JSONMap issue) {
+		return getIssueDeepLink(issue.get("projectVersionId", String.class), issue.get("id", String.class));
+	}
+	
 	/**
 	 * Update the issue search options for the given application version 
 	 * @param applicationVersionId
