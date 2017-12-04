@@ -25,9 +25,6 @@
 package com.fortify.api.ssc.connection.api.query;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.IJSONMapFilter;
@@ -39,25 +36,24 @@ import lombok.Singular;
 
 @Getter(AccessLevel.PROTECTED)
 @Builder
-public final class SSCAttributeDefinitionQuery extends AbstractSSCEntityQuery {
+public final class SSCCustomTagsQuery extends AbstractSSCEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
 	private final @Singular List<IJSONMapFilter> filters;
-	private final boolean useCache;
+	@Builder.Default private final boolean useCache = true;
 	private final Integer maxResults;
 
 	// Fields supported by AbstractSSCEntityQuery
 	private final List<String> paramFields;
 	private final String paramOrderBy;
-	private final @Singular Map<String, String> paramQAnds;
 
 	@Override
 	protected boolean isPagingSupported() {
 		return true;
 	}
-
+	
 	@Override
-	protected WebTarget getBaseWebTarget() {
-		return getConn().getBaseResource().path("api/v1/attributeDefinitions");
+	protected String getTargetPath() {
+		return "/api/v1/customTags";
 	}
 }

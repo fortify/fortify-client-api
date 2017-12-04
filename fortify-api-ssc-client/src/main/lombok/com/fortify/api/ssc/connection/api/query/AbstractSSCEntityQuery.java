@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,8 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 	}
 	
 	@Override
-	protected WebTarget updateBaseWebTarget(WebTarget webTarget) {
+	protected WebTarget getUpdatedBaseWebTarget(WebTarget webTarget) {
+		webTarget = addTargetPath(webTarget);
 		webTarget = addParameterFields(webTarget);
 		webTarget = addParameterQuery(webTarget);
 		webTarget = addParameterOrderBy(webTarget);
@@ -77,6 +79,12 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 		webTarget = addExtraParameters(webTarget);
 		return webTarget;
 	}
+	
+	protected WebTarget addTargetPath(WebTarget webTarget) {
+		return webTarget.path(getTargetPath());
+	}
+
+	protected abstract String getTargetPath();
 
 	protected WebTarget addParameterQuery(WebTarget webTarget) {
 		Map<String,String> paramQAnds = getParamQAnds();
@@ -138,8 +146,9 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 	}
 	
 	@Override
-	protected JSONList getJSONListFromResponse(JSONMap data) {
-		return data.get("data", JSONList.class);
+	protected JSONList getJSONListFromResponse(JSONMap json) {
+		Object data = json.get("data", Object.class);
+		return (data instanceof JSONList) ? (JSONList)data : new JSONList(Arrays.asList(data));
 	}
 	
 	@Override

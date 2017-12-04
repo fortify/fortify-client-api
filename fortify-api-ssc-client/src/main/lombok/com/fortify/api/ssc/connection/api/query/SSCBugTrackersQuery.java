@@ -25,9 +25,6 @@
 package com.fortify.api.ssc.connection.api.query;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.IJSONMapFilter;
@@ -39,44 +36,22 @@ import lombok.Singular;
 
 @Getter(AccessLevel.PROTECTED)
 @Builder
-public final class SSCJobQuery extends AbstractSSCEntityQuery {
+public final class SSCBugTrackersQuery extends AbstractSSCEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
 	private final @Singular List<IJSONMapFilter> filters;
-	private final boolean useCache;
-	private final Integer maxResults;
+	@Builder.Default private final boolean useCache = true;
 
 	// Fields supported by AbstractSSCEntityQuery
 	private final List<String> paramFields;
-	private final String paramOrderBy;
-	private final @Singular Map<String, String> paramQAnds;
-
-	public static class SSCJobQueryBuilder {
-		public SSCJobQueryBuilder id(String id) {
-			return paramQAnd("id", id);
-		}
-
-		public SSCJobQueryBuilder jobClassName(String jobClassName) {
-			return paramQAnd("jobClassName", jobClassName);
-		}
-
-		public SSCJobQueryBuilder priority(int priority) {
-			return paramQAnd("priority", "" + priority);
-		}
-
-		public SSCJobQueryBuilder state(String state) {
-			return paramQAnd("state", state);
-		}
-	}
 
 	@Override
 	protected boolean isPagingSupported() {
-		return true;
+		return false;
 	}
-
+	
 	@Override
-	protected WebTarget getBaseWebTarget() {
-		return getConn().getBaseResource().path("api/v1/jobs");
+	protected String getTargetPath() {
+		return "/api/v1/bugtrackers";
 	}
-
 }

@@ -119,7 +119,11 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	}
 	
 	protected final WebTarget getWebTarget() {
-		return updateBaseWebTarget(getBaseWebTarget());
+		return resolveTemplateParams(getUpdatedBaseWebTarget(getConn().getBaseResource()));
+	}
+	
+	protected WebTarget resolveTemplateParams(WebTarget webTarget) {
+		return webTarget;
 	}
 	
 	/**
@@ -137,18 +141,20 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	}
 	
 	/**
-	 * Subclasses can override this method to update the base target, for
-	 * example by adding query-specific request parameters.
+	 * Subclasses need to implement this method to add the actual request path and
+	 * optionally query-specific request parameters.
 	 * 
-	 * @param webTarget
+	 * @param connectionBaseTarget Base {@link WebTarget} from the current connection instance
 	 * @return
 	 */
-	protected WebTarget updateBaseWebTarget(WebTarget webTarget) {
-		return webTarget;
-	}
+	protected abstract WebTarget getUpdatedBaseWebTarget(WebTarget connectionBaseTarget);
 	
 	protected ResponseType executeRequest(WebTarget target) {
-		return getConn().executeRequest(HttpMethod.GET, target, getResponseTypeClass());
+		return getConn().executeRequest(getHttpMethod(), target, getResponseTypeClass());
+	}
+	
+	protected String getHttpMethod() {
+		return HttpMethod.GET;
 	}
 	
 	/**
@@ -157,16 +163,6 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	 * target endpoint invocation.
 	 */
 	protected void initRequest() {}
-	
-	/**
-	 * Get the base web target identifying the resource to use.
-	 * Usually this should return something like
-	 * conn().getBaseResource().path("/api/entity") for top-level
-	 * entities, or 
-	 * conn().getBaseResource().path("api/parentEntity").path(parentId).path("childEntity")
-	 * @return
-	 */
-	protected abstract WebTarget getBaseWebTarget();
 	
 	/**
 	 * Identify whether paging is supported by the resource 

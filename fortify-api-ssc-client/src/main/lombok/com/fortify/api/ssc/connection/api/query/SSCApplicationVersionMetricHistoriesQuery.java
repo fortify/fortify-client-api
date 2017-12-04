@@ -22,16 +22,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query;
+
+import java.util.List;
+import java.util.Map;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
+import com.fortify.api.util.rest.json.IJSONMapFilter;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.NonNull;
+import lombok.Singular;
 
-@Accessors(fluent=true) @Getter(AccessLevel.PROTECTED) @RequiredArgsConstructor
-public class AbstractSSCAPI {
+@Getter(AccessLevel.PROTECTED)
+@Builder
+public class SSCApplicationVersionMetricHistoriesQuery extends AbstractSSCApplicationVersionChildEntityQuery {
+	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
+	private final @Singular List<IJSONMapFilter> filters;
+	private final boolean useCache;
+
+	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
+	private final String applicationVersionId;
+
+	// Fields supported by AbstractSSCEntityQuery
+	private final @Singular Map<String, String> paramQAnds;
+	
+	// Fields supported by this class
+	private final @NonNull MetricType metricType;
+	
+	@Override
+	protected String getChildEntityPath() {
+		return metricType.name() + "Histories";
+	}
+
+	@Override
+	protected boolean isPagingSupported() {
+		return false;
+	}
+
 }

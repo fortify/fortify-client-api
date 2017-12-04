@@ -29,8 +29,8 @@ import java.util.Date;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCJobQuery;
-import com.fortify.api.ssc.connection.api.query.SSCJobQuery.SSCJobQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCJobsQuery;
+import com.fortify.api.ssc.connection.api.query.SSCJobsQuery.SSCJobsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.JSONMapFilterDateCompare;
@@ -42,13 +42,13 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		super(conn);
 	}
 	
-	public SSCJobQueryBuilder query() {
-		return SSCJobQuery.builder().conn(conn());
+	public SSCJobsQueryBuilder query() {
+		return SSCJobsQuery.builder().conn(conn());
 	}
 	
 	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {
 		long startTime = new Date().getTime();
-		SSCJobQuery query = query().id(jobId).build();
+		SSCJobsQuery query = query().id(jobId).build();
 		JSONMap job = query.getUnique();
 		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && "RUNNING".equals(job.get("state", String.class)) ) {
 			try {
@@ -59,7 +59,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		return job;
 	}
 	
-	public JSONList waitForJobCreation(SSCJobQuery query, long timeOutSeconds) {
+	public JSONList waitForJobCreation(SSCJobsQuery query, long timeOutSeconds) {
 		long startTime = new Date().getTime();
 		JSONList jobs = query.getAll();
 		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && CollectionUtils.isEmpty(jobs) ) {
@@ -76,7 +76,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		JSONMap job = conn.api().job().query().maxResults(1).build().getUnique();
 		System.out.println(job);
 		
-		SSCJobQuery query = conn.api().job().query()
+		SSCJobsQuery query = conn.api().job().query()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				.filter(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, new Date(), true)).build();
 		System.out.println(query.toString());

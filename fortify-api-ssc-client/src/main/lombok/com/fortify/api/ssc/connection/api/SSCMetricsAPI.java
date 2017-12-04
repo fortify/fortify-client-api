@@ -25,8 +25,8 @@
 package com.fortify.api.ssc.connection.api;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionMetricHistoryQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionMetricHistoryQuery.SSCApplicationVersionMetricHistoryQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionMetricHistoriesQuery;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionMetricHistoriesQuery.SSCApplicationVersionMetricHistoriesQueryBuilder;
 
 public class SSCMetricsAPI extends AbstractSSCAPI {
 	public static enum MetricType {
@@ -37,14 +37,14 @@ public class SSCMetricsAPI extends AbstractSSCAPI {
 		super(conn);
 	}
 	
-	public SSCApplicationVersionMetricHistoryQueryBuilder queryMetricHistory(String applicationVersionId, MetricType metricType) {
-		return SSCApplicationVersionMetricHistoryQuery.builder().conn(conn()).applicationVersionId(applicationVersionId).metricType(metricType);
+	public SSCApplicationVersionMetricHistoriesQueryBuilder queryApplicationVersionMetricHistories(String applicationVersionId, MetricType metricType) {
+		return SSCApplicationVersionMetricHistoriesQuery.builder().conn(conn()).applicationVersionId(applicationVersionId).metricType(metricType);
 	}
 	
 	public static void main(String[] args) {
 		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(conn.api().metrics().queryMetricHistory("6", MetricType.variable).useCache(true).build().getAll());
-		System.out.println(conn.api().metrics().queryMetricHistory("6", MetricType.performanceIndicator).useCache(true).build().getAll());
+		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.variable).useCache(true).build().getAll());
+		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.performanceIndicator).useCache(true).build().getAll());
 	}
 
 }

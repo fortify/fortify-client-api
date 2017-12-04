@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,8 +32,10 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCIssueQuery;
-import com.fortify.api.ssc.connection.api.query.SSCIssueQuery.SSCIssueQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCIssueDetailsByIdQuery;
+import com.fortify.api.ssc.connection.api.query.SSCIssueDetailsByIdQuery.SSCIssueDetailsByIdQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCIssuesQuery;
+import com.fortify.api.ssc.connection.api.query.SSCIssuesQuery.SSCIssuesQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
@@ -41,8 +44,16 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 		super(conn);
 	}
 	
-	public SSCIssueQueryBuilder query(String applicationVersionId) {
-		return SSCIssueQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+	public SSCIssuesQueryBuilder queryIssues(String applicationVersionId) {
+		return SSCIssuesQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+	}
+	
+	public SSCIssueDetailsByIdQueryBuilder queryIssueDetails() {
+		return SSCIssueDetailsByIdQuery.builder().conn(conn());
+	}
+	
+	public JSONMap getIssueDetails(String issueId, boolean useCache, String... fields) {
+		return queryIssueDetails().id(issueId).useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getUnique();
 	}
 	
 	/**
@@ -59,8 +70,8 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	
 	public static void main(String[] args) {
 		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
-		System.out.println(conn.api().issue().query("6").build().getAll());
-		System.out.println(conn.api().issue().query("6").maxResults(2).build().getAll());
+		System.out.println(conn.api().issue().queryIssues("6").build().getAll());
+		System.out.println(conn.api().issue().queryIssues("6").maxResults(2).build().getAll());
 	}
 	
 	/**

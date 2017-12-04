@@ -22,16 +22,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import javax.ws.rs.client.WebTarget;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
-
-@Accessors(fluent=true) @Getter(AccessLevel.PROTECTED) @RequiredArgsConstructor
-public class AbstractSSCAPI {
-	private final SSCAuthenticatingRestConnection conn;
+public abstract class AbstractSSCEntityByIdQuery extends AbstractSSCEntityQuery {
+	protected abstract String getId();
+	
+	@Override
+	protected WebTarget resolveTemplateParams(WebTarget webTarget) {
+		return super.resolveTemplateParams(webTarget).resolveTemplate("id", getId());
+	}
+	
+	@Override
+	protected final boolean isPagingSupported() {
+		return false;
+	}
 }

@@ -25,31 +25,20 @@
 package com.fortify.api.ssc.connection.api;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionFilterSetsQuery;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionFilterSetsQuery.SSCApplicationVersionFilterSetsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
-// TODO Update this class and introduce Query class
 public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	public SSCIssueTemplateAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
-
-	/** Cache for application version filter sets */
-	private final LoadingCache<String, JSONList> avfilterSetsCache = CacheBuilder.newBuilder().maximumSize(10)
-			.build(new CacheLoader<String, JSONList>() {
-				@Override
-				public JSONList load(String projectVersionId) {
-					return getApplicationVersionEntities(projectVersionId, "filterSets");
-				}
-			});
 	
-	/**
-	 * Get a cached JSONList describing all available filter sets for the given application version
-	 * @return
-	 */
-	public JSONList getCachedApplicationVersionFilterSets(String applicationVersionId) {
-		return avfilterSetsCache.getUnchecked(applicationVersionId);
+	public SSCApplicationVersionFilterSetsQueryBuilder queryApplicationVersionFilterSets(String applicationVersionId) {
+		return SSCApplicationVersionFilterSetsQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+	}
+	
+	public JSONList getApplicationVersionFilterSets(String applicationVersionId) {
+		return queryApplicationVersionFilterSets(applicationVersionId).build().getAll();
 	}
 }

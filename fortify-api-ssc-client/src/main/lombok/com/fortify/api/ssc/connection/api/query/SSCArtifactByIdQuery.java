@@ -24,6 +24,29 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
-public abstract class AbstractSSCChildEntityQuery extends AbstractSSCEntityQuery {
-	protected abstract String getParentId();
+import java.util.List;
+
+import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter(AccessLevel.PROTECTED) @Builder
+public class SSCArtifactByIdQuery extends AbstractSSCEntityByIdQuery {
+	// Fields supported by AbstractRestConnectionWithCacheQuery
+	private final SSCAuthenticatingRestConnection conn;
+	private final boolean useCache;
+
+	// Fields supported by AbstractSSCEntityQuery
+	private final List<String> paramFields;
+	
+	// Fields supported by AbstractSSCEntityByIdQuery
+	private final String id;
+	
+	@Override
+	protected String getTargetPath() {
+		return "/api/v1/artifacts";
+	}
+
 }

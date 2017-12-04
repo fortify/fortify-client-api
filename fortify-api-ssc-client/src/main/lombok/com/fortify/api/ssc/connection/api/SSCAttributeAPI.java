@@ -34,8 +34,8 @@ import org.apache.commons.lang.StringUtils;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionAttributesQuery;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionAttributesQuery.SSCApplicationVersionAttributesQueryBuilder;
-import com.fortify.api.ssc.connection.api.query.SSCAttributeDefinitionQuery;
-import com.fortify.api.ssc.connection.api.query.SSCAttributeDefinitionQuery.SSCAttributeDefinitionQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCAttributeDefinitionsQuery;
+import com.fortify.api.ssc.connection.api.query.SSCAttributeDefinitionsQuery.SSCAttributeDefinitionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
@@ -48,8 +48,16 @@ public class SSCAttributeAPI extends AbstractSSCAPI {
 		return SSCApplicationVersionAttributesQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
 	}
 	
-	public SSCAttributeDefinitionQueryBuilder queryAttributeDefinitions() {
-		return SSCAttributeDefinitionQuery.builder().conn(conn());
+	public SSCAttributeDefinitionsQueryBuilder queryAttributeDefinitions() {
+		return SSCAttributeDefinitionsQuery.builder().conn(conn());
+	}
+	
+	public JSONList getAttributeDefinitions(boolean useCache, String... fields) {
+		return queryAttributeDefinitions().useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getAll();
+	}
+	
+	public JSONList getApplicationVersionAttributes(String applicationVersionId, boolean useCache, String... fields) {
+		return queryApplicationVersionAttributes(applicationVersionId).useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getAll();
 	}
 	
 	/**

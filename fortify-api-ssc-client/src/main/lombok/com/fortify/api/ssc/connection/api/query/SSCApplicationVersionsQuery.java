@@ -27,8 +27,6 @@ package com.fortify.api.ssc.connection.api.query;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.client.WebTarget;
-
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.IJSONMapFilter;
 
@@ -39,15 +37,12 @@ import lombok.Singular;
 
 @Getter(AccessLevel.PROTECTED)
 @Builder
-public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery {
+public final class SSCApplicationVersionsQuery extends AbstractSSCEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
 	private final @Singular List<IJSONMapFilter> filters;
 	private final boolean useCache;
 	private final Integer maxResults;
-
-	// Fields supported by AbstractSSCChildEntityQuery
-	private final String parentId;
 
 	// Fields supported by AbstractSSCEntityQuery
 	private final List<String> paramFields;
@@ -57,17 +52,32 @@ public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery {
 	/**
 	 * @author Ruud Senden
 	 */
-	public static class SSCApplicationVersionQueryBuilder {
-		public SSCApplicationVersionQueryBuilder id(String id) {
+	public static class SSCApplicationVersionsQueryBuilder {
+		public SSCApplicationVersionsQueryBuilder id(String id) {
 			return paramQAnd("id", id);
 		}
 
-		public SSCApplicationVersionQueryBuilder applicationName(String applicationName) {
+		public SSCApplicationVersionsQueryBuilder applicationName(String applicationName) {
 			return paramQAnd("project.name", applicationName);
 		}
 
-		public SSCApplicationVersionQueryBuilder versionName(String versionName) {
+		public SSCApplicationVersionsQueryBuilder versionName(String versionName) {
 			return paramQAnd("name", versionName);
+		}
+		
+		public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId, String separator) {
+			String[] appVersionElements = applicationVersionNameOrId.split(separator);
+			if ( appVersionElements.length == 1 ) {
+				return id(appVersionElements[0]);
+			} else if ( appVersionElements.length == 2 ) {
+				return applicationName(appVersionElements[0]).versionName(appVersionElements[1]);
+			} else {
+				throw new IllegalArgumentException("Applications or versions containing a '+separator+' can only be specified by id");
+			}
+		}
+		
+		public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId) {
+			return nameOrId(applicationVersionNameOrId, ":");
 		}
 	}
 
@@ -75,9 +85,9 @@ public final class SSCApplicationVersionQuery extends AbstractSSCEntityQuery {
 	protected boolean isPagingSupported() {
 		return true;
 	}
-
+	
 	@Override
-	protected WebTarget getBaseWebTarget() {
-		return getConn().getBaseResource().path("api/v1/projectVersions");
+	protected String getTargetPath() {
+		return "/api/v1/projectVersions";
 	}
 }

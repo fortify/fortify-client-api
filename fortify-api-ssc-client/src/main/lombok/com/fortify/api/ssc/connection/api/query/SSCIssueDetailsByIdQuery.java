@@ -25,46 +25,28 @@
 package com.fortify.api.ssc.connection.api.query;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
-import com.fortify.api.util.rest.json.IJSONMapFilter;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.Singular;
 
-@Getter(AccessLevel.PROTECTED)
-@Builder
-public class SSCApplicationVersionMetricHistoryQuery extends AbstractSSCApplicationVersionChildEntityQuery {
+@Getter(AccessLevel.PROTECTED) @Builder
+public class SSCIssueDetailsByIdQuery extends AbstractSSCEntityByIdQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapFilter> filters;
 	private final boolean useCache;
-	private final Integer maxResults;
-
-	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
-	private final String applicationVersionId;
 
 	// Fields supported by AbstractSSCEntityQuery
-	private final @Singular Map<String, String> paramQAnds;
+	private final List<String> paramFields;
 	
-	// Fields supported by this class
-	private final @NonNull MetricType metricType;
-
+	// Fields supported by AbstractSSCEntityByIdQuery
+	private final String id;
+	
 	@Override
-	protected WebTarget addChildEntityPath(WebTarget target) {
-		return target.path(metricType.name() + "Histories");
-	}
-
-	@Override
-	protected boolean isPagingSupported() {
-		return false;
+	protected String getTargetPath() {
+		return "/api/v1/issueDetails";
 	}
 
 }

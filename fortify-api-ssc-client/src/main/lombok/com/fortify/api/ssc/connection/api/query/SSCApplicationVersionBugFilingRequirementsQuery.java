@@ -26,8 +26,12 @@ package com.fortify.api.ssc.connection.api.query;
 
 import java.util.List;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.IJSONMapFilter;
+import com.fortify.api.util.rest.json.JSONMap;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,7 +40,7 @@ import lombok.Singular;
 
 @Getter(AccessLevel.PROTECTED)
 @Builder
-public class SSCApplicationVersionAttributesQuery extends AbstractSSCApplicationVersionChildEntityQuery {
+public class SSCApplicationVersionBugFilingRequirementsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
 	private final @Singular List<IJSONMapFilter> filters;
@@ -48,14 +52,32 @@ public class SSCApplicationVersionAttributesQuery extends AbstractSSCApplication
 	// Fields supported by AbstractSSCEntityQuery
 	private final List<String> paramFields;
 	
+	// Fields supported by this class
+	private final String paramChangedParamIdentifier;
+	private final JSONMap paramBugParams;
+	
 	@Override
 	protected String getChildEntityPath() {
-		return "attributes";
+		return "bugfilingrequirements";
 	}
 
 	@Override
 	protected boolean isPagingSupported() {
 		return false;
+	}
+	
+	@Override
+	protected WebTarget addExtraParameters(WebTarget webTarget) {
+		return addParameterIfNotBlank(super.addExtraParameters(webTarget), "changeParamIdentifier", getParamChangedParamIdentifier());
+	}
+	
+	@Override
+	protected JSONMap executeRequest(WebTarget target) {
+		if ( paramBugParams == null ) {
+			return super.executeRequest(target);
+		} else {
+			return getConn().executeRequest(getHttpMethod(), target, Entity.entity(paramBugParams, "application/json"), getResponseTypeClass());
+		}
 	}
 
 }

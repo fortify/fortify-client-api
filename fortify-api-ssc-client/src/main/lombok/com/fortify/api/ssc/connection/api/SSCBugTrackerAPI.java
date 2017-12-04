@@ -25,42 +25,58 @@
 package com.fortify.api.ssc.connection.api;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionBugFilingRequirementsQuery;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionBugFilingRequirementsQuery.SSCApplicationVersionBugFilingRequirementsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionBugTrackerQuery;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionBugTrackerQuery.SSCApplicationVersionBugTrackerQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCBugTrackersQuery;
+import com.fortify.api.ssc.connection.api.query.SSCBugTrackersQuery.SSCBugTrackersQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
-// TODO Update this class and introduce Query class(es)
 public class SSCBugTrackerAPI extends AbstractSSCAPI {
-	/** Memoized supplier for bug trackers */
-	private final Supplier<JSONList> bugTrackersSupplier = Suppliers.memoize(new Supplier<JSONList>() {
-		public JSONList get() { return getEntities("bugtrackers"); };
-	});
-
 	protected SSCBugTrackerAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
+	
+	public SSCApplicationVersionBugTrackerQueryBuilder queryApplicationVersionBugTracker(String applicationVersionId) {
+		return SSCApplicationVersionBugTrackerQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+	}
+	
+	public SSCApplicationVersionBugFilingRequirementsQueryBuilder queryApplicationVersionBugFilingRequirements(String applicationVersionId) {
+		return SSCApplicationVersionBugFilingRequirementsQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+	}
 
+	public SSCBugTrackersQueryBuilder queryBugTrackers() {
+		return SSCBugTrackersQuery.builder().conn(conn());
+	}
+	
+	public JSONList getBugTrackers(boolean useCache, String... fields) {
+		return queryBugTrackers().useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getAll();
+	}
+	
 	/**
-	 * Get a cached JSONList describing all available native bug tracker integrations defined in SSC
+	 * Get all short display names for all available native SSC bug tracker integrations,
+	 * indexed by bug tracker plugin id.
 	 * @return
 	 */
-	public JSONList getCachedBugTrackers() {
-		return bugTrackersSupplier.get();
+	public Map<String, String> getBugTrackerShortDisplayNamesByIds() {
+		return getBugTrackers(true).toMap("pluginId", String.class, "shortDisplayName", String.class);
 	}
 	
 	/**
@@ -79,12 +95,21 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	}
 	
 	/**
-	 * Get all short display names for all available native SSC bug tracker integrations,
-	 * indexed by bug tracker plugin id.
+	 * Get a JSON object describing the configured native bug tracker integration for the given application version
+	 * @param applicationVersionId
 	 * @return
 	 */
-	public Map<String, String> getBugTrackerShortDisplayNamesByIds() {
-		return getCachedBugTrackers().toMap("pluginId", String.class, "shortDisplayName", String.class);
+	public JSONMap getApplicationVersionBugTracker(String applicationVersionId) {
+		return queryApplicationVersionBugTracker(applicationVersionId).build().getUnique().get("bugTracker", JSONMap.class);
+	}
+	
+	/**
+	 * Get the short name for the configured native bug tracker integration for the given application version
+	 * @param applicationVersionId
+	 * @return
+	 */
+	public String getApplicationVersionBugTrackerShortName(String applicationVersionId) {
+		return SpringExpressionUtil.evaluateExpression(getApplicationVersionBugTracker(applicationVersionId), "shortDisplayName", String.class);
 	}
 	
 	/**
@@ -163,27 +188,6 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	}
 	
 	/**
-	 * Get a JSON object describing the configured native bug tracker integration for the given application version
-	 * @param applicationVersionId
-	 * @return
-	 */
-	public JSONMap getApplicationVersionBugTracker(String applicationVersionId) {
-		JSONMap result = conn().executeRequest(HttpMethod.GET, 
-				conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId)
-				.path("bugtracker"), JSONMap.class);
-		return SpringExpressionUtil.evaluateExpression(result, "data?.get(0)?.bugTracker", JSONMap.class);
-	}
-	
-	/**
-	 * Get the short name for the configured native bug tracker integration for the given application version
-	 * @param applicationVersionId
-	 * @return
-	 */
-	public String getApplicationVersionBugTrackerShortName(String applicationVersionId) {
-		return SpringExpressionUtil.evaluateExpression(getApplicationVersionBugTracker(applicationVersionId), "shortDisplayName", String.class);
-	}
-	
-	/**
 	 * Check whether SSC bug tracker authentication is required
 	 * @param applicationVersionId
 	 * @return
@@ -199,10 +203,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @return
 	 */
 	private JSONMap getInitialBugFilingRequirements(String applicationVersionId) {
-		JSONMap result = conn().executeRequest(HttpMethod.GET, 
-				conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId)
-				.path("bugfilingrequirements"), JSONMap.class);
-		return SpringExpressionUtil.evaluateExpression(result, "data?.get(0)", JSONMap.class);
+		return queryApplicationVersionBugFilingRequirements(applicationVersionId).useCache(true).build().getUnique();
 	}
 	
 	/**
@@ -216,11 +217,8 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	private JSONMap getBugFilingRequirements(String applicationVersionId, JSONMap data, String changedParamIdentifier) {
 		List<JSONMap> request = new ArrayList<JSONMap>();
 		request.add(data);
-		JSONMap result = conn().executeRequest(HttpMethod.PUT, 
-				conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId)
-				.path("bugfilingrequirements")
-				.queryParam("changedParamIdentifier", changedParamIdentifier),
-				Entity.entity(request, "application/json"), JSONMap.class);
-		return SpringExpressionUtil.evaluateExpression(result, "data?.get(0)", JSONMap.class);
+		return queryApplicationVersionBugFilingRequirements(applicationVersionId)
+				.paramChangedParamIdentifier(changedParamIdentifier).paramBugParams(data)
+				.build().getUnique();
 	}
 }

@@ -22,16 +22,37 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query;
+
+import java.util.List;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.util.rest.json.IJSONMapFilter;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.Singular;
 
-@Accessors(fluent=true) @Getter(AccessLevel.PROTECTED) @RequiredArgsConstructor
-public class AbstractSSCAPI {
+@Getter(AccessLevel.PROTECTED)
+@Builder
+public class SSCApplicationVersionFilterSetsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
+	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
+	private final @Singular List<IJSONMapFilter> filters;
+	@Builder.Default private final boolean useCache = true;
+
+	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
+	private final String applicationVersionId;
+	
+	@Override
+	protected String getChildEntityPath() {
+		return "filterSets";
+	}
+
+	@Override
+	protected boolean isPagingSupported() {
+		return false;
+	}
+
 }

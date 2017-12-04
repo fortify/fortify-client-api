@@ -34,35 +34,85 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionCustomTagsQuery;
+import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionCustomTagsQuery.SSCApplicationVersionCustomTagsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.SSCCustomTagsQuery;
+import com.fortify.api.ssc.connection.api.query.SSCCustomTagsQuery.SSCCustomTagsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
-// TODO Update this class and introduce Query class(es)
 public class SSCCustomTagAPI extends AbstractSSCAPI {
 	
 	public SSCCustomTagAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
 	
-	/** Cache for project version custom tags */
-	private final LoadingCache<String, JSONList> avCustomTagsCache = CacheBuilder.newBuilder().maximumSize(10)
-			.build(new CacheLoader<String, JSONList>() {
-				@Override
-				public JSONList load(String projectVersionId) {
-					return getApplicationVersionEntities(projectVersionId, "customTags");
-				}
-			});
+	public SSCApplicationVersionCustomTagsQueryBuilder queryApplicationVersionCustomTags(String applicationVersionId) {
+		return SSCApplicationVersionCustomTagsQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+	}
 	
-	/** Memoized supplier for custom tags */
-	private final Supplier<JSONList> customTagsSupplier = Suppliers.memoize(new Supplier<JSONList>() {
-		public JSONList get() { return getEntities("customTags"); };
-	});
+	public SSCCustomTagsQueryBuilder queryCustomTags() {
+		return SSCCustomTagsQuery.builder().conn(conn());
+	}
+	
+	public JSONList getCustomTags() {
+		return queryCustomTags().build().getAll();
+	}
+
+	public JSONList getApplicationVersionCustomTags(String applicationVersionId) {
+		return queryApplicationVersionCustomTags(applicationVersionId).build().getAll();
+	}
+	
+	/**
+	 * Get the list of custom tag names defined for the given application version
+	 * @param applicationVersionId
+	 * @return
+	 */
+	public List<String> getApplicationVersionCustomTagNames(String applicationVersionId) {
+		return getApplicationVersionCustomTags(applicationVersionId).getValues("name", String.class);
+	}
+	
+	/**
+	 * Get the list of custom tag GUID's defined for the given application version
+	 * @param applicationVersionId
+	 * @return
+	 */
+	public List<String> getApplicationVersionCustomTagGuids(String applicationVersionId) {
+		return getApplicationVersionCustomTags(applicationVersionId).getValues("guid", String.class);
+	}
+	
+	/**
+	 * Get the custom tag GUID for the given custom tag name
+	 * @param customTagName
+	 * @return
+	 */
+	public String getCustomTagGuid(String customTagName) {
+		return getCustomTags().mapValue("name.toLowerCase()", customTagName.toLowerCase(), "guid", String.class);
+	}
+	
+	/**
+	 * Get the custom tag name for the given custom tag GUID
+	 * @param customTagGUID
+	 * @return
+	 */
+	public String getCustomTagName(String customTagGUID) {
+		return getCustomTags().mapValue("guid", customTagGUID, "name", String.class);
+	}
+	
+	/**
+	 * Set a custom tag value for the given collection of vulnerabilities
+	 * @param applicationVersionId
+	 * @param customTagName
+	 * @param value
+	 * @param vulns
+	 */
+	public void setCustomTagValue(String applicationVersionId, String customTagName, String value, Collection<Object> vulns) {
+		Map<String,String> customTagValues = new HashMap<String, String>(1);
+		customTagValues.put(customTagName, value);
+		setCustomTagValues(applicationVersionId, customTagValues, vulns);
+	}
+
 	
 	/**
 	 * Set multiple custom tag values for the given collection of vulnerabilities
@@ -95,70 +145,4 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 				conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId).path("issues/action"),
 				Entity.entity(request, "application/json"), JSONMap.class);
 	}
-	
-	/**
-	 * Set a custom tag value for the given collection of vulnerabilities
-	 * @param applicationVersionId
-	 * @param customTagName
-	 * @param value
-	 * @param vulns
-	 */
-	public void setCustomTagValue(String applicationVersionId, String customTagName, String value, Collection<Object> vulns) {
-		Map<String,String> customTagValues = new HashMap<String, String>(1);
-		customTagValues.put(customTagName, value);
-		setCustomTagValues(applicationVersionId, customTagValues, vulns);
-	}
-	
-	/**
-	 * Get the list of custom tag names defined for the given application version
-	 * @param applicationVersionId
-	 * @return
-	 */
-	public List<String> getApplicationVersionCustomTagNames(String applicationVersionId) {
-		return getCachedApplicationVersionCustomTags(applicationVersionId).getValues("name", String.class);
-	}
-	
-	/**
-	 * Get the list of custom tag GUID's defined for the given application version
-	 * @param applicationVersionId
-	 * @return
-	 */
-	public List<String> getApplicationVersionCustomTagGuids(String applicationVersionId) {
-		return getCachedApplicationVersionCustomTags(applicationVersionId).getValues("guid", String.class);
-	}
-	
-	/**
-	 * Get the custom tag GUID for the given custom tag name
-	 * @param customTagName
-	 * @return
-	 */
-	public String getCustomTagGuid(String customTagName) {
-		return getCachedCustomTags().mapValue("name.toLowerCase()", customTagName.toLowerCase(), "guid", String.class);
-	}
-	
-	/**
-	 * Get the custom tag name for the given custom tag GUID
-	 * @param customTagGUID
-	 * @return
-	 */
-	public String getCustomTagName(String customTagGUID) {
-		return getCachedCustomTags().mapValue("guid", customTagGUID, "name", String.class);
-	}
-	
-	/**
-	 * Get a cached JSONList describing all available custom tags defined in SSC
-	 * @return
-	 */
-	public JSONList getCachedCustomTags() {
-		return customTagsSupplier.get();
-	}
-	
-	/**
-	 * Get a cached JSONList describing all available custom tags for the given application version
-	 * @return
-	 */
-	public JSONList getCachedApplicationVersionCustomTags(String applicationVersionId) {
-		return avCustomTagsCache.getUnchecked(applicationVersionId);
-	}
-
 }

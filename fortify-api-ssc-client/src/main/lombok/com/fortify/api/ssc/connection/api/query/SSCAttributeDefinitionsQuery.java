@@ -22,16 +22,40 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query;
+
+import java.util.List;
+import java.util.Map;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.util.rest.json.IJSONMapFilter;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.Singular;
 
-@Accessors(fluent=true) @Getter(AccessLevel.PROTECTED) @RequiredArgsConstructor
-public class AbstractSSCAPI {
+@Getter(AccessLevel.PROTECTED)
+@Builder
+public final class SSCAttributeDefinitionsQuery extends AbstractSSCEntityQuery {
+	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
+	private final @Singular List<IJSONMapFilter> filters;
+	@Builder.Default private final boolean useCache = true;
+	private final Integer maxResults;
+
+	// Fields supported by AbstractSSCEntityQuery
+	private final List<String> paramFields;
+	private final String paramOrderBy;
+	private final @Singular Map<String, String> paramQAnds;
+
+	@Override
+	protected boolean isPagingSupported() {
+		return true;
+	}
+	
+	@Override
+	protected String getTargetPath() {
+		return "/api/v1/attributeDefinitions";
+	}
 }

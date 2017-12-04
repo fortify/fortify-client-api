@@ -39,7 +39,7 @@ import lombok.Getter;
 import lombok.Singular;
 
 @Getter(AccessLevel.PROTECTED) @Builder
-public class SSCIssueQuery extends AbstractSSCApplicationVersionChildEntityQuery {
+public class SSCIssuesQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	public enum QueryMode {
 		adv, issues
 	}
@@ -66,26 +66,26 @@ public class SSCIssueQuery extends AbstractSSCApplicationVersionChildEntityQuery
 	private final QueryMode paramQm;
 	@Builder.Default private final IssueSearchOptions issueSearchOptions = new IssueSearchOptions();
 	
-	public static class SSCIssueQueryBuilder {
-		public SSCIssueQueryBuilder includeHidden() {
+	public static class SSCIssuesQueryBuilder {
+		public SSCIssuesQueryBuilder includeHidden() {
 			issueSearchOptions.setIncludeHidden(true);
 			return this;
 		}
 		
-		public SSCIssueQueryBuilder includeRemoved() {
+		public SSCIssuesQueryBuilder includeRemoved() {
 			issueSearchOptions.setIncludeRemoved(true);
 			return this;
 		}
 		
-		public SSCIssueQueryBuilder includeSuppressed() {
+		public SSCIssuesQueryBuilder includeSuppressed() {
 			issueSearchOptions.setIncludeSuppressed(true);
 			return this;
 		}
 	}
-
+	
 	@Override
-	protected WebTarget addChildEntityPath(WebTarget target) {
-		return target.path("issues");
+	protected String getChildEntityPath() {
+		return "issues";
 	}
 
 	@Override
@@ -105,6 +105,6 @@ public class SSCIssueQuery extends AbstractSSCApplicationVersionChildEntityQuery
 	
 	@Override
 	protected void initRequest() {
-		getConn().api().issue().updateApplicationVersionIssueSearchOptions(getParentId(), this.issueSearchOptions);
+		getConn().api().issue().updateApplicationVersionIssueSearchOptions(getApplicationVersionId(), this.issueSearchOptions);
 	}
 }
