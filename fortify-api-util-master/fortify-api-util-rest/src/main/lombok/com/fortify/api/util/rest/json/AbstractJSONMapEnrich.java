@@ -24,18 +24,14 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.json;
 
-/**
- * This interface is used to indicate whether a given {@link JSONMap} instance
- * should be included or excluded.
- * 
- * @author Ruud Senden
- *
- */
-public interface IJSONMapFilter {
-	/**
-	 * This method indicates whether the given {@link JSONMap} should be included
-	 * @param json
-	 * @return true if the given {@link JSONMap} should be included, false otherwise
-	 */
-	public boolean include(JSONMap json);
+public abstract class AbstractJSONMapEnrich implements IJSONMapPreProcessor {
+
+	@Override
+	public boolean preProcess(JSONMap json) {
+		enrich(json);
+		return true;
+	}
+
+	protected abstract void enrich(JSONMap json);
+
 }

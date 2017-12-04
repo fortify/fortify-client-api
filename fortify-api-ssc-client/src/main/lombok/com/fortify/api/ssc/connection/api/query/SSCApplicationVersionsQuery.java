@@ -24,15 +24,21 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapFilter;
+import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
+import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.util.rest.json.JSONMap;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Singular;
 
 @Getter(AccessLevel.PROTECTED)
@@ -40,7 +46,7 @@ import lombok.Singular;
 public final class SSCApplicationVersionsQuery extends AbstractSSCEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapFilter> filters;
+	private final @Singular List<IJSONMapPreProcessor> preProcessors;
 	private final boolean useCache;
 	private final Integer maxResults;
 
@@ -80,6 +86,11 @@ public final class SSCApplicationVersionsQuery extends AbstractSSCEntityQuery {
 			return nameOrId(applicationVersionNameOrId, ":");
 		}
 	}
+	
+	@Override
+	protected List<IJSONMapPreProcessor> getDefaultPreProcessors() {
+		return Arrays.asList((IJSONMapPreProcessor)new SSCJSONMapEnrichWithApplicationVersionDeepLink(getConn()));
+	}
 
 	@Override
 	protected boolean isPagingSupported() {
@@ -89,5 +100,17 @@ public final class SSCApplicationVersionsQuery extends AbstractSSCEntityQuery {
 	@Override
 	protected String getTargetPath() {
 		return "/api/v1/projectVersions";
+	}
+	
+	@RequiredArgsConstructor
+	private static final class SSCJSONMapEnrichWithApplicationVersionDeepLink extends AbstractJSONMapEnrich {
+		private final SSCAuthenticatingRestConnection conn;
+		@Override
+		public void enrich(JSONMap json) {
+			String applicationVersionId = json.get("id", String.class);
+			if ( StringUtils.isNotBlank(applicationVersionId) ) {
+				json.put("deepLink", conn.api().applicationVersion().getApplicationVersionDeepLink(applicationVersionId));
+			}
+		}
 	}
 }

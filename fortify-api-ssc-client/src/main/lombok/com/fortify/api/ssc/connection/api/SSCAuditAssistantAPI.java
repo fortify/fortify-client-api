@@ -78,13 +78,13 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 				// Query for artifact upload job
 			.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				// Only for selected application version 
-			.filter(new JSONMapFilterRegEx("projectVersionId", applicationVersionId, true))
+			.preProcessor(new JSONMapFilterRegEx("projectVersionId", applicationVersionId, true))
 				// Only for artifact names starting with 'AA_' (Audit Assistant)
-			.filter(new JSONMapFilterRegEx("artifactName", "AA_.*\\.fpr", true))
+			.preProcessor(new JSONMapFilterRegEx("artifactName", "AA_.*\\.fpr", true))
 				// Only include jobs finished after now (to wait for processing completion)
-			.filter(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, now, true))
+			.preProcessor(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, now, true))
 				// Only include jobs started after now
-			.filter(new JSONMapFilterDateCompare("startTime", DateComparisonOperator.gt, now, true))
+			.preProcessor(new JSONMapFilterDateCompare("startTime", DateComparisonOperator.gt, now, true))
 			.build();
 		if ( invokeAuditAssistant(applicationVersionId) ) {
 			JSONList jobs = jobApi.waitForJobCreation(jobQuery, timeOutSeconds);

@@ -29,7 +29,7 @@ import java.util.Map;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
-import com.fortify.api.util.rest.json.IJSONMapFilter;
+import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -42,7 +42,7 @@ import lombok.Singular;
 public class SSCApplicationVersionMetricHistoriesQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapFilter> filters;
+	private final @Singular List<IJSONMapPreProcessor> preProcessors;
 	private final boolean useCache;
 
 	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery

@@ -30,7 +30,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapFilter;
+import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
 import com.fortify.api.util.rest.json.JSONMap;
 
 import lombok.AccessLevel;
@@ -43,7 +43,7 @@ import lombok.Singular;
 public class SSCApplicationVersionBugFilingRequirementsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapFilter> filters;
+	private final @Singular List<IJSONMapPreProcessor> preProcessors;
 	private final boolean useCache;
 
 	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery

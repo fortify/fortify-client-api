@@ -33,7 +33,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.util.rest.connection.RestConnection;
-import com.fortify.api.util.rest.json.IJSONMapFilter;
+import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
 import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -74,7 +74,8 @@ import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
  */
 public abstract class AbstractRestConnectionQuery<ConnType extends RestConnection, ResponseType> {
 	protected abstract ConnType getConn();
-	protected List<IJSONMapFilter> getFilters() { return null; }
+	protected List<IJSONMapPreProcessor> getPreProcessors() { return null; }
+	protected List<IJSONMapPreProcessor> getDefaultPreProcessors() { return null; }
 	protected Integer getMaxResults() { return -1; }
 	
 	/**
@@ -207,7 +208,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 		JSONList list = getJSONListFromResponse(data);
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
-				if ( isIncluded(obj) ) {
+				if ( preProcess(getDefaultPreProcessors(), obj) && preProcess(getPreProcessors(), obj) ) {
 					processor.process(obj);
 				}
 			}
@@ -215,12 +216,11 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 		return data;
 	}
 
-	private boolean isIncluded(JSONMap json) {
+	private boolean preProcess(List<IJSONMapPreProcessor> preProcessors, JSONMap json) {
 		boolean result = true;
-		List<IJSONMapFilter> filters = getFilters();
-		if ( CollectionUtils.isNotEmpty(filters) ) {
-			for ( IJSONMapFilter filter : filters ) {
-				result &= filter.include(json);
+		if ( CollectionUtils.isNotEmpty(preProcessors) ) {
+			for ( IJSONMapPreProcessor preProcessor : preProcessors ) {
+				result &= preProcessor.preProcess(json);
 				if ( !result ) { break; }
 			}
 		}

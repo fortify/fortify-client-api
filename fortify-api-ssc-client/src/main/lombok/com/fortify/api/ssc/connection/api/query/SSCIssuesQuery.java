@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +32,14 @@ import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
-import com.fortify.api.util.rest.json.IJSONMapFilter;
+import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
+import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.util.rest.json.JSONMap;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Singular;
 
 @Getter(AccessLevel.PROTECTED) @Builder
@@ -46,7 +50,7 @@ public class SSCIssuesQuery extends AbstractSSCApplicationVersionChildEntityQuer
 	
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn; 
-	private final @Singular List<IJSONMapFilter> filters;
+	private final @Singular List<IJSONMapPreProcessor> preProcessors;
 	private final boolean useCache;
 	private final Integer maxResults;
 	
@@ -87,6 +91,11 @@ public class SSCIssuesQuery extends AbstractSSCApplicationVersionChildEntityQuer
 	protected String getChildEntityPath() {
 		return "issues";
 	}
+	
+	@Override
+	protected List<IJSONMapPreProcessor> getDefaultPreProcessors() {
+		return Arrays.asList((IJSONMapPreProcessor)new SSCJSONMapEnrichWithIssueDeepLink(getConn()));
+	}
 
 	@Override
 	protected boolean isPagingSupported() {
@@ -106,5 +115,14 @@ public class SSCIssuesQuery extends AbstractSSCApplicationVersionChildEntityQuer
 	@Override
 	protected void initRequest() {
 		getConn().api().issue().updateApplicationVersionIssueSearchOptions(getApplicationVersionId(), this.issueSearchOptions);
+	}
+	
+	@RequiredArgsConstructor
+	private static final class SSCJSONMapEnrichWithIssueDeepLink extends AbstractJSONMapEnrich {
+		private final SSCAuthenticatingRestConnection conn;
+		@Override
+		public void enrich(JSONMap json) {
+			json.put("deepLink", conn.api().issue().getIssueDeepLink(json));
+		}
 	}
 }

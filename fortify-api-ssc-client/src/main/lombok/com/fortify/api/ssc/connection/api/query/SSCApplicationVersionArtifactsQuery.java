@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapFilter;
+import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -40,7 +40,7 @@ import lombok.Singular;
 public class SSCApplicationVersionArtifactsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapFilter> filters;
+	private final @Singular List<IJSONMapPreProcessor> preProcessors;
 	private final boolean useCache;
 	private final Integer maxResults;
 

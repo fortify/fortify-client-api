@@ -24,16 +24,23 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.json;
 
-public abstract class AbstractJSONMapFilter implements IJSONMapPreProcessor {
-	private final boolean includeMatching;
-	public AbstractJSONMapFilter(boolean includeMatching) {
-		this.includeMatching = includeMatching;
-	}
-
-	@Override
-	public boolean preProcess(JSONMap json) {
-		return includeMatching == isMatching(json);
-	}
-	
-	protected abstract boolean isMatching(JSONMap json);
+/**
+ * This interface is used to pre-process a given {@link JSONMap} instance
+ * before {@link IJSONMapProcessor} is called. Implementations can modify
+ * the given {@link JSONMap}, and/or indicate whether the given {@link JSONMap}
+ * should be further processed or not.
+ * 
+ * @author Ruud Senden
+ *
+ */
+public interface IJSONMapPreProcessor {
+	/**
+	 * This method allows for modifying the given {@link JSONMap} before it
+	 * is processed by an {@link IJSONMapProcessor} instance, and/or exclude
+	 * the given {@link JSONMap} instance from further processing.
+	 * 
+	 * @param json
+	 * @return true if the given {@link JSONMap} should be included, false otherwise
+	 */
+	public boolean preProcess(JSONMap json);
 }
