@@ -44,5 +44,8 @@ import lombok.Setter;
  */
 @Getter @Setter
 public abstract class AbstractSSCConnectionRetriever extends AbstractRestConnectionRetriever<SSCAuthenticatingRestConnection> implements ISSCConnectionRetriever {
-	private String baseUrl = "https://localhost:8080/ssc";
+	@Override
+	protected String getDefaultBaseUrl() {
+		return "https://localhost:8080/ssc";
+	}
 }

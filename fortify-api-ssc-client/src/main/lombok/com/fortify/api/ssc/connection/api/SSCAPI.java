@@ -32,17 +32,18 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 @Getter
 public class SSCAPI extends AbstractSSCAPI {
-	private final SSCBugTrackerAPI bugTracker;
-	private final SSCCustomTagAPI customTag;
-	private final SSCAttributeAPI attribute;
-	private final SSCIssueTemplateAPI issueTemplate;
-	private final SSCIssueAPI issue;
 	private final SSCApplicationVersionAPI applicationVersion;
 	private final SSCArtifactAPI artifact;
+	private final SSCAttributeAPI attribute;
+	private final SSCAuditAssistantAPI auditAssistant;
+	private final SSCBugTrackerAPI bugTracker;
+	private final SSCCustomTagAPI customTag;
+	private final SSCFileUpDownloadAPI fileUpDownload;
+	private final SSCIssueAPI issue;
+	private final SSCIssueTemplateAPI issueTemplate;
 	private final SSCJobAPI job;
 	private final SSCMetricsAPI metrics;
-	private final SSCFileUpDownloadAPI fileUpDownload;
-	private final SSCAuditAssistantAPI auditAssistant;
+	
 	
 	public SSCAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

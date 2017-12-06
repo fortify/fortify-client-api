@@ -46,6 +46,8 @@
 		<module>fortify-api-util-master</module>
 		<module>fortify-api-fod-client</module>
 		<module>fortify-api-ssc-client</module>
+		<module>fortify-api-webinspect-client</module>
+		<module>fortify-api-wie-client</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
@@ -70,6 +72,18 @@
 			<dependency>
 				<groupId>com.fortify.api</groupId>
 				<artifactId>fortify-api-ssc-client</artifactId>
+				<version>${project.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fortify.api</groupId>
+				<artifactId>fortify-api-webinspect-client</artifactId>
+				<version>${project.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fortify.api</groupId>
+				<artifactId>fortify-api-wie-client</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>

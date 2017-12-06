@@ -60,9 +60,9 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 			});
 	
 	
-	public FoDAuthenticatingRestConnection(String baseUrl, Form auth, ProxyConfiguration proxyConfig) {
-		super(baseUrl, proxyConfig);
-		tokenProvider = new FoDTokenFactory(baseUrl, auth, proxyConfig);
+	public FoDAuthenticatingRestConnection(String baseUrl, Form auth, ProxyConfiguration proxyConfig, Map<String, Object> connectionProperties) {
+		super(baseUrl, proxyConfig, connectionProperties);
+		tokenProvider = new FoDTokenFactory(baseUrl, auth, proxyConfig, connectionProperties);
 	}
 	
 	/**

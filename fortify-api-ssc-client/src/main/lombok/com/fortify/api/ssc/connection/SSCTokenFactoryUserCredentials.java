@@ -25,6 +25,7 @@
 package com.fortify.api.ssc.connection;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 
@@ -52,8 +53,8 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	private final String userName;
 	private final String password;
 	private SSCTokenFactoryUserCredentials.TokenData tokenData = null;
-	public SSCTokenFactoryUserCredentials(String baseUrl, String userName, String password, ProxyConfiguration proxyConfig) {
-		conn = new SSCBasicRestConnection(baseUrl, proxyConfig);
+	public SSCTokenFactoryUserCredentials(String baseUrl, String userName, String password, ProxyConfiguration proxyConfig, Map<String, Object> connectionProperties) {
+		conn = new SSCBasicRestConnection(baseUrl, proxyConfig, connectionProperties);
 		this.userName = userName;
 		this.password = password;
 	}

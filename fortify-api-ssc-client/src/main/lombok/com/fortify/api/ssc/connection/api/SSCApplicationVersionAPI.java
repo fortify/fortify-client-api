@@ -60,7 +60,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	}
 	
 	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
+		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://localhost:1710/ssc").userName("ssc").password("Admin123!").build();
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();
 		for ( int i = 0 ; i < 10 ; i++ ) {
 			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").paramFields(Arrays.asList("id", "name")).useCache(true).build().getAll());

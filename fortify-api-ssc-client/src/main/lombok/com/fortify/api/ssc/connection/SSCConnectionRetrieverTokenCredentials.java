@@ -24,6 +24,9 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * <p>This {@link AbstractSSCConnectionRetriever} implementation
  * allows for configuring token credentials used to connect to SSC.</p>
@@ -31,21 +34,15 @@ package com.fortify.api.ssc.connection;
  * @author Ruud Senden
  *
  */
+@Getter @Setter
 public class SSCConnectionRetrieverTokenCredentials extends AbstractSSCConnectionRetriever {
 	private String authToken;
 	
 	protected final SSCAuthenticatingRestConnection createConnection() {
-		return new SSCAuthenticatingRestConnection(getBaseUrl(), getAuthToken(), getProxy());
+		return SSCAuthenticatingRestConnection.builder()
+				.baseUrl(getBaseUrl())
+				.proxy(getProxy())
+				.connectionProperties(getConnectionProperties())
+				.authToken(getAuthToken()).build();
 	}
-
-	public String getAuthToken() {
-		return authToken;
-	}
-
-	public void setAuthToken(String authToken) {
-		this.authToken = authToken;
-	}
-
-	
-	
 }

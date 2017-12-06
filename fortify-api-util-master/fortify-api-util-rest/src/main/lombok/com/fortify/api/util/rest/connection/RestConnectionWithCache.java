@@ -26,6 +26,7 @@ package com.fortify.api.util.rest.connection;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.ws.rs.client.Entity;
@@ -76,15 +77,11 @@ public class RestConnectionWithCache extends RestConnection {
 	private Properties cacheProperties; 
 	private LoadingCache<String, Cache<CacheKey, Object>> cacheManager;
 
-	public RestConnectionWithCache(String baseUrl) {
-		super(baseUrl);
+	public RestConnectionWithCache(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties, Credentials credentials) {
+		super(baseUrl, proxy, connectionProperties, credentials);
 		initCache();
 	}
 
-	public RestConnectionWithCache(String baseUrl, Credentials credentials) {
-		super(baseUrl, credentials);
-		initCache();
-	}
 	
 	protected void initCache() {
 		try {

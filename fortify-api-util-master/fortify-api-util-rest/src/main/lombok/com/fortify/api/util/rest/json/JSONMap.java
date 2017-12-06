@@ -27,12 +27,16 @@ package com.fortify.api.util.rest.json;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -96,31 +100,51 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 				public JSONList apply(String key) { return new JSONList(); };
 		});
 	}
-	
-	public void putPaths(Map<String, Object> map) {
+
+	public void putPaths(Map<String, Object> map, boolean ignoreNullOrEmptyValues) {
 		for ( Map.Entry<String, Object> entry : map.entrySet() ) {
-			putPath(entry.getKey(), entry.getValue());
+			putPath(entry.getKey(), entry.getValue(), ignoreNullOrEmptyValues);
 		}
 	}
 	
 	public void putPath(String path, Object value) {
-		putPath(Arrays.asList(path.split("\\.")), value);
+		putPath(path, value, false);
 	}
 	
-	private void putPath(List<String> path, Object value) {
-		if ( path.size()==1 ) {
-			put(path.get(0), value);
-		} else if ( path.size()>1 ){
-			String currentSegment = path.get(0);
-			JSONMap intermediate;
-			if ( currentSegment.endsWith("[]") ) {
-				JSONList list = getOrCreateJSONList(currentSegment.substring(0, currentSegment.length()-2));
-				intermediate = new JSONMap();
-				list.add(intermediate);
-			} else {
-				intermediate = getOrCreateJSONMap(currentSegment);
+	public void putPath(String path, Object value, boolean ignoreNullOrEmptyValues) {
+		putPath(Arrays.asList(path.split("\\.")), value, ignoreNullOrEmptyValues);
+	}
+	
+	private void putPath(List<String> path, Object value, boolean ignoreNullOrEmptyValues) {
+		if ( !ignoreValue(value, ignoreNullOrEmptyValues) ) {
+			if ( path.size()==1 ) {
+				put(path.get(0), value);
+			} else if ( path.size()>1 ){
+				String currentSegment = path.get(0);
+				JSONMap intermediate;
+				if ( currentSegment.endsWith("[]") ) {
+					JSONList list = getOrCreateJSONList(currentSegment.substring(0, currentSegment.length()-2));
+					intermediate = new JSONMap();
+					list.add(intermediate);
+				} else {
+					intermediate = getOrCreateJSONMap(currentSegment);
+				}
+				intermediate.putPath(path.subList(1, path.size()), value, ignoreNullOrEmptyValues);
 			}
-			intermediate.putPath(path.subList(1, path.size()), value);
+		}
+	}
+
+	private boolean ignoreValue(Object value, boolean ignoreNullOrEmptyValues) {
+		return ignoreNullOrEmptyValues &&
+				(value==null
+					|| (value instanceof String && StringUtils.isBlank((String)value))
+					|| (value instanceof Collection && CollectionUtils.isEmpty((Collection<?>)value))
+					|| (value instanceof Object[] && ArrayUtils.isEmpty((Object[])value)) );
+	}
+	
+	public void putPaths(Map<String, Object> map) {
+		for ( Map.Entry<String, Object> entry : map.entrySet() ) {
+			putPath(entry.getKey(), entry.getValue());
 		}
 	}
 	

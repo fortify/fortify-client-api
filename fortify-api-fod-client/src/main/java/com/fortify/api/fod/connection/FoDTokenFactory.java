@@ -25,6 +25,7 @@
 package com.fortify.api.fod.connection;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
@@ -49,8 +50,8 @@ public final class FoDTokenFactory {
 	private final FoDBasicRestConnection conn;
 	private final Form auth;
 	private FoDTokenFactory.TokenData tokenData = null;
-	public FoDTokenFactory(String baseUrl, Form auth, ProxyConfiguration proxyConfig) {
-		conn = new FoDBasicRestConnection(baseUrl, proxyConfig);
+	public FoDTokenFactory(String baseUrl, Form auth, ProxyConfiguration proxyConfig, Map<String, Object> connectionProperties) {
+		conn = new FoDBasicRestConnection(baseUrl, proxyConfig, connectionProperties);
 		this.auth = auth;
 	}
 	

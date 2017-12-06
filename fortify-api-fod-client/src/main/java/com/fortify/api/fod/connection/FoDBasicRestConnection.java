@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.fod.connection;
 
+import java.util.Map;
+
 import javax.ws.rs.client.Invocation.Builder;
 
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
@@ -41,9 +43,8 @@ import com.fortify.api.util.rest.connection.TooManyRequestsRetryStrategy;
  * due to FoD rate limiting.
  */
 public class FoDBasicRestConnection extends RestConnection {
-	public FoDBasicRestConnection(String baseUrl, ProxyConfiguration proxy) {
-		super(baseUrl);
-		setProxy(proxy);
+	public FoDBasicRestConnection(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties) {
+		super(baseUrl, proxy, connectionProperties, null);
 	}
 	
 	/**

@@ -24,8 +24,13 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -73,7 +78,6 @@ import com.fortify.api.util.rest.json.JSONMap;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -93,28 +97,15 @@ public class RestConnection implements IRestConnection {
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
 	@Getter(value=AccessLevel.PROTECTED) private final CredentialsProvider credentialsProvider = createCredentialsProvider();
 	@Getter private final String baseUrl;
-	@Getter @Setter private ProxyConfiguration proxy;
+	@Getter private final ProxyConfiguration proxy;
+	@Getter private final Map<String, Object> connectionProperties;
 	private Client client;
 	
-
-	/**
-	 * This constructor is used to specify the base URL for this connection.
-	 *
-	 * @param baseUrl
-	 */
-	public RestConnection(String baseUrl) 
-	{
+	public RestConnection(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties, Credentials credentials) {
 		this.baseUrl = validateAndNormalizeUrl(baseUrl);
-	}
-	
-	/**
-	 * This constructor is used to specify the base URL and credentials for the remote system.
-	 *
-	 * @param baseUrl
-	 */
-	public RestConnection(String baseUrl, Credentials credentials) {
-		this(baseUrl);
-		getCredentialsProvider().setCredentials(AuthScope.ANY, credentials);
+		this.proxy = proxy;
+		this.connectionProperties = connectionProperties;
+		if ( credentials != null ) { getCredentialsProvider().setCredentials(AuthScope.ANY, credentials); }
 	}
 
 	/**
@@ -156,7 +147,7 @@ public class RestConnection implements IRestConnection {
 	 * @return The result of executing the HTTP request.
 	 */
 	public <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType) {
-		return executeRequest(httpMethod, webResource.request(), entity, returnType);
+		return executeRequest(httpMethod, updateWebTarget(webResource).request(), entity, returnType);
 	}
 	
 	/**
@@ -195,6 +186,21 @@ public class RestConnection implements IRestConnection {
 			if ( response != null ) { response.close(); }
 		}
 	}
+	
+	public void executeRequestAndSaveResponse(String httpMethod, WebTarget webTarget, Path outputPath, CopyOption... copyOptions) {
+		Response response = executeRequest(httpMethod, webTarget, Response.class);
+		try {
+			InputStream inputStream = (InputStream)response.getEntity();
+			Files.copy(inputStream, outputPath, copyOptions);
+		} catch (IOException e) {
+			throw new RuntimeException("Error writing response to file", e);
+		} finally {
+			if ( response != null ) {
+				response.close();
+			}
+		}
+	}
+	
 
 	/**
 	 * Authenticating with the server may require several round trips,
@@ -397,6 +403,11 @@ public class RestConnection implements IRestConnection {
 		config.property(ApacheClientProperties.CREDENTIALS_PROVIDER, getCredentialsProvider());
 		config.property(ApacheClientProperties.SERVICE_UNAVAILABLE_RETRY_STRATEGY, getServiceUnavailableRetryStrategy());
 		config.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
+		if ( connectionProperties != null ) {
+			for ( Map.Entry<String,Object> property : connectionProperties.entrySet() ) {
+				config.property(property.getKey(), property.getValue());
+			}
+		}
 		config.connectorProvider(new ApacheConnectorProvider());
 		config.register(JacksonFeature.class);
 		config.register(MultiPartFeature.class);
@@ -453,6 +464,18 @@ public class RestConnection implements IRestConnection {
 		return DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE;
 	}
 	
+	/**
+	 * Update the given {@link WebTarget} before executing the request.
+	 * By default this method simply returns the given target. Subclasses
+	 * can override this method to add information to the target that
+	 * is required for every request, for example to add query parameters
+	 * that need to be included in every request.
+	 * @param webTarget to be updated
+	 * @return updated webTarget
+	 */
+	protected WebTarget updateWebTarget(WebTarget webTarget) {
+		return webTarget;
+	}
 	
 	
 	/**
@@ -480,7 +503,7 @@ public class RestConnection implements IRestConnection {
 			throw new RuntimeException("Unable to encode value "+input, e);
 		}
 	}
-	
+
 	protected static class JacksonFeature implements Feature {
 
 	    @SuppressWarnings("serial")

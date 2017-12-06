@@ -77,7 +77,7 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	}
 	
 	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
+		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://localhost:1710/ssc").userName("ssc").password("Admin123!").build();
 		System.out.println(conn.api().issue().queryIssues("6").build().getAll());
 		System.out.println(conn.api().issue().queryIssues("6").maxResults(2).build().getAll());
 	}

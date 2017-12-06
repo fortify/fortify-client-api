@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection;
 
+import java.util.Map;
+
 import javax.ws.rs.client.Invocation.Builder;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,39 +45,22 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	public final SSCAPI api() {
 		return api;
 	}
-	
-	
 
-	/**
-	 * Constructor for connecting to SSC using an authentication token
-	 * @param baseUrl
-	 * @param token
-	 * @param proxyConfig
-	 */
-	public SSCAuthenticatingRestConnection(String baseUrl, String token, ProxyConfiguration proxyConfig) {
-		super(baseUrl, proxyConfig);
-		if ( StringUtils.isBlank(token) ) {
-			throw new RuntimeException("SSC authentication token cannot be blank");
-		}
-		this.tokenFactory = new SSCTokenFactoryTokenCredentials(token);
+	@lombok.Builder
+	private SSCAuthenticatingRestConnection(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties,
+			String authToken, String userName, String password) {
+		super(baseUrl, proxy, connectionProperties);
+		tokenFactory = getTokenFactory(authToken, userName, password);
 	}
 
-	/**
-	 * Constructor for connecting to SSC using username and password
-	 * @param baseUrl
-	 * @param userName
-	 * @param password
-	 * @param proxyConfig
-	 */
-	public SSCAuthenticatingRestConnection(String baseUrl, String userName, String password, ProxyConfiguration proxyConfig) {
-		super(baseUrl, proxyConfig);
-		if ( StringUtils.isBlank(userName) ) {
-			throw new RuntimeException("SSC username cannot be blank");
+	private ISSCTokenFactory getTokenFactory(String authToken, String userName, String password) {
+		if ( StringUtils.isNotBlank(authToken) ) {
+			return new SSCTokenFactoryTokenCredentials(authToken);
+		} else if ( StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password) ) {
+			return new SSCTokenFactoryUserCredentials(getBaseUrl(), userName, password, getProxy(), getConnectionProperties());
+		} else {
+			throw new RuntimeException("Either SSC authentication token, or user name and password need to be specified");
 		}
-		if ( StringUtils.isBlank(password) ) {
-			throw new RuntimeException("SSC password cannot be blank");
-		}
-		this.tokenFactory = new SSCTokenFactoryUserCredentials(baseUrl, userName, password, proxyConfig);
 	}
 	
 	/**

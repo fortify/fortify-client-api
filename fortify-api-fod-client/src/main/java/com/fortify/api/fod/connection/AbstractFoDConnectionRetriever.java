@@ -48,7 +48,7 @@ public abstract class AbstractFoDConnectionRetriever extends AbstractRestConnect
 		form.param("scope",getScope());
 		form.param("grant_type", getGrantType());
 		addCredentials(form);
-		return new FoDAuthenticatingRestConnection(getBaseUrl(), form, getProxy());
+		return new FoDAuthenticatingRestConnection(getBaseUrl(), form, getProxy(), getConnectionProperties());
 	}
 
 	protected abstract void addCredentials(Form form);

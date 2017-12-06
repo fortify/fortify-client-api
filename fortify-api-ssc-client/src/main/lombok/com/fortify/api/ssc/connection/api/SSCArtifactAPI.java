@@ -106,7 +106,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection("http://localhost:1710/ssc", "ssc",  "Admin123!", null);
+		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://localhost:1710/ssc").userName("ssc").password("Admin123!").build();
 		String artifactId = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion("6", new File("c:/work/Programs/HP/SCA/17.20/samples/basic/sampleOutput/WebGoat5.0.fpr"), 60);
 		System.out.println(conn.api().artifact().getArtifactById(artifactId, true));
 		System.out.println(conn.api().artifact().getArtifactById(artifactId, true).get("uploadDate", Date.class).getClass().getName());
