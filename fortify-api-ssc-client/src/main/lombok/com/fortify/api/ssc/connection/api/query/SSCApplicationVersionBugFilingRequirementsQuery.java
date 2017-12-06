@@ -37,8 +37,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED)
+@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
 @Builder
 public class SSCApplicationVersionBugFilingRequirementsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
@@ -68,7 +69,7 @@ public class SSCApplicationVersionBugFilingRequirementsQuery extends AbstractSSC
 	
 	@Override
 	protected WebTarget addExtraParameters(WebTarget webTarget) {
-		return addParameterIfNotBlank(super.addExtraParameters(webTarget), "changeParamIdentifier", getParamChangedParamIdentifier());
+		return addParameterIfNotBlank(super.addExtraParameters(webTarget), "changeParamIdentifier", paramChangedParamIdentifier());
 	}
 	
 	@Override
@@ -76,7 +77,7 @@ public class SSCApplicationVersionBugFilingRequirementsQuery extends AbstractSSC
 		if ( paramBugParams == null ) {
 			return super.executeRequest(target);
 		} else {
-			return getConn().executeRequest(getHttpMethod(), target, Entity.entity(paramBugParams, "application/json"), getResponseTypeClass());
+			return conn().executeRequest(getHttpMethod(), target, Entity.entity(paramBugParams, "application/json"), getResponseTypeClass());
 		}
 	}
 

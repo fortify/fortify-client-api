@@ -73,8 +73,8 @@ import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
  * @author Ruud Senden
  */
 public abstract class AbstractRestConnectionQuery<ConnType extends RestConnection, ResponseType> {
-	protected abstract ConnType getConn();
-	protected List<IJSONMapPreProcessor> getPreProcessors() { return null; }
+	protected abstract ConnType conn();
+	protected List<IJSONMapPreProcessor> preProcessors() { return null; }
 	protected List<IJSONMapPreProcessor> getDefaultPreProcessors() { return null; }
 	protected Integer getMaxResults() { return -1; }
 	
@@ -120,7 +120,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	}
 	
 	protected final WebTarget getWebTarget() {
-		return resolveTemplateParams(getUpdatedBaseWebTarget(getConn().getBaseResource()));
+		return resolveTemplateParams(getUpdatedBaseWebTarget(conn().getBaseResource()));
 	}
 	
 	protected WebTarget resolveTemplateParams(WebTarget webTarget) {
@@ -151,7 +151,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	protected abstract WebTarget getUpdatedBaseWebTarget(WebTarget connectionBaseTarget);
 	
 	protected ResponseType executeRequest(WebTarget target) {
-		return getConn().executeRequest(getHttpMethod(), target, getResponseTypeClass());
+		return conn().executeRequest(getHttpMethod(), target, getResponseTypeClass());
 	}
 	
 	protected String getHttpMethod() {
@@ -208,7 +208,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 		JSONList list = getJSONListFromResponse(data);
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
-				if ( preProcess(getDefaultPreProcessors(), obj) && preProcess(getPreProcessors(), obj) ) {
+				if ( preProcess(getDefaultPreProcessors(), obj) && preProcess(preProcessors(), obj) ) {
 					processor.process(obj);
 				}
 			}

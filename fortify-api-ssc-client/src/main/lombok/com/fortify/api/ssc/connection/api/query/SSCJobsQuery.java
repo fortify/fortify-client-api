@@ -34,8 +34,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED)
+@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
 @Builder
 public final class SSCJobsQuery extends AbstractSSCEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery

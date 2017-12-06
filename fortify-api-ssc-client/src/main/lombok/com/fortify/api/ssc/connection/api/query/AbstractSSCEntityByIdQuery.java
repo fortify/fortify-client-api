@@ -27,11 +27,11 @@ package com.fortify.api.ssc.connection.api.query;
 import javax.ws.rs.client.WebTarget;
 
 public abstract class AbstractSSCEntityByIdQuery extends AbstractSSCEntityQuery {
-	protected abstract String getId();
+	protected abstract String id();
 	
 	@Override
 	protected WebTarget resolveTemplateParams(WebTarget webTarget) {
-		return super.resolveTemplateParams(webTarget).resolveTemplate("id", getId());
+		return super.resolveTemplateParams(webTarget).resolveTemplate("id", id());
 	}
 	
 	@Override

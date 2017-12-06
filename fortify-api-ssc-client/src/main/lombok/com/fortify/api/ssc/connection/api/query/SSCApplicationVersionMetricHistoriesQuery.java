@@ -36,8 +36,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Singular;
+import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED)
+@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
 @Builder
 public class SSCApplicationVersionMetricHistoriesQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery

@@ -40,8 +40,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Singular;
+import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED)
+@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
 @Builder
 public final class SSCApplicationVersionsQuery extends AbstractSSCEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
@@ -89,7 +90,7 @@ public final class SSCApplicationVersionsQuery extends AbstractSSCEntityQuery {
 	
 	@Override
 	protected List<IJSONMapPreProcessor> getDefaultPreProcessors() {
-		return Arrays.asList((IJSONMapPreProcessor)new SSCJSONMapEnrichWithApplicationVersionDeepLink(getConn()));
+		return Arrays.asList((IJSONMapPreProcessor)new SSCJSONMapEnrichWithApplicationVersionDeepLink(conn()));
 	}
 
 	@Override

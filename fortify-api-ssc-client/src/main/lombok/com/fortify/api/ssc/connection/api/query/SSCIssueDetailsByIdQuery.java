@@ -31,8 +31,9 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED) @Builder
+@Getter(AccessLevel.PROTECTED) @Builder @Accessors(fluent=true)
 public class SSCIssueDetailsByIdQuery extends AbstractSSCEntityByIdQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
 	private final SSCAuthenticatingRestConnection conn;

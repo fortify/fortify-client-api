@@ -41,8 +41,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Singular;
+import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED) @Builder
+@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true) 
+@Builder
 public class SSCIssuesQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	public enum QueryMode {
 		adv, issues
@@ -94,7 +96,7 @@ public class SSCIssuesQuery extends AbstractSSCApplicationVersionChildEntityQuer
 	
 	@Override
 	protected List<IJSONMapPreProcessor> getDefaultPreProcessors() {
-		return Arrays.asList((IJSONMapPreProcessor)new SSCJSONMapEnrichWithIssueDeepLink(getConn()));
+		return Arrays.asList((IJSONMapPreProcessor)new SSCJSONMapEnrichWithIssueDeepLink(conn()));
 	}
 
 	@Override
@@ -114,7 +116,7 @@ public class SSCIssuesQuery extends AbstractSSCApplicationVersionChildEntityQuer
 	
 	@Override
 	protected void initRequest() {
-		getConn().api().issue().updateApplicationVersionIssueSearchOptions(getApplicationVersionId(), this.issueSearchOptions);
+		conn().api().issue().updateApplicationVersionIssueSearchOptions(applicationVersionId(), this.issueSearchOptions);
 	}
 	
 	@RequiredArgsConstructor

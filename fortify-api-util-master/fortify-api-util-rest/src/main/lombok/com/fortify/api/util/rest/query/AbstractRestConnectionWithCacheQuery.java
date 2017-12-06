@@ -46,15 +46,15 @@ import lombok.Setter;
 public abstract class AbstractRestConnectionWithCacheQuery<ConnType 
 	extends RestConnectionWithCache, ResponseType> extends AbstractRestConnectionQuery<ConnType, ResponseType>
 {	
-	protected boolean isUseCache() {
+	protected boolean useCache() {
 		return false;
 	}
 
 	@Override
 	protected ResponseType executeRequest(WebTarget target) {
-		return isUseCache() 
-				? getConn().executeRequest(HttpMethod.GET, target, getResponseTypeClass(), getCacheName())
-				: getConn().executeRequest(HttpMethod.GET, target, getResponseTypeClass());
+		return useCache() 
+				? conn().executeRequest(HttpMethod.GET, target, getResponseTypeClass(), getCacheName())
+				: conn().executeRequest(HttpMethod.GET, target, getResponseTypeClass());
 	}
 	
 	protected String getCacheName() {

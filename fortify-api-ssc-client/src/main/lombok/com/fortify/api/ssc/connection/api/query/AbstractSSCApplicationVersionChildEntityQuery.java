@@ -27,11 +27,11 @@ package com.fortify.api.ssc.connection.api.query;
 import javax.ws.rs.client.WebTarget;
 
 public abstract class AbstractSSCApplicationVersionChildEntityQuery extends AbstractSSCEntityQuery {
-	protected abstract String getApplicationVersionId();
+	protected abstract String applicationVersionId();
 	
 	@Override
 	protected WebTarget resolveTemplateParams(WebTarget webTarget) {
-		return super.resolveTemplateParams(webTarget).resolveTemplate("applicationVersionId", getApplicationVersionId());
+		return super.resolveTemplateParams(webTarget).resolveTemplate("applicationVersionId", applicationVersionId());
 	}
 	
 	@Override

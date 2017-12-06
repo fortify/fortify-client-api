@@ -33,8 +33,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED)
+@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
 @Builder
 public class SSCApplicationVersionCustomTagsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
 	// Fields supported by AbstractRestConnectionWithCacheQuery
