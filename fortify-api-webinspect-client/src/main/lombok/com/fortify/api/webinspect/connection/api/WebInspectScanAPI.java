@@ -31,12 +31,11 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
-import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.webinspect.connection.WebInspectAuthenticatingRestConnection;
 
-public class WebInspectScannerAPI extends AbstractWebInspectAPI {
-	public WebInspectScannerAPI(WebInspectAuthenticatingRestConnection conn) {
+public class WebInspectScanAPI extends AbstractWebInspectAPI {
+	public WebInspectScanAPI(WebInspectAuthenticatingRestConnection conn) {
 		super(conn);
 	}
 
@@ -49,9 +48,5 @@ public class WebInspectScannerAPI extends AbstractWebInspectAPI {
 		conn().executeRequestAndSaveResponse(HttpMethod.GET, conn().getBaseResource().path("/scanner/scans/{scanId}.{extension}")
 				.resolveTemplate("scanId", scanId)
 				.resolveTemplate("extension", extension), outputPath, copyOptions);
-	}
-
-	public JSONList getMacros() {
-		return conn().executeRequest(HttpMethod.GET, conn().getBaseResource().path("/scanner/macro"), JSONList.class);
 	}
 }
