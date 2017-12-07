@@ -33,6 +33,7 @@ import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
+import com.fortify.api.util.rest.connection.IRestConnection;
 import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -155,5 +156,25 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 		JSONMap application = getCachedApplication(applicationId);
 		JSONList attributes = application.get("attributes", JSONList.class);
 		return attributes.filter("value!='(Not Set)'", true).toMap("name", String.class, "value", String.class);
+	}
+	
+	public static final IFoDRestConnectionBuilder builder() {
+		return (IFoDRestConnectionBuilder)builder(new FoDRestConnectionBuilderInvocationHandler());
+	}
+	
+	private static final class FoDRestConnectionBuilderInvocationHandler extends RestConnectionBuilderInvocationHandler<FoDRestConnectionConfig> {
+		public FoDRestConnectionBuilderInvocationHandler() {
+			super(new FoDRestConnectionConfig());
+		}
+		
+		@Override
+		public IRestConnection build(FoDRestConnectionConfig config) {
+			return new FoDAuthenticatingRestConnection(config);
+		}
+		
+		@Override
+		protected Class<?> getInterfaceType() {
+			return IFoDRestConnectionBuilder.class;
+		}
 	}
 }

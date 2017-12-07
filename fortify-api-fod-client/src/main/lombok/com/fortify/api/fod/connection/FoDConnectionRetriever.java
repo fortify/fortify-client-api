@@ -27,9 +27,6 @@ package com.fortify.api.fod.connection;
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
 import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * <p>This {@link IRestConnectionRetriever} will create 
  * an authenticated FoD REST connection based on the given
@@ -38,7 +35,6 @@ import lombok.Setter;
  * @author Ruud Senden
  *
  */
-@Getter @Setter
 public abstract class FoDConnectionRetriever extends AbstractRestConnectionRetriever<FoDAuthenticatingRestConnection, FoDRestConnectionConfig> implements IFoDConnectionRetriever {
 	@Override
 	protected FoDRestConnectionConfig createConfig() {

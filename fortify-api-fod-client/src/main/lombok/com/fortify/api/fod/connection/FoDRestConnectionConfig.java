@@ -43,6 +43,33 @@ public class FoDRestConnectionConfig extends RestConnectionConfig<FoDRestConnect
 	private String userName;
 	private String password;
 	
+	public FoDRestConnectionConfig clientId(String clientId) {
+		setClientId(clientId);
+		return getThis();
+	}
+	
+	public FoDRestConnectionConfig clientSecret(String clientSecret) {
+		setClientSecret(clientSecret);
+		return getThis();
+	}
+	
+	public FoDRestConnectionConfig tenant(String tenant) {
+		setTenant(tenant);
+		return getThis();
+	}
+	
+	public FoDRestConnectionConfig userName(String userName) {
+		setUserName(userName);
+		return getThis();
+	}
+	
+	public FoDRestConnectionConfig password(String password) {
+		setPassword(password);
+		return getThis();
+	}
+	
+	
+	
 	/**
 	 * For FoD we require our own credentials handling, so this method returns null
 	 */
