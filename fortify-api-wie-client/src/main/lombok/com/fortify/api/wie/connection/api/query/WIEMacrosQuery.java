@@ -22,31 +22,42 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.wie.connection.api;
+package com.fortify.api.wie.connection.api.query;
 
-import javax.ws.rs.HttpMethod;
+import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
-
-import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.util.rest.json.JSONMapFilterRegEx;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
-import com.fortify.api.wie.connection.api.query.WIEMacrosQuery;
 
-public class WIEMacroAPI extends AbstractWIEAPI {
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Singular;
+import lombok.experimental.Accessors;
 
-	public WIEMacroAPI(WIEAuthenticatingRestConnection conn) {
-		super(conn);
+@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
+@Builder
+public class WIEMacrosQuery extends AbstractWIEEntityQuery {
+	// Fields supported by AbstractRestConnectionWithCacheQuery
+	private final WIEAuthenticatingRestConnection conn;
+	private final @Singular List<IJSONMapPreProcessor> preProcessors;
+	private final boolean useCache;
+	
+	public static class WIEMacrosQueryBuilder {
+		public WIEMacrosQueryBuilder names(String... names) {
+			return preProcessor(new JSONMapFilterRegEx("name", "\\Q"+String.join("\\E|\\Q", names)+"\\E", true));
+		}
 	}
 	
-	public WIEMacrosQuery.WIEMacrosQueryBuilder queryMacros() {
-		return WIEMacrosQuery.builder().conn(conn()).useCache(true);
+	@Override
+	protected boolean isPagingSupported() {
+		return true;
 	}
 	
-	public byte[] getMacroData(String macroId) {
-		JSONMap response = conn().executeRequest(HttpMethod.GET, 
-				conn().getBaseResource().path("/api/v1/macros/{id}/macroData").resolveTemplate("id", macroId), JSONMap.class);
-		String data = response.get("data", String.class);
-		return Base64.decodeBase64(data);
+	@Override
+	protected String getTargetPath() {
+		return "/api/v1/macros";
 	}
 
 }

@@ -132,6 +132,6 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 	
 	public static void main(String[] args) {
 		WIEAuthenticatingRestConnection conn = WIEAuthenticatingRestConnection.builder().uri("https://ssc:Admin123!@rs-fortifywie.westeurope.cloudapp.azure.com/WIE/REST;readTimeout=80000").build();
-		System.out.println(new String(conn.api().macro().getMacroDataByName("test")));
+		System.out.println(conn.api().macro().queryMacros().names("test", "abc").build().getAll());
 	}
 }
