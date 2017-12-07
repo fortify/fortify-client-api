@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,29 +22,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection;
+package com.fortify.api.webinspect.connection;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.apache.http.client.CredentialsProvider;
 
-/**
- * <p>This {@link AbstractSSCConnectionRetriever} implementation
- * allows for configuring user name and password used to connect to SSC.</p> 
- * 
- * @author Ruud Senden
- *
- */
-@Getter @Setter
-public class SSCConnectionRetrieverUserCredentials extends AbstractSSCConnectionRetriever {
-	private String userName;
-	private String password;
-	
-	protected final SSCAuthenticatingRestConnection createConnection() {
-		return SSCAuthenticatingRestConnection.builder()
-				.baseUrl(getBaseUrl())
-				.proxy(getProxy())
-				.connectionProperties(getConnectionProperties())
-				.userName(getUserName())
-				.password(getPassword()).build();
+import com.fortify.api.util.rest.connection.RestConnectionConfig;
+
+public class WebInspectRestConnectionConfig extends RestConnectionConfig<WebInspectRestConnectionConfig> {
+	/**
+	 * For WebInspect we require our own credentials handling, so this method returns null
+	 */
+	@Override
+	public CredentialsProvider getCredentialsProvider() {
+		return null;
 	}
 }

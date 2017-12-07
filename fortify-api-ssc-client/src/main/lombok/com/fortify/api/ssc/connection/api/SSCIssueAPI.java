@@ -32,6 +32,7 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.SSCRestConnectionConfig;
 import com.fortify.api.ssc.connection.api.query.SSCIssueDetailsByIdQuery;
 import com.fortify.api.ssc.connection.api.query.SSCIssueDetailsByIdQuery.SSCIssueDetailsByIdQueryBuilder;
 import com.fortify.api.ssc.connection.api.query.SSCIssuesQuery;
@@ -77,7 +78,7 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	}
 	
 	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://localhost:1710/ssc").userName("ssc").password("Admin123!").build();
+		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection(new SSCRestConnectionConfig().uri("http://ssc:Admin123!@localhost:1710/ssc"));
 		System.out.println(conn.api().issue().queryIssues("6").build().getAll());
 		System.out.println(conn.api().issue().queryIssues("6").maxResults(2).build().getAll());
 	}

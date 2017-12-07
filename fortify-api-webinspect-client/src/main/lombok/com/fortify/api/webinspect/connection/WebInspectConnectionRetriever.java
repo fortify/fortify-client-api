@@ -26,20 +26,20 @@ package com.fortify.api.webinspect.connection;
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
 
 /**
- * This {@link AbstractRestConnectionFactory} implementation allows for
+ * This {@link AbstractRestConnectionRetriever} implementation allows for
  * creating {@link WebInspectAuthenticatingRestConnection} instances.
  * 
  * @author Ruud Senden
  *
  */
-public class WebInspectConnectionRetriever extends AbstractRestConnectionRetriever<WebInspectAuthenticatingRestConnection> {
+public class WebInspectConnectionRetriever extends AbstractRestConnectionRetriever<WebInspectAuthenticatingRestConnection, WebInspectRestConnectionConfig> {
+	@Override
+	protected WebInspectRestConnectionConfig createConfig() {
+		return new WebInspectRestConnectionConfig();
+	}
+	
 	@Override
 	protected WebInspectAuthenticatingRestConnection createConnection() {
-		return WebInspectAuthenticatingRestConnection.builder()
-				.baseUrl(getBaseUrl())
-				.proxy(getProxy())
-				.connectionProperties(getConnectionProperties())
-				.credentials(getCredentials())
-				.build();
+		return new WebInspectAuthenticatingRestConnection(getConfig());
 	}
 }

@@ -72,18 +72,18 @@ import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
  * 
  * @author Ruud Senden
  */
-public abstract class AbstractRestConnectionQuery<ConnType extends RestConnection, ResponseType> {
+public abstract class AbstractRestConnectionQuery<ConnType extends RestConnection<?>, ResponseType> {
 	protected abstract ConnType conn();
 	protected List<IJSONMapPreProcessor> preProcessors() { return null; }
 	protected List<IJSONMapPreProcessor> getDefaultPreProcessors() { return null; }
-	protected Integer getMaxResults() { return -1; }
+	protected Integer maxResults() { return -1; }
 	
 	/**
 	 * Process all results from the REST API call
 	 * @param processor
 	 */
 	public void processAll(IJSONMapProcessor processor) {
-		processAll(getWebTarget(), new PagingData().max(getMaxResults()==null?-1:getMaxResults()), processor);
+		processAll(getWebTarget(), new PagingData().max(maxResults()==null?-1:maxResults()), processor);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends RestConnectio
 	 */
 	public JSONMap getUnique() {
 		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(getWebTarget(), new PagingData().max(Math.min(2, getMaxResults()==null?-1:getMaxResults())), processor);
+		processAll(getWebTarget(), new PagingData().max(Math.min(2, maxResults()==null?-1:maxResults())), processor);
 		JSONList list = processor.getJsonList();
 		if ( list == null || list.size() == 0 ) {
 			return null;

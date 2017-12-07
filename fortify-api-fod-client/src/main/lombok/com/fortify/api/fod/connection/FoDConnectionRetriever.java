@@ -22,24 +22,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.connection;
+package com.fortify.api.fod.connection;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
+import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * Interface providing low-level methods for building and executing REST requests.
+ * <p>This {@link IRestConnectionRetriever} will create 
+ * an authenticated FoD REST connection based on the given
+ * configuration</p>
  * 
  * @author Ruud Senden
  *
  */
-public interface IRestConnection {
-	public abstract <T> T executeRequest(String httpMethod, Builder builder, Entity<?> entity, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType);
-	public abstract WebTarget getBaseResource();
-	public abstract WebTarget getResource(String url);
-	public abstract Client getClient();
+@Getter @Setter
+public abstract class FoDConnectionRetriever extends AbstractRestConnectionRetriever<FoDAuthenticatingRestConnection, FoDRestConnectionConfig> implements IFoDConnectionRetriever {
+	@Override
+	protected FoDRestConnectionConfig createConfig() {
+		return new FoDRestConnectionConfig();
+	}
+	
+	@Override
+	protected FoDAuthenticatingRestConnection createConnection() {
+		return new FoDAuthenticatingRestConnection(getConfig());
+	}
 }

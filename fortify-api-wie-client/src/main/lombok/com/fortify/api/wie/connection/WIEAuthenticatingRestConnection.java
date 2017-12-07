@@ -26,7 +26,6 @@ package com.fortify.api.wie.connection;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Map;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
@@ -39,47 +38,42 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
-import com.fortify.api.util.rest.connection.ProxyConfiguration;
+import com.fortify.api.util.rest.connection.IRestConnection;
 import com.fortify.api.util.rest.connection.RestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.wie.connection.api.WIEAPI;
 
-import lombok.Builder;
-
 /**
  * This {@link RestConnection} implementation provides various
- * methods for working with the WebInspect Enterprise API.
+ * methods for working with the WIE Enterprise API.
  * 
  * @author Ruud Senden
  *
  */
 public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
-	private final Credentials credentials;
 	private String apiKey = null;
 	private final WIEAPI api = new WIEAPI(this);
 	
-	public final WIEAPI api() {
-		return api;
+	public WIEAuthenticatingRestConnection(WIERestConnectionConfig config) {
+		super(config);
 	}
 	
-	
-	@Builder
-	public WIEAuthenticatingRestConnection(String baseUrl, ProxyConfiguration proxy, Credentials credentials, Map<String, Object> connectionProperties) {
-		super(baseUrl, proxy, connectionProperties);
-		this.credentials = credentials;
+	public final WIEAPI api() {
+		return api;
 	}
 	
 	@Override
 	protected WebTarget updateWebTarget(WebTarget webTarget) {
 		webTarget = super.updateWebTarget(webTarget);
 		if ( apiKey == null ) {
+			Credentials credentials = getConfig().getCredentials();
 			if ( credentials==null ) {
 				throw new IllegalStateException("No WIE credentials have been configured");
 			}
 			JSONMap auth = new JSONMap();
 			auth.put("username", credentials.getUserPrincipal().getName());
 			auth.put("password", credentials.getPassword());
-			apiKey = new WIEBasicRestConnection(getBaseUrl(), getProxy(), getConnectionProperties())
+			apiKey = new WIEBasicRestConnection(getConfig())
 					.executeRequest(HttpMethod.POST, getBaseResource().path("/api/v1/auth"),
 							Entity.entity(auth, MediaType.APPLICATION_JSON), JSONMap.class)
 					.get("data", String.class);
@@ -114,11 +108,30 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
         }
 	}
 	
+	public static final IWIERestConnectionBuilder builder() {
+		return (IWIERestConnectionBuilder)builder(new WIERestConnectionBuilderInvocationHandler());
+	}
+	
+	private static final class WIERestConnectionBuilderInvocationHandler extends RestConnectionBuilderInvocationHandler<WIERestConnectionConfig> {
+		public WIERestConnectionBuilderInvocationHandler() {
+			super(new WIERestConnectionConfig());
+		}
+		
+		@Override
+		public IRestConnection build(WIERestConnectionConfig config) {
+			return new WIEAuthenticatingRestConnection(config);
+		}
+		
+		@Override
+		protected Class<?> getInterfaceType() {
+			return IWIERestConnectionBuilder.class;
+		}
+	}
+	
 	
 	
 	public static void main(String[] args) {
-		WIEConnectionRetriever cf = new WIEConnectionRetriever();
-		cf.setUri("https://ssc:Admin123!@rs-fortifywie.westeurope.cloudapp.azure.com/WIE/REST");
-		System.out.println(new String(cf.createConnection().api().macro().getMacroDataByName("test")));
+		WIEAuthenticatingRestConnection conn = WIEAuthenticatingRestConnection.builder().uri("https://ssc:Admin123!@rs-fortifywie.westeurope.cloudapp.azure.com/WIE/REST;readTimeout=80000").build();
+		System.out.println(new String(conn.api().macro().getMacroDataByName("test")));
 	}
 }

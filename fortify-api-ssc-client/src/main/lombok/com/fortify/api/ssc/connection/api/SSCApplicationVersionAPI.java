@@ -56,11 +56,11 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	 * @return Browser-accessible deep link for the current application version
 	 */
 	public final String getApplicationVersionDeepLink(String applicationVersionId) {
-		return conn().getBaseUrl()+"html/ssc/index.jsp#!/version/"+applicationVersionId+"/fix";
+		return conn().getConfig().getBaseUrl()+"html/ssc/index.jsp#!/version/"+applicationVersionId+"/fix";
 	}
 	
 	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://localhost:1710/ssc").userName("ssc").password("Admin123!").build();
+		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();
 		for ( int i = 0 ; i < 10 ; i++ ) {
 			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").paramFields(Arrays.asList("id", "name")).useCache(true).build().getAll());

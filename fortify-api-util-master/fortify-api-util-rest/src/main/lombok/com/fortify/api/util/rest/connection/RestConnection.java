@@ -27,6 +27,9 @@ package com.fortify.api.util.rest.connection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.URLEncoder;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -54,13 +57,9 @@ import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
 import org.apache.commons.lang.CharEncoding;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.ClientResponse;
@@ -76,7 +75,6 @@ import com.fortify.api.util.rest.connection.connector.ApacheConnectorProvider;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -93,35 +91,13 @@ import lombok.ToString;
  * TODO Update JavaDoc for executeRequest methods
  */
 @ToString
-public class RestConnection implements IRestConnection {
+public class RestConnection<ConfigType extends IRestConnectionConfig> implements IRestConnection {
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
-	@Getter(value=AccessLevel.PROTECTED) private final CredentialsProvider credentialsProvider = createCredentialsProvider();
-	@Getter private final String baseUrl;
-	@Getter private final ProxyConfiguration proxy;
-	@Getter private final Map<String, Object> connectionProperties;
+	@Getter private final ConfigType config;
 	private Client client;
 	
-	public RestConnection(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties, Credentials credentials) {
-		this.baseUrl = validateAndNormalizeUrl(baseUrl);
-		this.proxy = proxy;
-		this.connectionProperties = connectionProperties;
-		if ( credentials != null ) { getCredentialsProvider().setCredentials(AuthScope.ANY, credentials); }
-	}
-
-	/**
-	 * Validate and normalize the given URL. This will check whether the protocol
-	 * is either HTTP or HTTPS, and it will add a trailing slash if necessary.
-	 * @param baseUrl
-	 * @return The validated and normalized URL
-	 */
-	private static final String validateAndNormalizeUrl(String baseUrl) {
-		if (!baseUrl.endsWith("/")) {
-			baseUrl = baseUrl+"/";
-		}
-		if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
-			throw new RuntimeException("URL protocol should be either http or https");
-		}
-		return baseUrl;
+	public RestConnection(ConfigType config) {
+		this.config = config;
 	}
 	
 	/**
@@ -298,7 +274,7 @@ public class RestConnection implements IRestConnection {
 	
 	protected RuntimeException getUnsuccesfulResponseException(Response response) {
 		String reasonPhrase = getReasonPhrase(response);
-		String msg = "Error accessing remote system "+getBaseUrl()+": "+reasonPhrase;
+		String msg = "Error accessing remote system "+config.getBaseUrl()+": "+reasonPhrase;
 		String longMsg = msg+", response contents: \n"+response.readEntity(String.class);
 		// By adding a new exception as the cause, we make sure that the response
 		// contents will be logged whenever this RuntimeException is logged.
@@ -332,7 +308,7 @@ public class RestConnection implements IRestConnection {
 	 * @return A {@link WebTarget} instance for the configured REST base URL.
 	 */
 	public final WebTarget getBaseResource() {
-		return getResource(baseUrl);
+		return getResource(config.getBaseUrl());
 	}
 	
 	/**
@@ -393,26 +369,27 @@ public class RestConnection implements IRestConnection {
 	}
 	
 	protected ClientConfig createClientConfig() {
-		ClientConfig config = new ClientConfig();
+		ClientConfig clientConfig = new ClientConfig();
+		ProxyConfig proxy = config.getProxy();
 		if ( proxy != null && proxy.getUri() != null ) {
-			config.property(ClientProperties.PROXY_URI, proxy.getUriString());
-			config.property(ClientProperties.PROXY_USERNAME, proxy.getUserName());
-			config.property(ClientProperties.PROXY_PASSWORD, proxy.getPassword());
+			clientConfig.property(ClientProperties.PROXY_URI, proxy.getUriString());
+			clientConfig.property(ClientProperties.PROXY_USERNAME, proxy.getUserName());
+			clientConfig.property(ClientProperties.PROXY_PASSWORD, proxy.getPassword());
 		}
-		config.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
-		config.property(ApacheClientProperties.CREDENTIALS_PROVIDER, getCredentialsProvider());
-		config.property(ApacheClientProperties.SERVICE_UNAVAILABLE_RETRY_STRATEGY, getServiceUnavailableRetryStrategy());
-		config.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
-		if ( connectionProperties != null ) {
-			for ( Map.Entry<String,Object> property : connectionProperties.entrySet() ) {
-				config.property(property.getKey(), property.getValue());
+		clientConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
+		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, config.getCredentialsProvider());
+		clientConfig.property(ApacheClientProperties.SERVICE_UNAVAILABLE_RETRY_STRATEGY, getServiceUnavailableRetryStrategy());
+		clientConfig.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
+		if ( config.getConnectionProperties() != null ) {
+			for ( Map.Entry<String,Object> property : config.getConnectionProperties().entrySet() ) {
+				clientConfig.property(property.getKey(), property.getValue());
 			}
 		}
-		config.connectorProvider(new ApacheConnectorProvider());
-		config.register(JacksonFeature.class);
-		config.register(MultiPartFeature.class);
-		config.register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME), Level.FINE, LoggingFeature.Verbosity.PAYLOAD_ANY, 10000));
-		return config;
+		clientConfig.connectorProvider(new ApacheConnectorProvider());
+		clientConfig.register(JacksonFeature.class);
+		clientConfig.register(MultiPartFeature.class);
+		clientConfig.register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME), Level.FINE, LoggingFeature.Verbosity.PAYLOAD_ANY, 10000));
+		return clientConfig;
 	}
 	
 	protected ServiceUnavailableRetryStrategy getServiceUnavailableRetryStrategy() {
@@ -441,16 +418,6 @@ public class RestConnection implements IRestConnection {
 	 */
 	protected boolean doPreemptiveBasicAuthentication() {
 		return false;
-	}
-	
-	/**
-	 * Create the {@link CredentialsProvider} to use for requests.
-	 * This default implementation returns a {@link BasicCredentialsProvider}
-	 * instance.
-	 * @return
-	 */
-	protected BasicCredentialsProvider createCredentialsProvider() {
-		return new BasicCredentialsProvider();
 	}
 	
 	/**
@@ -525,4 +492,41 @@ public class RestConnection implements IRestConnection {
 	        return true;
 	    }
 	}
+	
+	protected static final Object builder(RestConnectionBuilderInvocationHandler<?> ih) {
+		return Proxy.newProxyInstance(
+				ih.getClass().getClassLoader(), 
+				  new Class[] { ih.getInterfaceType() },
+				  ih);
+	}
+	
+	protected static abstract class RestConnectionBuilderInvocationHandler<ConfigType extends IRestConnectionConfig> implements InvocationHandler {
+		private final ConfigType config;
+		
+		protected RestConnectionBuilderInvocationHandler(ConfigType config) {
+			this.config = config;
+		}
+		
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			if ( "build".equals(method.getName()) ) {
+				return build(config);
+			} else {
+				config.getClass().getMethod(method.getName(), getParameterTypes(args)).invoke(config, args);
+				return proxy;
+			}
+		}
+		
+		private Class<?>[] getParameterTypes(Object[] args) {
+			Class<?>[] result = new Class<?>[args.length];
+			for ( int i = 0 ; i < args.length ; i++ ) {
+				result[i] = args[i].getClass();
+			}
+			return result;
+		}
+		
+		protected abstract IRestConnection build(ConfigType config);
+		protected abstract Class<?> getInterfaceType();
+	}
+	
 }

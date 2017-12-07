@@ -26,13 +26,11 @@ package com.fortify.api.util.rest.connection;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
-import org.apache.http.auth.Credentials;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import com.google.common.cache.Cache;
@@ -73,12 +71,12 @@ import lombok.extern.apachecommons.CommonsLog;
  */
 @CommonsLog
 @ToString(callSuper=true)
-public class RestConnectionWithCache extends RestConnection {
+public class RestConnectionWithCache<ConfigType extends IRestConnectionConfig> extends RestConnection<ConfigType> {
 	private Properties cacheProperties; 
 	private LoadingCache<String, Cache<CacheKey, Object>> cacheManager;
 
-	public RestConnectionWithCache(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties, Credentials credentials) {
-		super(baseUrl, proxy, connectionProperties, credentials);
+	public RestConnectionWithCache(ConfigType config) {
+		super(config);
 		initCache();
 	}
 

@@ -31,10 +31,8 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 
-import com.fortify.api.util.rest.connection.ProxyConfiguration;
 import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -50,6 +48,12 @@ import com.google.common.cache.LoadingCache;
  */
 public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	private final FoDTokenFactory tokenProvider;
+	
+	public FoDAuthenticatingRestConnection(FoDRestConnectionConfig config) {
+		super(config);
+		this.tokenProvider = new FoDTokenFactory(config);
+	}
+
 	/** Cache for applications */
 	private final LoadingCache<String, JSONMap> applicationsCache = CacheBuilder.newBuilder().maximumSize(10)
 			.build(new CacheLoader<String, JSONMap>() {
@@ -58,12 +62,6 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 					return getApplication(applicationId);
 				}
 			});
-	
-	
-	public FoDAuthenticatingRestConnection(String baseUrl, Form auth, ProxyConfiguration proxyConfig, Map<String, Object> connectionProperties) {
-		super(baseUrl, proxyConfig, connectionProperties);
-		tokenProvider = new FoDTokenFactory(baseUrl, auth, proxyConfig, connectionProperties);
-	}
 	
 	/**
 	 * Update the {@link Builder} to add the Authorization header.

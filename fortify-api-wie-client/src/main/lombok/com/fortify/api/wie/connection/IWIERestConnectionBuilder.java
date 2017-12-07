@@ -22,12 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.wie.connection;
 
-import java.io.Serializable;
+import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
-import com.fortify.api.util.rest.connection.RestConnection;
-
-public interface IJSONOnDemandLoader<C extends RestConnection, R> extends Serializable {
-	public R load(C conn, JSONMap parent);
-}
+public interface IWIERestConnectionBuilder extends IRestConnectionBuilder<WIEAuthenticatingRestConnection, IWIERestConnectionBuilder> {}

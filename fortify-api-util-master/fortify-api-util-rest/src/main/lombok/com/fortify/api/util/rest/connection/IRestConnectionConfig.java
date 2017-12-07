@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -24,22 +24,20 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
+import java.util.Map;
+
+import org.apache.http.client.CredentialsProvider;
 
 /**
- * Interface providing low-level methods for building and executing REST requests.
+ * This interface specifies all connection properties
+ * that are usually configurable by an end user.
  * 
  * @author Ruud Senden
  *
  */
-public interface IRestConnection {
-	public abstract <T> T executeRequest(String httpMethod, Builder builder, Entity<?> entity, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType);
-	public abstract WebTarget getBaseResource();
-	public abstract WebTarget getResource(String url);
-	public abstract Client getClient();
+public interface IRestConnectionConfig {
+	public String getBaseUrl();
+	public ProxyConfig getProxy();
+	public CredentialsProvider getCredentialsProvider();
+	public Map<String, Object> getConnectionProperties();
 }

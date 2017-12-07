@@ -22,58 +22,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.fod.connection;
-
-import javax.ws.rs.core.Form;
+package com.fortify.api.ssc.connection;
 
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
 import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * <p>This abstract {@link IRestConnectionRetriever} will create 
- * an authenticated FoD REST connection based on the configured 
- * properties like base URL, proxy configuration and authentication 
- * data.</p>
+ * <p>This {@link IRestConnectionRetriever} will create 
+ * an authenticated SSC REST connection based on the given
+ * configuration</p>
  * 
- * <p>Subclasses will need to provide the actual authentication
- * data.</p>  
+ * @author Ruud Senden
+ *
  */
-public abstract class AbstractFoDConnectionRetriever extends AbstractRestConnectionRetriever<FoDAuthenticatingRestConnection> implements IFoDConnectionRetriever {
-	private String baseUrl = "https://hpfod.com/";
-	private String scope = "https://hpfod.com/tenant";
-	private String grantType;
+@Getter @Setter
+public abstract class SSCConnectionRetriever extends AbstractRestConnectionRetriever<SSCAuthenticatingRestConnection, SSCRestConnectionConfig> implements ISSCConnectionRetriever {
+	@Override
+	protected SSCRestConnectionConfig createConfig() {
+		return new SSCRestConnectionConfig();
+	}
 	
-	protected final FoDAuthenticatingRestConnection createConnection() {
-		Form form = new Form();
-		form.param("scope",getScope());
-		form.param("grant_type", getGrantType());
-		addCredentials(form);
-		return new FoDAuthenticatingRestConnection(getBaseUrl(), form, getProxy(), getConnectionProperties());
-	}
-
-	protected abstract void addCredentials(Form form);
-	
-	public String getBaseUrl() {
-		return baseUrl;
-	}
-
-	public void setBaseUrl(String baseUrl) {
-		this.baseUrl = baseUrl;
-	}
-
-	public String getScope() {
-		return scope;
-	}
-
-	public void setScope(String scope) {
-		this.scope = scope;
-	}
-
-	public String getGrantType() {
-		return grantType;
-	}
-
-	public void setGrantType(String grantType) {
-		this.grantType = grantType;
+	@Override
+	protected SSCAuthenticatingRestConnection createConnection() {
+		return new SSCAuthenticatingRestConnection(getConfig());
 	}
 }

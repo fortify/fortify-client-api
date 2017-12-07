@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,30 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection;
+package com.fortify.api.webinspect.connection;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
-import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
+import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
-import lombok.Getter;
-import lombok.Setter;
-
-/**
- * <p>This abstract {@link IRestConnectionRetriever} will create 
- * an authenticated SSC REST connection based on the configured 
- * properties like base URL, proxy configuration and authentication 
- * data.</p>
- * 
- * <p>Subclasses will need to provide the actual authentication
- * data.</p>  
- * 
- * @author Ruud Senden
- *
- */
-@Getter @Setter
-public abstract class AbstractSSCConnectionRetriever extends AbstractRestConnectionRetriever<SSCAuthenticatingRestConnection> implements ISSCConnectionRetriever {
-	@Override
-	protected String getDefaultBaseUrl() {
-		return "https://localhost:8080/ssc";
-	}
-}
+public interface IWebInspectRestConnectionBuilder extends IRestConnectionBuilder<WebInspectAuthenticatingRestConnection, IWebInspectRestConnectionBuilder> {}

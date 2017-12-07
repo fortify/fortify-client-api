@@ -32,14 +32,11 @@ import lombok.Data;
  * This class defines a proxy configuration.
  */
 @Data
-public class ProxyConfiguration {
+public class ProxyConfig {
 	private URI uri;
 	private String userName;
 	private String password;
 	
-	public void setUri(URI uri) {
-		this.uri = uri;
-	}
 	public String getUriString() {
 		return uri==null?null:uri.toString();
 	}

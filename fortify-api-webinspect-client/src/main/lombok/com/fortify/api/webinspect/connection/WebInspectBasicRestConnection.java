@@ -23,11 +23,8 @@
  ******************************************************************************/
 package com.fortify.api.webinspect.connection;
 
-import java.util.Map;
-
 import javax.ws.rs.client.Invocation.Builder;
 
-import com.fortify.api.util.rest.connection.ProxyConfiguration;
 import com.fortify.api.util.rest.connection.RestConnection;
 import com.fortify.api.util.rest.connection.RestConnectionWithCache;
 
@@ -38,9 +35,9 @@ import com.fortify.api.util.rest.connection.RestConnectionWithCache;
  * @author Ruud Senden
  *
  */
-public class WebInspectBasicRestConnection extends RestConnectionWithCache {
-	public WebInspectBasicRestConnection(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties) {
-		super(baseUrl, proxy, connectionProperties, null);
+public class WebInspectBasicRestConnection extends RestConnectionWithCache<WebInspectRestConnectionConfig> {
+	public WebInspectBasicRestConnection(WebInspectRestConnectionConfig config) {
+		super(config);
 	}
 	
 	/**

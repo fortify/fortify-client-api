@@ -24,14 +24,13 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection;
 
-import java.util.Map;
-
 import javax.ws.rs.client.Invocation.Builder;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.auth.Credentials;
 
 import com.fortify.api.ssc.connection.api.SSCAPI;
-import com.fortify.api.util.rest.connection.ProxyConfiguration;
+import com.fortify.api.util.rest.connection.IRestConnection;
 
 /**
  * This class provides an authenticated REST connection for SSC.
@@ -45,19 +44,19 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	public final SSCAPI api() {
 		return api;
 	}
-
-	@lombok.Builder
-	private SSCAuthenticatingRestConnection(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties,
-			String authToken, String userName, String password) {
-		super(baseUrl, proxy, connectionProperties);
-		tokenFactory = getTokenFactory(authToken, userName, password);
+	
+	public SSCAuthenticatingRestConnection(SSCRestConnectionConfig config) {
+		super(config);
+		this.tokenFactory = getTokenFactory(config.getCredentials());
 	}
 
-	private ISSCTokenFactory getTokenFactory(String authToken, String userName, String password) {
-		if ( StringUtils.isNotBlank(authToken) ) {
-			return new SSCTokenFactoryTokenCredentials(authToken);
+	private ISSCTokenFactory getTokenFactory(Credentials credentials) {
+		String userName = credentials.getUserPrincipal()==null?null:credentials.getUserPrincipal().getName();
+		String password = credentials.getPassword();
+		if ( StringUtils.isBlank(userName) || "apitoken".equalsIgnoreCase(userName) ) {
+			return new SSCTokenFactoryTokenCredentials(password);
 		} else if ( StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password) ) {
-			return new SSCTokenFactoryUserCredentials(getBaseUrl(), userName, password, getProxy(), getConnectionProperties());
+			return new SSCTokenFactoryUserCredentials(getConfig(), userName, password);
 		} else {
 			throw new RuntimeException("Either SSC authentication token, or user name and password need to be specified");
 		}
@@ -70,5 +69,25 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	public Builder updateBuilder(Builder builder) {
 		return super.updateBuilder(builder)
 				.header("Authorization", "FortifyToken "+tokenFactory.getToken());
+	}
+	
+	public static final ISSCRestConnectionBuilder builder() {
+		return (ISSCRestConnectionBuilder)builder(new SSCRestConnectionBuilderInvocationHandler());
+	}
+	
+	private static final class SSCRestConnectionBuilderInvocationHandler extends RestConnectionBuilderInvocationHandler<SSCRestConnectionConfig> {
+		public SSCRestConnectionBuilderInvocationHandler() {
+			super(new SSCRestConnectionConfig());
+		}
+		
+		@Override
+		public IRestConnection build(SSCRestConnectionConfig config) {
+			return new SSCAuthenticatingRestConnection(config);
+		}
+		
+		@Override
+		protected Class<?> getInterfaceType() {
+			return ISSCRestConnectionBuilder.class;
+		}
 	}
 }

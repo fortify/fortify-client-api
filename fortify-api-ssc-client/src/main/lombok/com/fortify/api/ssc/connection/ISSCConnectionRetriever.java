@@ -34,5 +34,4 @@ import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
  *
  */
 public interface ISSCConnectionRetriever extends IRestConnectionRetriever<SSCAuthenticatingRestConnection> {
-	public abstract String getBaseUrl();
 }

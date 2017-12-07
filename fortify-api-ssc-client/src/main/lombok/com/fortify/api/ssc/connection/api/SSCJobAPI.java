@@ -29,6 +29,7 @@ import java.util.Date;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.SSCRestConnectionConfig;
 import com.fortify.api.ssc.connection.api.query.SSCJobsQuery;
 import com.fortify.api.ssc.connection.api.query.SSCJobsQuery.SSCJobsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
@@ -72,7 +73,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 	}
 	
 	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://localhost:1710/ssc").userName("ssc").password("Admin123!").build();
+		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection(new SSCRestConnectionConfig().uri("http://ssc:Admin123!@localhost:1710/ssc"));
 		JSONMap job = conn.api().job().query().maxResults(1).build().getUnique();
 		System.out.println(job);
 		

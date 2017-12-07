@@ -48,23 +48,23 @@ import com.fortify.api.util.rest.query.PagingData;
  * @author Ruud Senden
  */
 public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithCacheQuery<SSCAuthenticatingRestConnection, JSONMap> {
-	protected Map<String, String> getParamQAnds() {
+	protected Map<String, String> paramQAnds() {
 		return null;
 	}
 
-	protected List<String> getParamFields() {
+	protected List<String> paramFields() {
 		return null;
 	}
 
-	protected String getParamOrderBy() {
+	protected String paramOrderBy() {
 		return null;
 	}
 
-	protected String getParamGroupBy() {
+	protected String paramGroupBy() {
 		return null;
 	}
 
-	protected String getParamEmbed() {
+	protected String paramEmbed() {
 		return null;
 	}
 	
@@ -87,7 +87,7 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 	protected abstract String getTargetPath();
 
 	protected WebTarget addParameterQuery(WebTarget webTarget) {
-		Map<String,String> paramQAnds = getParamQAnds();
+		Map<String,String> paramQAnds = paramQAnds();
 		if ( MapUtils.isNotEmpty(paramQAnds) ) {
 			StringBuffer q = new StringBuffer();
 			for ( Map.Entry<String, String> entry : paramQAnds.entrySet() ) {
@@ -104,7 +104,7 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 	}
 
 	protected WebTarget addParameterFields(WebTarget webTarget) {
-		List<String> paramFields = getParamFields();
+		List<String> paramFields = paramFields();
 		if ( CollectionUtils.isNotEmpty(paramFields) ) {
 			webTarget = webTarget.queryParam("fields", StringUtils.join(paramFields, ","));
 		}
@@ -112,15 +112,15 @@ public abstract class AbstractSSCEntityQuery extends AbstractRestConnectionWithC
 	}
 	
 	protected WebTarget addParameterOrderBy(WebTarget webTarget) {
-		return addParameterIfNotBlank(webTarget, "orderby", getParamOrderBy());
+		return addParameterIfNotBlank(webTarget, "orderby", paramOrderBy());
 	}
 	
 	protected WebTarget addParameterGroupBy(WebTarget webTarget) {
-		return addParameterIfNotBlank(webTarget, "groupby", getParamGroupBy());
+		return addParameterIfNotBlank(webTarget, "groupby", paramGroupBy());
 	}
 	
 	protected WebTarget addParameterEmbed(WebTarget webTarget) {
-		return addParameterIfNotBlank(webTarget, "embed", getParamEmbed());
+		return addParameterIfNotBlank(webTarget, "embed", paramEmbed());
 	}
 	
 	/**

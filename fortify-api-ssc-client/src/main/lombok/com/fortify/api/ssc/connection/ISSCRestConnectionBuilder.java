@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -24,25 +24,6 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
-/**
- * <p>This {@link AbstractSSCConnectionRetriever} implementation
- * allows for configuring token credentials used to connect to SSC.</p>
- * 
- * @author Ruud Senden
- *
- */
-@Getter @Setter
-public class SSCConnectionRetrieverTokenCredentials extends AbstractSSCConnectionRetriever {
-	private String authToken;
-	
-	protected final SSCAuthenticatingRestConnection createConnection() {
-		return SSCAuthenticatingRestConnection.builder()
-				.baseUrl(getBaseUrl())
-				.proxy(getProxy())
-				.connectionProperties(getConnectionProperties())
-				.authToken(getAuthToken()).build();
-	}
-}
+public interface ISSCRestConnectionBuilder extends IRestConnectionBuilder<SSCAuthenticatingRestConnection, ISSCRestConnectionBuilder> {}

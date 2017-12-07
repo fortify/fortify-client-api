@@ -24,11 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection;
 
-import java.util.Map;
-
 import javax.ws.rs.client.Invocation.Builder;
 
-import com.fortify.api.util.rest.connection.ProxyConfiguration;
 import com.fortify.api.util.rest.connection.RestConnection;
 import com.fortify.api.util.rest.connection.RestConnectionWithCache;
 
@@ -41,10 +38,10 @@ import com.fortify.api.util.rest.connection.RestConnectionWithCache;
  * @author Ruud Senden
  *
  */
-public class SSCBasicRestConnection extends RestConnectionWithCache {
+public class SSCBasicRestConnection extends RestConnectionWithCache<SSCRestConnectionConfig> {
 	
-	public SSCBasicRestConnection(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties) {
-		super(baseUrl, proxy, connectionProperties, null);
+	public SSCBasicRestConnection(SSCRestConnectionConfig config) {
+		super(config);
 	}
 	
 	/**

@@ -26,19 +26,20 @@ package com.fortify.api.wie.connection;
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
 
 /**
- * This {@link AbstractRestConnectionFactory} implementation allows for
+ * This {@link AbstractRestConnectionRetriever} implementation allows for
  * creating {@link WIEAuthenticatingRestConnection} instances.
  * 
  * @author Ruud Senden
  *
  */
-public class WIEConnectionRetriever extends AbstractRestConnectionRetriever<WIEAuthenticatingRestConnection> {
+public class WIEConnectionRetriever extends AbstractRestConnectionRetriever<WIEAuthenticatingRestConnection, WIERestConnectionConfig> {
+	@Override
+	protected WIERestConnectionConfig createConfig() {
+		return new WIERestConnectionConfig();
+	}
+	
 	@Override
 	protected WIEAuthenticatingRestConnection createConnection() {
-		return WIEAuthenticatingRestConnection.builder()
-				.baseUrl(getBaseUrl())
-				.proxy(getProxy())
-				.connectionProperties(getConnectionProperties())
-				.credentials(getCredentials()).build();
+		return new WIEAuthenticatingRestConnection(getConfig());
 	}
 }

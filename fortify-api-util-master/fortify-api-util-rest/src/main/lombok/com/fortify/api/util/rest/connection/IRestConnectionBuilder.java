@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,54 +22,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.fod.connection;
+package com.fortify.api.util.rest.connection;
 
-import javax.ws.rs.core.Form;
+import java.util.Map;
 
-/**
- * <p>This {@link AbstractFoDConnectionRetriever} implementation
- * allows for configuring user credentials used to connect to FoD.</p> 
- */
-public class FoDConnectionRetrieverUserCredentials extends AbstractFoDConnectionRetriever {
-	private String tenant;
-	private String userName;
-	private String password;
+import org.apache.http.auth.Credentials;
+
+public interface IRestConnectionBuilder<ConnType extends IRestConnection, T extends IRestConnectionBuilder<ConnType, T>> {
+	T baseUrl(String baseUrl);
+
+	T proxy(ProxyConfig proxy);
+
+	T connectionProperties(String connectionProperties);
+
+	T connectionProperties(Map<String, Object> connectionProperties);
+
+	T credentials(Credentials credentials);
+
+	T credentials(String credentials);
+
+	T uri(String uriWithProperties);
 	
-	public FoDConnectionRetrieverUserCredentials() {
-		setGrantType("password");
-	}
-	
-	@Override
-	public void addCredentials(Form form) {
-		form.param("username", getUserNameWithTenant());
-		form.param("password", getPassword());
-	}
-
-	public String getTenant() {
-		return tenant;
-	}
-
-	public void setTenant(String tenant) {
-		this.tenant = tenant;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-	
-	public String getUserNameWithTenant() {
-		return getTenant() + "\\" + getUserName();
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
+	public ConnType build();
 }

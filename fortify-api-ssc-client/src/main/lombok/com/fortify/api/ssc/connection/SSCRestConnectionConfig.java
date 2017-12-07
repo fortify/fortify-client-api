@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,24 +22,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.connection;
+package com.fortify.api.ssc.connection;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
+import org.apache.http.client.CredentialsProvider;
 
-/**
- * Interface providing low-level methods for building and executing REST requests.
- * 
- * @author Ruud Senden
- *
- */
-public interface IRestConnection {
-	public abstract <T> T executeRequest(String httpMethod, Builder builder, Entity<?> entity, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType);
-	public abstract WebTarget getBaseResource();
-	public abstract WebTarget getResource(String url);
-	public abstract Client getClient();
+import com.fortify.api.util.rest.connection.RestConnectionConfig;
+
+public class SSCRestConnectionConfig extends RestConnectionConfig<SSCRestConnectionConfig> {
+	/**
+	 * For SSC we require our own credentials handling, so this method returns null
+	 */
+	@Override
+	public CredentialsProvider getCredentialsProvider() {
+		return null;
+	}
 }

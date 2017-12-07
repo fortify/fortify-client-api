@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,42 +22,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.fod.connection;
+package com.fortify.api.wie.connection;
 
-import java.util.Map;
+import org.apache.http.client.CredentialsProvider;
 
-import javax.ws.rs.client.Invocation.Builder;
+import com.fortify.api.util.rest.connection.RestConnectionConfig;
 
-import org.apache.http.client.ServiceUnavailableRetryStrategy;
-
-import com.fortify.api.util.rest.connection.ProxyConfiguration;
-import com.fortify.api.util.rest.connection.RestConnection;
-import com.fortify.api.util.rest.connection.TooManyRequestsRetryStrategy;
-
-/**
- * This class provides a basic, non-authenticating REST connection
- * for FoD. It's main characteristics compared to a standard 
- * {@link RestConnection} is that it will add an 
- * <code>Accept: application/json</code> header, and enable a 
- * 'service unavailable' strategy to retry requests that fail 
- * due to FoD rate limiting.
- */
-public class FoDBasicRestConnection extends RestConnection {
-	public FoDBasicRestConnection(String baseUrl, ProxyConfiguration proxy, Map<String, Object> connectionProperties) {
-		super(baseUrl, proxy, connectionProperties, null);
-	}
-	
+public class WIERestConnectionConfig extends RestConnectionConfig<WIERestConnectionConfig> {
 	/**
-	 * Update the {@link Builder} to add the Accept header.
+	 * For WebInspect we require our own credentials handling, so this method returns null
 	 */
 	@Override
-	public Builder updateBuilder(Builder builder) {
-		return super.updateBuilder(builder)
-				.accept("application/json");
-	}
-	
-	@Override
-	protected ServiceUnavailableRetryStrategy getServiceUnavailableRetryStrategy() {
-		return new TooManyRequestsRetryStrategy("X-Rate-Limit-Reset");
+	public CredentialsProvider getCredentialsProvider() {
+		return null;
 	}
 }
