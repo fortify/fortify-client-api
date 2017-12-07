@@ -26,4 +26,11 @@ package com.fortify.api.wie.connection;
 
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
+/**
+ * This interface is used to implement the {@link WIEAuthenticatingRestConnection#builder()} method, and
+ * is not actually implemented by any classes. See {@link IRestConnectionBuilder} for more details.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public interface IWIERestConnectionBuilder extends IRestConnectionBuilder<WIEAuthenticatingRestConnection, IWIERestConnectionBuilder> {}

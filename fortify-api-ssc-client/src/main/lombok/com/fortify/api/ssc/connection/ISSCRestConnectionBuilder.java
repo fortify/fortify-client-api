@@ -26,4 +26,11 @@ package com.fortify.api.ssc.connection;
 
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
+/**
+ * This interface is used to implement the {@link SSCAuthenticatingRestConnection#builder()} method, and
+ * is not actually implemented by any classes. See {@link IRestConnectionBuilder} for more details.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public interface ISSCRestConnectionBuilder extends IRestConnectionBuilder<SSCAuthenticatingRestConnection, ISSCRestConnectionBuilder> {}

@@ -26,6 +26,13 @@ package com.fortify.api.fod.connection;
 
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
+/**
+ * This interface is used to implement the {@link FoDAuthenticatingRestConnection#builder()} method, and
+ * is not actually implemented by any classes. See {@link IRestConnectionBuilder} for more details.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public interface IFoDRestConnectionBuilder extends IRestConnectionBuilder<FoDAuthenticatingRestConnection, IFoDRestConnectionBuilder> {
 	public IFoDRestConnectionBuilder clientId(String clientId);
 	public IFoDRestConnectionBuilder clientSecret(String clientSecret);

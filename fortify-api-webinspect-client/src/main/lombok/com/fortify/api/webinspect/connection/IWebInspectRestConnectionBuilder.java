@@ -26,4 +26,11 @@ package com.fortify.api.webinspect.connection;
 
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
+/**
+ * This interface is used to implement the {@link WebInspectAuthenticatingRestConnection#builder()} method, and
+ * is not actually implemented by any classes. See {@link IRestConnectionBuilder} for more details.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public interface IWebInspectRestConnectionBuilder extends IRestConnectionBuilder<WebInspectAuthenticatingRestConnection, IWebInspectRestConnectionBuilder> {}
