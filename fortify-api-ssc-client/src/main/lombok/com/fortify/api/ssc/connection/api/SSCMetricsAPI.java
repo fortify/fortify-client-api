@@ -25,7 +25,6 @@
 package com.fortify.api.ssc.connection.api;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.SSCRestConnectionConfig;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionMetricHistoriesQuery;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionMetricHistoriesQuery.SSCApplicationVersionMetricHistoriesQueryBuilder;
 
@@ -43,7 +42,7 @@ public class SSCMetricsAPI extends AbstractSSCAPI {
 	}
 	
 	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection(new SSCRestConnectionConfig().uri("http://ssc:Admin123!@localhost:1710/ssc"));
+		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
 		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.variable).useCache(true).build().getAll());
 		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.performanceIndicator).useCache(true).build().getAll());
 	}

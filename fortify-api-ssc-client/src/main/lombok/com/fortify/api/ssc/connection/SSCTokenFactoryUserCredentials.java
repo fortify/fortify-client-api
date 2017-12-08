@@ -51,8 +51,8 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	private final String userName;
 	private final String password;
 	private SSCTokenFactoryUserCredentials.TokenData tokenData = null;
-	public SSCTokenFactoryUserCredentials(SSCRestConnectionConfig config, String userName, String password) {
-		conn = new SSCBasicRestConnection(config);
+	public SSCTokenFactoryUserCredentials(SSCBasicRestConnection conn, String userName, String password) {
+		this.conn = conn;
 		this.userName = userName;
 		this.password = password;
 	}

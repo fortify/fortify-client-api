@@ -43,7 +43,7 @@ import lombok.Setter;
  * @author Ruud Senden
  */
 @Setter(AccessLevel.PROTECTED)
-public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends RestConnectionWithCache<?>, ResponseType> 
+public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends RestConnectionWithCache, ResponseType> 
 	extends AbstractRestConnectionQuery<ConnType, ResponseType>
 {	
 	protected boolean useCache() {

@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection;
 
+import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection.SSCAuthenticatingRestConnectionBuilder;
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
 import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
@@ -35,14 +36,9 @@ import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
  * @author Ruud Senden
  *
  */
-public abstract class SSCConnectionRetriever extends AbstractRestConnectionRetriever<SSCAuthenticatingRestConnection, SSCRestConnectionConfig> implements ISSCConnectionRetriever {
+public abstract class SSCConnectionRetriever extends AbstractRestConnectionRetriever<SSCAuthenticatingRestConnection, SSCAuthenticatingRestConnectionBuilder> implements ISSCConnectionRetriever {
 	@Override
-	protected SSCRestConnectionConfig createConfig() {
-		return new SSCRestConnectionConfig();
-	}
-	
-	@Override
-	protected SSCAuthenticatingRestConnection createConnection() {
-		return new SSCAuthenticatingRestConnection(getConfig());
+	protected SSCAuthenticatingRestConnectionBuilder createConfig() {
+		return new SSCAuthenticatingRestConnectionBuilder();
 	}
 }

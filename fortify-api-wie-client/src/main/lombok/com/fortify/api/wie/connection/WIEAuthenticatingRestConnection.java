@@ -38,7 +38,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
-import com.fortify.api.util.rest.connection.IRestConnection;
+import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 import com.fortify.api.util.rest.connection.RestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.wie.connection.api.WIEAPI;
@@ -53,9 +53,13 @@ import com.fortify.api.wie.connection.api.WIEAPI;
 public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 	private String apiKey = null;
 	private final WIEAPI api = new WIEAPI(this);
+	private final WIEBasicRestConnection basicConn;
+	private final Credentials credentials;
 	
-	public WIEAuthenticatingRestConnection(WIERestConnectionConfig config) {
+	public WIEAuthenticatingRestConnection(RestConnectionConfig<?> config) {
 		super(config);
+		this.basicConn = new WIEBasicRestConnection(config);
+		this.credentials = config.getCredentials();
 	}
 	
 	public final WIEAPI api() {
@@ -66,15 +70,13 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 	protected WebTarget updateWebTarget(WebTarget webTarget) {
 		webTarget = super.updateWebTarget(webTarget);
 		if ( apiKey == null ) {
-			Credentials credentials = getConfig().getCredentials();
 			if ( credentials==null ) {
 				throw new IllegalStateException("No WIE credentials have been configured");
 			}
 			JSONMap auth = new JSONMap();
 			auth.put("username", credentials.getUserPrincipal().getName());
 			auth.put("password", credentials.getPassword());
-			apiKey = new WIEBasicRestConnection(getConfig())
-					.executeRequest(HttpMethod.POST, getBaseResource().path("/api/v1/auth"),
+			apiKey = basicConn.executeRequest(HttpMethod.POST, getBaseResource().path("/api/v1/auth"),
 							Entity.entity(auth, MediaType.APPLICATION_JSON), JSONMap.class)
 					.get("data", String.class);
 		}
@@ -108,26 +110,16 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
         }
 	}
 	
-	public static final IWIERestConnectionBuilder builder() {
-		return (IWIERestConnectionBuilder)builder(new WIERestConnectionBuilderInvocationHandler());
+	public static final WIEAuthenticatingRestConnectionBuilder builder() {
+		return new WIEAuthenticatingRestConnectionBuilder();
 	}
 	
-	private static final class WIERestConnectionBuilderInvocationHandler extends RestConnectionBuilderInvocationHandler<WIERestConnectionConfig> {
-		public WIERestConnectionBuilderInvocationHandler() {
-			super(new WIERestConnectionConfig());
-		}
-		
+	public static final class WIEAuthenticatingRestConnectionBuilder extends RestConnectionConfigWithoutCredentialsProvider<WIEAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<WIEAuthenticatingRestConnection> {
 		@Override
-		public IRestConnection build(WIERestConnectionConfig config) {
-			return new WIEAuthenticatingRestConnection(config);
-		}
-		
-		@Override
-		protected Class<?> getInterfaceType() {
-			return IWIERestConnectionBuilder.class;
+		public WIEAuthenticatingRestConnection build() {
+			return new WIEAuthenticatingRestConnection(this);
 		}
 	}
-	
 	
 	
 	public static void main(String[] args) {

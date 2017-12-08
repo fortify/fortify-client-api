@@ -56,7 +56,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	 * @return Browser-accessible deep link for the current application version
 	 */
 	public final String getApplicationVersionDeepLink(String applicationVersionId) {
-		return conn().getConfig().getBaseUrl()+"html/ssc/index.jsp#!/version/"+applicationVersionId+"/fix";
+		return conn().getBaseUrl()+"html/ssc/index.jsp#!/version/"+applicationVersionId+"/fix";
 	}
 	
 	public static void main(String[] args) {

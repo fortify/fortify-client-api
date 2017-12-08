@@ -30,7 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.auth.Credentials;
 
 import com.fortify.api.ssc.connection.api.SSCAPI;
-import com.fortify.api.util.rest.connection.IRestConnection;
+import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
 /**
  * This class provides an authenticated REST connection for SSC.
@@ -45,18 +45,23 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 		return api;
 	}
 	
-	public SSCAuthenticatingRestConnection(SSCRestConnectionConfig config) {
+	protected SSCAuthenticatingRestConnection(RestConnectionConfig<?> config) {
 		super(config);
-		this.tokenFactory = getTokenFactory(config.getCredentials());
+		this.tokenFactory = getTokenFactory(config);
+	}
+	
+	public static final SSCAuthenticatingRestConnectionBuilder builder() {
+		return new SSCAuthenticatingRestConnectionBuilder();
 	}
 
-	private ISSCTokenFactory getTokenFactory(Credentials credentials) {
+	private ISSCTokenFactory getTokenFactory(RestConnectionConfig<?> config) {
+		Credentials credentials = config.getCredentials();
 		String userName = credentials.getUserPrincipal()==null?null:credentials.getUserPrincipal().getName();
 		String password = credentials.getPassword();
 		if ( StringUtils.isBlank(userName) || "apitoken".equalsIgnoreCase(userName) ) {
 			return new SSCTokenFactoryTokenCredentials(password);
 		} else if ( StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password) ) {
-			return new SSCTokenFactoryUserCredentials(getConfig(), userName, password);
+			return new SSCTokenFactoryUserCredentials(new SSCBasicRestConnection(config), userName, password);
 		} else {
 			throw new RuntimeException("Either SSC authentication token, or user name and password need to be specified");
 		}
@@ -71,23 +76,10 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 				.header("Authorization", "FortifyToken "+tokenFactory.getToken());
 	}
 	
-	public static final ISSCRestConnectionBuilder builder() {
-		return (ISSCRestConnectionBuilder)builder(new SSCRestConnectionBuilderInvocationHandler());
-	}
-	
-	private static final class SSCRestConnectionBuilderInvocationHandler extends RestConnectionBuilderInvocationHandler<SSCRestConnectionConfig> {
-		public SSCRestConnectionBuilderInvocationHandler() {
-			super(new SSCRestConnectionConfig());
-		}
-		
+	public static final class SSCAuthenticatingRestConnectionBuilder extends RestConnectionConfigWithoutCredentialsProvider<SSCAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<SSCAuthenticatingRestConnection> {
 		@Override
-		public IRestConnection build(SSCRestConnectionConfig config) {
-			return new SSCAuthenticatingRestConnection(config);
-		}
-		
-		@Override
-		protected Class<?> getInterfaceType() {
-			return ISSCRestConnectionBuilder.class;
+		public SSCAuthenticatingRestConnection build() {
+			return new SSCAuthenticatingRestConnection(this);
 		}
 	}
 }

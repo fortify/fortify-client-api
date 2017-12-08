@@ -27,14 +27,15 @@ package com.fortify.api.util.rest.connection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,9 +58,15 @@ import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
 import org.apache.commons.lang.CharEncoding;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.ClientResponse;
@@ -74,7 +81,9 @@ import com.fortify.api.util.rest.connection.connector.ApacheClientProperties;
 import com.fortify.api.util.rest.connection.connector.ApacheConnectorProvider;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
+import com.google.common.base.Splitter;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -91,13 +100,23 @@ import lombok.ToString;
  * TODO Update JavaDoc for executeRequest methods
  */
 @ToString
-public class RestConnection<ConfigType extends IRestConnectionConfig> implements IRestConnection {
+public class RestConnection implements IRestConnection {
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
-	@Getter private final ConfigType config;
+	@Getter private final String baseUrl;
+	private final ProxyConfig proxy;
+	private final Map<String, Object> connectionProperties;
+	private final CredentialsProvider credentialsProvider;
 	private Client client;
 	
-	public RestConnection(ConfigType config) {
-		this.config = config;
+	protected RestConnection(RestConnectionConfig<?> config) {
+		this.baseUrl = config.getBaseUrl();
+		this.proxy = config.getProxy();
+		this.connectionProperties = config.getConnectionProperties();
+		this.credentialsProvider = config.getCredentialsProvider();
+	}
+	
+	public static final RestConnectionBuilder restConnectionBuilder() {
+		return new RestConnectionBuilder();
 	}
 	
 	/**
@@ -274,7 +293,7 @@ public class RestConnection<ConfigType extends IRestConnectionConfig> implements
 	
 	protected RuntimeException getUnsuccesfulResponseException(Response response) {
 		String reasonPhrase = getReasonPhrase(response);
-		String msg = "Error accessing remote system "+config.getBaseUrl()+": "+reasonPhrase;
+		String msg = "Error accessing remote system "+baseUrl+": "+reasonPhrase;
 		String longMsg = msg+", response contents: \n"+response.readEntity(String.class);
 		// By adding a new exception as the cause, we make sure that the response
 		// contents will be logged whenever this RuntimeException is logged.
@@ -308,7 +327,7 @@ public class RestConnection<ConfigType extends IRestConnectionConfig> implements
 	 * @return A {@link WebTarget} instance for the configured REST base URL.
 	 */
 	public final WebTarget getBaseResource() {
-		return getResource(config.getBaseUrl());
+		return getResource(baseUrl);
 	}
 	
 	/**
@@ -370,18 +389,17 @@ public class RestConnection<ConfigType extends IRestConnectionConfig> implements
 	
 	protected ClientConfig createClientConfig() {
 		ClientConfig clientConfig = new ClientConfig();
-		ProxyConfig proxy = config.getProxy();
 		if ( proxy != null && proxy.getUri() != null ) {
 			clientConfig.property(ClientProperties.PROXY_URI, proxy.getUriString());
 			clientConfig.property(ClientProperties.PROXY_USERNAME, proxy.getUserName());
 			clientConfig.property(ClientProperties.PROXY_PASSWORD, proxy.getPassword());
 		}
 		clientConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
-		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, config.getCredentialsProvider());
+		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, credentialsProvider);
 		clientConfig.property(ApacheClientProperties.SERVICE_UNAVAILABLE_RETRY_STRATEGY, getServiceUnavailableRetryStrategy());
 		clientConfig.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
-		if ( config.getConnectionProperties() != null ) {
-			for ( Map.Entry<String,Object> property : config.getConnectionProperties().entrySet() ) {
+		if ( connectionProperties != null ) {
+			for ( Map.Entry<String,Object> property : connectionProperties.entrySet() ) {
 				clientConfig.property(property.getKey(), property.getValue());
 			}
 		}
@@ -493,40 +511,189 @@ public class RestConnection<ConfigType extends IRestConnectionConfig> implements
 	    }
 	}
 	
-	protected static final Object builder(RestConnectionBuilderInvocationHandler<?> ih) {
-		return Proxy.newProxyInstance(
-				ih.getClass().getClassLoader(), 
-				  new Class[] { ih.getInterfaceType() },
-				  ih);
-	}
-	
-	protected static abstract class RestConnectionBuilderInvocationHandler<ConfigType extends IRestConnectionConfig> implements InvocationHandler {
-		private final ConfigType config;
+	@Data
+	public static class RestConnectionConfig<T extends RestConnectionConfig<T>> {
+		private String baseUrl = getDefaultBaseUrl();
+		private ProxyConfig proxy = getDefaultProxy();
+		private Map<String, Object> connectionProperties = getDefaultConnectionProperties();
+		private Credentials credentials = getDefaultCredentials();
 		
-		protected RestConnectionBuilderInvocationHandler(ConfigType config) {
-			this.config = config;
-		}
-		
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			if ( "build".equals(method.getName()) ) {
-				return build(config);
-			} else {
-				config.getClass().getMethod(method.getName(), getParameterTypes(args)).invoke(config, args);
-				return proxy;
-			}
-		}
-		
-		private Class<?>[] getParameterTypes(Object[] args) {
-			Class<?>[] result = new Class<?>[args.length];
-			for ( int i = 0 ; i < args.length ; i++ ) {
-				result[i] = args[i].getClass();
-			}
+		/**
+		 * Get the {@link CredentialsProvider} to use to authenticate with the
+		 * REST service. This default implementation calls {@link #createCredentialsProvider()}
+		 * to create a {@link CredentialsProvider} instance, and then sets the
+		 * credentials as configured through {@link #setCredentials(Credentials)}
+		 * or {@link #credentials(Credentials)} with {@link AuthScope#ANY}.
+		 * 
+		 * Implementations that use custom authentication mechanisms should override
+		 * this method to return null.
+		 */
+		public CredentialsProvider getCredentialsProvider() {
+			CredentialsProvider result = createCredentialsProvider();
+			result.setCredentials(AuthScope.ANY, credentials);
 			return result;
 		}
 		
-		protected abstract IRestConnection build(ConfigType config);
-		protected abstract Class<?> getInterfaceType();
+		public T baseUrl(String baseUrl) {
+			setBaseUrl(baseUrl);
+			return getThis();
+		}
+		
+		public T proxy(ProxyConfig proxy) {
+			setProxy(proxy);
+			return getThis();
+		}
+		
+		public T connectionProperties(String connectionProperties) {
+			setConnectionProperties(connectionProperties);
+			return getThis();
+		}
+		
+		public T connectionProperties(Map<String, Object> connectionProperties) {
+			setConnectionProperties(connectionProperties);
+			return getThis();
+		}
+		
+		public T credentials(Credentials credentials) {
+			setCredentials(credentials);
+			return getThis();
+		}
+		
+		public T credentials(String credentials) {
+			setCredentials(credentials);
+			return getThis();
+		}
+		
+		public T uri(String uriWithProperties) {
+			setUri(uriWithProperties);
+			return getThis();
+		}
+		
+		public void setCredentials(Credentials credentials) {
+			this.credentials = credentials;
+		}
+		
+		public void setCredentials(String credentialsString) {
+			setCredentials(new UsernamePasswordCredentials(credentialsString));
+		}
+		
+		public void setConnectionProperties(Map<String, Object> connectionProperties) {
+			this.connectionProperties = connectionProperties;
+		}
+		
+		public void setConnectionProperties(String propertiesString) {
+			if ( StringUtils.isNotBlank(propertiesString) ) {
+				Map<String, Object> orgProperties = Collections.<String,Object>unmodifiableMap(
+						Splitter.on(',').withKeyValueSeparator("=").split(propertiesString));
+				Map<String, Object> connectionProperties = new HashMap<String, Object>();
+				Map<String,String> propertyKeyReplacementMap = getPropertyKeyReplacementMap();
+				for ( Map.Entry<String, Object> entry : orgProperties.entrySet() ) {
+					connectionProperties.put(propertyKeyReplacementMap.getOrDefault(entry.getKey(),  entry.getKey()), entry.getValue());
+				}
+			}
+			setConnectionProperties(connectionProperties);
+		}
+		
+		@SuppressWarnings("unchecked")
+		protected T getThis() {
+			return (T)this;
+		}
+		
+		/**
+		 * Create the {@link CredentialsProvider} to use for requests.
+		 * This default implementation returns a {@link BasicCredentialsProvider}
+		 * instance.
+		 * @return
+		 */
+		protected CredentialsProvider createCredentialsProvider() {
+			return new BasicCredentialsProvider();
+		}
+		
+		protected String getDefaultBaseUrl() { return null; }
+		protected ProxyConfig getDefaultProxy() { return null; }
+		protected Map<String, Object> getDefaultConnectionProperties() { return null; }
+		protected Credentials getDefaultCredentials() { return null; }
+		
+		public void setBaseUrl(String baseUrl) {
+			this.baseUrl = validateAndNormalizeUrl(baseUrl);
+		}
+		
+		/**
+		 * Validate and normalize the given URL. This will check whether the protocol
+		 * is either HTTP or HTTPS, and it will add a trailing slash if necessary.
+		 * @param baseUrl
+		 * @return The validated and normalized URL
+		 */
+		protected String validateAndNormalizeUrl(String baseUrl) {
+			if (!baseUrl.endsWith("/")) {
+				baseUrl = baseUrl+"/";
+			}
+			if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
+				throw new RuntimeException("URL protocol should be either http or https");
+			}
+			return baseUrl;
+		}
+		
+		public void setUri(String uriWithProperties) {
+			String[] parts = uriWithProperties.split(";");
+			if ( parts.length > 0 ) {
+				URI uri = parseUri(parts[0]);
+				setBaseUrl(getBaseUrlFromUri(uri));
+				if ( parts.length > 1 ) {
+					setConnectionProperties(parts[1]);
+				}
+				String userInfo = uri.getUserInfo();
+				if ( StringUtils.isNotBlank(userInfo) ) {
+					setCredentials(userInfo);
+				}
+			}
+			
+		}
+
+		private URI parseUri(String uriString) {
+			try {
+				URI uri = new URI(uriString);
+				return uri;
+			} catch (URISyntaxException e) {
+				throw new IllegalArgumentException("Input cannot be parsed as URI: "+uriString);
+			}
+		}
+
+		protected String getBaseUrlFromUri(URI uri) {
+			if ( uri == null ) {
+				throw new RuntimeException("URI must be configured");
+			}
+			try {
+				return new URI(uri.getScheme(), null, uri.getHost(), uri.getPort(), uri.getPath(), null, null).toString();
+			} catch (URISyntaxException e) {
+				throw new RuntimeException("Error constructing URI");
+			}
+		}
+
+		// TODO add additional property mappings, or provide a more automated way of mapping simple property names to Jersey config properties
+		protected Map<String, String> getPropertyKeyReplacementMap() {
+			Map<String, String> result = new HashMap<String, String>();
+			result.put("connectTimeout", ClientProperties.CONNECT_TIMEOUT);
+			result.put("readTimeout", ClientProperties.READ_TIMEOUT);
+			return result;
+		}
+	}
+	
+	public static class RestConnectionConfigWithoutCredentialsProvider<T extends RestConnectionConfig<T>> extends RestConnectionConfig<T> {
+		/**
+		 * Subclasses require own credentials handling, so this method returns null
+		 */
+		@Override
+		public CredentialsProvider getCredentialsProvider() {
+			return null;
+		}
+	}
+	
+	public static final class RestConnectionBuilder extends RestConnectionConfig<RestConnectionBuilder> implements IRestConnectionBuilder<RestConnection> {
+		@Override
+		public RestConnection build() {
+			return new RestConnection(this);
+		}
 	}
 	
 }

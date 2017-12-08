@@ -38,9 +38,9 @@ import com.fortify.api.util.rest.connection.RestConnectionWithCache;
  * @author Ruud Senden
  *
  */
-public class SSCBasicRestConnection extends RestConnectionWithCache<SSCRestConnectionConfig> {
+public class SSCBasicRestConnection extends RestConnectionWithCache {
 	
-	public SSCBasicRestConnection(SSCRestConnectionConfig config) {
+	protected SSCBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 	}
 	

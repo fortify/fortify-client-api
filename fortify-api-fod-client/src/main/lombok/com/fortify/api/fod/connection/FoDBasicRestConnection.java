@@ -39,8 +39,8 @@ import com.fortify.api.util.rest.connection.TooManyRequestsRetryStrategy;
  * 'service unavailable' strategy to retry requests that fail 
  * due to FoD rate limiting.
  */
-public class FoDBasicRestConnection extends RestConnection<FoDRestConnectionConfig> {
-	public FoDBasicRestConnection(FoDRestConnectionConfig config) {
+public class FoDBasicRestConnection extends RestConnection {
+	public FoDBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 	}
 	

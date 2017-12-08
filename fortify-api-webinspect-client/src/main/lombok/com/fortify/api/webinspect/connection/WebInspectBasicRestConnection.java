@@ -35,8 +35,8 @@ import com.fortify.api.util.rest.connection.RestConnectionWithCache;
  * @author Ruud Senden
  *
  */
-public class WebInspectBasicRestConnection extends RestConnectionWithCache<WebInspectRestConnectionConfig> {
-	public WebInspectBasicRestConnection(WebInspectRestConnectionConfig config) {
+public class WebInspectBasicRestConnection extends RestConnectionWithCache {
+	protected WebInspectBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 	}
 	

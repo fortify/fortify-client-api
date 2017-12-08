@@ -28,6 +28,7 @@ import java.util.Date;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,16 +45,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public final class FoDTokenFactory {
 	static final Log LOG = LogFactory.getLog(FoDTokenFactory.class);
-	private final FoDBasicRestConnection conn;
+	private final FoDBasicRestConnection basicConn;
+	private final Form auth;
 	private FoDTokenFactory.TokenData tokenData = null;
-	public FoDTokenFactory(FoDRestConnectionConfig config) {
-		conn = new FoDBasicRestConnection(config);
+	
+	public FoDTokenFactory(FoDBasicRestConnection basicConn, Form auth) {
+		this.basicConn = basicConn;
+		this.auth = auth;
 	}
 
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {
 			//Map test = conn.executeRequest(HttpMethod.POST, conn.getBaseResource().path("/oauth/token"), Entity.entity(auth, "application/x-www-form-urlencoded"), Map.class);
-			tokenData = conn.executeRequest(HttpMethod.POST, conn.getBaseResource().path("/oauth/token"), Entity.entity(conn.getConfig().getAuth(), "application/x-www-form-urlencoded"), FoDTokenFactory.TokenData.class);
+			tokenData = basicConn.executeRequest(HttpMethod.POST, basicConn.getBaseResource().path("/oauth/token"), Entity.entity(auth, "application/x-www-form-urlencoded"), FoDTokenFactory.TokenData.class);
 			LOG.info("[FoD] Obtained access token, expiring at "+new Date(tokenData.getExpiresAt()).toString());
 		}
 		return tokenData.getAccessToken();

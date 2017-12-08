@@ -24,25 +24,34 @@
  ******************************************************************************/
 package com.fortify.api.fod.connection;
 
+import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection.FoDAuthenticatingRestConnectionBuilder;
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
 import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
+
+import lombok.Getter;
 
 /**
  * <p>This {@link IRestConnectionRetriever} will create 
  * an authenticated FoD REST connection based on the given
  * configuration</p>
  * 
+ * TODO Fix generic on {@link AbstractRestConnectionRetriever} so we can properly extend from that class
+ * 
  * @author Ruud Senden
  *
  */
-public abstract class FoDConnectionRetriever extends AbstractRestConnectionRetriever<FoDAuthenticatingRestConnection, FoDRestConnectionConfig> implements IFoDConnectionRetriever {
-	@Override
-	protected FoDRestConnectionConfig createConfig() {
-		return new FoDRestConnectionConfig();
+public abstract class FoDConnectionRetriever implements IFoDConnectionRetriever {
+	private FoDAuthenticatingRestConnection connection;
+	@Getter private final FoDAuthenticatingRestConnectionBuilder config = createConfig();
+	
+	public final FoDAuthenticatingRestConnection getConnection() {
+		if ( connection == null ) {
+			connection = config.build();
+		}
+		return connection;
 	}
 	
-	@Override
-	protected FoDAuthenticatingRestConnection createConnection() {
-		return new FoDAuthenticatingRestConnection(getConfig());
+	protected FoDAuthenticatingRestConnectionBuilder createConfig() {
+		return FoDAuthenticatingRestConnection.builder();
 	}
 }

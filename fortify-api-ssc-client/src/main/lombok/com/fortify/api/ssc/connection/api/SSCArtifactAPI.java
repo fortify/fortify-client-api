@@ -34,7 +34,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.SSCRestConnectionConfig;
 import com.fortify.api.ssc.connection.api.SSCFileUpDownloadAPI.FileTokenType;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionArtifactsQuery;
 import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionArtifactsQuery.SSCApplicationVersionArtifactsQueryBuilder;
@@ -107,7 +106,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		SSCAuthenticatingRestConnection conn = new SSCAuthenticatingRestConnection(new SSCRestConnectionConfig().uri("http://ssc:Admin123!@localhost:1710/ssc"));
+		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
 		String artifactId = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion("6", new File("c:/work/Programs/HP/SCA/17.20/samples/basic/sampleOutput/WebGoat5.0.fpr"), 60);
 		System.out.println(conn.api().artifact().getArtifactById(artifactId, true));
 		System.out.println(conn.api().artifact().getArtifactById(artifactId, true).get("uploadDate", Date.class).getClass().getName());

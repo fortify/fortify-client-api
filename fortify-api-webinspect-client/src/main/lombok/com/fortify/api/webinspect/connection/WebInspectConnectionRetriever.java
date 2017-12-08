@@ -1,17 +1,18 @@
 /*******************************************************************************
- * (c) Copyright 2017 Hewlett Packard Enterprise Development LP
+ * (c) Copyright 2017 EntIT Software LLC
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the Software"),
- * to deal in the Software without restriction, including without limitation 
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, 
- * and/or sell copies of the Software, and to permit persons to whom the 
- * Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a 
+ * copy of this software and associated documentation files (the 
+ * "Software"), to deal in the Software without restriction, including without 
+ * limitation the rights to use, copy, modify, merge, publish, distribute, 
+ * sublicense, and/or sell copies of the Software, and to permit persons to 
+ * whom the Software is furnished to do so, subject to the following 
+ * conditions:
  * 
  * The above copyright notice and this permission notice shall be included 
  * in all copies or substantial portions of the Software.
  * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY 
  * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
  * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
@@ -24,22 +25,20 @@
 package com.fortify.api.webinspect.connection;
 
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
+import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
+import com.fortify.api.webinspect.connection.WebInspectAuthenticatingRestConnection.WebInspectAuthenticatingRestConnectionBuilder;
 
 /**
- * This {@link AbstractRestConnectionRetriever} implementation allows for
- * creating {@link WebInspectAuthenticatingRestConnection} instances.
+ * <p>This {@link IRestConnectionRetriever} will create 
+ * an authenticated WebInspect REST connection based on the given
+ * configuration</p>
  * 
  * @author Ruud Senden
  *
  */
-public class WebInspectConnectionRetriever extends AbstractRestConnectionRetriever<WebInspectAuthenticatingRestConnection, WebInspectRestConnectionConfig> {
+public abstract class WebInspectConnectionRetriever extends AbstractRestConnectionRetriever<WebInspectAuthenticatingRestConnection, WebInspectAuthenticatingRestConnectionBuilder> implements IWebInspectConnectionRetriever {
 	@Override
-	protected WebInspectRestConnectionConfig createConfig() {
-		return new WebInspectRestConnectionConfig();
-	}
-	
-	@Override
-	protected WebInspectAuthenticatingRestConnection createConnection() {
-		return new WebInspectAuthenticatingRestConnection(getConfig());
+	protected WebInspectAuthenticatingRestConnectionBuilder createConfig() {
+		return new WebInspectAuthenticatingRestConnectionBuilder();
 	}
 }

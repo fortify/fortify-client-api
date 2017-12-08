@@ -35,8 +35,8 @@ import com.fortify.api.util.rest.connection.RestConnectionWithCache;
  * @author Ruud Senden
  *
  */
-public class WIEBasicRestConnection extends RestConnectionWithCache<WIERestConnectionConfig> {
-	public WIEBasicRestConnection(WIERestConnectionConfig config) {
+public class WIEBasicRestConnection extends RestConnectionWithCache {
+	public WIEBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 	}
 	

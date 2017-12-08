@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
+import com.fortify.api.util.rest.connection.RestConnection.RestConnectionConfig;
+
 import lombok.Getter;
 
 /**
@@ -33,19 +35,17 @@ import lombok.Getter;
  *
  * @param <C>
  */
-public abstract class AbstractRestConnectionRetriever<ConnType extends IRestConnection, ConfigType extends IRestConnectionConfig> implements IRestConnectionRetriever<ConnType> {
+public abstract class AbstractRestConnectionRetriever<ConnType extends IRestConnection, BuilderType extends RestConnectionConfig<BuilderType> & IRestConnectionBuilder<ConnType>> implements IRestConnectionRetriever<ConnType> {
 	private ConnType connection;
-	@Getter private final ConfigType config = createConfig();
+	@Getter private final BuilderType config = createConfig();
 	
 	public final ConnType getConnection() {
 		if ( connection == null ) {
-			connection = createConnection();
+			connection = config.build();
 		}
 		return connection;
 	}
-
-	protected abstract ConnType createConnection();
 	
-	protected abstract ConfigType createConfig();
+	protected abstract BuilderType createConfig();
 	
 }

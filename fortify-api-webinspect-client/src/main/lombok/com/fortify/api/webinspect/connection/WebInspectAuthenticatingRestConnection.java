@@ -27,7 +27,7 @@ import javax.ws.rs.client.WebTarget;
 
 import org.apache.http.auth.Credentials;
 
-import com.fortify.api.util.rest.connection.IRestConnection;
+import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 import com.fortify.api.util.rest.connection.RestConnection;
 import com.fortify.api.webinspect.connection.api.WebInspectAPI;
 
@@ -39,10 +39,12 @@ import com.fortify.api.webinspect.connection.api.WebInspectAPI;
  *
  */
 public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestConnection {
+	private final Credentials credentials;
 	private final WebInspectAPI api = new WebInspectAPI(this);
 	
-	public WebInspectAuthenticatingRestConnection(WebInspectRestConnectionConfig config) {
+	public WebInspectAuthenticatingRestConnection(RestConnectionConfig<?> config) {
 		super(config);
+		this.credentials = config.getCredentials();
 	}
 	
 	public final WebInspectAPI api() {
@@ -52,7 +54,6 @@ public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestC
 	@Override
 	protected WebTarget updateWebTarget(WebTarget webTarget) {
 		webTarget = super.updateWebTarget(webTarget);
-		Credentials credentials = getConfig().getCredentials();
 		if ( credentials != null ) {
 			if ( "apiKey".equalsIgnoreCase(credentials.getUserPrincipal().getName()) ) {
 				webTarget = webTarget.queryParam("api_key", credentials.getPassword());
@@ -61,23 +62,14 @@ public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestC
 		return webTarget;
 	}
 	
-	public static final IWebInspectRestConnectionBuilder builder() {
-		return (IWebInspectRestConnectionBuilder)builder(new WebInspectRestConnectionBuilderInvocationHandler());
+	public static final WebInspectAuthenticatingRestConnectionBuilder builder() {
+		return new WebInspectAuthenticatingRestConnectionBuilder();
 	}
 	
-	private static final class WebInspectRestConnectionBuilderInvocationHandler extends RestConnectionBuilderInvocationHandler<WebInspectRestConnectionConfig> {
-		public WebInspectRestConnectionBuilderInvocationHandler() {
-			super(new WebInspectRestConnectionConfig());
-		}
-		
+	public static final class WebInspectAuthenticatingRestConnectionBuilder extends RestConnectionConfigWithoutCredentialsProvider<WebInspectAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<WebInspectAuthenticatingRestConnection> {
 		@Override
-		public IRestConnection build(WebInspectRestConnectionConfig config) {
-			return new WebInspectAuthenticatingRestConnection(config);
-		}
-		
-		@Override
-		protected Class<?> getInterfaceType() {
-			return IWebInspectRestConnectionBuilder.class;
+		public WebInspectAuthenticatingRestConnection build() {
+			return new WebInspectAuthenticatingRestConnection(this);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,15 +22,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.wie.connection;
+package com.fortify.api.webinspect.connection;
 
-import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
+import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
 /**
- * This interface is used to implement the {@link WIEAuthenticatingRestConnection#builder()} method, and
- * is not actually implemented by any classes. See {@link IRestConnectionBuilder} for more details.
- * 
+ * Marker interface that extends {@link IRestConnectionRetriever}
+ * to differentiate from other (non-WebInspect) connection factories,
+ * for example when using auto-wiring.
  * @author Ruud Senden
  *
  */
-public interface IWIERestConnectionBuilder extends IRestConnectionBuilder<WIEAuthenticatingRestConnection, IWIERestConnectionBuilder> {}
+public interface IWebInspectConnectionRetriever extends IRestConnectionRetriever<WebInspectAuthenticatingRestConnection> {
+}

@@ -71,15 +71,18 @@ import lombok.extern.apachecommons.CommonsLog;
  */
 @CommonsLog
 @ToString(callSuper=true)
-public class RestConnectionWithCache<ConfigType extends IRestConnectionConfig> extends RestConnection<ConfigType> {
+public class RestConnectionWithCache extends RestConnection {
 	private Properties cacheProperties; 
 	private LoadingCache<String, Cache<CacheKey, Object>> cacheManager;
 
-	public RestConnectionWithCache(ConfigType config) {
+	protected RestConnectionWithCache(RestConnectionConfig<?> config) {
 		super(config);
 		initCache();
 	}
 
+	public static final RestConnectionWithCacheBuilder restConnectionWithCacheBuilder() {
+		return new RestConnectionWithCacheBuilder();
+	}
 	
 	protected void initCache() {
 		try {
@@ -134,6 +137,13 @@ public class RestConnectionWithCache<ConfigType extends IRestConnectionConfig> e
 		private final String httpMethod;
 		private final URI uri;
 		private final Class<?> returnType;
+	}
+	
+	public static final class RestConnectionWithCacheBuilder extends RestConnectionConfig<RestConnectionWithCacheBuilder> implements IRestConnectionBuilder<RestConnectionWithCache> {
+		@Override
+		public RestConnectionWithCache build() {
+			return new RestConnectionWithCache(this);
+		}
 	}
 
 }
