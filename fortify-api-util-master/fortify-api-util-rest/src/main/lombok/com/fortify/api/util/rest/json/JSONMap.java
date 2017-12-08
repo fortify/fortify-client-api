@@ -41,6 +41,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
 /**
@@ -161,5 +163,14 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 			}
 		});
 		return result;
+	}
+	
+	@Override
+	public String toString() {
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return super.toString();
+		}
 	}
 }

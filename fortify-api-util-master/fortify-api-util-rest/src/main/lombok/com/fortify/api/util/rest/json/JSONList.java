@@ -32,6 +32,8 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.core.convert.support.DefaultConversionService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
 /**
@@ -121,5 +123,14 @@ public class JSONList extends ArrayList<Object> {
 		if ( matchValue == null ) { return false; }
 		Object expressionResult = SpringExpressionUtil.evaluateExpression(obj, matchExpression, matchValue.getClass());
 		return expressionResult==matchValue || (matchValue!=null && matchValue.equals(expressionResult));
+	}
+	
+	@Override
+	public String toString() {
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return super.toString();
+		}
 	}
 }

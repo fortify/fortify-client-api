@@ -174,7 +174,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		} catch ( ClientErrorException e ) {
 			throw new RuntimeException("Error accessing remote system:\n"+e.getMessage(), e);
 		} finally {
-			if ( response != null ) { response.close(); }
+			if ( response != null && (returnType==null || !Response.class.isAssignableFrom(returnType)) ) { response.close(); }
 		}
 	}
 	
