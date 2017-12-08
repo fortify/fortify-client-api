@@ -39,12 +39,12 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
-import com.fortify.api.util.rest.connection.RestConnection;
+import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.wie.connection.api.WIEAPI;
 
 /**
- * This {@link RestConnection} implementation provides various
+ * This {@link AbstractRestConnection} implementation provides various
  * methods for working with the WIE Enterprise API.
  * 
  * @author Ruud Senden

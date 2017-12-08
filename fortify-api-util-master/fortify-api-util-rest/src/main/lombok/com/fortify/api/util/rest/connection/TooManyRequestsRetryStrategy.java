@@ -31,8 +31,8 @@ import org.apache.http.protocol.HttpContext;
 /**
  * This class implements an Apache HttpClient 4.x {@link ServiceUnavailableRetryStrategy}
  * that will retry a request if the server responds with an HTTP 429 (TOO_MANY_REQUESTS)
- * response. This can be enabled on {@link RestConnection} instances by overriding
- * {@link RestConnection#getServiceUnavailableRetryStrategy()} as follows:
+ * response. This can be enabled on {@link AbstractRestConnection} instances by overriding
+ * {@link AbstractRestConnection#getServiceUnavailableRetryStrategy()} as follows:
  * <code>
  *  protected ServiceUnavailableRetryStrategy getServiceUnavailableRetryStrategy() {
  *		return new TooManyRequestsRetryStrategy();

@@ -27,14 +27,14 @@ package com.fortify.api.util.rest.query;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.WebTarget;
 
-import com.fortify.api.util.rest.connection.RestConnectionWithCache;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
 
 import lombok.AccessLevel;
 import lombok.Setter;
 
 /**
  * <p>This abstract class extends {@link AbstractRestConnectionQuery} by adding optional support for
- * caching, based on the caching functionality provided by {@link RestConnectionWithCache}. Based
+ * caching, based on the caching functionality provided by {@link AbstractRestConnectionWithCache}. Based
  * on the Lombok annotations described in {@link AbstractRestConnectionQuery}, concrete implementations
  * can provide optional caching support by defining an instance field <code>private final boolean useCache;</code>.
  * Lombok will then override our {@link #isUseCache()} method to return the value configured through the
@@ -43,7 +43,7 @@ import lombok.Setter;
  * @author Ruud Senden
  */
 @Setter(AccessLevel.PROTECTED)
-public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends RestConnectionWithCache, ResponseType> 
+public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends AbstractRestConnectionWithCache, ResponseType> 
 	extends AbstractRestConnectionQuery<ConnType, ResponseType>
 {	
 	protected boolean useCache() {

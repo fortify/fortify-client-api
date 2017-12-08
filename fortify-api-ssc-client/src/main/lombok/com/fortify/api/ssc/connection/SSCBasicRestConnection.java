@@ -26,19 +26,19 @@ package com.fortify.api.ssc.connection;
 
 import javax.ws.rs.client.Invocation.Builder;
 
-import com.fortify.api.util.rest.connection.RestConnection;
-import com.fortify.api.util.rest.connection.RestConnectionWithCache;
+import com.fortify.api.util.rest.connection.AbstractRestConnection;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
 
 /**
  * This class provides a basic, non-authenticating REST connection
  * for SSC. It's main characteristics compared to a standard 
- * {@link RestConnection} is that it will add an 
+ * {@link AbstractRestConnection} is that it will add an 
  * <code>Accept: application/json</code> header.
  * 
  * @author Ruud Senden
  *
  */
-public class SSCBasicRestConnection extends RestConnectionWithCache {
+public class SSCBasicRestConnection extends AbstractRestConnectionWithCache {
 	
 	protected SSCBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);

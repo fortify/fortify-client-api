@@ -25,17 +25,17 @@ package com.fortify.api.wie.connection;
 
 import javax.ws.rs.client.Invocation.Builder;
 
-import com.fortify.api.util.rest.connection.RestConnection;
-import com.fortify.api.util.rest.connection.RestConnectionWithCache;
+import com.fortify.api.util.rest.connection.AbstractRestConnection;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
 
 /**
- * This {@link RestConnection} implementation provides various
+ * This {@link AbstractRestConnection} implementation provides various
  * methods for working with the WebInspect Enterprise API.
  * 
  * @author Ruud Senden
  *
  */
-public class WIEBasicRestConnection extends RestConnectionWithCache {
+public class WIEBasicRestConnection extends AbstractRestConnectionWithCache {
 	public WIEBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 	}

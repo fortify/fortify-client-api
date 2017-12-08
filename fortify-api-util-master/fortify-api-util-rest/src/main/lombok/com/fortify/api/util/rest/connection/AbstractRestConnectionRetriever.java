@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
-import com.fortify.api.util.rest.connection.RestConnection.RestConnectionConfig;
+import com.fortify.api.util.rest.connection.AbstractRestConnection.RestConnectionConfig;
 
 import lombok.Getter;
 

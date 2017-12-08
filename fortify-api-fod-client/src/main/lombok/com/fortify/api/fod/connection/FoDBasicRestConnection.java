@@ -28,18 +28,18 @@ import javax.ws.rs.client.Invocation.Builder;
 
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 
-import com.fortify.api.util.rest.connection.RestConnection;
+import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.connection.TooManyRequestsRetryStrategy;
 
 /**
  * This class provides a basic, non-authenticating REST connection
  * for FoD. It's main characteristics compared to a standard 
- * {@link RestConnection} is that it will add an 
+ * {@link AbstractRestConnection} is that it will add an 
  * <code>Accept: application/json</code> header, and enable a 
  * 'service unavailable' strategy to retry requests that fail 
  * due to FoD rate limiting.
  */
-public class FoDBasicRestConnection extends RestConnection {
+public class FoDBasicRestConnection extends AbstractRestConnection {
 	public FoDBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 	}
