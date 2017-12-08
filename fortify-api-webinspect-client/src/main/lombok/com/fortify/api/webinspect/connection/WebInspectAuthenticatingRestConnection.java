@@ -42,7 +42,7 @@ public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestC
 	private final Credentials credentials;
 	private final WebInspectAPI api = new WebInspectAPI(this);
 	
-	public WebInspectAuthenticatingRestConnection(RestConnectionConfig<?> config) {
+	protected WebInspectAuthenticatingRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 		this.credentials = config.getCredentials();
 	}

@@ -57,7 +57,7 @@ import lombok.EqualsAndHashCode;
 public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	private final FoDTokenFactory tokenProvider;
 	
-	public FoDAuthenticatingRestConnection(FoDRestConnectionConfig config) {
+	protected FoDAuthenticatingRestConnection(FoDRestConnectionConfig config) {
 		super(config);
 		this.tokenProvider = new FoDTokenFactory(new FoDBasicRestConnection(config), config.getAuth());
 	}

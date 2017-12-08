@@ -56,7 +56,7 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 	private final WIEBasicRestConnection basicConn;
 	private final Credentials credentials;
 	
-	public WIEAuthenticatingRestConnection(RestConnectionConfig<?> config) {
+	protected WIEAuthenticatingRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 		this.basicConn = new WIEBasicRestConnection(config);
 		this.credentials = config.getCredentials();

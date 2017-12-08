@@ -26,7 +26,7 @@ package com.fortify.api.util.rest.connection;
 
 public class RestConnectionWithCache extends AbstractRestConnectionWithCache {
 
-	public RestConnectionWithCache(RestConnectionConfig<?> config) {
+	protected RestConnectionWithCache(RestConnectionConfig<?> config) {
 		super(config);
 	}
 	
