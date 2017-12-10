@@ -29,26 +29,25 @@ import java.util.Date;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCJobsQuery;
-import com.fortify.api.ssc.connection.api.query.SSCJobsQuery.SSCJobsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCJobsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.JSONMapFilterDateCompare;
 import com.fortify.api.util.rest.json.JSONMapFilterDateCompare.DateComparisonOperator;
+import com.fortify.api.util.rest.query.IRestConnectionQuery;
 
 public class SSCJobAPI extends AbstractSSCAPI {
-
 	public SSCJobAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
 	
 	public SSCJobsQueryBuilder query() {
-		return SSCJobsQuery.builder().conn(conn());
+		return new SSCJobsQueryBuilder(conn());
 	}
 	
 	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {
 		long startTime = new Date().getTime();
-		SSCJobsQuery query = query().id(jobId).build();
+		IRestConnectionQuery query = query().id(jobId).build();
 		JSONMap job = query.getUnique();
 		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && "RUNNING".equals(job.get("state", String.class)) ) {
 			try {
@@ -59,7 +58,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		return job;
 	}
 	
-	public JSONList waitForJobCreation(SSCJobsQuery query, long timeOutSeconds) {
+	public JSONList waitForJobCreation(IRestConnectionQuery query, long timeOutSeconds) {
 		long startTime = new Date().getTime();
 		JSONList jobs = query.getAll();
 		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && CollectionUtils.isEmpty(jobs) ) {
@@ -76,7 +75,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		JSONMap job = conn.api().job().query().maxResults(1).build().getUnique();
 		System.out.println(job);
 		
-		SSCJobsQuery query = conn.api().job().query()
+		IRestConnectionQuery query = conn.api().job().query()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				.preProcessor(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, new Date(), true)).build();
 		System.out.println(query.toString());

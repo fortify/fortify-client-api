@@ -22,39 +22,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.query;
+package com.fortify.api.wie.connection.api.query.builder;
 
-import javax.ws.rs.client.WebTarget;
+import com.fortify.api.util.rest.json.JSONMapFilterRegEx;
+import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
-
-import lombok.Getter;
-
-/**
- * TODO Update JavaDoc 
- * 
- * @author Ruud Senden
- */
-@Getter
-public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends AbstractRestConnectionWithCache, ResponseType> 
-	extends AbstractRestConnectionQuery<ConnType, ResponseType>
-{	
-	private final boolean useCache;
-	
-	protected AbstractRestConnectionWithCacheQuery(RestConnectionWithCacheQueryConfig<ConnType, ?> config) {
-		super(config);
-		this.useCache = config.isUseCache();
+public class WIEMacrosQueryBuilder extends AbstractWIEEntityQueryBuilder<WIEMacrosQueryBuilder> {
+	public WIEMacrosQueryBuilder(WIEAuthenticatingRestConnection conn) {
+		super(conn, true);
 	}
-
+	
+	public WIEMacrosQueryBuilder names(String... names) {
+		return preProcessor(new JSONMapFilterRegEx("name", "\\Q"+String.join("\\E|\\Q", names)+"\\E", true));
+	}
 	
 	@Override
-	protected ResponseType executeRequest(WebTarget target) {
-		return useCache && getEntity()==null
-				? getConn().executeRequest(getHttpMethod(), target, getResponseTypeClass(), getCacheName())
-				: super.executeRequest(target);
+	protected String getTargetPath() {
+		return "/api/v1/macros";
 	}
-	
-	protected String getCacheName() {
-		return this.getClass().getName();
-	}
+
 }

@@ -34,10 +34,8 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionCustomTagsQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionCustomTagsQuery.SSCApplicationVersionCustomTagsQueryBuilder;
-import com.fortify.api.ssc.connection.api.query.SSCCustomTagsQuery;
-import com.fortify.api.ssc.connection.api.query.SSCCustomTagsQuery.SSCCustomTagsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionCustomTagsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCCustomTagsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
@@ -49,11 +47,11 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	}
 	
 	public SSCApplicationVersionCustomTagsQueryBuilder queryApplicationVersionCustomTags(String applicationVersionId) {
-		return SSCApplicationVersionCustomTagsQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+		return new SSCApplicationVersionCustomTagsQueryBuilder(conn(), applicationVersionId);
 	}
 	
 	public SSCCustomTagsQueryBuilder queryCustomTags() {
-		return SSCCustomTagsQuery.builder().conn(conn());
+		return new SSCCustomTagsQueryBuilder(conn());
 	}
 	
 	public JSONList getCustomTags() {

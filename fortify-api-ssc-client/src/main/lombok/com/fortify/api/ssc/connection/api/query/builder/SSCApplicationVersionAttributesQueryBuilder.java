@@ -22,38 +22,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
-
-import java.util.List;
+package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
+public class SSCApplicationVersionAttributesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionAttributesQueryBuilder> {
+	private final SSCParamFields paramFields = add(new SSCParamFields());
+	
+	public SSCApplicationVersionAttributesQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
+		super(conn, applicationVersionId, false);
+	}
 
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public class SSCApplicationVersionFilterSetsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	@Builder.Default private final boolean useCache = true;
-
-	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
-	private final String applicationVersionId;
+	public final SSCApplicationVersionAttributesQueryBuilder paramFields(String... fields) {
+		paramFields.paramFields(fields); return _this();
+	}
 	
 	@Override
 	protected String getChildEntityPath() {
-		return "filterSets";
-	}
-
-	@Override
-	protected boolean isPagingSupported() {
-		return false;
+		return "attributes";
 	}
 
 }

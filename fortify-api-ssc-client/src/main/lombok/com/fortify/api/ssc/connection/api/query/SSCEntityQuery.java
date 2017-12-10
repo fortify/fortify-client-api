@@ -24,61 +24,51 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query;
 
-import java.util.List;
+import java.util.Arrays;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
+import com.fortify.api.util.rest.query.PagingData;
+import com.fortify.api.util.rest.query.RestConnectionWithCacheQueryConfig;
 
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public class SSCApplicationVersionBugFilingRequirementsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	private final boolean useCache;
-
-	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
-	private final String applicationVersionId;
-	
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
-	
-	// Fields supported by this class
-	private final String paramChangedParamIdentifier;
-	private final JSONMap paramBugParams;
-	
-	@Override
-	protected String getChildEntityPath() {
-		return "bugfilingrequirements";
+/**
+ * <p>This abstract class can be used as a base class for querying entity data from SSC. </p>
+ * 
+ * TODO Add more JavaDoc
+ * 
+ * @author Ruud Senden
+ */
+@Getter
+public class SSCEntityQuery extends AbstractRestConnectionWithCacheQuery<SSCAuthenticatingRestConnection, JSONMap> {
+	public SSCEntityQuery(RestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection,?> config) {
+		super(config);
 	}
 
 	@Override
-	protected boolean isPagingSupported() {
-		return false;
+	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
+		return target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
 	}
 	
 	@Override
-	protected WebTarget addExtraParameters(WebTarget webTarget) {
-		return addParameterIfNotBlank(super.addExtraParameters(webTarget), "changeParamIdentifier", paramChangedParamIdentifier());
+	protected void updatePagingDataFromResponse(PagingData pagingData, JSONMap data) {
+		pagingData.setTotal( data.get("count", Integer.class) );
+		pagingData.setLastPageSize( data.get("data", JSONList.class).size() );
 	}
 	
 	@Override
-	protected JSONMap executeRequest(WebTarget target) {
-		if ( paramBugParams == null ) {
-			return super.executeRequest(target);
-		} else {
-			return conn().executeRequest(getHttpMethod(), target, Entity.entity(paramBugParams, "application/json"), getResponseTypeClass());
-		}
+	protected JSONList getJSONListFromResponse(JSONMap json) {
+		Object data = json.get("data", Object.class);
+		return (data instanceof JSONList) ? (JSONList)data : new JSONList(Arrays.asList(data));
 	}
-
+	
+	@Override
+	protected Class<JSONMap> getResponseTypeClass() {
+		return JSONMap.class;
+	}
 }

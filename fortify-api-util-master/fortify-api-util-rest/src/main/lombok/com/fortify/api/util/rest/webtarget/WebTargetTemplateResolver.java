@@ -22,45 +22,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.util.rest.webtarget;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import javax.ws.rs.client.WebTarget;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
+import org.apache.commons.collections.MapUtils;
 
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public class SSCApplicationVersionArtifactsQuery extends AbstractSSCApplicationVersionChildEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	private final boolean useCache;
-	private final Integer maxResults;
-
-	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
-	private final String applicationVersionId;
+public class WebTargetTemplateResolver implements IWebTargetUpdater {
+	private final Map<String,Object> templateValues;
+	private final boolean encodeSlashInPath;
 	
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
-	private final String paramOrderBy;
-	private final @Singular Map<String, String> paramQAnds;
-	
-	@Override
-	protected String getChildEntityPath() {
-		return "artifacts";
+	public WebTargetTemplateResolver(Map<String,Object> templateValues, boolean encodeSlashInPath) {
+		this.templateValues = Collections.unmodifiableMap(templateValues);
+		this.encodeSlashInPath = encodeSlashInPath;
 	}
 
 	@Override
-	protected boolean isPagingSupported() {
-		return true;
+	public WebTarget update(WebTarget target) {
+		if ( MapUtils.isNotEmpty(templateValues) ) {
+			target = target.resolveTemplates(templateValues, encodeSlashInPath);
+		}
+		return target;
 	}
 
 }

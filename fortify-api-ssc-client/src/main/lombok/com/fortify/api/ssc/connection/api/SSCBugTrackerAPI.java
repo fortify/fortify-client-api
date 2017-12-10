@@ -25,7 +25,6 @@
 package com.fortify.api.ssc.connection.api;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -39,12 +38,9 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionBugFilingRequirementsQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionBugFilingRequirementsQuery.SSCApplicationVersionBugFilingRequirementsQueryBuilder;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionBugTrackerQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionBugTrackerQuery.SSCApplicationVersionBugTrackerQueryBuilder;
-import com.fortify.api.ssc.connection.api.query.SSCBugTrackersQuery;
-import com.fortify.api.ssc.connection.api.query.SSCBugTrackersQuery.SSCBugTrackersQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionBugFilingRequirementsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionBugTrackerQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCBugTrackersQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
@@ -55,19 +51,19 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	}
 	
 	public SSCApplicationVersionBugTrackerQueryBuilder queryApplicationVersionBugTracker(String applicationVersionId) {
-		return SSCApplicationVersionBugTrackerQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+		return new SSCApplicationVersionBugTrackerQueryBuilder(conn(), applicationVersionId);
 	}
 	
 	public SSCApplicationVersionBugFilingRequirementsQueryBuilder queryApplicationVersionBugFilingRequirements(String applicationVersionId) {
-		return SSCApplicationVersionBugFilingRequirementsQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+		return new SSCApplicationVersionBugFilingRequirementsQueryBuilder(conn(), applicationVersionId);
 	}
 
 	public SSCBugTrackersQueryBuilder queryBugTrackers() {
-		return SSCBugTrackersQuery.builder().conn(conn());
+		return new SSCBugTrackersQueryBuilder(conn());
 	}
 	
 	public JSONList getBugTrackers(boolean useCache, String... fields) {
-		return queryBugTrackers().useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getAll();
+		return queryBugTrackers().useCache(useCache).paramFields(fields).build().getAll();
 	}
 	
 	/**

@@ -22,22 +22,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.util.rest.webtarget;
 
-import javax.ws.rs.client.WebTarget;
+import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
+import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
+import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
 
-public abstract class AbstractSSCApplicationVersionChildEntityQuery extends AbstractSSCEntityQuery {
-	protected abstract String applicationVersionId();
+public class WebTargetQueryParamUpdaterBuilder implements IWebTargetUpdaterBuilder {
+	private final String paramName;
+	private String[] paramValues;
 	
-	@Override
-	protected WebTarget resolveTemplateParams(WebTarget webTarget) {
-		return super.resolveTemplateParams(webTarget).resolveTemplate("applicationVersionId", applicationVersionId());
-	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/projectVersions/{applicationVersionId}/"+getChildEntityPath();
+	public WebTargetQueryParamUpdaterBuilder(String paramName) {
+		this.paramName = paramName;
 	}
 
-	protected abstract String getChildEntityPath();
+	public final void paramValues(String... paramValues) {
+		this.paramValues = paramValues;
+	}
+
+	@Override
+	public IWebTargetUpdater build() {
+		return new WebTargetQueryParamUpdater(paramName, paramValues);
+	}
+
 }

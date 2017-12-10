@@ -22,41 +22,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
-
-import java.util.List;
+package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
+import com.fortify.api.util.rest.query.IRestConnectionQuery;
+import com.fortify.api.util.rest.query.RestConnectionWithCacheQueryConfig;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
-
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public class SSCApplicationVersionAttributesQuery extends AbstractSSCApplicationVersionChildEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	private final boolean useCache;
-
-	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
-	private final String applicationVersionId;
+public abstract class AbstractSSCEntityQueryBuilder<T> extends RestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection, T> {
 	
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
+	protected AbstractSSCEntityQueryBuilder(SSCAuthenticatingRestConnection conn, boolean pagingSupported) {
+		super(conn, pagingSupported);
+	}
 	
-	@Override
-	protected String getChildEntityPath() {
-		return "attributes";
+	public IRestConnectionQuery build() {
+		return new SSCEntityQuery(this);
 	}
-
-	@Override
-	protected boolean isPagingSupported() {
-		return false;
-	}
-
 }

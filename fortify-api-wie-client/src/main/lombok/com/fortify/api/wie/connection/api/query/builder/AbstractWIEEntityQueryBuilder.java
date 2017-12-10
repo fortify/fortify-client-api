@@ -22,41 +22,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.wie.connection.api.query.builder;
 
-import java.util.List;
+import com.fortify.api.util.rest.query.IRestConnectionQuery;
+import com.fortify.api.util.rest.query.RestConnectionWithCacheQueryConfig;
+import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
+import com.fortify.api.wie.connection.api.query.WIEEntityQuery;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
-
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public class SSCApplicationVersionBugTrackerQuery extends AbstractSSCApplicationVersionChildEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	private final boolean useCache;
-
-	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
-	private final String applicationVersionId;
+public abstract class AbstractWIEEntityQueryBuilder<T> extends RestConnectionWithCacheQueryConfig<WIEAuthenticatingRestConnection, T> {
 	
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
+	protected AbstractWIEEntityQueryBuilder(WIEAuthenticatingRestConnection conn, boolean pagingSupported) {
+		super(conn, pagingSupported);
+	}
 	
-	@Override
-	protected String getChildEntityPath() {
-		return "bugtracker";
+	public IRestConnectionQuery build() {
+		return new WIEEntityQuery(this);
 	}
-
-	@Override
-	protected boolean isPagingSupported() {
-		return false;
-	}
-
 }

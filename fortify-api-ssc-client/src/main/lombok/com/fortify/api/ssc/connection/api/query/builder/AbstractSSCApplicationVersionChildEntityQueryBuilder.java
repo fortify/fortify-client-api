@@ -22,42 +22,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.wie.connection.api.query;
+package com.fortify.api.ssc.connection.api.query.builder;
 
-import java.util.List;
+import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
-import com.fortify.api.util.rest.json.JSONMapFilterRegEx;
-import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
+public abstract class AbstractSSCApplicationVersionChildEntityQueryBuilder<T> extends AbstractSSCEntityQueryBuilder<T> {
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
-
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public class WIEMacrosQuery extends AbstractWIEEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final WIEAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	private final boolean useCache;
-	
-	public static class WIEMacrosQueryBuilder {
-		public WIEMacrosQueryBuilder names(String... names) {
-			return preProcessor(new JSONMapFilterRegEx("name", "\\Q"+String.join("\\E|\\Q", names)+"\\E", true));
-		}
-	}
-	
-	@Override
-	protected boolean isPagingSupported() {
-		return true;
+	protected AbstractSSCApplicationVersionChildEntityQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId, boolean pagingSupported) 
+	{
+		super(conn, pagingSupported);
+		templateValues().put("applicationVersionId", applicationVersionId);
 	}
 	
 	@Override
 	protected String getTargetPath() {
-		return "/api/v1/macros";
+		return "/api/v1/projectVersions/{applicationVersionId}/"+getChildEntityPath();
 	}
-
+	
+	protected abstract String getChildEntityPath();
+	
 }

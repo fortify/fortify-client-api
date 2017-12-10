@@ -30,7 +30,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
-import com.fortify.api.wie.connection.api.query.WIEMacrosQuery;
+import com.fortify.api.wie.connection.api.query.builder.WIEMacrosQueryBuilder;
 
 public class WIEMacroAPI extends AbstractWIEAPI {
 
@@ -38,8 +38,8 @@ public class WIEMacroAPI extends AbstractWIEAPI {
 		super(conn);
 	}
 	
-	public WIEMacrosQuery.WIEMacrosQueryBuilder queryMacros() {
-		return WIEMacrosQuery.builder().conn(conn()).useCache(true);
+	public WIEMacrosQueryBuilder queryMacros() {
+		return new WIEMacrosQueryBuilder(conn()).useCache(true);
 	}
 	
 	public byte[] getMacroData(String macroId) {

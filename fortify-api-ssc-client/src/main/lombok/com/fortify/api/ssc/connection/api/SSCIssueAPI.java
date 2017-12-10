@@ -24,7 +24,6 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,10 +31,8 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCIssueDetailsByIdQuery;
-import com.fortify.api.ssc.connection.api.query.SSCIssueDetailsByIdQuery.SSCIssueDetailsByIdQueryBuilder;
-import com.fortify.api.ssc.connection.api.query.SSCIssuesQuery;
-import com.fortify.api.ssc.connection.api.query.SSCIssuesQuery.SSCIssuesQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionIssuesQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCIssueDetailsByIdQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
@@ -44,16 +41,16 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 		super(conn);
 	}
 	
-	public SSCIssuesQueryBuilder queryIssues(String applicationVersionId) {
-		return SSCIssuesQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+	public SSCApplicationVersionIssuesQueryBuilder queryIssues(String applicationVersionId) {
+		return new SSCApplicationVersionIssuesQueryBuilder(conn(), applicationVersionId);
 	}
 	
-	public SSCIssueDetailsByIdQueryBuilder queryIssueDetails() {
-		return SSCIssueDetailsByIdQuery.builder().conn(conn());
+	public SSCIssueDetailsByIdQueryBuilder queryIssueDetailsById(String issueId) {
+		return new SSCIssueDetailsByIdQueryBuilder(conn(), issueId);
 	}
 	
 	public JSONMap getIssueDetails(String issueId, boolean useCache, String... fields) {
-		return queryIssueDetails().id(issueId).useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getUnique();
+		return queryIssueDetailsById(issueId).useCache(useCache).paramFields(fields).build().getUnique();
 	}
 	
 	public final String getIssueDeepLink(String applicationVersionId, String issueId) {

@@ -22,28 +22,36 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionMetricHistoriesQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 
-public class SSCMetricsAPI extends AbstractSSCAPI {
-	public static enum MetricType {
-		performanceIndicator, variable
-	}
+public class SSCApplicationVersionArtifactsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionArtifactsQueryBuilder> {
+	private final SSCParamFields paramFields = add(new SSCParamFields());
+	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
+	private final SSCParamQ paramQ = add(new SSCParamQ());
 	
-	public SSCMetricsAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
-	}
-	
-	public SSCApplicationVersionMetricHistoriesQueryBuilder queryApplicationVersionMetricHistories(String applicationVersionId, MetricType metricType) {
-		return new SSCApplicationVersionMetricHistoriesQueryBuilder(conn(), applicationVersionId, metricType);
-	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.variable).useCache(true).build().getAll());
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.performanceIndicator).useCache(true).build().getAll());
+	public SSCApplicationVersionArtifactsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
+		super(conn, applicationVersionId, true);
 	}
 
+	public final SSCApplicationVersionArtifactsQueryBuilder paramFields(String... fields) {
+		paramFields.paramFields(fields); return _this();
+	}
+
+	public final SSCApplicationVersionArtifactsQueryBuilder orderBy(String orderBy) {
+		paramOrderBy.orderBy(orderBy); return _this();
+	}
+
+	public final SSCApplicationVersionArtifactsQueryBuilder paramQAnd(String field, String value) {
+		paramQ.paramQAnd(field, value); return _this();
+	}
+	
+	@Override
+	protected String getChildEntityPath() {
+		return "artifacts";
+	}
 }

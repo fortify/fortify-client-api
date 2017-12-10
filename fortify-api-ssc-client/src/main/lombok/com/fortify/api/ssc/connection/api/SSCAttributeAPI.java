@@ -32,10 +32,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionAttributesQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionAttributesQuery.SSCApplicationVersionAttributesQueryBuilder;
-import com.fortify.api.ssc.connection.api.query.SSCAttributeDefinitionsQuery;
-import com.fortify.api.ssc.connection.api.query.SSCAttributeDefinitionsQuery.SSCAttributeDefinitionsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionAttributesQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCAttributeDefinitionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
@@ -45,19 +43,19 @@ public class SSCAttributeAPI extends AbstractSSCAPI {
 	}
 	
 	public SSCApplicationVersionAttributesQueryBuilder queryApplicationVersionAttributes(String applicationVersionId) {
-		return SSCApplicationVersionAttributesQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+		return new SSCApplicationVersionAttributesQueryBuilder(conn(), applicationVersionId);
 	}
 	
 	public SSCAttributeDefinitionsQueryBuilder queryAttributeDefinitions() {
-		return SSCAttributeDefinitionsQuery.builder().conn(conn());
+		return new SSCAttributeDefinitionsQueryBuilder(conn());
 	}
 	
 	public JSONList getAttributeDefinitions(boolean useCache, String... fields) {
-		return queryAttributeDefinitions().useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getAll();
+		return queryAttributeDefinitions().useCache(useCache).paramFields(fields==null?null:fields).build().getAll();
 	}
 	
 	public JSONList getApplicationVersionAttributes(String applicationVersionId, boolean useCache, String... fields) {
-		return queryApplicationVersionAttributes(applicationVersionId).useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getAll();
+		return queryApplicationVersionAttributes(applicationVersionId).useCache(useCache).paramFields(fields).build().getAll();
 	}
 	
 	/**
@@ -68,9 +66,8 @@ public class SSCAttributeAPI extends AbstractSSCAPI {
 	 */
 	public Map<String, List<String>> getApplicationVersionAttributeValuesByName(String applicationVersionId) {
 		Map<String, List<String>> result = new HashMap<String, List<String>>();
-		JSONList attrs = queryApplicationVersionAttributes(applicationVersionId)
-				.paramFields(Arrays.asList("guid","value","values")).useCache(true).build().getAll();
-		JSONList attrDefs = queryAttributeDefinitions().paramFields(Arrays.asList("guid","name")).useCache(true).build().getAll();
+		JSONList attrs = getApplicationVersionAttributes(applicationVersionId, true, "guid","value","values");
+		JSONList attrDefs = getAttributeDefinitions(true, "guid","name");
 		for ( JSONMap attr : attrs.asValueType(JSONMap.class) ) {
 			String attrName = attrDefs.mapValue("guid", attr.get("guid", String.class), "name", String.class);
 			JSONList attrValuesArray = attr.get("values", JSONList.class);

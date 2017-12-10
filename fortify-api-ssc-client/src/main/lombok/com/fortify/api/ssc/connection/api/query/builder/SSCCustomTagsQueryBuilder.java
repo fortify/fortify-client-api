@@ -22,35 +22,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
-
-import java.util.List;
+package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
+public final class SSCCustomTagsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCCustomTagsQueryBuilder> {
+	private final SSCParamFields paramFields = add(new SSCParamFields());
+	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
+	
+	public SSCCustomTagsQueryBuilder(SSCAuthenticatingRestConnection conn) {
+		super(conn, true);
+	}
 
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public final class SSCCustomTagsQuery extends AbstractSSCEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	@Builder.Default private final boolean useCache = true;
-	private final Integer maxResults;
+	public final SSCCustomTagsQueryBuilder paramFields(String... fields) {
+		paramFields.paramFields(fields); return _this();
+	}
 
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
-	private final String paramOrderBy;
-
-	@Override
-	protected boolean isPagingSupported() {
-		return true;
+	public final SSCCustomTagsQueryBuilder orderBy(String orderBy) {
+		paramOrderBy.orderBy(orderBy); return _this();
 	}
 	
 	@Override

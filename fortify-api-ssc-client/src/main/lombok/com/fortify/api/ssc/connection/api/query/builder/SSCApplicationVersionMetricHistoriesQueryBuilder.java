@@ -22,39 +22,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.query;
+package com.fortify.api.ssc.connection.api.query.builder;
 
-import javax.ws.rs.client.WebTarget;
+import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
+public class SSCApplicationVersionMetricHistoriesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionMetricHistoriesQueryBuilder> {
+	private final MetricType metricType;
+	private final SSCParamQ paramQ = add(new SSCParamQ());
 
-import lombok.Getter;
-
-/**
- * TODO Update JavaDoc 
- * 
- * @author Ruud Senden
- */
-@Getter
-public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends AbstractRestConnectionWithCache, ResponseType> 
-	extends AbstractRestConnectionQuery<ConnType, ResponseType>
-{	
-	private final boolean useCache;
-	
-	protected AbstractRestConnectionWithCacheQuery(RestConnectionWithCacheQueryConfig<ConnType, ?> config) {
-		super(config);
-		this.useCache = config.isUseCache();
+	public SSCApplicationVersionMetricHistoriesQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId, MetricType metricType) {
+		super(conn, applicationVersionId, false);
+		this.metricType = metricType;
 	}
-
+	
+	public final SSCApplicationVersionMetricHistoriesQueryBuilder paramQAnd(String field, String value) {
+		paramQ.paramQAnd(field, value); return _this();
+	}
 	
 	@Override
-	protected ResponseType executeRequest(WebTarget target) {
-		return useCache && getEntity()==null
-				? getConn().executeRequest(getHttpMethod(), target, getResponseTypeClass(), getCacheName())
-				: super.executeRequest(target);
-	}
-	
-	protected String getCacheName() {
-		return this.getClass().getName();
+	protected String getChildEntityPath() {
+		return metricType.name() + "Histories";
 	}
 }

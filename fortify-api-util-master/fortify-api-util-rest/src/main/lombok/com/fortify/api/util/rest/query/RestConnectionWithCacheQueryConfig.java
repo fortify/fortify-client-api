@@ -22,47 +22,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.util.rest.query;
 
-import java.util.List;
-import java.util.Map;
+import com.fortify.api.util.rest.connection.IRestConnection;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
-
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.Singular;
-import lombok.experimental.Accessors;
 
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public class SSCApplicationVersionMetricHistoriesQuery extends AbstractSSCApplicationVersionChildEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	private final boolean useCache;
-
-	// Fields supported by AbstractSSCApplicationVersionChildEntityQuery
-	private final String applicationVersionId;
-
-	// Fields supported by AbstractSSCEntityQuery
-	private final @Singular Map<String, String> paramQAnds;
+@Getter
+public abstract class RestConnectionWithCacheQueryConfig<ConnType extends IRestConnection, T> 
+	extends RestConnectionQueryConfig<ConnType, T> 
+{
+	private boolean useCache;
 	
-	// Fields supported by this class
-	private final @NonNull MetricType metricType;
+	protected RestConnectionWithCacheQueryConfig(ConnType conn, boolean pagingSupported) {
+		super(conn, pagingSupported);
+	}
 	
-	@Override
-	protected String getChildEntityPath() {
-		return metricType.name() + "Histories";
+	public T useCache(boolean useCache) {
+		this.useCache = useCache;
+		return _this();
 	}
-
-	@Override
-	protected boolean isPagingSupported() {
-		return false;
-	}
-
+	
 }

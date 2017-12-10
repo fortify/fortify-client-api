@@ -22,39 +22,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.query;
+package com.fortify.api.util.rest.webtarget;
 
 import javax.ws.rs.client.WebTarget;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
-
-import lombok.Getter;
-
-/**
- * TODO Update JavaDoc 
- * 
- * @author Ruud Senden
- */
-@Getter
-public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends AbstractRestConnectionWithCache, ResponseType> 
-	extends AbstractRestConnectionQuery<ConnType, ResponseType>
-{	
-	private final boolean useCache;
+public class WebTargetPathUpdater implements IWebTargetUpdater {
+	private final String path;
 	
-	protected AbstractRestConnectionWithCacheQuery(RestConnectionWithCacheQueryConfig<ConnType, ?> config) {
-		super(config);
-		this.useCache = config.isUseCache();
+	public WebTargetPathUpdater(String path) {
+		this.path = path;
 	}
 
-	
 	@Override
-	protected ResponseType executeRequest(WebTarget target) {
-		return useCache && getEntity()==null
-				? getConn().executeRequest(getHttpMethod(), target, getResponseTypeClass(), getCacheName())
-				: super.executeRequest(target);
+	public WebTarget update(WebTarget target) {
+		return target.path(path);
 	}
-	
-	protected String getCacheName() {
-		return this.getClass().getName();
-	}
+
 }

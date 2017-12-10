@@ -24,87 +24,77 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.query;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import javax.ws.rs.HttpMethod;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.util.rest.connection.IRestConnection;
 import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
 import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.json.JSONMapFilterMaxResults;
+import com.fortify.api.util.rest.json.JSONMapProcessorWithPreProcessors;
 import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
+import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
+
+import lombok.Getter;
 
 /**
- * <p>This abstract class can be used as a base class for querying data from a REST API.
- * It optionally supports paging and filtering results, depending on concrete implementations
- * of this class. Concrete implementations of this class will need to implement the various
- * abstract methods, for example for defining the base {@link WebTarget} to be invoked, updating
- * the base {@link WebTarget} to generate the actual request, and handling system-specific paging 
- * functionality.</p>
- * 
- * <p>Implementations for the {@link #getConn()}, {@link #getFilters()} and {@link #getMaxResults()} 
- * are usually generated using Lombok annotations as follows:
- * <pre>
- * {@literal @}Getter(AccessLevel.PROTECTED)
- * {@literal @}Builder
- * public final class MyConcreteQuery extends AbstractRestConnectionQuery {
- *		// Fields supported by AbstractRestConnectionWithCacheQuery
- *		private final SSCAuthenticatingRestConnection conn;
- *		private final @Singular List<IJSONMapFilter> filters;
- *		private final Integer maxResults;
- *
- * 		...
- * }
- * </pre>
- * The Getter annotation will override the corresponding methods in this abstract class, and the
- * Builder annotation will generate a builder implementation that allows for configuring these
- * fields. This approach allows us to:
- * <ul>
- *  <li>Easily apply the Builder pattern to fields required by this abstract base class and abstract child classes.</li>
- *  <li>Allows the concrete implementation to only provide Builder methods for functionality that is actually supported by the endpoint,
- *      by simply not defining any fields for unsupported functionality.</li>
- * </ul></p> 
+ * TODO Update JavaDoc
  * 
  * @author Ruud Senden
  */
-public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnection, ResponseType> {
-	protected abstract ConnType conn();
-	protected List<IJSONMapPreProcessor> preProcessors() { return null; }
-	protected List<IJSONMapPreProcessor> getDefaultPreProcessors() { return null; }
-	protected Integer maxResults() { return -1; }
+@Getter
+public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnection, ResponseType> implements IRestConnectionQuery {
+	private final ConnType conn;
+	private final List<IWebTargetUpdater> webTargetUpdaters;
+	private final List<IJSONMapPreProcessor> preProcessors;
+	private final int maxResults;
+	private final boolean pagingSupported;
+	private final Entity<?> entity;
+	private final String httpMethod;
+	private final IRequestInitializer requestInitializer;
 	
-	/**
-	 * Process all results from the REST API call
-	 * @param processor
+	protected AbstractRestConnectionQuery(RestConnectionQueryConfig<ConnType, ?> config) {
+		this.conn = config.getConn();
+		this.webTargetUpdaters = Collections.unmodifiableList(config.getWebTargetUpdaters());
+		this.preProcessors =  Collections.unmodifiableList(config.getPreProcessors());
+		this.maxResults = config.getMaxResults();
+		this.pagingSupported = config.isPagingSupported();
+		this.entity = config.getEntity();
+		this.httpMethod = config.getHttpMethod();
+		this.requestInitializer = config.getRequestInitializer();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.fortify.api.util.rest.query.IRestConnectionQuery#processAll(com.fortify.api.util.rest.json.IJSONMapProcessor)
 	 */
+	@Override
 	public void processAll(IJSONMapProcessor processor) {
-		processAll(getWebTarget(), new PagingData().max(maxResults()==null?-1:maxResults()), processor);
+		processAll(getWebTarget(), new PagingData().max(maxResults), processor);
 	}
 
-	/**
-	 * Get all results from the REST API call
-	 * @return
+	/* (non-Javadoc)
+	 * @see com.fortify.api.util.rest.query.IRestConnectionQuery#getAll()
 	 */
+	@Override
 	public JSONList getAll() {
 		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
 		processAll(processor);
 		return processor.getJsonList();
 	}
 	
-	/**
-	 * Get a unique result from the REST API call. If there are no
-	 * results, null will be returned. If there is more than one result,
-	 * an exception will be thrown.
-	 * @return
+	/* (non-Javadoc)
+	 * @see com.fortify.api.util.rest.query.IRestConnectionQuery#getUnique()
 	 */
+	@Override
 	public JSONMap getUnique() {
 		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(getWebTarget(), new PagingData().max(Math.min(2, maxResults()==null?-1:maxResults())), processor);
+		processAll(getWebTarget(), new PagingData().max(Math.min(2, maxResults)), processor);
 		JSONList list = processor.getJsonList();
 		if ( list == null || list.size() == 0 ) {
 			return null;
@@ -115,66 +105,32 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 		return list.asValueType(JSONMap.class).get(0);
 	}
 	
+	/*
 	public int getCount() {
 		return -1; // TODO
 	}
+	*/
 	
 	protected final WebTarget getWebTarget() {
-		return resolveTemplateParams(getUpdatedBaseWebTarget(conn().getBaseResource()));
-	}
-	
-	protected WebTarget resolveTemplateParams(WebTarget webTarget) {
+		WebTarget webTarget = conn.getBaseResource();
+		for ( IWebTargetUpdater updater : webTargetUpdaters ) {
+			webTarget = updater.update(webTarget);
+		}
 		return webTarget;
 	}
 	
-	/**
-	 * Utility method for adding request parameters if the given value is not blank.
-	 * @param target
-	 * @param name
-	 * @param value
-	 * @return
-	 */
-	protected final WebTarget addParameterIfNotBlank(WebTarget target, String name, String value) {
-		if ( StringUtils.isNotBlank(value) ) {
-			target = target.queryParam(name, value);
-		}
-		return target;
-	}
-	
-	/**
-	 * Subclasses need to implement this method to add the actual request path and
-	 * optionally query-specific request parameters.
-	 * 
-	 * @param connectionBaseTarget Base {@link WebTarget} from the current connection instance
-	 * @return
-	 */
-	protected abstract WebTarget getUpdatedBaseWebTarget(WebTarget connectionBaseTarget);
-	
 	protected ResponseType executeRequest(WebTarget target) {
-		return conn().executeRequest(getHttpMethod(), target, getResponseTypeClass());
+		return entity==null ? conn.executeRequest(httpMethod, target, getResponseTypeClass())
+				            : conn.executeRequest(httpMethod, target, entity, getResponseTypeClass());
 	}
 	
-	protected String getHttpMethod() {
-		return HttpMethod.GET;
+	protected void updatePagingDataFromResponse(PagingData pagingData, ResponseType data) {
+		throw new UnsupportedOperationException("Paging is not supported by "+this.getClass().getName());
 	}
-	
-	/**
-	 * Subclasses can override this method to do some initialization before calling the target endpoint,
-	 * for example to perform some additional REST requests to modify target system settings required for correct
-	 * target endpoint invocation.
-	 */
-	protected void initRequest() {}
-	
-	/**
-	 * Identify whether paging is supported by the resource 
-	 * returned by {@link #getBaseWebTarget()}.
-	 * @return
-	 */
-	protected abstract boolean isPagingSupported();
 
-	protected abstract void updatePagingDataFromResponse(PagingData pagingData, ResponseType data);
-
-	protected abstract WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData);
+	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
+		throw new UnsupportedOperationException("Paging is not supported by "+this.getClass().getName());
+	}
 	
 	protected abstract Class<ResponseType> getResponseTypeClass();
 
@@ -187,14 +143,18 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	 * 
 	 */
 	private void processAll(WebTarget target, PagingData pagingData, IJSONMapProcessor processor) {
-		initRequest();
-		if ( !isPagingSupported() ) {
-			processAll(target, processor);
+		if ( requestInitializer != null ) { requestInitializer.initRequest(); }
+		if ( !pagingSupported ) {
+			List<IJSONMapPreProcessor> preProcessorsWithMaxResults = new ArrayList<>(preProcessors);
+			preProcessorsWithMaxResults.add(new JSONMapFilterMaxResults(maxResults));
+			processor = new JSONMapProcessorWithPreProcessors(preProcessorsWithMaxResults, processor);
+			processSingleRequest(target, processor);
 		} else {
+			processor = new JSONMapProcessorWithPreProcessors(preProcessors, processor);
 			do {
 				processor.nextPage(pagingData);
 				WebTarget pagingTarget = updateWebTargetWithPagingData(target, pagingData);
-				ResponseType response = processAll(pagingTarget, processor);
+				ResponseType response = processSingleRequest(pagingTarget, processor);
 				updatePagingDataFromResponse(pagingData, response);
 			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getPageSize()>0 );
 		}
@@ -203,27 +163,18 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
 	 */
-	private ResponseType processAll(WebTarget target, IJSONMapProcessor processor) {
+	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor) {
 		ResponseType data = executeRequest(target);
 		JSONList list = getJSONListFromResponse(data);
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
-				if ( preProcess(getDefaultPreProcessors(), obj) && preProcess(preProcessors(), obj) ) {
-					processor.process(obj);
-				}
+				processor.process(obj);
 			}
 		}
 		return data;
 	}
-
-	private boolean preProcess(List<IJSONMapPreProcessor> preProcessors, JSONMap json) {
-		boolean result = true;
-		if ( CollectionUtils.isNotEmpty(preProcessors) ) {
-			for ( IJSONMapPreProcessor preProcessor : preProcessors ) {
-				result &= preProcessor.preProcess(json);
-				if ( !result ) { break; }
-			}
-		}
-		return result;
+	
+	public static interface IRequestInitializer {
+		public void initRequest();
 	}
 }

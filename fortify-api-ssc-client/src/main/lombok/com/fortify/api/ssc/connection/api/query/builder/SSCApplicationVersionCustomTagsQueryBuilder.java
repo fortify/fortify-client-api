@@ -22,20 +22,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.ssc.connection.api.query.builder;
 
-import javax.ws.rs.client.WebTarget;
+import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
-public abstract class AbstractSSCEntityByIdQuery extends AbstractSSCEntityQuery {
-	protected abstract String id();
+public class SSCApplicationVersionCustomTagsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionCustomTagsQueryBuilder> {
+	private final SSCParamFields paramFields = add(new SSCParamFields());
 	
-	@Override
-	protected WebTarget resolveTemplateParams(WebTarget webTarget) {
-		return super.resolveTemplateParams(webTarget).resolveTemplate("id", id());
+	public SSCApplicationVersionCustomTagsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
+		super(conn, applicationVersionId, false);
 	}
-	
-	@Override
-	protected final boolean isPagingSupported() {
-		return false;
+
+	public final SSCApplicationVersionCustomTagsQueryBuilder paramFields(String... fields) {
+		paramFields.paramFields(fields); return _this();
 	}
+
+	@Override
+	protected String getChildEntityPath() {
+		return "customTags";
+	}
+
 }

@@ -22,33 +22,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
-
-import java.util.List;
+package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.Accessors;
-
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public class SSCArtifactByIdQuery extends AbstractSSCEntityByIdQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final boolean useCache;
-
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
+public final class SSCBugTrackersQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCBugTrackersQueryBuilder> {
+	private final SSCParamFields paramFields = add(new SSCParamFields());
 	
-	// Fields supported by AbstractSSCEntityByIdQuery
-	private final String id;
+	public SSCBugTrackersQueryBuilder(SSCAuthenticatingRestConnection conn) {
+		super(conn, false);
+	}
+
+	public final SSCBugTrackersQueryBuilder paramFields(String... fields) {
+		paramFields.paramFields(fields); return _this();
+	}
 	
 	@Override
 	protected String getTargetPath() {
-		return "/api/v1/artifacts";
+		return "/api/v1/bugtrackers";
 	}
-
 }

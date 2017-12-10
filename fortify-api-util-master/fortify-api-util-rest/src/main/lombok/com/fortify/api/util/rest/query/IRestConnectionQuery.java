@@ -24,37 +24,30 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.query;
 
-import javax.ws.rs.client.WebTarget;
+import com.fortify.api.util.rest.json.IJSONMapProcessor;
+import com.fortify.api.util.rest.json.JSONList;
+import com.fortify.api.util.rest.json.JSONMap;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
+public interface IRestConnectionQuery {
 
-import lombok.Getter;
+	/**
+	 * Process all results from the REST API call
+	 * @param processor
+	 */
+	void processAll(IJSONMapProcessor processor);
 
-/**
- * TODO Update JavaDoc 
- * 
- * @author Ruud Senden
- */
-@Getter
-public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends AbstractRestConnectionWithCache, ResponseType> 
-	extends AbstractRestConnectionQuery<ConnType, ResponseType>
-{	
-	private final boolean useCache;
-	
-	protected AbstractRestConnectionWithCacheQuery(RestConnectionWithCacheQueryConfig<ConnType, ?> config) {
-		super(config);
-		this.useCache = config.isUseCache();
-	}
+	/**
+	 * Get all results from the REST API call
+	 * @return
+	 */
+	JSONList getAll();
 
-	
-	@Override
-	protected ResponseType executeRequest(WebTarget target) {
-		return useCache && getEntity()==null
-				? getConn().executeRequest(getHttpMethod(), target, getResponseTypeClass(), getCacheName())
-				: super.executeRequest(target);
-	}
-	
-	protected String getCacheName() {
-		return this.getClass().getName();
-	}
+	/**
+	 * Get a unique result from the REST API call. If there are no
+	 * results, null will be returned. If there is more than one result,
+	 * an exception will be thrown.
+	 * @return
+	 */
+	JSONMap getUnique();
+
 }

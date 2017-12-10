@@ -26,7 +26,6 @@ package com.fortify.api.ssc.connection.api;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.ws.rs.HttpMethod;
@@ -35,10 +34,8 @@ import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCFileUpDownloadAPI.FileTokenType;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionArtifactsQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionArtifactsQuery.SSCApplicationVersionArtifactsQueryBuilder;
-import com.fortify.api.ssc.connection.api.query.SSCArtifactByIdQuery;
-import com.fortify.api.ssc.connection.api.query.SSCArtifactByIdQuery.SSCArtifactByIdQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionArtifactsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCArtifactByIdQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
@@ -48,15 +45,15 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 	}
 	
 	public SSCApplicationVersionArtifactsQueryBuilder queryArtifacts(String applicationVersionId) {
-		return SSCApplicationVersionArtifactsQuery.builder().conn(conn()).applicationVersionId(applicationVersionId);
+		return new SSCApplicationVersionArtifactsQueryBuilder(conn(), applicationVersionId);
 	}
 	
-	public SSCArtifactByIdQueryBuilder queryArtifacts() {
-		return SSCArtifactByIdQuery.builder().conn(conn());
+	public SSCArtifactByIdQueryBuilder queryArtifactById(String artifactId) {
+		return new SSCArtifactByIdQueryBuilder(conn(), artifactId);
 	}
 	
 	public final JSONMap getArtifactById(String artifactId, boolean useCache, String... fields) {
-		return queryArtifacts().id(artifactId).useCache(useCache).paramFields(fields==null?null:Arrays.asList(fields)).build().getUnique();
+		return queryArtifactById(artifactId).useCache(useCache).paramFields(fields).build().getUnique();
 	}
 	
 	public final long downloadApplicationFile(String applicationVersionId, Path target, boolean includeSource) {
@@ -108,6 +105,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 	public static void main(String[] args) throws InterruptedException {
 		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
 		String artifactId = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion("6", new File("c:/work/Programs/HP/SCA/17.20/samples/basic/sampleOutput/WebGoat5.0.fpr"), 60);
+		System.out.println(artifactId);
 		System.out.println(conn.api().artifact().getArtifactById(artifactId, true));
 		System.out.println(conn.api().artifact().getArtifactById(artifactId, true).get("uploadDate", Date.class).getClass().getName());
 	}

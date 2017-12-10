@@ -22,39 +22,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.query;
+package com.fortify.api.ssc.connection.api.query.builder;
 
-import javax.ws.rs.client.WebTarget;
+import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
-
-import lombok.Getter;
-
-/**
- * TODO Update JavaDoc 
- * 
- * @author Ruud Senden
- */
-@Getter
-public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends AbstractRestConnectionWithCache, ResponseType> 
-	extends AbstractRestConnectionQuery<ConnType, ResponseType>
-{	
-	private final boolean useCache;
+public class SSCArtifactByIdQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCArtifactByIdQueryBuilder> {
+	private final SSCParamFields paramFields = add(new SSCParamFields());
 	
-	protected AbstractRestConnectionWithCacheQuery(RestConnectionWithCacheQueryConfig<ConnType, ?> config) {
-		super(config);
-		this.useCache = config.isUseCache();
+	public SSCArtifactByIdQueryBuilder(SSCAuthenticatingRestConnection conn, String artifactId) {
+		super(conn, false);
+		templateValues().put("artifactId", artifactId);
 	}
-
+	
+	public final SSCArtifactByIdQueryBuilder paramFields(String... fields) {
+		paramFields.paramFields(fields); return _this();
+	}
 	
 	@Override
-	protected ResponseType executeRequest(WebTarget target) {
-		return useCache && getEntity()==null
-				? getConn().executeRequest(getHttpMethod(), target, getResponseTypeClass(), getCacheName())
-				: super.executeRequest(target);
+	protected String getTargetPath() {
+		return "/api/v1/artifacts/{artifactId}";
 	}
-	
-	protected String getCacheName() {
-		return this.getClass().getName();
-	}
+
 }

@@ -32,12 +32,12 @@ import javax.ws.rs.client.Entity;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCJobsQuery;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.JSONMapFilterDateCompare;
 import com.fortify.api.util.rest.json.JSONMapFilterDateCompare.DateComparisonOperator;
 import com.fortify.api.util.rest.json.JSONMapFilterRegEx;
+import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
 public class SSCAuditAssistantAPI extends AbstractSSCAPI {
@@ -74,7 +74,7 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 		String result = null;
 		SSCJobAPI jobApi = conn().api().job();
 		Date now = new Date();
-		SSCJobsQuery jobQuery = jobApi.query()
+		IRestConnectionQuery jobQuery = jobApi.query()
 				// Query for artifact upload job
 			.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				// Only for selected application version 

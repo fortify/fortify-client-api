@@ -22,32 +22,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.util.rest.webtarget;
 
-import java.util.List;
+import javax.ws.rs.client.WebTarget;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import org.apache.commons.lang.StringUtils;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.Accessors;
-
-@Getter(AccessLevel.PROTECTED) @Builder @Accessors(fluent=true)
-public class SSCIssueDetailsByIdQuery extends AbstractSSCEntityByIdQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final boolean useCache;
-
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
+public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
+	private final String name;
+	private final String[] values;
 	
-	// Fields supported by AbstractSSCEntityByIdQuery
-	private final String id;
-	
+	public WebTargetQueryParamUpdater(String name, String... values) {
+		this.name = name;
+		this.values = values;
+	}
+
 	@Override
-	protected String getTargetPath() {
-		return "/api/v1/issueDetails";
+	public WebTarget update(WebTarget target) {
+		if ( values != null && values.length>0 && !(values.length==1 && StringUtils.isBlank(values[0])) ) {
+			target = target.queryParam(name, (Object[])values);
+		}
+		return target;
 	}
 
 }

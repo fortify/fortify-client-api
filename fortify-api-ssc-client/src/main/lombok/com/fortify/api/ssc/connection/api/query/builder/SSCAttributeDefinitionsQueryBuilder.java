@@ -22,59 +22,36 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
-
-import java.util.List;
-import java.util.Map;
+package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
+import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
-
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public final class SSCJobsQuery extends AbstractSSCEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	private final boolean useCache;
-	private final Integer maxResults;
-
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
-	private final String paramOrderBy;
-	private final @Singular Map<String, String> paramQAnds;
-
-	public static class SSCJobsQueryBuilder {
-		public SSCJobsQueryBuilder id(String id) {
-			return paramQAnd("id", id);
-		}
-
-		public SSCJobsQueryBuilder jobClassName(String jobClassName) {
-			return paramQAnd("jobClassName", jobClassName);
-		}
-
-		public SSCJobsQueryBuilder priority(int priority) {
-			return paramQAnd("priority", "" + priority);
-		}
-
-		public SSCJobsQueryBuilder state(String state) {
-			return paramQAnd("state", state);
-		}
+public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCAttributeDefinitionsQueryBuilder> {
+	private final SSCParamFields paramFields = add(new SSCParamFields());
+	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
+	private final SSCParamQ paramQ = add(new SSCParamQ());
+	
+	public SSCAttributeDefinitionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
+		super(conn, true);
 	}
 
-	@Override
-	protected boolean isPagingSupported() {
-		return true;
+	public final SSCAttributeDefinitionsQueryBuilder paramFields(String... fields) {
+		paramFields.paramFields(fields); return _this();
+	}
+
+	public final SSCAttributeDefinitionsQueryBuilder orderBy(String orderBy) {
+		paramOrderBy.orderBy(orderBy); return _this();
+	}
+
+	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(String field, String value) {
+		paramQ.paramQAnd(field, value); return _this();
 	}
 	
 	@Override
 	protected String getTargetPath() {
-		return "/api/v1/jobs";
+		return "/api/v1/attributeDefinitions";
 	}
 }

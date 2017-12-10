@@ -22,39 +22,48 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.query;
+package com.fortify.api.util.rest.json;
 
-import javax.ws.rs.client.WebTarget;
+import java.util.List;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
+import org.apache.commons.collections.CollectionUtils;
 
-import lombok.Getter;
+import com.fortify.api.util.rest.query.PagingData;
 
-/**
- * TODO Update JavaDoc 
- * 
- * @author Ruud Senden
- */
-@Getter
-public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends AbstractRestConnectionWithCache, ResponseType> 
-	extends AbstractRestConnectionQuery<ConnType, ResponseType>
-{	
-	private final boolean useCache;
+public class JSONMapProcessorWithPreProcessors implements IJSONMapProcessor {
+	private final List<IJSONMapPreProcessor> preProcessors;
+	private final IJSONMapProcessor processor;
 	
-	protected AbstractRestConnectionWithCacheQuery(RestConnectionWithCacheQueryConfig<ConnType, ?> config) {
-		super(config);
-		this.useCache = config.isUseCache();
+	public JSONMapProcessorWithPreProcessors(List<IJSONMapPreProcessor> preProcessors, IJSONMapProcessor processor) {
+		this.preProcessors = preProcessors;
+		this.processor = processor;
 	}
 
-	
 	@Override
-	protected ResponseType executeRequest(WebTarget target) {
-		return useCache && getEntity()==null
-				? getConn().executeRequest(getHttpMethod(), target, getResponseTypeClass(), getCacheName())
-				: super.executeRequest(target);
+	public void process(JSONMap json) {
+		if ( preProcess(json) ) {
+			processor.process(json);
+		}
 	}
 	
-	protected String getCacheName() {
-		return this.getClass().getName();
+	private boolean preProcess(JSONMap json) {
+		boolean result = true;
+		if ( CollectionUtils.isNotEmpty(preProcessors) ) {
+			for ( IJSONMapPreProcessor preProcessor : preProcessors ) {
+				result &= preProcessor.preProcess(json);
+				if ( !result ) { break; }
+			}
+		}
+		return result;
 	}
+
+	@Override
+	public <T extends PagingData> void nextPage(T pagingData) {
+		processor.nextPage(pagingData);
+	}
+
+	
+	
+	
+
 }

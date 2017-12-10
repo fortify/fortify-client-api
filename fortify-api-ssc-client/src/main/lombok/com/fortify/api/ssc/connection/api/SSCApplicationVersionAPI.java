@@ -24,11 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
-import java.util.Arrays;
-
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionsQuery;
-import com.fortify.api.ssc.connection.api.query.SSCApplicationVersionsQuery.SSCApplicationVersionsQueryBuilder;
+import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 
 public class SSCApplicationVersionAPI extends AbstractSSCAPI {
@@ -37,19 +34,19 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	}
 	
 	public SSCApplicationVersionsQueryBuilder queryApplicationVersions() {
-		return SSCApplicationVersionsQuery.builder().conn(conn());
+		return new SSCApplicationVersionsQueryBuilder(conn());
 	}
 	
 	public JSONMap getApplicationVersionById(String applicationVersionId) {
-		return queryApplicationVersions().id(applicationVersionId).useCache(true).build().getUnique();
+		return new SSCApplicationVersionsQueryBuilder(conn()).id(applicationVersionId).useCache(true).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByName(String applicationName, String versionName) {
-		return queryApplicationVersions().applicationName(applicationName).versionName(versionName).useCache(true).build().getUnique();
+		return new SSCApplicationVersionsQueryBuilder(conn()).applicationName(applicationName).versionName(versionName).useCache(true).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
-		return queryApplicationVersions().nameOrId(nameOrId, separator).useCache(true).build().getUnique();
+		return new SSCApplicationVersionsQueryBuilder(conn()).nameOrId(nameOrId, separator).useCache(true).build().getUnique();
 	}
 	
 	/**
@@ -63,7 +60,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();
 		for ( int i = 0 ; i < 10 ; i++ ) {
-			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").paramFields(Arrays.asList("id", "name")).useCache(true).build().getAll());
+			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").paramFields("id", "name").useCache(true).build().getAll());
 			System.out.println(api.queryApplicationVersions().id("6").useCache(true).build().getAll());
 			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").versionName("5.0").useCache(true).build().getUnique());
 			System.out.println(api.getApplicationVersionByNameOrId("WebGoat:5.0", ":"));

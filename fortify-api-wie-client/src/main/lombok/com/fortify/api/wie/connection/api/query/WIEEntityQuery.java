@@ -32,6 +32,7 @@ import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
 import com.fortify.api.util.rest.query.PagingData;
+import com.fortify.api.util.rest.query.RestConnectionWithCacheQueryConfig;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
 /**
@@ -41,30 +42,9 @@ import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
  * 
  * @author Ruud Senden
  */
-public abstract class AbstractWIEEntityQuery extends AbstractRestConnectionWithCacheQuery<WIEAuthenticatingRestConnection, JSONMap> {
-	
-	@Override
-	protected WebTarget getUpdatedBaseWebTarget(WebTarget webTarget) {
-		webTarget = addTargetPath(webTarget);
-		webTarget = addExtraParameters(webTarget);
-		return webTarget;
-	}
-	
-	protected WebTarget addTargetPath(WebTarget webTarget) {
-		return webTarget.path(getTargetPath());
-	}
-
-	protected abstract String getTargetPath();
-	
-	/**
-	 * Subclasses can override this method to add any additional
-	 * request parameters that are not supported by this base class.
-	 * 
-	 * @param webTarget
-	 * @return
-	 */
-	protected WebTarget addExtraParameters(WebTarget webTarget) {
-		return webTarget;
+public class WIEEntityQuery extends AbstractRestConnectionWithCacheQuery<WIEAuthenticatingRestConnection, JSONMap> {
+	public WIEEntityQuery(RestConnectionWithCacheQueryConfig<WIEAuthenticatingRestConnection,?> config) {
+		super(config);
 	}
 	
 	@Override

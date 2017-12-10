@@ -22,41 +22,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query;
+package com.fortify.api.ssc.connection.api.query.builder.param;
 
-import java.util.List;
-import java.util.Map;
+import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.experimental.Accessors;
-
-@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-@Builder
-public final class SSCAttributeDefinitionsQuery extends AbstractSSCEntityQuery {
-	// Fields supported by AbstractRestConnectionWithCacheQuery
-	private final SSCAuthenticatingRestConnection conn;
-	private final @Singular List<IJSONMapPreProcessor> preProcessors;
-	@Builder.Default private final boolean useCache = true;
-	private final Integer maxResults;
-
-	// Fields supported by AbstractSSCEntityQuery
-	private final List<String> paramFields;
-	private final String paramOrderBy;
-	private final @Singular Map<String, String> paramQAnds;
-
-	@Override
-	protected boolean isPagingSupported() {
-		return true;
+public class SSCParamGroupBy extends WebTargetQueryParamUpdaterBuilder {
+	public SSCParamGroupBy() {
+		super("groupby");
 	}
 	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/attributeDefinitions";
+	public SSCParamGroupBy groupBy(String field) {
+		paramValues(field); return this;
 	}
 }
