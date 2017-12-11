@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,32 +22,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query.builder;
-
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
-
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying available bug tracker integrations.
- * 
- * @author Ruud Senden
- *
+ * <p>The {@link com.fortify.api.ssc.connection.api.query.SSCEntityQuery} class in this
+ *    package is the main class for performing SSC-related queries. Instances of this
+ *    class are created using the build() method in the various builder implementations
+ *    in the {@link com.fortify.api.ssc.connection.api.query.builder} package.</p>   
  */
-public final class SSCBugTrackersQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCBugTrackersQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	
-	public SSCBugTrackersQueryBuilder(SSCAuthenticatingRestConnection conn) {
-		super(conn, false);
-	}
-
-	public final SSCBugTrackersQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
-	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/bugtrackers";
-	}
-}
+package com.fortify.api.ssc.connection.api.query;

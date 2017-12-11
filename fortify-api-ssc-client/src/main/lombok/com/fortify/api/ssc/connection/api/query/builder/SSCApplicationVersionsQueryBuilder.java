@@ -27,6 +27,7 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
@@ -35,6 +36,13 @@ import com.fortify.api.util.rest.json.JSONMap;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * This builder class can be used to build {@link SSCEntityQuery} instances
+ * for querying application versions.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCApplicationVersionsQueryBuilder> {
 	private final SSCParamFields paramFields = add(new SSCParamFields());
 	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());

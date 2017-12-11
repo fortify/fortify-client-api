@@ -30,10 +30,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.auth.Credentials;
 
 import com.fortify.api.ssc.connection.api.SSCAPI;
+import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 
 /**
- * This class provides an authenticated REST connection for SSC.
+ * This class provides an authenticated REST connection for SSC. Low-level API's are
+ * available through the various executeRequest() methods provided by {@link AbstractRestConnection}.
+ * Higher-level API's are available through the {@link #api()} method. Instances of this class
+ * can be created using the {@link #builder()} method.
+ * 
  * @author Ruud Senden
  *
  */
@@ -41,19 +46,43 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	private final ISSCTokenFactory tokenFactory;
 	private final SSCAPI api = new SSCAPI(this);
 	
-	public final SSCAPI api() {
+	/**
+	 * Get a more high-level API for accessing SSC. 
+	 * @return
+	 */
+	public SSCAPI api() {
 		return api;
 	}
 	
+	/**
+	 * Construct a new instance of this class based on the given {@link RestConnectionConfig}
+	 * instance. 
+	 * 
+	 * @param config
+	 */
 	protected SSCAuthenticatingRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 		this.tokenFactory = getTokenFactory(config);
 	}
 	
+	/**
+	 * This method returns an {@link SSCAuthenticatingRestConnectionBuilder} instance
+	 * that allows for building {@link SSCAuthenticatingRestConnection} instances.
+	 * @return
+	 */
 	public static final SSCAuthenticatingRestConnectionBuilder builder() {
 		return new SSCAuthenticatingRestConnectionBuilder();
 	}
 
+	/**
+	 * Get a token factory based on the given {@link RestConnectionConfig}.
+	 * Depending on the configured credentials, this will return either an
+	 * {@link SSCTokenFactoryTokenCredentials} or {@link SSCTokenFactoryUserCredentials}
+	 * instance.
+	 *  
+	 * @param config
+	 * @return
+	 */
 	private ISSCTokenFactory getTokenFactory(RestConnectionConfig<?> config) {
 		Credentials credentials = config.getCredentials();
 		String userName = credentials.getUserPrincipal()==null?null:credentials.getUserPrincipal().getName();
@@ -76,6 +105,13 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 				.header("Authorization", "FortifyToken "+tokenFactory.getToken());
 	}
 	
+	/**
+	 * This class provides a builder pattern for configuring an {@link SSCAuthenticatingRestConnection} instance.
+	 * It re-uses builder functionality from {@link RestConnectionConfigWithoutCredentialsProvider}, and adds a
+	 * {@link #build()} method to build an {@link SSCAuthenticatingRestConnection} instance.
+	 * 
+	 * @author Ruud Senden
+	 */
 	public static final class SSCAuthenticatingRestConnectionBuilder extends RestConnectionConfigWithoutCredentialsProvider<SSCAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<SSCAuthenticatingRestConnection> {
 		@Override
 		public SSCAuthenticatingRestConnection build() {

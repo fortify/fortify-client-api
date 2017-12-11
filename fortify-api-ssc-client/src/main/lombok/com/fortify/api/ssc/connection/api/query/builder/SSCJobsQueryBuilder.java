@@ -25,10 +25,18 @@
 package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 
+/**
+ * This builder class can be used to build {@link SSCEntityQuery} instances
+ * for querying jobs.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public final class SSCJobsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCJobsQueryBuilder> {
 	private final SSCParamFields paramFields = add(new SSCParamFields());
 	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());

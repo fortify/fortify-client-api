@@ -26,6 +26,7 @@ package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
@@ -36,6 +37,13 @@ import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * This builder class can be used to build {@link SSCEntityQuery} instances
+ * for querying application version vulnerabilities.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionIssuesQueryBuilder> {
 	public static enum QueryMode {
 		adv, issues

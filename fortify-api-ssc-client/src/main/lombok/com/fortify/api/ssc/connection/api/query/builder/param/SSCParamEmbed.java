@@ -26,6 +26,13 @@ package com.fortify.api.ssc.connection.api.query.builder.param;
 
 import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
 
+/**
+ * {@link WebTargetQueryParamUpdaterBuilder} implementation for adding the
+ * common 'embed' request parameter.
+ *  
+ * @author Ruud Senden
+ *
+ */
 public class SSCParamEmbed extends WebTargetQueryParamUpdaterBuilder {
 	public SSCParamEmbed() {
 		super("embed");

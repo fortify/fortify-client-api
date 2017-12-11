@@ -24,34 +24,33 @@
  ******************************************************************************/
 /**
  * <p>This package contains functionality for querying REST API's. The main client API
- *    is provided through {@link com.fortify.api.util.rest.query.IRestConnectionQuery},
- *    which provides methods for processing or retrieving data from a REST endpoint.
- *    {@link com.fortify.api.util.rest.query.AbstractRestConnectionQuery} provides an
- *    abstract implementation for this interface, and can be configured using a
- *    {@link com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig} instance.
- *    The corresponding {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery}
- *    and {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig} classes
- *    add support for caching query results.</p>
+ *    for retrieving data is provided by the {@link com.fortify.api.util.rest.query.IRestConnectionQuery}
+ *    interface, for which {@link com.fortify.api.util.rest.query.AbstractRestConnectionQuery}
+ *    provides an abstract implementation. Concrete implementations will need to implement/override 
+ *    some methods to handle paging and processing responses. Clients usually will not instantiate
+ *    query instances directly, but rather through builders (see below).</p>
  *    
- * <p>Concrete implementations of this API usually provide one or more classes extending from
- *    {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery} to 
- *    handle paging and REST responses. For each specific REST endpoint, usually there is a 
- *    corresponding builder implementation that extends from {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig}.
- *    This builder is responsible for configuring the exact query to be executed (for example
- *    REST endpoint path and query parameters), and provides a build() method to instantiate
- *    the corresponding {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery}
- *    implementation, passing itself to the constructor of the 
- *    {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery} implementation.</p>
+ * <p>The main API for constructing queries is provided through concrete implementations
+ *    of the {@link com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig} class.
+ *    Based on the builder pattern, these concrete implementations would allow for 
+ *    configuring query criteria, and then building a corresponding 
+ *    {@link com.fortify.api.util.rest.query.IRestConnectionQuery} implementation through
+ *    the build() method.</p>
  *    
  * <p>As an example, suppose we have a system named 'MySystem', which provides query endpoints
  *    for books and cards. Usually you would develop a MySystemRestConnectionQuery class that
- *    extends from {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery}
- *    and implements the various methods for handling paging and REST responses. In addition,
- *    you would develop MySystemBooksQueryBuilder and MySystemCardsQueryBuilder that both extend
- *    (directly or indirectly) from {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig}.
- *    These builders would allow a user of your API to configure the queries, for example by configuring
- *    books search criteria like title, ISBN or author. The implementation for MySystemBooksQueryBuilder
- *    would then utilize the functionality provided in the {@link com.fortify.api.util.rest.webtarget} package
- *    to configure the REST query parameters.</p>
+ *    extends from {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery},
+ *    and implements the various methods for handling paging and REST responses. You would also have
+ *    an AbstractMySystemQueryBuilder class that extends from 
+ *    {@link com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig},
+ *    specifies the connection type, and adds a 
+ *    <code>public MySystemRestConnectionQuery build() {return new MySystemRestConnectionQuery(this);}</code>
+ *    method. This class is then used as a base class for MySystemBooksQueryBuilder and MySystemCardsQueryBuilder.
+ *    These classes specify the target REST endpoint path, and allow users of your API to configure the queries, 
+ *    for example books search criteria like title, ISBN or author. The implementation for these classes would 
+ *    utilize the functionality provided in the {@link com.fortify.api.util.rest.webtarget} package to configure 
+ *    the corresponding REST query parameters.</p>
+ *    
+ * <p>Please see the JavaDoc for the various classes for more details.</p>
  */
 package com.fortify.api.util.rest.query;

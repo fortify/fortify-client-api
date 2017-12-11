@@ -32,15 +32,16 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
-import com.fortify.api.util.rest.query.PagingData;
 import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.PagingData;
 
 import lombok.Getter;
 
 /**
- * <p>This abstract class can be used as a base class for querying entity data from SSC. </p>
- * 
- * TODO Add more JavaDoc
+ * This class provides SSC-specific functionality for handling paging and processing REST responses.
+ * Usually this class is instantiated through the various build() methods provided by the 
+ * query builder implementations in the {@link  com.fortify.api.ssc.connection.api.query.builder}
+ * package.
  * 
  * @author Ruud Senden
  */

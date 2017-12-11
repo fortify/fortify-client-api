@@ -29,7 +29,15 @@ import org.apache.commons.lang.StringUtils;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
+import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
 
+/**
+ * {@link WebTargetQueryParamUpdaterBuilder} implementation for adding the
+ * common 'fields' request parameter.
+ *  
+ * @author Ruud Senden
+ *
+ */
 public class SSCParamFields implements IWebTargetUpdaterBuilder {
 	private String fields;
 	

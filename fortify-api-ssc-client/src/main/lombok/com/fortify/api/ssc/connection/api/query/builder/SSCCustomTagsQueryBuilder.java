@@ -25,9 +25,17 @@
 package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
 
+/**
+ * This builder class can be used to build {@link SSCEntityQuery} instances
+ * for querying custom tag definitions.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public final class SSCCustomTagsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCCustomTagsQueryBuilder> {
 	private final SSCParamFields paramFields = add(new SSCParamFields());
 	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());

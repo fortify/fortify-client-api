@@ -45,7 +45,8 @@ import lombok.Getter;
 
 /**
  * <p>This abstract class provides an implementation for {@link IRestConnectionQuery} to allow for
- * querying REST API's. Concrete implementations of this class will need to implement and override
+ * querying REST API's. Usually for each target system, you would have one (or a limited number of) 
+ * concrete implementations of this class. These concrete implementations will need to implement and override
  * various methods to handle things like paging ({@link #updatePagingDataFromResponse(PagingData, Object)}
  * and {@link #updateWebTargetWithPagingData(WebTarget, PagingData)}, and getting the necessary
  * {@link JSONList} instance from the REST response ({@link #getResponseTypeClass()} and 
@@ -55,6 +56,17 @@ import lombok.Getter;
  * configuring the various details for building the actual REST requests and processing responses. This
  * includes {@link IWebTargetUpdater} instances for generating the actual REST request, and {@link IJSONMapPreProcessor}
  * instances for pre-processing each individual {@link JSONMap} instance returned by the REST request.</p>
+ * 
+ * <p>Query implementations usually should not extends this class directly, but rather extend
+ * {@link AbstractRestConnectionWithCacheQuery} to add optional support for caching. The common 
+ * class structure looks as follows:
+ * <ul><li>{@link AbstractRestConnectionQuery}
+ *     <ul><li>{@link AbstractRestConnectionWithCacheQuery}
+ *         <ul><li>MySystemQuery</li></ul>
+ *     </li></ul>
+ * </li></ul>
+ * Instances of MySystemQuery are not created directly by API consumers, but rather through build()
+ * methods on concrete {@link AbstractRestConnectionQueryConfig} implementations.</p> 
  * 
  * @author Ruud Senden
  */

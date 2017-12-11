@@ -25,7 +25,16 @@
 package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
+/**
+ * This abstract base class is used to build {@link SSCEntityQuery} instances
+ * for querying SSC application version sub-entities.
+ *  
+ * @author Ruud Senden
+ *
+ * @param <T> Concrete builder type
+ */
 public abstract class AbstractSSCApplicationVersionChildEntityQueryBuilder<T> extends AbstractSSCEntityQueryBuilder<T> {
 
 	protected AbstractSSCApplicationVersionChildEntityQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId, boolean pagingSupported) 

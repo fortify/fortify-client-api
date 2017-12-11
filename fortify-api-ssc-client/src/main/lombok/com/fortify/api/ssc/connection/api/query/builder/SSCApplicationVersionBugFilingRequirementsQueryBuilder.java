@@ -28,10 +28,18 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
 
+/**
+ * This builder class can be used to build {@link SSCEntityQuery} instances
+ * for querying bug filing requirements.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCApplicationVersionBugFilingRequirementsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugFilingRequirementsQueryBuilder> {
 	private final SSCParamFields paramFields = add(new SSCParamFields());
 	private final WebTargetQueryParamUpdaterBuilder paramChangedParamIdentifier = add(new WebTargetQueryParamUpdaterBuilder("changeParamIdentifier"));

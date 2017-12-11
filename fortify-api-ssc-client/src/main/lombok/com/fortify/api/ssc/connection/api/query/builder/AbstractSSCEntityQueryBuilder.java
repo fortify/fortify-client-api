@@ -29,6 +29,13 @@ import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
 
+/**
+ * This abstract base class is used to build {@link SSCEntityQuery} instances.
+ *  
+ * @author Ruud Senden
+ *
+ * @param <T> Concrete builder type
+ */
 public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection, T> {
 	
 	protected AbstractSSCEntityQueryBuilder(SSCAuthenticatingRestConnection conn, boolean pagingSupported) {

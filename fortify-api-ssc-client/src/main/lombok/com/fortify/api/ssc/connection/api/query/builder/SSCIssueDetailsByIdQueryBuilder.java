@@ -25,8 +25,16 @@
 package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
+/**
+ * This builder class can be used to build {@link SSCEntityQuery} instances
+ * for querying issue details by issue id.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCIssueDetailsByIdQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCIssueDetailsByIdQueryBuilder> {
 	private final SSCParamFields paramFields = add(new SSCParamFields());
 	

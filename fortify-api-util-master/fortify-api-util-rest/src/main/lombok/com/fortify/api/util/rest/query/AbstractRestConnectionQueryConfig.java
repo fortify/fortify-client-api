@@ -44,7 +44,34 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * TODO Add JavaDoc
+ * <p>This abstract class allows for configuring an {@link AbstractRestConnectionQuery}
+ * instance for a specific query. Usually for each target system query endpoint,
+ * you would have a corresponding concrete implementation of this class, that allows
+ * for configuring the endpoint details like target path and any query parameters.</p>
+ * 
+ * <p>The common class structure looks as follows:
+ * <ul><li>{@link AbstractRestConnectionQueryConfig}
+ *     <ul><li>{@link AbstractRestConnectionWithCacheQueryConfig}
+ *         <ul><li>AbstractMySystemQueryBuilder<br/>
+ *                 Specifies connection type and adds method 
+ *                 <code>public MySystemRestConnectionQuery build() {return new MySystemRestConnectionQuery(this);}</code>
+ *             <ul><li>MySystemEndpoint1QueryBuilder</li>
+ *                 <li>MySystemEndpoint2QueryBuilder</li>
+ *             </ul>
+ *         </li></ul>
+ *     </li></ul>
+ * </li></ul></p>
+ * 
+ * <p>This allows clients of your API to execute queries like this:
+ * <code>new MySystemEndpoint1QueryBuilder(conn, requiredProperty1, ...).criteria1(value).criteria2(value).build().getAll()</code>
+ * Usually constructing the QueryBuilder instances is not left to API consumers, but the system-specific
+ * API provides methods like <code>querySomething(requiredProperty1, ...)</code> that construct and return
+ * the corresponding QueryBuilder instance. As such, API consumers would do something like this:
+ * <code>api.querySomething(requiredProperty1, ...).criteria1(value).criteria2(value).build().getAll()</code></p>
+ * 
+ * <p>Concrete implementations of this class can utilize various functionality provided by this base class,
+ * and the {@link com.fortify.api.util.rest.webtarget} package to generate requests based on configurable
+ * search criteria. See for example the SSC REST client code for examples.</p>
  * 
  * @author Ruud Senden
  *

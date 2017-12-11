@@ -25,8 +25,16 @@
 package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
+/**
+ * This builder class can be used to build {@link SSCEntityQuery} instances
+ * for querying application version bug trackers.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCApplicationVersionBugTrackerQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugTrackerQueryBuilder> {
 	private final SSCParamFields paramFields = add(new SSCParamFields());
 	

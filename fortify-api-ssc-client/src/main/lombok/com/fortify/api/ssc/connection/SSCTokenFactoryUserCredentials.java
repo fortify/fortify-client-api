@@ -37,8 +37,8 @@ import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * This class is used to generate SSC tokens for accessing the
- * SSC REST API. Given a base URL, userName, password and
- * optional proxy configuration, it will call the SSC /oauth/token
+ * SSC REST API. Given an {@link SSCBasicRestConnection} instance,
+ * userName and password, it will call the SSC /oauth/token
  * API to request a REST token. The token will be automatically
  * refreshed as required.
  * 

@@ -32,7 +32,15 @@ import org.apache.commons.collections.MapUtils;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
+import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
 
+/**
+ * {@link WebTargetQueryParamUpdaterBuilder} implementation for adding the
+ * common 'q' request parameter.
+ *  
+ * @author Ruud Senden
+ *
+ */
 public class SSCParamQ implements IWebTargetUpdaterBuilder {
 	private final Map<String, String> paramQAnds = new HashMap<>();
 	

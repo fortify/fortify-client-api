@@ -37,7 +37,10 @@ import com.fortify.api.util.rest.json.JSONMap;
 public interface IRestConnectionQuery {
 
 	/**
-	 * Process all results from the REST API call
+	 * Process all results from the REST API call. For large result sets,
+	 * this method usually provides better performance and requires less
+	 * memory than the {@link #getAll()} method.
+	 * 
 	 * @param processor
 	 */
 	void processAll(IJSONMapProcessor processor);

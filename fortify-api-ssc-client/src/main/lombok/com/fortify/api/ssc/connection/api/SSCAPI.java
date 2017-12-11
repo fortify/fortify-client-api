@@ -29,6 +29,12 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * This class provides a unified entry point to the various SSC API's.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @Accessors(fluent = true)
 @Getter
 public class SSCAPI extends AbstractSSCAPI {

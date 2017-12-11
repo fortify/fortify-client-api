@@ -25,7 +25,15 @@
 package com.fortify.api.ssc.connection.api.query.builder;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
+/**
+ * This builder class can be used to build {@link SSCEntityQuery} instances
+ * for querying application version filter sets.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCApplicationVersionFilterSetsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionFilterSetsQueryBuilder> {
 	public SSCApplicationVersionFilterSetsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);

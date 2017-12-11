@@ -29,9 +29,8 @@ import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
 import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
 /**
- * <p>This {@link IRestConnectionRetriever} will create 
- * an authenticated SSC REST connection based on the given
- * configuration</p>
+ * <p>This {@link IRestConnectionRetriever} implementation will create 
+ * an authenticated SSC REST connection based on the given configuration</p>
  * 
  * @author Ruud Senden
  *

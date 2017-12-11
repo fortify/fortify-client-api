@@ -31,6 +31,14 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * This abstract class holds the {@link SSCAuthenticatingRestConnection} instance
+ * that is used to perform the various API functions. Actual API's are provided
+ * through the {@link SSCAPI} class.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @Accessors(fluent=true) @Getter(AccessLevel.PROTECTED) @RequiredArgsConstructor
 public class AbstractSSCAPI {
 	private final SSCAuthenticatingRestConnection conn;
