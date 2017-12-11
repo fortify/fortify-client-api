@@ -37,6 +37,8 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.CredentialsProvider;
 
+import com.fortify.api.fod.connection.api.FoDAPI;
+import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
@@ -51,11 +53,25 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * This class provides a token-authenticated REST connection
- * for FoD.
+ * This class provides an authenticated REST connection for FoD. Low-level API's are
+ * available through the various executeRequest() methods provided by {@link AbstractRestConnection}.
+ * Higher-level API's are available through the {@link #api()} method. Instances of this class
+ * can be created using the {@link #builder()} method.
+ * 
+ * @author Ruud Senden
+ *
  */
 public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	private final FoDTokenFactory tokenProvider;
+	private final FoDAPI api = new FoDAPI(this);
+	
+	/**
+	 * Get a more high-level API for accessing SSC. 
+	 * @return
+	 */
+	public FoDAPI api() {
+		return api;
+	}
 	
 	protected FoDAuthenticatingRestConnection(FoDRestConnectionConfig config) {
 		super(config);
@@ -165,10 +181,22 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 		return attributes.filter("value!='(Not Set)'", true).toMap("name", String.class, "value", String.class);
 	}
 	
+	/**
+	 * This method returns an {@link FoDAuthenticatingRestConnectionBuilder} instance
+	 * that allows for building {@link FoDAuthenticatingRestConnection} instances.
+	 * @return
+	 */
 	public static final FoDAuthenticatingRestConnectionBuilder builder() {
 		return new FoDAuthenticatingRestConnectionBuilder();
 	}
 	
+	/**
+	 * This class extends {@link RestConnectionConfig} to add additional FoD-related
+	 * builder methods.
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
 	@Data @EqualsAndHashCode(callSuper=true)
 	public static class FoDRestConnectionConfig extends RestConnectionConfig<FoDRestConnectionConfig> {
 		private String scope = "https://fod.fortify.com/";
@@ -246,6 +274,13 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 		}
 	}
 	
+	/**
+	 * This class provides a builder pattern for configuring an {@link FoDAuthenticatingRestConnection} instance.
+	 * It re-uses builder functionality from {@link FoDRestConnectionConfig}, and adds a
+	 * {@link #build()} method to build an {@link FoDAuthenticatingRestConnection} instance.
+	 * 
+	 * @author Ruud Senden
+	 */
 	public static final class FoDAuthenticatingRestConnectionBuilder extends FoDRestConnectionConfig implements IRestConnectionBuilder<FoDAuthenticatingRestConnection> {
 		@Override
 		public FoDAuthenticatingRestConnection build() {

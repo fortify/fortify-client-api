@@ -22,30 +22,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.connection;
-
-import com.fortify.api.util.rest.connection.AbstractRestConnection.RestConnectionConfig;
-
-import lombok.Getter;
-
 /**
- * This abstract {@link IRestConnectionRetriever} implementation can be used as a base
- * class for {@link IRestConnectionRetriever} implementations.
- * @author Ruud Senden
- *
- * @param <C>
+ * <p>The {@link FoDEntityQuery} class in this
+ *    package is the main class for performing FoD-related queries. Instances of this
+ *    class are created using the build() method in the various builder implementations
+ *    in the {@link com.fortify.api.fod.connection.api.query.builder} package.</p>   
  */
-public abstract class AbstractRestConnectionRetriever<ConnType extends IRestConnection, BuilderType extends RestConnectionConfig<?> & IRestConnectionBuilder<ConnType>> implements IRestConnectionRetriever<ConnType> {
-	private ConnType connection;
-	@Getter private final BuilderType config = createConfig();
-	
-	public final ConnType getConnection() {
-		if ( connection == null ) {
-			connection = config.build();
-		}
-		return connection;
-	}
-	
-	protected abstract BuilderType createConfig();
-	
-}
+package com.fortify.api.fod.connection.api.query;

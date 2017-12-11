@@ -50,7 +50,6 @@ public class SSCAPI extends AbstractSSCAPI {
 	private final SSCJobAPI job;
 	private final SSCMetricsAPI metrics;
 	
-	
 	public SSCAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 		this.bugTracker = new SSCBugTrackerAPI(conn);

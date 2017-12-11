@@ -38,8 +38,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This class is used to generate FoD tokens for accessing the
- * FoD REST API. Given a base URL, authentication form data and
- * optional proxy configuration, it will call the FoD /oauth/token
+ * FoD REST API. Given an {@link FoDBasicRestConnection} and 
+ * authentication form data, it will call the FoD /oauth/token
  * API to request a REST token. The token will be automatically
  * refreshed as required.
  */

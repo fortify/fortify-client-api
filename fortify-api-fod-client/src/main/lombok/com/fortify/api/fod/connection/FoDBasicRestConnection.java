@@ -29,6 +29,7 @@ import javax.ws.rs.client.Invocation.Builder;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 
 import com.fortify.api.util.rest.connection.AbstractRestConnection;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
 import com.fortify.api.util.rest.connection.TooManyRequestsRetryStrategy;
 
 /**
@@ -39,7 +40,7 @@ import com.fortify.api.util.rest.connection.TooManyRequestsRetryStrategy;
  * 'service unavailable' strategy to retry requests that fail 
  * due to FoD rate limiting.
  */
-public class FoDBasicRestConnection extends AbstractRestConnection {
+public class FoDBasicRestConnection extends AbstractRestConnectionWithCache {
 	protected FoDBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);
 	}

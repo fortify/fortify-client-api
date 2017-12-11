@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,30 +22,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.connection;
+package com.fortify.api.fod.connection.api;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnection.RestConnectionConfig;
+import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
- * This abstract {@link IRestConnectionRetriever} implementation can be used as a base
- * class for {@link IRestConnectionRetriever} implementations.
+ * This abstract class holds the {@link FoDAuthenticatingRestConnection} instance
+ * that is used to perform the various API functions. Actual API's are provided
+ * through the {@link FoDAPI} class.
+ * 
  * @author Ruud Senden
  *
- * @param <C>
  */
-public abstract class AbstractRestConnectionRetriever<ConnType extends IRestConnection, BuilderType extends RestConnectionConfig<?> & IRestConnectionBuilder<ConnType>> implements IRestConnectionRetriever<ConnType> {
-	private ConnType connection;
-	@Getter private final BuilderType config = createConfig();
-	
-	public final ConnType getConnection() {
-		if ( connection == null ) {
-			connection = config.build();
-		}
-		return connection;
-	}
-	
-	protected abstract BuilderType createConfig();
-	
+@Accessors(fluent=true) @Getter(AccessLevel.PROTECTED) @RequiredArgsConstructor
+public class AbstractFoDAPI {
+	private final FoDAuthenticatingRestConnection conn;
 }
