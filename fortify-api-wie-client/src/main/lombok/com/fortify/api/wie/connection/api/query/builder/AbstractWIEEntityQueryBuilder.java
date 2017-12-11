@@ -25,11 +25,11 @@
 package com.fortify.api.wie.connection.api.query.builder;
 
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
-import com.fortify.api.util.rest.query.RestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 import com.fortify.api.wie.connection.api.query.WIEEntityQuery;
 
-public abstract class AbstractWIEEntityQueryBuilder<T> extends RestConnectionWithCacheQueryConfig<WIEAuthenticatingRestConnection, T> {
+public abstract class AbstractWIEEntityQueryBuilder<T> extends AbstractRestConnectionWithCacheQueryConfig<WIEAuthenticatingRestConnection, T> {
 	
 	protected AbstractWIEEntityQueryBuilder(WIEAuthenticatingRestConnection conn, boolean pagingSupported) {
 		super(conn, pagingSupported);

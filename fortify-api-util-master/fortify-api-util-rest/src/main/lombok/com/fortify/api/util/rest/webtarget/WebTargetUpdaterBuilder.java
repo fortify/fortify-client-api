@@ -26,10 +26,21 @@ package com.fortify.api.util.rest.webtarget;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * This {@link IWebTargetUpdaterBuilder} implementation simply wraps an
+ * existing {@link IWebTargetUpdater} instance, and returns this instance
+ * when the {@link #build()} method is called.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @RequiredArgsConstructor
 public class WebTargetUpdaterBuilder implements IWebTargetUpdaterBuilder {
 	private final IWebTargetUpdater webTargetUpdater;
 	
+	/**
+	 * Return the configured {@link IWebTargetUpdater} instance.
+	 */
 	@Override
 	public IWebTargetUpdater build() {
 		return webTargetUpdater;

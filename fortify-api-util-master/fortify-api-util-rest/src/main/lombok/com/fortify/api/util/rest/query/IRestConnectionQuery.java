@@ -28,6 +28,12 @@ import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This interface allows for querying REST API's.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public interface IRestConnectionQuery {
 
 	/**

@@ -43,8 +43,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * TODO Add JavaDoc
+ * 
+ * @author Ruud Senden
+ *
+ * @param <ConnType> Concrete {@link IRestConnection} type
+ * @param <T> Concrete type of this class
+ */
 @Getter
-public abstract class RestConnectionQueryConfig<ConnType extends IRestConnection, T> 
+public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestConnection, T> 
 {
 	private final ConnType conn;
 	private final List<IWebTargetUpdaterBuilder> webTargetUpdaterBuilders = new ArrayList<>();
@@ -57,7 +65,7 @@ public abstract class RestConnectionQueryConfig<ConnType extends IRestConnection
 	@Setter(AccessLevel.PROTECTED) private IRequestInitializer requestInitializer = null;
 	@Setter(AccessLevel.PROTECTED) private boolean encodeSlashInPath = false;
 	
-	protected RestConnectionQueryConfig(ConnType conn, boolean pagingSupported) {
+	protected AbstractRestConnectionQueryConfig(ConnType conn, boolean pagingSupported) {
 		this.conn = conn;
 		this.pagingSupported = pagingSupported;
 	}

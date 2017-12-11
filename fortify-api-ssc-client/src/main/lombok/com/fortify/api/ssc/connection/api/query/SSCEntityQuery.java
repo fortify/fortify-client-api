@@ -33,7 +33,7 @@ import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
 import com.fortify.api.util.rest.query.PagingData;
-import com.fortify.api.util.rest.query.RestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
 
 import lombok.Getter;
 
@@ -46,7 +46,7 @@ import lombok.Getter;
  */
 @Getter
 public class SSCEntityQuery extends AbstractRestConnectionWithCacheQuery<SSCAuthenticatingRestConnection, JSONMap> {
-	public SSCEntityQuery(RestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection,?> config) {
+	public SSCEntityQuery(AbstractRestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 

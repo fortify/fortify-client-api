@@ -24,6 +24,16 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.webtarget;
 
+/**
+ * Implementations of this interface allow for building {@link IWebTargetUpdater} instances.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public interface IWebTargetUpdaterBuilder {
+	/**
+	 * Build an {@link IWebTargetUpdater} instance.
+	 * @return
+	 */
 	public IWebTargetUpdater build();
 }

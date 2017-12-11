@@ -24,22 +24,54 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.webtarget;
 
+import javax.ws.rs.client.WebTarget;
+
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
 
+/**
+ * {@link IWebTargetUpdaterBuilder} implementation for building
+ * {@link WebTargetQueryParamUpdater} instances. This builder 
+ * is configured with the query parameter name, and allows corresponding
+ * values to be set through the {@link #paramValues(String...)} method.
+ * Please see the semantics for {@link WebTarget#queryParam(String, Object...)} 
+ * to understand how multiple values for a single parameter are handled.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WebTargetQueryParamUpdaterBuilder implements IWebTargetUpdaterBuilder {
 	private final String paramName;
 	private String[] paramValues;
 	
+	/**
+	 * Create a new instance of this {@link IWebTargetUpdaterBuilder}
+	 * with the given query parameter name.
+	 * @param paramName
+	 */
 	public WebTargetQueryParamUpdaterBuilder(String paramName) {
 		this.paramName = paramName;
 	}
 
+	/**
+	 * Set zero, one or more values to be assigned to the query parameter
+	 * as configured through the constructor. Note that this method replaces
+	 * any previously set values. If no values are configured, or only a
+	 * single blank value, then the {@link WebTargetQueryParamUpdater} 
+	 * implementation will not add the query parameter.
+	 * 
+	 * @param paramValues
+	 */
 	public final void paramValues(String... paramValues) {
 		this.paramValues = paramValues;
 	}
 
+	/**
+	 * Build a new {@link WebTargetQueryParamUpdater} instance based on the
+	 * parameter name and values configured on this {@link WebTargetQueryParamUpdaterBuilder}
+	 * instance.
+	 */
 	@Override
 	public IWebTargetUpdater build() {
 		return new WebTargetQueryParamUpdater(paramName, paramValues);

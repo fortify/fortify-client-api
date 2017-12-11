@@ -28,15 +28,39 @@ import javax.ws.rs.client.WebTarget;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * This {@link IWebTargetUpdater} implementation allows for adding
+ * a query parameter (as configured through the constructor) to a given 
+ * {@link WebTarget} instance. Please see the semantics for 
+ * {@link WebTarget#queryParam(String, Object...)} to understand
+ * how multiple values for a single parameter are handled.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	private final String name;
 	private final String[] values;
 	
+	/**
+	 * Create a new instance for adding the given query parameter with
+	 * the given values to {@link WebTarget} instances. If no values are
+	 * given, or only a single blank value, then the query parameter will
+	 * not be added.
+	 * 
+	 * @param name
+	 * @param values
+	 */
 	public WebTargetQueryParamUpdater(String name, String... values) {
 		this.name = name;
 		this.values = values;
 	}
 
+	/**
+	 * Add the configured query parameter to the given {@link WebTarget}
+	 * instance. If no values are configured, or only a single blank value, 
+	 * then the query parameter will not be added.
+	 */
 	@Override
 	public WebTarget update(WebTarget target) {
 		if ( values != null && values.length>0 && !(values.length==1 && StringUtils.isBlank(values[0])) ) {

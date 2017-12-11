@@ -27,9 +27,9 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
-import com.fortify.api.util.rest.query.RestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
 
-public abstract class AbstractSSCEntityQueryBuilder<T> extends RestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection, T> {
+public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection, T> {
 	
 	protected AbstractSSCEntityQueryBuilder(SSCAuthenticatingRestConnection conn, boolean pagingSupported) {
 		super(conn, pagingSupported);

@@ -31,7 +31,14 @@ import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
 import lombok.Getter;
 
 /**
- * TODO Update JavaDoc 
+ * <p>This {@link AbstractRestConnectionQuery} extension adds support for optionally caching REST responses.
+ * Instances of this class are configured using an {@link AbstractRestConnectionWithCacheQueryConfig}, which extends
+ * from {@link AbstractRestConnectionQueryConfig} and adds a property for specifying whether caching should be 
+ * enabled or disabled for this specific instance.</p>
+ * 
+ * <p>Please see {@link com.fortify.api.util.rest.query}, {@link AbstractRestConnectionQuery} and
+ * {@link AbstractRestConnectionQueryConfig} for more details about using this API. Please see
+ * {@link AbstractRestConnectionWithCache} for more details about caching.</p>
  * 
  * @author Ruud Senden
  */
@@ -41,7 +48,7 @@ public abstract class AbstractRestConnectionWithCacheQuery<ConnType extends Abst
 {	
 	private final boolean useCache;
 	
-	protected AbstractRestConnectionWithCacheQuery(RestConnectionWithCacheQueryConfig<ConnType, ?> config) {
+	protected AbstractRestConnectionWithCacheQuery(AbstractRestConnectionWithCacheQueryConfig<ConnType, ?> config) {
 		super(config);
 		this.useCache = config.isUseCache();
 	}

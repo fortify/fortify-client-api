@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,25 +22,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.query;
-
-import com.fortify.api.util.rest.connection.IRestConnection;
-
-import lombok.Getter;
-
-@Getter
-public abstract class RestConnectionWithCacheQueryConfig<ConnType extends IRestConnection, T> 
-	extends RestConnectionQueryConfig<ConnType, T> 
-{
-	private boolean useCache;
-	
-	protected RestConnectionWithCacheQueryConfig(ConnType conn, boolean pagingSupported) {
-		super(conn, pagingSupported);
-	}
-	
-	public T useCache(boolean useCache) {
-		this.useCache = useCache;
-		return _this();
-	}
-	
-}
+/**
+ * <p>This package contains interfaces and implementations for updating {@link javax.ws.rs.client.WebTarget}
+ *    instances, for example adding a path or request parameters to an existing 
+ *    {@link javax.ws.rs.client.WebTarget} instance. In general, 
+ *    {@link com.fortify.api.util.rest.webtarget.IWebTargetUpdater} implementations
+ *    should be immutable; corresponding {@link com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder}
+ *    implementations can be used to build such {@link com.fortify.api.util.rest.webtarget.IWebTargetUpdater}
+ *    instances.</p>
+ */
+package com.fortify.api.util.rest.webtarget;

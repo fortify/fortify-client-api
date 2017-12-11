@@ -44,7 +44,17 @@ import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import lombok.Getter;
 
 /**
- * TODO Update JavaDoc
+ * <p>This abstract class provides an implementation for {@link IRestConnectionQuery} to allow for
+ * querying REST API's. Concrete implementations of this class will need to implement and override
+ * various methods to handle things like paging ({@link #updatePagingDataFromResponse(PagingData, Object)}
+ * and {@link #updateWebTargetWithPagingData(WebTarget, PagingData)}, and getting the necessary
+ * {@link JSONList} instance from the REST response ({@link #getResponseTypeClass()} and 
+ * {@link #getJSONListFromResponse(Object)}.</p>
+ * 
+ * <p>This class is configured through a {@link AbstractRestConnectionQueryConfig} instance, which allows for
+ * configuring the various details for building the actual REST requests and processing responses. This
+ * includes {@link IWebTargetUpdater} instances for generating the actual REST request, and {@link IJSONMapPreProcessor}
+ * instances for pre-processing each individual {@link JSONMap} instance returned by the REST request.</p>
  * 
  * @author Ruud Senden
  */
@@ -59,7 +69,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	private final String httpMethod;
 	private final IRequestInitializer requestInitializer;
 	
-	protected AbstractRestConnectionQuery(RestConnectionQueryConfig<ConnType, ?> config) {
+	protected AbstractRestConnectionQuery(AbstractRestConnectionQueryConfig<ConnType, ?> config) {
 		this.conn = config.getConn();
 		this.webTargetUpdaters = Collections.unmodifiableList(config.getWebTargetUpdaters());
 		this.preProcessors =  Collections.unmodifiableList(config.getPreProcessors());

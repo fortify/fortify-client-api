@@ -26,6 +26,22 @@ package com.fortify.api.util.rest.webtarget;
 
 import javax.ws.rs.client.WebTarget;
 
+/**
+ * This interface allows for updating {@link WebTarget} instances, for
+ * example by adding a path or query parameters. Implementations of
+ * this interface should usually be immutable, and can be constructed
+ * either by calling the appropriate constructor, or using a corresponding
+ * {@link IWebTargetUpdaterBuilder} implementation.
+ *  
+ * @author Ruud Senden
+ *
+ */
 public interface IWebTargetUpdater {
+	/**
+	 * Update the given {@link WebTarget}, returning the updated {@link WebTarget}.
+	 * 
+	 * @param target
+	 * @return
+	 */
 	public WebTarget update(WebTarget target);
 }

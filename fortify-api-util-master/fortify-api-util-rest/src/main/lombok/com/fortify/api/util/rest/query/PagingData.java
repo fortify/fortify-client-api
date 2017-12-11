@@ -26,6 +26,13 @@ package com.fortify.api.util.rest.query;
 
 import lombok.Data;
 
+/**
+ * This class is used to hold data related to paging, like current start position and
+ * page size.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @Data 
 public class PagingData {
 	private int start = 0;

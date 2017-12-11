@@ -22,49 +22,35 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.webtarget;
+package com.fortify.api.util.rest.query;
 
-import java.util.Collections;
-import java.util.Map;
+import com.fortify.api.util.rest.connection.IRestConnection;
 
-import javax.ws.rs.client.WebTarget;
-
-import org.apache.commons.collections.MapUtils;
+import lombok.Getter;
 
 /**
- * This {@link IWebTargetUpdater} implementation allows for resolving template
- * values in {@link WebTarget} instances. For example, if the given {@link WebTarget}
- * contains a path '/api/entity/{id}', this {@link IWebTargetUpdater} implementation
- * allows for replacing the '{id}' variable with an actual id.
+ * <p>This abstract class extends {@link AbstractRestConnectionQueryConfig}, adding a
+ * property to configure whether caching should be enabled or disabled for the current
+ * query.</p>
  * 
  * @author Ruud Senden
  *
+ * @param <ConnType> Concrete {@link IRestConnection} type
+ * @param <T> Concrete type of this class
  */
-public class WebTargetTemplateResolver implements IWebTargetUpdater {
-	private final Map<String,Object> templateValues;
-	private final boolean encodeSlashInPath;
+@Getter
+public abstract class AbstractRestConnectionWithCacheQueryConfig<ConnType extends IRestConnection, T> 
+	extends AbstractRestConnectionQueryConfig<ConnType, T> 
+{
+	private boolean useCache;
 	
-	/**
-	 * Create a new instance for resolving the given template values
-	 * in {@link WebTarget} instances. 
-	 * @param templateValues
-	 * @param encodeSlashInPath
-	 */
-	public WebTargetTemplateResolver(Map<String,Object> templateValues, boolean encodeSlashInPath) {
-		this.templateValues = Collections.unmodifiableMap(templateValues);
-		this.encodeSlashInPath = encodeSlashInPath;
+	protected AbstractRestConnectionWithCacheQueryConfig(ConnType conn, boolean pagingSupported) {
+		super(conn, pagingSupported);
 	}
-
-	/**
-	 * Update the given {@link WebTarget} instance by resolving template
-	 * variables.
-	 */
-	@Override
-	public WebTarget update(WebTarget target) {
-		if ( MapUtils.isNotEmpty(templateValues) ) {
-			target = target.resolveTemplates(templateValues, encodeSlashInPath);
-		}
-		return target;
+	
+	public T useCache(boolean useCache) {
+		this.useCache = useCache;
+		return _this();
 	}
-
+	
 }

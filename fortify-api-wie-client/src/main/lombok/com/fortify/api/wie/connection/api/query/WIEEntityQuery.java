@@ -32,7 +32,7 @@ import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
 import com.fortify.api.util.rest.query.PagingData;
-import com.fortify.api.util.rest.query.RestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
 /**
@@ -43,7 +43,7 @@ import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
  * @author Ruud Senden
  */
 public class WIEEntityQuery extends AbstractRestConnectionWithCacheQuery<WIEAuthenticatingRestConnection, JSONMap> {
-	public WIEEntityQuery(RestConnectionWithCacheQueryConfig<WIEAuthenticatingRestConnection,?> config) {
+	public WIEEntityQuery(AbstractRestConnectionWithCacheQueryConfig<WIEAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 	
