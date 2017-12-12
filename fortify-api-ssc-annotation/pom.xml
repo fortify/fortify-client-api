@@ -15,7 +15,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>fortify-api-ssc-client</artifactId>
+	<artifactId>fortify-api-ssc-annotation</artifactId>
 	<parent>
 		<groupId>com.fortify.api</groupId>
 		<artifactId>fortify-api-master</artifactId>
@@ -40,33 +40,46 @@
 		</developer>
 	</developers>
 	<inceptionYear>2016</inceptionYear>
+	<profiles>
+		<profile>
+			<id>windows-profile</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<file>
+					<exists>${JAVA_HOME}/lib/tools.jar</exists>
+				</file>
+			</activation>
+			<properties>
+				<toolsjar>${JAVA_HOME}/lib/tools.jar</toolsjar>
+			</properties>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
-			<groupId>com.fortify.api.util</groupId>
-			<artifactId>fortify-api-util-rest</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fortify.api</groupId>
-			<artifactId>fortify-api-ssc-annotation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jvnet</groupId>
-			<artifactId>mimepull</artifactId>
-			<version>1.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
+			<groupId>jdk.tools</groupId>
+			<artifactId>jdk.tools</artifactId>
+			<version>jdk1.8.0</version>
+			<scope>system</scope>
+			<systemPath>${toolsjar}</systemPath>
 		</dependency>
 	</dependencies>
 
-	<description>This module contains various utility classes for working with Fortify SSC.</description>
+	<build>
+		<plugins>
+			<plugin>
+				<!-- Configure the project to use java 8 version. -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<!-- Disable annotation processing for ourselves. -->
+					<compilerArgument>-proc:none</compilerArgument>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<description>This module contains an annotation and corresponding annotation processor.</description>
 </project>

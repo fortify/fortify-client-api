@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -33,18 +34,22 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		super(conn);
 	}
 	
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public SSCApplicationVersionsQueryBuilder queryApplicationVersions() {
 		return new SSCApplicationVersionsQueryBuilder(conn());
 	}
 	
+	//@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public JSONMap getApplicationVersionById(String applicationVersionId) {
 		return new SSCApplicationVersionsQueryBuilder(conn()).id(applicationVersionId).useCache(true).build().getUnique();
 	}
 	
+	//@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public JSONMap getApplicationVersionByName(String applicationName, String versionName) {
 		return new SSCApplicationVersionsQueryBuilder(conn()).applicationName(applicationName).versionName(versionName).useCache(true).build().getUnique();
 	}
 	
+	//@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
 		return new SSCApplicationVersionsQueryBuilder(conn()).nameOrId(nameOrId, separator).useCache(true).build().getUnique();
 	}
