@@ -24,11 +24,16 @@
  ******************************************************************************/
 package com.fortify.api.ssc.token.spec.generator;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
@@ -36,53 +41,101 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import com.google.common.reflect.ClassPath;
-
 // TODO Add documentation
 // TODO clean up this class
 public class SSCTokenSpecGenerator {
-	public static void main(String[] args) throws IOException {
-		Set<ClassPath.ClassInfo> classes = ClassPath.from(SSCTokenSpecGenerator.class.getClassLoader()).getAllClasses();
-		System.out.println("Set of classes to be analyzed: ");
-		System.out.println(classes);
-		
+	public static void main(String[] jars) throws IOException {
 		Map<String, Set<String>> methodsToAnnotationValuesMap = new HashMap<>();
-		if ( findAnnotatedMethods(classes, methodsToAnnotationValuesMap) ) {
-			while ( findIndirectMethodInvocations(classes, methodsToAnnotationValuesMap) ) {}
-		}
-		// TODO Should we also report any API method invocations outside of methods?
-		//      (i.e. field initializers, static blocks, ...)
-		for ( Map.Entry<String, Set<String>> entry : methodsToAnnotationValuesMap.entrySet() ) {
-			if ( !entry.getKey().startsWith("com/fortify/api/ssc") ) {
-				System.out.println(entry.getKey()+": "+entry.getValue());
+		if (findAnnotatedMethods(jars, methodsToAnnotationValuesMap)) {
+			while (findIndirectMethodInvocations(jars, methodsToAnnotationValuesMap)) {
 			}
 		}
+		Set<String> requiredActionsPermitted = getRequiredActionsPermitted(methodsToAnnotationValuesMap);
+		printTokenDefinition(requiredActionsPermitted);
 	}
 
-	protected static boolean findAnnotatedMethods(Set<ClassPath.ClassInfo> classes, Map<String, Set<String>> methodsToAnnotationValuesMap) {
+	private static void printTokenDefinition(Set<String> requiredActionsPermitted) {
+		StringBuffer sb = new StringBuffer(
+			"\t<bean id='<tokenId>' class='com.fortify.manager.security.ws.AuthenticationTokenSpec'>\n"+
+			"\t\t<property name='key' value='<tokenName>'/>\n"+
+			"\t\t<property name='maxDaysToLive' value='90' />\n"+
+			"\t\t<property name='actionPermitted'>\n"+
+			"\t\t\t<list value-type='java.lang.String'>\n");
+		for ( String requiredActionPermitted : requiredActionsPermitted ) {
+			sb.append("\t\t\t\t<value>"+requiredActionPermitted+"</value>\n");
+		}
+		sb.append(
+			"\t\t\t</list>\n"+
+			"\t\t</property>\n"+
+			"\t\t<property name='terminalActions'>\n"+
+			"\t\t\t<list value-type='java.lang.String'>\n"+
+			"\t\t\t\t<value>InvalidateTokenRequest</value>\n"+
+			"\t\t\t\t<value>DELETE=/api/v\\d+/auth/token</value>\n"+
+			"\t\t\t</list>\n"+
+			"\t\t</property>\n"+
+			"\t</bean>\n");
+		System.out.println("\n\nSSC token specification to be added to SSC's WEB-INF/internal/serviceContext.xml:\n");
+		System.out.println(sb.toString().replace('\'', '"'));
+	}
+
+	protected static Set<String> getRequiredActionsPermitted(Map<String, Set<String>> methodsToAnnotationValuesMap) {
+		// TODO Should we also report any API method invocations outside of
+		// methods?
+		// (i.e. field initializers, static blocks, ...)
+		Set<String> requiredActionsPermitted = new HashSet<>();
+		for (Map.Entry<String, Set<String>> entry : methodsToAnnotationValuesMap.entrySet()) {
+			if (!entry.getKey().startsWith("com/fortify/api/ssc")) {
+				requiredActionsPermitted.addAll(entry.getValue());
+			}
+		}
+		return requiredActionsPermitted;
+	}
+
+	protected static boolean findAnnotatedMethods(String[] jars, Map<String, Set<String>> methodsToAnnotationValuesMap) {
 		System.out.println("Scanning for methods annotated with @SSCRequiredActionsPermitted");
 		FindAnnotatedMethods classVisitor = new FindAnnotatedMethods(methodsToAnnotationValuesMap);
-		visitClasses(classes, classVisitor);
-		System.out.println("Methods and required actions permitted found until now:");
-		System.out.println(methodsToAnnotationValuesMap);
-		return classVisitor.hasFoundNew();
-	}
-	
-	protected static boolean findIndirectMethodInvocations(Set<ClassPath.ClassInfo> classes, Map<String, Set<String>> methodsToAnnotationValuesMap) {
-		System.out.println("Next round of scanning for methods that indirectly call methods annotated with @SSCRequiredActionsPermitted");
-		FindMethodInvocations classVisitor = new FindMethodInvocations(methodsToAnnotationValuesMap);
-		visitClasses(classes, classVisitor);
+		visitClasses(jars, classVisitor);
 		System.out.println("Methods and required actions permitted found until now:");
 		System.out.println(methodsToAnnotationValuesMap);
 		return classVisitor.hasFoundNew();
 	}
 
-	protected static void visitClasses(Set<ClassPath.ClassInfo> classes, ClassVisitor classVisitor) {
-		for (ClassPath.ClassInfo info : classes) {
+	protected static boolean findIndirectMethodInvocations(String[] jars, Map<String, Set<String>> methodsToAnnotationValuesMap) {
+		System.out.println("Next round of scanning for methods that indirectly call methods annotated with @SSCRequiredActionsPermitted");
+		FindMethodInvocations classVisitor = new FindMethodInvocations(methodsToAnnotationValuesMap);
+		visitClasses(jars, classVisitor);
+		System.out.println("Methods and required actions permitted found until now:");
+		System.out.println(methodsToAnnotationValuesMap);
+		return classVisitor.hasFoundNew();
+	}
+
+	protected static void visitClasses(String[] jars, ClassVisitor classVisitor) {
+		for (String jar : jars) {
+			JarFile jarFile = null;
 			try {
-				new ClassReader(info.getName()).accept(classVisitor, 0);
-			} catch (Exception e) {
-			}
+				try {
+					jarFile = new JarFile(jar);
+			        Enumeration<JarEntry> entries = jarFile.entries();
+		
+			        while (entries.hasMoreElements()) {
+			            JarEntry entry = entries.nextElement();
+		
+			            if (entry.getName().endsWith(".class")) {
+			            	try {
+				                InputStream stream = null;
+				                try {
+				                	stream = new BufferedInputStream(jarFile.getInputStream(entry), 1024);
+				                	new ClassReader(stream).accept(classVisitor, 0);
+								} finally {
+				                	stream.close();
+				                }
+			            	} catch ( IOException e ) { e.printStackTrace(); }
+			            }
+			        }
+				} finally {
+					jarFile.close();
+				}
+			} catch ( IOException e ) { e.printStackTrace(); }
 		}
 	}
 
