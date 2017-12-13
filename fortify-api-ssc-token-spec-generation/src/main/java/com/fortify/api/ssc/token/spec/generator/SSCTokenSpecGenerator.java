@@ -41,19 +41,25 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
-
 // TODO Add documentation
 // TODO clean up this class
 public class SSCTokenSpecGenerator {
 	public static void main(String[] jars) throws IOException {
-		Map<String, Set<String>> methodsToAnnotationValuesMap = new HashMap<>();
-		if (findAnnotatedMethods(jars, methodsToAnnotationValuesMap)) {
-			while (findIndirectMethodInvocations(jars, methodsToAnnotationValuesMap)) {
+		if ( jars==null || jars.length==0 ) {
+			System.err.println("Usage:\n");
+			System.err.println("\tjava -jar <fortify-api-ssc-token-spec-generator-[version].jar> <Jar file(s) to analyze>\n");
+			System.err.println("If your SSC client is available as a shaded JAR, you will only need to provide this single");
+			System.err.println("shaded JAR file. Otherwise, you will need to provide your main JAR file, as well as all");
+			System.err.println("dependencies, including the fortify-api-ssc-client-[version].jar file.");
+		} else {
+			Map<String, Set<String>> methodsToAnnotationValuesMap = new HashMap<>();
+			if (findAnnotatedMethods(jars, methodsToAnnotationValuesMap)) {
+				while (findIndirectMethodInvocations(jars, methodsToAnnotationValuesMap)) {
+				}
 			}
+			Set<String> requiredActionsPermitted = getRequiredActionsPermitted(methodsToAnnotationValuesMap);
+			printTokenDefinition(requiredActionsPermitted);
 		}
-		Set<String> requiredActionsPermitted = getRequiredActionsPermitted(methodsToAnnotationValuesMap);
-		printTokenDefinition(requiredActionsPermitted);
 	}
 
 	private static void printTokenDefinition(Set<String> requiredActionsPermitted) {
