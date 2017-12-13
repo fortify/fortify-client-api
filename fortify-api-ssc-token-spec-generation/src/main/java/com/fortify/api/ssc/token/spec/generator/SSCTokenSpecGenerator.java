@@ -41,6 +41,8 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
+
 // TODO Add documentation
 // TODO clean up this class
 public class SSCTokenSpecGenerator {
@@ -55,6 +57,16 @@ public class SSCTokenSpecGenerator {
 	}
 
 	private static void printTokenDefinition(Set<String> requiredActionsPermitted) {
+		System.out.println("\n\nThe SSC token specification to be added to SSC's WEB-INF/internal/serviceContext.xml");
+		System.out.println("can be found below. Note that you will need to replace <tokenId> and <tokenName> with");
+		System.out.println("appropriate values.\n");
+		
+		System.out.println("This token specification is generated based on regular Java method calls to the SSC");
+		System.out.println("API. Custom REST API calls through the various executeRequest() methods are not taken");
+		System.out.println("into account, unless the corresponding methods are annotated with the appropriate");
+		System.out.println("@SSCRequiredActionsPermitted annotation. Any API calls made through Java reflection");
+		System.out.println("are never taken into account for generating this token specification.\n");
+		
 		StringBuffer sb = new StringBuffer(
 			"\t<bean id='<tokenId>' class='com.fortify.manager.security.ws.AuthenticationTokenSpec'>\n"+
 			"\t\t<property name='key' value='<tokenName>'/>\n"+
@@ -74,8 +86,9 @@ public class SSCTokenSpecGenerator {
 			"\t\t\t</list>\n"+
 			"\t\t</property>\n"+
 			"\t</bean>\n");
-		System.out.println("\n\nSSC token specification to be added to SSC's WEB-INF/internal/serviceContext.xml:\n");
+		
 		System.out.println(sb.toString().replace('\'', '"'));
+		
 	}
 
 	protected static Set<String> getRequiredActionsPermitted(Map<String, Set<String>> methodsToAnnotationValuesMap) {
