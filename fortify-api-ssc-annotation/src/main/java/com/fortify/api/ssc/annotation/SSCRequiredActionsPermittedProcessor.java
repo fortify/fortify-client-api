@@ -24,6 +24,11 @@
  ******************************************************************************/
 package com.fortify.api.ssc.annotation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -34,9 +39,9 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.MethodTree;
 import com.sun.source.util.JavacTask;
 import com.sun.source.util.TaskEvent;
 import com.sun.source.util.TaskListener;
@@ -48,11 +53,11 @@ import com.sun.tools.javac.tree.TreeInfo;
 @SupportedAnnotationTypes("com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class SSCRequiredActionsPermittedProcessor extends AbstractProcessor implements TaskListener {
+	private final Map<String, List<String>> callers = new HashMap<>();
 	Trees trees;
 
 	@Override
 	public synchronized void init(ProcessingEnvironment processingEnv) {
-		System.out.println("!!!! TEST1 !!!!");
 		super.init(processingEnv);
 		trees = Trees.instance(processingEnv);
 		JavacTask.instance(processingEnv).setTaskListener(this);
@@ -60,28 +65,51 @@ public class SSCRequiredActionsPermittedProcessor extends AbstractProcessor impl
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		System.out.println("!!!! TEST2 !!!!");
-		// Process @Unsafe annotated methods if needed
 		return true;
 	}
+	
+	
 
 	@Override
 	public void finished(final TaskEvent taskEvt) {
-		//System.out.println("!!!! TEST3 !!!!");
 		if (taskEvt.getKind() == TaskEvent.Kind.ANALYZE) {
 			//System.out.println("!!!! TEST4 !!!!");
 			taskEvt.getCompilationUnit().accept(new TreeScanner<Void, Void>() {
+				private MethodTree parentMethod = null;
+				
+				@Override
+				public Void visitMethod(MethodTree methodTree, Void arg1) {
+					this.parentMethod = methodTree;
+					
+					return super.visitMethod(methodTree, arg1);
+				}
+				
 				@Override
 				public Void visitMethodInvocation(MethodInvocationTree methodInv, Void v) {
 					//System.out.println("!!!! TEST5 !!!!: "+methodInv);
-					Element method = TreeInfo.symbol((JCTree) methodInv.getMethodSelect());
+					JCTree jcTree = (JCTree) methodInv.getMethodSelect();
+					Element method = TreeInfo.symbol(jcTree);
 					SSCRequiredActionsPermitted sscRequiredActionsPermitted = method.getAnnotation(SSCRequiredActionsPermitted.class);
-					if (sscRequiredActionsPermitted != null) {
-						System.out.println("!!!! TEST6 !!!!: "+String.join(",", sscRequiredActionsPermitted.value()));
-						JCTree jcTree = (JCTree) methodInv.getMethodSelect();
-						//System.out.println("!!!! TEST7 !!!!: "+jcTree);
-						trees.printMessage(Diagnostic.Kind.WARNING, "Call to unsafe method.", jcTree,
-								taskEvt.getCompilationUnit());
+					//System.out.println("!!!! TEST0 !!!!: "+method.getSimpleName().toString());
+					String methodName = method.getSimpleName().toString();
+					if ( parentMethod != null ) {
+						String parentName = parentMethod.getName().toString();
+						List<String> values = null;
+						if (sscRequiredActionsPermitted != null ) {
+							values = Arrays.asList(sscRequiredActionsPermitted.value());
+						} else if ( callers.containsKey(methodName) ) {
+							values = callers.get(methodName);
+						}
+						if ( values != null ) {
+							List<String> currentValues = callers.get(parentName);
+							if ( currentValues == null ) {
+								currentValues = new ArrayList<>();
+								callers.put(parentName, currentValues);
+							}
+							currentValues.addAll(values);
+							System.out.println("!!!! TEST4 !!!!: Parent "+parentName);
+							System.out.println("!!!! TEST5 !!!!: Calls "+jcTree+" - "+String.join(",", values));
+						}
 					}
 					return super.visitMethodInvocation(methodInv, v);
 				}
@@ -90,6 +118,5 @@ public class SSCRequiredActionsPermittedProcessor extends AbstractProcessor impl
 	}
 
 	@Override
-	public void started(TaskEvent taskEvt) {
-	}
+	public void started(TaskEvent taskEvt) {}
 }
