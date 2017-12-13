@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query.builder;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
@@ -38,6 +39,7 @@ import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 public class SSCIssueDetailsByIdQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCIssueDetailsByIdQueryBuilder> {
 	private final SSCParamFields paramFields = add(new SSCParamFields());
 	
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
 	public SSCIssueDetailsByIdQueryBuilder(SSCAuthenticatingRestConnection conn, String issueId) {
 		super(conn, false);
 		templateValues().put("issueId", issueId);

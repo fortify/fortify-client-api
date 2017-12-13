@@ -48,6 +48,7 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
@@ -68,6 +69,7 @@ public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
 		super(conn);
 	}
 	
+	@SSCRequiredActionsPermitted("POST=/api/v\\d+/fileTokens")
 	public final String getFileToken(FileTokenType type) {
 		JSONMap entity = new JSONMap();
 		entity.put("fileTokenType", type.toString());

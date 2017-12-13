@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionIssuesQueryBuilder;
 import com.fortify.api.ssc.connection.api.query.builder.SSCIssueDetailsByIdQueryBuilder;
@@ -66,6 +67,7 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	 * @param applicationVersionId
 	 * @param issueSearchOptions
 	 */
+	@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+/issueSearchOptions"})
 	public void updateApplicationVersionIssueSearchOptions(String applicationVersionId, IssueSearchOptions issueSearchOptions) {
 		conn().executeRequest(HttpMethod.PUT, 
 				conn().getBaseResource().path("/api/v1/projectVersions")

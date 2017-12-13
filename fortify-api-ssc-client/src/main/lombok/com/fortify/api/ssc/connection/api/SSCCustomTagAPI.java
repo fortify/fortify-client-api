@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionCustomTagsQueryBuilder;
 import com.fortify.api.ssc.connection.api.query.builder.SSCCustomTagsQueryBuilder;
@@ -118,6 +119,7 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	 * @param customTagNamesAndValues
 	 * @param vulns
 	 */
+	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
 	public void setCustomTagValues(String applicationVersionId, Map<String,String> customTagNamesAndValues, Collection<Object> vulns) {
 		// TODO Simplify this code
 		JSONMap request = new JSONMap();

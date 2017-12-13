@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query.builder;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
@@ -59,6 +60,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	private final WebTargetQueryParamUpdaterBuilder paramQm = add(new WebTargetQueryParamUpdaterBuilder("qm"));
 	private final IssueSearchOptions issueSearchOptions = new IssueSearchOptions();
 	
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/issues"})
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
 		preProcessor(new SSCJSONMapEnrichWithIssueDeepLink(conn));

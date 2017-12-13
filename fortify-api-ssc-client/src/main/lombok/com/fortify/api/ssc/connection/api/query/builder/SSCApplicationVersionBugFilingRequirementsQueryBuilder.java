@@ -27,6 +27,7 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
@@ -44,6 +45,7 @@ public class SSCApplicationVersionBugFilingRequirementsQueryBuilder extends Abst
 	private final SSCParamFields paramFields = add(new SSCParamFields());
 	private final WebTargetQueryParamUpdaterBuilder paramChangedParamIdentifier = add(new WebTargetQueryParamUpdaterBuilder("changeParamIdentifier"));
 	
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements"})
 	public SSCApplicationVersionBugFilingRequirementsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);
 	}
@@ -56,6 +58,7 @@ public class SSCApplicationVersionBugFilingRequirementsQueryBuilder extends Abst
 		this.paramChangedParamIdentifier.paramValues(paramChangedParamIdentifier); return _this();
 	}
 	
+	@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements"})
 	public final SSCApplicationVersionBugFilingRequirementsQueryBuilder paramBugParams(JSONMap bugParams) {
 		setEntity(Entity.entity(bugParams, "application/json"));
 		setHttpMethod(HttpMethod.PUT);

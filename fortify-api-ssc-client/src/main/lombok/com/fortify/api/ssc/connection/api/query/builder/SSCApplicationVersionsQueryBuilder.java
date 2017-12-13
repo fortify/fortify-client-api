@@ -26,6 +26,7 @@ package com.fortify.api.ssc.connection.api.query.builder;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
@@ -48,6 +49,7 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
 	private final SSCParamQ paramQ = add(new SSCParamQ());
 	
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public SSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
 		preProcessor(new SSCJSONMapEnrichWithApplicationVersionDeepLink(conn));

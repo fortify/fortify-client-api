@@ -15,7 +15,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>fortify-api-ssc-annotation</artifactId>
+	<artifactId>fortify-api-ssc-token-spec-generator</artifactId>
 	<parent>
 		<groupId>com.fortify.api</groupId>
 		<artifactId>fortify-api-master</artifactId>
@@ -39,47 +39,58 @@
 			<organization>HPE Security Fortify</organization>
 		</developer>
 	</developers>
-	<inceptionYear>2016</inceptionYear>
-	<profiles>
-		<profile>
-			<id>windows-profile</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-				<file>
-					<exists>${JAVA_HOME}/lib/tools.jar</exists>
-				</file>
-			</activation>
-			<properties>
-				<toolsjar>${JAVA_HOME}/lib/tools.jar</toolsjar>
-			</properties>
-		</profile>
-	</profiles>
+	<inceptionYear>2017</inceptionYear>
 	<dependencies>
 		<dependency>
-			<groupId>jdk.tools</groupId>
-			<artifactId>jdk.tools</artifactId>
-			<version>jdk1.8.0</version>
-			<scope>system</scope>
-			<systemPath>${toolsjar}</systemPath>
+			<groupId>com.fortify.api</groupId>
+			<artifactId>fortify-api-ssc-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>5.0.3</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
-				<!-- Configure the project to use java 8 version. -->
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<!-- Disable annotation processing for ourselves. -->
-					<compilerArgument>-proc:none</compilerArgument>
-				</configuration>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.fortify.api.ssc.token.spec.generator.SSCTokenSpecGenerator</mainClass>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+							</transformers>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
-	<description>This module contains an annotation and corresponding annotation processor.</description>
+	<description>This module contains a utility for generating SSC serviceContext.xml token specifications.</description>
 </project>

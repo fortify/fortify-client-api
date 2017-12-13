@@ -46,10 +46,6 @@
 			<artifactId>fortify-api-util-rest</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.fortify.api</groupId>
-			<artifactId>fortify-api-ssc-annotation</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>

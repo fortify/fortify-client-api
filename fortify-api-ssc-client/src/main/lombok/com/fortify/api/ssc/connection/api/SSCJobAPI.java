@@ -41,13 +41,13 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		super(conn);
 	}
 	
-	public SSCJobsQueryBuilder query() {
+	public SSCJobsQueryBuilder queryJobs() {
 		return new SSCJobsQueryBuilder(conn());
 	}
 	
 	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {
 		long startTime = new Date().getTime();
-		IRestConnectionQuery query = query().id(jobId).build();
+		IRestConnectionQuery query = queryJobs().id(jobId).build();
 		JSONMap job = query.getUnique();
 		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && "RUNNING".equals(job.get("state", String.class)) ) {
 			try {
@@ -72,10 +72,10 @@ public class SSCJobAPI extends AbstractSSCAPI {
 	
 	public static void main(String[] args) {
 		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
-		JSONMap job = conn.api().job().query().maxResults(1).build().getUnique();
+		JSONMap job = conn.api().job().queryJobs().maxResults(1).build().getUnique();
 		System.out.println(job);
 		
-		IRestConnectionQuery query = conn.api().job().query()
+		IRestConnectionQuery query = conn.api().job().queryJobs()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				.preProcessor(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, new Date(), true)).build();
 		System.out.println(query.toString());

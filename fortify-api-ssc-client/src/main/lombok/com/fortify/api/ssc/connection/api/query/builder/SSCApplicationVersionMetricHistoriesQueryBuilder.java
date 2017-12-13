@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query.builder;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
@@ -40,6 +41,7 @@ public class SSCApplicationVersionMetricHistoriesQueryBuilder extends AbstractSS
 	private final MetricType metricType;
 	private final SSCParamQ paramQ = add(new SSCParamQ());
 
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/performanceIndicatorHistories", "GET=/api/v\\d+/projectVersions/\\d+/variableHistories"})
 	public SSCApplicationVersionMetricHistoriesQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId, MetricType metricType) {
 		super(conn, applicationVersionId, false);
 		this.metricType = metricType;

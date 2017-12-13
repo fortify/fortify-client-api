@@ -74,7 +74,7 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 		String result = null;
 		SSCJobAPI jobApi = conn().api().job();
 		Date now = new Date();
-		IRestConnectionQuery jobQuery = jobApi.query()
+		IRestConnectionQuery jobQuery = jobApi.queryJobs()
 				// Query for artifact upload job
 			.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				// Only for selected application version 

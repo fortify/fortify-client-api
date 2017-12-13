@@ -37,6 +37,7 @@ import java.util.function.Predicate;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionBugFilingRequirementsQueryBuilder;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionBugTrackerQueryBuilder;
@@ -114,6 +115,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @param bugTrackerUserName
 	 * @param bugTrackerPassword
 	 */
+	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements/action"})
 	public void authenticateForBugFiling(String applicationVersionId, String bugTrackerUserName, String bugTrackerPassword) {
 		JSONMap request = new JSONMap();
 		request.put("type", "login");
@@ -134,6 +136,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @param issueInstanceIds
 	 * @return
 	 */
+	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
 	public JSONMap fileBug(String applicationVersionId, Map<String,Object> issueDetails, List<String> issueInstanceIds) {
 		// TODO Clean up this code
 		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId);

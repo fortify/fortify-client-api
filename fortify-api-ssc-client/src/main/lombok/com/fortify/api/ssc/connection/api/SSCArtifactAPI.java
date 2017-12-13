@@ -32,6 +32,7 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
+import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCFileUpDownloadAPI.FileTokenType;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionArtifactsQueryBuilder;
@@ -56,6 +57,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return queryArtifactById(artifactId).useCache(useCache).paramFields(fields).build().getUnique();
 	}
 	
+	@SSCRequiredActionsPermitted({"POST=/download/currentStateFprDownload.html"})
 	public final long downloadApplicationFile(String applicationVersionId, Path target, boolean includeSource) {
 		WebTarget webTarget = conn().getBaseResource()
 				.path("/download/currentStateFprDownload.html")
@@ -64,6 +66,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return conn().api().fileUpDownload().downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
 	}
 	
+	@SSCRequiredActionsPermitted({"POST=/download/artifactDownload.html"})
 	public final long downloadArtifact(String artifactId, Path target) {
 		WebTarget webTarget = conn().getBaseResource()
 				.path("/download/artifactDownload.html")
@@ -71,6 +74,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return conn().api().fileUpDownload().downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
 	}
 	
+	@SSCRequiredActionsPermitted({"POST=/upload/resultFileUpload.html"})
 	public final JSONMap uploadArtifact(String applicationVersionId, File fprFile) {
 		WebTarget webTarget = conn().getBaseResource()
 				.path("/upload/resultFileUpload.html")
@@ -78,6 +82,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return conn().api().fileUpDownload().uploadFile(webTarget, FileTokenType.UPLOAD, fprFile);
 	}
 	
+	@SSCRequiredActionsPermitted({"POST=/api/\\d+/artifacts/\\d+/action"})
 	public final JSONMap approveArtifact(String artifactId, String comment) {
 		JSONMap data = new JSONMap();
 		data.putPath("type", "approve");
