@@ -39,10 +39,6 @@ public class SSCApplicationVersionFilterSetsQueryBuilder extends AbstractSSCAppl
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/filterSets"})
 	public SSCApplicationVersionFilterSetsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);
-	}
-	
-	@Override
-	protected String getChildEntityPath() {
-		return "filterSets";
+		appendPath("filterSets");
 	}
 }

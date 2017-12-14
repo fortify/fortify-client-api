@@ -30,9 +30,7 @@ import javax.ws.rs.client.Entity;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -42,32 +40,24 @@ import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
  *
  */
 public class SSCApplicationVersionBugFilingRequirementsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugFilingRequirementsQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	private final WebTargetQueryParamUpdaterBuilder paramChangedParamIdentifier = add(new WebTargetQueryParamUpdaterBuilder("changeParamIdentifier"));
-	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements"})
 	public SSCApplicationVersionBugFilingRequirementsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);
+		appendPath("bugfilingrequirements");
 	}
 
 	public final SSCApplicationVersionBugFilingRequirementsQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
+		return super.paramFields(fields);
 	}
 	
 	public final SSCApplicationVersionBugFilingRequirementsQueryBuilder paramChangedParamIdentifier(String paramChangedParamIdentifier) {
-		this.paramChangedParamIdentifier.paramValues(paramChangedParamIdentifier); return _this();
+		return super.queryParam("changeParamIdentifier", paramChangedParamIdentifier);
 	}
 	
 	@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements"})
 	public final SSCApplicationVersionBugFilingRequirementsQueryBuilder paramBugParams(JSONMap bugParams) {
-		setEntity(Entity.entity(bugParams, "application/json"));
-		setHttpMethod(HttpMethod.PUT);
+		super.setEntity(Entity.entity(bugParams, "application/json"));
+		super.setHttpMethod(HttpMethod.PUT);
 		return _this();
 	}
-	
-	@Override
-	protected String getChildEntityPath() {
-		return "bugfilingrequirements";
-	}
-
 }

@@ -27,7 +27,6 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -37,19 +36,13 @@ import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
  *
  */
 public class SSCApplicationVersionBugTrackerQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugTrackerQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/bugtracker"})
 	public SSCApplicationVersionBugTrackerQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);
+		appendPath("bugtracker");
 	}
 
 	public final SSCApplicationVersionBugTrackerQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
-	}
-	
-	@Override
-	protected String getChildEntityPath() {
-		return "bugtracker";
+		super.paramFields(fields); return _this();
 	}
 }

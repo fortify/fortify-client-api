@@ -38,9 +38,16 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 @Getter
 public class FoDAPI extends AbstractFoDAPI {
-		
+	private final FoDApplicationAPI application;
+	private final FoDBugTrackerAPI bugTracker;
+	private final FoDVulnerabilityAPI vulnerability;
+	private final FoDReleaseAPI release;
+
 	public FoDAPI(FoDAuthenticatingRestConnection conn) {
 		super(conn);
+		this.application = new FoDApplicationAPI(conn);
+		this.bugTracker = new FoDBugTrackerAPI(conn);
+		this.vulnerability = new FoDVulnerabilityAPI(conn);
+		this.release = new FoDReleaseAPI(conn);
 	}
-
 }

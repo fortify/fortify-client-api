@@ -27,9 +27,6 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -39,29 +36,21 @@ import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
  *
  */
 public class SSCApplicationVersionArtifactsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionArtifactsQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
-	private final SSCParamQ paramQ = add(new SSCParamQ());
-	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/artifacts"})
 	public SSCApplicationVersionArtifactsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, true);
+		appendPath("artifacts");
 	}
 
 	public final SSCApplicationVersionArtifactsQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
+		return super.paramFields(fields);
 	}
 
 	public final SSCApplicationVersionArtifactsQueryBuilder orderBy(String orderBy) {
-		paramOrderBy.orderBy(orderBy); return _this();
+		return super.paramOrderBy(orderBy);
 	}
 
 	public final SSCApplicationVersionArtifactsQueryBuilder paramQAnd(String field, String value) {
-		paramQ.paramQAnd(field, value); return _this();
-	}
-	
-	@Override
-	protected String getChildEntityPath() {
-		return "artifacts";
+		return super.paramQAnd(field, value);
 	}
 }

@@ -29,9 +29,6 @@ import org.apache.commons.lang.StringUtils;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
 import com.fortify.api.util.rest.json.JSONMap;
 
@@ -45,38 +42,35 @@ import lombok.RequiredArgsConstructor;
  *
  */
 public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCApplicationVersionsQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
-	private final SSCParamQ paramQ = add(new SSCParamQ());
-	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public SSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
+		appendPath("/api/v1/projectVersions");
 		preProcessor(new SSCJSONMapEnrichWithApplicationVersionDeepLink(conn));
 	}
 
 	public final SSCApplicationVersionsQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
+		return super.paramFields(fields);
 	}
 
 	public final SSCApplicationVersionsQueryBuilder orderBy(String orderBy) {
-		paramOrderBy.orderBy(orderBy); return _this();
+		return super.paramOrderBy(orderBy);
 	}
 
 	public final SSCApplicationVersionsQueryBuilder paramQAnd(String field, String value) {
-		paramQ.paramQAnd(field, value); return _this();
+		return super.paramQAnd(field, value);
 	}
 
 	public SSCApplicationVersionsQueryBuilder id(String id) {
-		return paramQAnd("id", id);
+		return super.paramQAnd("id", id);
 	}
 
 	public SSCApplicationVersionsQueryBuilder applicationName(String applicationName) {
-		return paramQAnd("project.name", applicationName);
+		return super.paramQAnd("project.name", applicationName);
 	}
 
 	public SSCApplicationVersionsQueryBuilder versionName(String versionName) {
-		return paramQAnd("name", versionName);
+		return super.paramQAnd("name", versionName);
 	}
 	
 	public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId, String separator) {
@@ -92,11 +86,6 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	
 	public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId) {
 		return nameOrId(applicationVersionNameOrId, ":");
-	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/projectVersions";
 	}
 	
 	@RequiredArgsConstructor

@@ -27,8 +27,6 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -38,24 +36,17 @@ import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
  *
  */
 public final class SSCCustomTagsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCCustomTagsQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
-	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/customTags"})
 	public SSCCustomTagsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
+		appendPath("/api/v1/customTags");
 	}
 
 	public final SSCCustomTagsQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
+		return super.paramFields(fields);
 	}
 
 	public final SSCCustomTagsQueryBuilder orderBy(String orderBy) {
-		paramOrderBy.orderBy(orderBy); return _this();
-	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/customTags";
+		return super.paramOrderBy(orderBy);
 	}
 }

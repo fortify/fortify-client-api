@@ -22,49 +22,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query.builder.param;
+package com.fortify.api.fod.connection.api.query.builder;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.collections.MapUtils;
-
-import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
-import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
+import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.api.fod.connection.api.query.FoDEntityQuery;
 
 /**
- * {@link WebTargetQueryParamUpdaterBuilder} implementation for adding the
- * common 'q' request parameter.
+ * This abstract base class is used to build {@link FoDEntityQuery} instances
+ * for querying FoD application child entities.
  *  
  * @author Ruud Senden
  *
+ * @param <T> Concrete builder type
  */
-public class SSCParamQ implements IWebTargetUpdaterBuilder {
-	private final Map<String, String> paramQAnds = new HashMap<>();
-	
-	public final SSCParamQ paramQAnd(String field, String value) {
-		paramQAnds.put(field, value);
-		return this;
-	}
+public abstract class AbstractFoDApplicationChildEntityQueryBuilder<T> extends AbstractFoDEntityQueryBuilder<T> {
 
-	@Override
-	public IWebTargetUpdater build() {
-		String q = null;
-		if ( MapUtils.isNotEmpty(paramQAnds) ) {
-			StringBuffer sb = new StringBuffer();
-			for ( Map.Entry<String, String> entry : paramQAnds.entrySet() ) {
-				String qAppend = entry.getKey()+":\""+entry.getValue()+"\"";
-				if ( sb.length() == 0 ) {
-					sb.append(qAppend);
-				} else {
-					sb.append("+and+"+qAppend);
-				}
-			}
-			q = sb.toString();
-		}
-		return new WebTargetQueryParamUpdater("q", q);
+	protected AbstractFoDApplicationChildEntityQueryBuilder(FoDAuthenticatingRestConnection conn, String applicationId, boolean pagingSupported) 
+	{
+		super(conn, pagingSupported);
+		appendPath("/api/v3/applications");
+		appendPath(applicationId);
 	}
-
 }

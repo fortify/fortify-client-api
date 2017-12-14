@@ -28,7 +28,6 @@ import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -38,21 +37,13 @@ import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
  *
  */
 public class SSCApplicationVersionMetricHistoriesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionMetricHistoriesQueryBuilder> {
-	private final MetricType metricType;
-	private final SSCParamQ paramQ = add(new SSCParamQ());
-
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/performanceIndicatorHistories", "GET=/api/v\\d+/projectVersions/\\d+/variableHistories"})
 	public SSCApplicationVersionMetricHistoriesQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId, MetricType metricType) {
 		super(conn, applicationVersionId, false);
-		this.metricType = metricType;
+		appendPath(metricType.name() + "Histories");
 	}
 	
 	public final SSCApplicationVersionMetricHistoriesQueryBuilder paramQAnd(String field, String value) {
-		paramQ.paramQAnd(field, value); return _this();
-	}
-	
-	@Override
-	protected String getChildEntityPath() {
-		return metricType.name() + "Histories";
+		return super.paramQAnd(field, value);
 	}
 }

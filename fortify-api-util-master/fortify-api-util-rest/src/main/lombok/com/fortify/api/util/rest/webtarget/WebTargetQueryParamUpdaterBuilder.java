@@ -24,17 +24,16 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.webtarget;
 
-import javax.ws.rs.client.WebTarget;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
-import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
+import javax.ws.rs.client.WebTarget;
 
 /**
  * {@link IWebTargetUpdaterBuilder} implementation for building
  * {@link WebTargetQueryParamUpdater} instances. This builder 
- * is configured with the query parameter name, and allows corresponding
- * values to be set through the {@link #paramValues(String...)} method.
+ * allows request parameters to be added through the 
+ * {@link #queryParam(String, String...)} method.
  * Please see the semantics for {@link WebTarget#queryParam(String, Object...)} 
  * to understand how multiple values for a single parameter are handled.
  * 
@@ -42,29 +41,19 @@ import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
  *
  */
 public class WebTargetQueryParamUpdaterBuilder implements IWebTargetUpdaterBuilder {
-	private final String paramName;
-	private String[] paramValues;
-	
-	/**
-	 * Create a new instance of this {@link IWebTargetUpdaterBuilder}
-	 * with the given query parameter name.
-	 * @param paramName
-	 */
-	public WebTargetQueryParamUpdaterBuilder(String paramName) {
-		this.paramName = paramName;
-	}
+	private final Map<String, String[]> queryParams = new HashMap<>();
 
 	/**
-	 * Set zero, one or more values to be assigned to the query parameter
-	 * as configured through the constructor. Note that this method replaces
-	 * any previously set values. If no values are configured, or only a
+	 * Set zero, one or more values to be assigned to the given query parameter. 
+	 * Note that this method replaces any previously set values for the given
+	 * query parameter name. If no values are configured, or only a
 	 * single blank value, then the {@link WebTargetQueryParamUpdater} 
 	 * implementation will not add the query parameter.
 	 * 
 	 * @param paramValues
 	 */
-	public final void paramValues(String... paramValues) {
-		this.paramValues = paramValues;
+	public final WebTargetQueryParamUpdaterBuilder queryParam(String paramName, String... paramValues) {
+		this.queryParams.put(paramName, paramValues); return this;
 	}
 
 	/**
@@ -74,7 +63,7 @@ public class WebTargetQueryParamUpdaterBuilder implements IWebTargetUpdaterBuild
 	 */
 	@Override
 	public IWebTargetUpdater build() {
-		return new WebTargetQueryParamUpdater(paramName, paramValues);
+		return new WebTargetQueryParamUpdater(queryParams);
 	}
 
 }

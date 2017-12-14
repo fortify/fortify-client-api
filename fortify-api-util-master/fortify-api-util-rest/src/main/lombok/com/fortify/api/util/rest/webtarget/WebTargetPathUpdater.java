@@ -24,26 +24,37 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.webtarget;
 
+import java.util.List;
+
 import javax.ws.rs.client.WebTarget;
 
 /**
- * This {@link IWebTargetUpdater} implementation allows for adding
- * a path (as configured through the constructor) to a given 
- * {@link WebTarget} instance.
+ * This {@link IWebTargetUpdater} implementation allows for 
+ * appending paths (as configured through the constructor) 
+ * to a given {@link WebTarget} instance.
  * 
  * @author Ruud Senden
  *
  */
 public class WebTargetPathUpdater implements IWebTargetUpdater {
-	private final String path;
+	private final String[] paths;
 	
 	/**
-	 * Create a new instance for adding the given path to
+	 * Create a new instance for adding the given paths to
 	 * {@link WebTarget} instances.
-	 * @param path
+	 * @param paths
 	 */
-	public WebTargetPathUpdater(String path) {
-		this.path = path;
+	public WebTargetPathUpdater(String... paths) {
+		this.paths = paths;
+	}
+	
+	/**
+	 * Create a new instance for adding the given paths to
+	 * {@link WebTarget} instances.
+	 * @param paths
+	 */
+	public WebTargetPathUpdater(List<String> paths) {
+		this.paths = paths.toArray(new String[]{});
 	}
 
 	/**
@@ -52,7 +63,10 @@ public class WebTargetPathUpdater implements IWebTargetUpdater {
 	 */
 	@Override
 	public WebTarget update(WebTarget target) {
-		return target.path(path);
+		for ( String path : paths ) {
+			target = target.path(path);
+		}
+		return target;
 	}
 
 }

@@ -27,7 +27,6 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -37,19 +36,13 @@ import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
  *
  */
 public final class SSCBugTrackersQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCBugTrackersQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/bugtrackers"})
 	public SSCBugTrackersQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, false);
+		appendPath("/api/v1/bugtrackers");
 	}
 
 	public final SSCBugTrackersQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
-	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/bugtrackers";
+		return super.paramFields(fields);
 	}
 }

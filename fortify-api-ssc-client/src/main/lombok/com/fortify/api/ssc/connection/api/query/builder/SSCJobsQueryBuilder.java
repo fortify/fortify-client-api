@@ -27,9 +27,6 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -39,45 +36,37 @@ import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
  *
  */
 public final class SSCJobsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCJobsQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
-	private final SSCParamQ paramQ = add(new SSCParamQ());
-	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/jobs"})
 	public SSCJobsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
+		appendPath("/api/v1/jobs");
 	}
 
 	public final SSCJobsQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
+		return super.paramFields(fields);
 	}
 
 	public final SSCJobsQueryBuilder orderBy(String orderBy) {
-		paramOrderBy.orderBy(orderBy); return _this();
+		return super.paramOrderBy(orderBy);
 	}
 
 	public final SSCJobsQueryBuilder paramQAnd(String field, String value) {
-		paramQ.paramQAnd(field, value); return _this();
+		return super.paramQAnd(field, value);
 	}
 
 	public final SSCJobsQueryBuilder id(String id) {
-		return paramQAnd("id", id);
+		return super.paramQAnd("id", id);
 	}
 
 	public final SSCJobsQueryBuilder jobClassName(String jobClassName) {
-		return paramQAnd("jobClassName", jobClassName);
+		return super.paramQAnd("jobClassName", jobClassName);
 	}
 
 	public final SSCJobsQueryBuilder priority(int priority) {
-		return paramQAnd("priority", "" + priority);
+		return super.paramQAnd("priority", "" + priority);
 	}
 
 	public final SSCJobsQueryBuilder state(String state) {
-		return paramQAnd("state", state);
-	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/jobs";
+		return super.paramQAnd("state", state);
 	}
 }

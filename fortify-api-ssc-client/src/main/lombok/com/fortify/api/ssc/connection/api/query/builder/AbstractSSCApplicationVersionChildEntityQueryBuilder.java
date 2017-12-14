@@ -29,7 +29,7 @@ import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
 /**
  * This abstract base class is used to build {@link SSCEntityQuery} instances
- * for querying SSC application version sub-entities.
+ * for querying SSC application version child entities.
  *  
  * @author Ruud Senden
  *
@@ -40,14 +40,7 @@ public abstract class AbstractSSCApplicationVersionChildEntityQueryBuilder<T> ex
 	protected AbstractSSCApplicationVersionChildEntityQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId, boolean pagingSupported) 
 	{
 		super(conn, pagingSupported);
-		templateValues().put("applicationVersionId", applicationVersionId);
+		appendPath("/api/v1/projectVersions");
+		appendPath(applicationVersionId);
 	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/projectVersions/{applicationVersionId}/"+getChildEntityPath();
-	}
-	
-	protected abstract String getChildEntityPath();
-	
 }

@@ -24,9 +24,13 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.webtarget;
 
+import java.util.Map;
+
 import javax.ws.rs.client.WebTarget;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * This {@link IWebTargetUpdater} implementation allows for adding
@@ -39,8 +43,7 @@ import org.apache.commons.lang.StringUtils;
  *
  */
 public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
-	private final String name;
-	private final String[] values;
+	private Map<String, String[]> queryParams;
 	
 	/**
 	 * Create a new instance for adding the given query parameter with
@@ -52,8 +55,20 @@ public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	 * @param values
 	 */
 	public WebTargetQueryParamUpdater(String name, String... values) {
-		this.name = name;
-		this.values = values;
+		this.queryParams = ImmutableMap.of(name, values);
+	}
+	
+	/**
+	 * Create a new instance for adding the query parameter names with
+	 * corresponding values from the given {@link Map} to {@link WebTarget} 
+	 * instances. For any parameter, if no values are given, or only a single 
+	 * blank value, then the query parameter will not be added.
+	 * 
+	 * @param name
+	 * @param values
+	 */
+	public WebTargetQueryParamUpdater(Map<String, String[]> queryParams) {
+		this.queryParams = ImmutableMap.copyOf(queryParams);
 	}
 
 	/**
@@ -63,8 +78,12 @@ public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	 */
 	@Override
 	public WebTarget update(WebTarget target) {
-		if ( values != null && values.length>0 && !(values.length==1 && StringUtils.isBlank(values[0])) ) {
-			target = target.queryParam(name, (Object[])values);
+		for ( Map.Entry<String, String[]> entry : queryParams.entrySet() ) {
+			String name = entry.getKey();
+			String[] values = entry.getValue();
+			if ( values != null && values.length>0 && !(values.length==1 && StringUtils.isBlank(values[0])) ) {
+				target = target.queryParam(name, (Object[])values);
+			}
 		}
 		return target;
 	}

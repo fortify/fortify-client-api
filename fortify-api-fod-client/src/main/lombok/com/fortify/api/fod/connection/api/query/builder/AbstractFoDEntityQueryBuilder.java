@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query.builder;
+package com.fortify.api.fod.connection.api.query.builder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +30,8 @@ import java.util.Map;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
+import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.api.fod.connection.api.query.FoDEntityQuery;
 import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
@@ -39,12 +39,12 @@ import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
 
 /**
- * <p>This abstract base class is used to build {@link SSCEntityQuery} instances. Concrete implementations
- * will need to provide the actual SSC REST API endpoint by calling the {@link #appendPath(String)}
- * method in their constructor.</p>
+ * <p>This abstract base class is used to build {@link FoDEntityQuery} instances. Concrete implementations
+ * will need to provide the actual FoD REST API endpoint by implementing the {@link #getTargetPath()}
+ * method, and provide any builder methods for configuring the query request.</p>
  * 
- * <p>This class provides various protected methods for configuring common SSC request parameters,
- * like 'q' and 'orderby'. Depending on the whether the target SSC endpoint supports these parameters,
+ * <p>This class provides various protected methods for configuring common FoD request parameters,
+ * like 'filter' and 'orderBy'. Depending on the whether the target FoD endpoint supports these parameters,
  * concrete implementations can override these methods as 'public' to make the generic method available, 
  * and/or provide more specialized builder methods that call these generic methods, for example to support
  * specific fields to be added to the 'q' parameter.</p>  
@@ -53,15 +53,15 @@ import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection, T> {
-	private SSCParamQ paramQ = add(new SSCParamQ());
+public abstract class AbstractFoDEntityQueryBuilder<T> extends AbstractRestConnectionWithCacheQueryConfig<FoDAuthenticatingRestConnection, T> {
+	private FoDParamFilter paramFilter = add(new FoDParamFilter());
 	
 	/**
-	 * Create new instance for given {@link SSCAuthenticatingRestConnection} and indicator whether paging is supported.
+	 * Create new instance for given {@link FoDAuthenticatingRestConnection} and indicator whether paging is supported.
 	 * @param conn
 	 * @param pagingSupported
 	 */
-	protected AbstractSSCEntityQueryBuilder(SSCAuthenticatingRestConnection conn, boolean pagingSupported) {
+	protected AbstractFoDEntityQueryBuilder(FoDAuthenticatingRestConnection conn, boolean pagingSupported) {
 		super(conn, pagingSupported);
 	}
 	
@@ -72,17 +72,32 @@ public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConne
 	 * @return
 	 */
 	public IRestConnectionQuery build() {
-		return new SSCEntityQuery(this);
+		return new FoDEntityQuery(this);
 	}
 	
 	/**
-	 * Add the 'embed' query parameter to the request configuration
+	 * Add the 'orderBy' query parameter to the request configuration
 	 * 
-	 * @param entity
+	 * @param orderBy
 	 * @return
 	 */
-	protected T paramEmbed(String entity) {
-		return queryParam("embed", entity);
+	protected T paramOrderBy(String orderBy) {
+		return queryParam("orderBy", orderBy);
+	}
+	
+	/**
+	 * Add the 'orderByDirection' query parameter to the request configuration
+	 * 
+	 * @param orderByDirection
+	 * @return
+	 */
+	protected T paramOrderByDirection(OrderByDirection orderByDirection) {
+		return queryParam("orderByDirection", orderByDirection.name());
+	}
+	
+	protected T paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
+		paramOrderBy(orderBy);
+		return paramOrderByDirection(orderByDirection);
 	}
 	
 	/**
@@ -96,69 +111,51 @@ public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConne
 	}
 	
 	/**
-	 * Add the 'orderby' query parameter to the request configuration
-	 * 
-	 * @param orderBy
-	 * @return
-	 */
-	protected T paramOrderBy(String orderBy) {
-		return queryParam("orderby", orderBy);
-	}
-	
-	/**
-	 * Add the 'groupby' query parameter to the request configuration
-	 * 
-	 * @param groupBy
-	 * @return
-	 */
-	protected T paramGroupBy(String groupBy) {
-		return queryParam("groupby", groupBy);
-	}
-	
-	/**
-	 * Add the 'q' query parameter to the request configuration. If
-	 * already set, the new field and value will be 'and-ed' to the
+	 * Add the 'filter' query parameter to the request configuration. 
+	 * If already set, the new field and value will be 'and-ed' to the
 	 * current query parameter value.
+	 * 
+	 * TODO Add support for ORed values (multiple values separated by pipe symbol)
 	 * 
 	 * @param field
 	 * @param value
 	 * @return
 	 */
-	protected T paramQAnd(String field, String value) {
-		paramQ.paramQAnd(field, value); return _this();
+	protected T paramFilterAnd(String field, String value) {
+		paramFilter.paramFilterAnd(field, value); return _this();
 	}
 	
 	/**
 	 * {@link IWebTargetUpdaterBuilder} implementation for adding the
-	 * SSC 'q' request parameter.
+	 * FoD 'filter' request parameter.
 	 *  
 	 * @author Ruud Senden
 	 *
 	 */
-	private static class SSCParamQ implements IWebTargetUpdaterBuilder {
-		private final Map<String, String> paramQAnds = new HashMap<>();
+	private static class FoDParamFilter implements IWebTargetUpdaterBuilder {
+		private final Map<String, String> paramFilterAnds = new HashMap<>();
 		
-		public final SSCParamQ paramQAnd(String field, String value) {
-			paramQAnds.put(field, value);
+		public final FoDParamFilter paramFilterAnd(String field, String value) {
+			paramFilterAnds.put(field, value);
 			return this;
 		}
 
 		@Override
 		public IWebTargetUpdater build() {
-			String q = null;
-			if ( MapUtils.isNotEmpty(paramQAnds) ) {
+			String filter = null;
+			if ( MapUtils.isNotEmpty(paramFilterAnds) ) {
 				StringBuffer sb = new StringBuffer();
-				for ( Map.Entry<String, String> entry : paramQAnds.entrySet() ) {
-					String qAppend = entry.getKey()+":\""+entry.getValue()+"\"";
+				for ( Map.Entry<String, String> entry : paramFilterAnds.entrySet() ) {
+					String qAppend = entry.getKey()+":"+entry.getValue()+"";
 					if ( sb.length() == 0 ) {
 						sb.append(qAppend);
 					} else {
-						sb.append("+and+"+qAppend);
+						sb.append("+"+qAppend);
 					}
 				}
-				q = sb.toString();
+				filter = sb.toString();
 			}
-			return new WebTargetQueryParamUpdater("q", q);
+			return new WebTargetQueryParamUpdater("q", filter);
 		}
 
 	} 

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,10 +22,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
+package com.fortify.api.util.rest.webtarget;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * <p>This package provides some {@link com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder}
- *    implementations used to construct common SSC REST API query parameters. These implementations
- *    are used by the various builders provided in the {@link com.fortify.api.ssc.connection.api.query.builder}
- *    package.</p>   
+ * {@link IWebTargetUpdaterBuilder} implementation for building
+ * {@link WebTargetPathUpdater} instances. This builder allows for
+ * adding path segments through the {@link #appendPath(String)}
+ * method.
+ * 
+ * @author Ruud Senden
+ *
  */
-package com.fortify.api.ssc.connection.api.query.builder.param;
+public class WebTargetPathUpdaterBuilder implements IWebTargetUpdaterBuilder {
+	private final List<String> paths = new ArrayList<>();
+	
+	public WebTargetPathUpdaterBuilder appendPath(String path) {
+		paths.add(path); return this;
+	}
+	
+	@Override
+	public IWebTargetUpdater build() {
+		return new WebTargetPathUpdater(paths);
+	}
+
+}

@@ -28,13 +28,9 @@ import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamOrderBy;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamQ;
 import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.query.AbstractRestConnectionQuery.IRequestInitializer;
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,19 +46,12 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		adv, issues
 	}
 	
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	private final SSCParamOrderBy paramOrderBy = add(new SSCParamOrderBy());
-	private final SSCParamQ paramQ = add(new SSCParamQ());
-	private final WebTargetQueryParamUpdaterBuilder paramGroupId = add(new WebTargetQueryParamUpdaterBuilder("groupid"));
-	private final WebTargetQueryParamUpdaterBuilder paramGroupingType = add(new WebTargetQueryParamUpdaterBuilder("groupingtype"));
-	private final WebTargetQueryParamUpdaterBuilder paramFilterSet = add(new WebTargetQueryParamUpdaterBuilder("filterset"));
-	private final WebTargetQueryParamUpdaterBuilder paramFilter = add(new WebTargetQueryParamUpdaterBuilder("filter"));
-	private final WebTargetQueryParamUpdaterBuilder paramQm = add(new WebTargetQueryParamUpdaterBuilder("qm"));
 	private final IssueSearchOptions issueSearchOptions = new IssueSearchOptions();
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/issues"})
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
+		appendPath("issues");
 		preProcessor(new SSCJSONMapEnrichWithIssueDeepLink(conn));
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
@@ -73,35 +62,35 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	}
 
 	public final SSCApplicationVersionIssuesQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
+		return super.paramFields(fields);
 	}
 
 	public final SSCApplicationVersionIssuesQueryBuilder orderBy(String orderBy) {
-		paramOrderBy.orderBy(orderBy); return _this();
+		return super.paramOrderBy(orderBy);
 	}
 
 	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(String field, String value) {
-		paramQ.paramQAnd(field, value); return _this();
+		return super.paramQAnd(field, value);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramGroupId(String groupId) {
-		paramGroupId.paramValues(groupId); return _this();
+		return super.queryParam("groupid", groupId);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramGroupingType(String groupingType) {
-		paramGroupingType.paramValues(groupingType); return _this();
+		return super.queryParam("groupingtype", groupingType);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramFilterSet(String filterSetId) {
-		paramFilterSet.paramValues(filterSetId); return _this();
+		return super.queryParam("filterset", filterSetId);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramFilter(String filter) {
-		paramFilter.paramValues(filter); return _this();
+		return super.queryParam("filter", filter);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramQm(QueryMode queryMode) {
-		paramQm.paramValues(queryMode.name()); return _this();
+		return super.queryParam("qm", queryMode.name());
 	}
 	
 	public SSCApplicationVersionIssuesQueryBuilder includeHidden() {
@@ -114,11 +103,6 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	
 	public SSCApplicationVersionIssuesQueryBuilder includeSuppressed() {
 		issueSearchOptions.setIncludeSuppressed(true); return _this();
-	}
-	
-	@Override
-	protected String getChildEntityPath() {
-		return "issues";
 	}
 	
 	@RequiredArgsConstructor

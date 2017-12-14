@@ -22,23 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query.builder.param;
+package com.fortify.api.fod.connection.api.query.builder;
 
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
-
-/**
- * {@link WebTargetQueryParamUpdaterBuilder} implementation for adding the
- * common 'orderby' request parameter.
- *  
- * @author Ruud Senden
- *
- */
-public class SSCParamOrderBy extends WebTargetQueryParamUpdaterBuilder {
-	public SSCParamOrderBy() {
-		super("orderby");
-	}
-	
-	public SSCParamOrderBy orderBy(String field) {
-		paramValues(field); return this;
-	}
+public enum OrderByDirection {
+	ASC, DESC
 }

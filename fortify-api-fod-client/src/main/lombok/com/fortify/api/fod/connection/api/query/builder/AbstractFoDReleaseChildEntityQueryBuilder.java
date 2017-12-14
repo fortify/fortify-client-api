@@ -22,35 +22,25 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query.builder;
+package com.fortify.api.fod.connection.api.query.builder;
 
-import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
+import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.api.fod.connection.api.query.FoDEntityQuery;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying application version attribute definitions.
- * 
+ * This abstract base class is used to build {@link FoDEntityQuery} instances
+ * for querying FoD release child entities.
+ *  
  * @author Ruud Senden
  *
+ * @param <T> Concrete builder type
  */
-public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCAttributeDefinitionsQueryBuilder> {
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/attributeDefinitions"})
-	public SSCAttributeDefinitionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
-		super(conn, true);
-		appendPath("/api/v1/attributeDefinitions");
-	}
+public abstract class AbstractFoDReleaseChildEntityQueryBuilder<T> extends AbstractFoDEntityQueryBuilder<T> {
 
-	public final SSCAttributeDefinitionsQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
-	}
-
-	public final SSCAttributeDefinitionsQueryBuilder orderBy(String orderBy) {
-		return super.paramOrderBy(orderBy);
-	}
-
-	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(String field, String value) {
-		return super.paramQAnd(field, value);
+	protected AbstractFoDReleaseChildEntityQueryBuilder(FoDAuthenticatingRestConnection conn, String releaseId, boolean pagingSupported) 
+	{
+		super(conn, pagingSupported);
+		appendPath("/api/v3/releases");
+		appendPath(releaseId);
 	}
 }

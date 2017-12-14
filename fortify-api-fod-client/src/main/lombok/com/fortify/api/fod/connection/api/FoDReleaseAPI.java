@@ -22,33 +22,30 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query.builder.param;
+package com.fortify.api.fod.connection.api;
 
-import org.apache.commons.lang.StringUtils;
+import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.api.fod.connection.api.query.builder.FoDReleaseQueryBuilder;
+import com.fortify.api.util.rest.json.JSONMap;
 
-import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
-import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
-
-/**
- * {@link WebTargetQueryParamUpdaterBuilder} implementation for adding the
- * common 'fields' request parameter.
- *  
- * @author Ruud Senden
- *
- */
-public class SSCParamFields implements IWebTargetUpdaterBuilder {
-	private String fields;
+public class FoDReleaseAPI extends AbstractFoDAPI {
+	public FoDReleaseAPI(FoDAuthenticatingRestConnection conn) {
+		super(conn);
+	}
 	
-	public final SSCParamFields paramFields(String... fields) {
-		this.fields = StringUtils.join(fields, ",");
-		return this;
+	public FoDReleaseQueryBuilder queryReleases() {
+		return new FoDReleaseQueryBuilder(conn());
 	}
-
-	@Override
-	public IWebTargetUpdater build() {
-		return new WebTargetQueryParamUpdater("fields", fields);
+	
+	public JSONMap getReleaseById(String releaseId) {
+		return queryReleases().releaseId(releaseId).useCache(true).build().getUnique();
 	}
-
+	
+	public JSONMap getReleaseByName(String applicationName, String releaseName) {
+		return queryReleases().applicationName(applicationName).releaseName(releaseName).useCache(true).build().getUnique();
+	}
+	
+	public JSONMap getReleaseByNameOrId(String nameOrId, String separator) {
+		return queryReleases().nameOrId(nameOrId, separator).useCache(true).build().getUnique();
+	}
 }

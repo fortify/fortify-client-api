@@ -22,23 +22,27 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query.builder.param;
+package com.fortify.api.fod.connection.api;
 
-import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
+import java.util.Collection;
 
-/**
- * {@link WebTargetQueryParamUpdaterBuilder} implementation for adding the
- * common 'embed' request parameter.
- *  
- * @author Ruud Senden
- *
- */
-public class SSCParamEmbed extends WebTargetQueryParamUpdaterBuilder {
-	public SSCParamEmbed() {
-		super("embed");
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+
+import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.api.util.rest.json.JSONMap;
+
+public class FoDBugTrackerAPI extends AbstractFoDAPI {
+	public FoDBugTrackerAPI(FoDAuthenticatingRestConnection conn) {
+		super(conn);
 	}
 	
-	public SSCParamEmbed embed(String entity) {
-		paramValues(entity); return this;
+	public void addBugLinkToVulnerabilities(String releaseId, String bugLink, Collection<String> vulnIds) {
+		String path = String.format("/api/v3/releases/%s/vulnerabilities/bug-link", releaseId);
+		JSONMap data = new JSONMap();
+		data.put("bugLink", bugLink);
+		data.put("vulnerabilityIds", vulnIds);
+		conn().executeRequest(HttpMethod.POST, conn().getBaseResource().path(path), Entity.entity(data,MediaType.APPLICATION_JSON), JSONMap.class);
 	}
 }

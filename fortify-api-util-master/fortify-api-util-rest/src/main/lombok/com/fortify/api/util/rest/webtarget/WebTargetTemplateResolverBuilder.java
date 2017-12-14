@@ -22,35 +22,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api.query.builder;
+package com.fortify.api.util.rest.webtarget;
 
-import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying application version attribute definitions.
- * 
- * @author Ruud Senden
- *
- */
-public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCAttributeDefinitionsQueryBuilder> {
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/attributeDefinitions"})
-	public SSCAttributeDefinitionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
-		super(conn, true);
-		appendPath("/api/v1/attributeDefinitions");
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class WebTargetTemplateResolverBuilder implements IWebTargetUpdaterBuilder {
+	private final Map<String,Object> templateValues = new HashMap<>();
+	private boolean encodeSlashInPath = false;
+	
+	public final WebTargetTemplateResolverBuilder templateValue(String name, Object value) {
+		this.templateValues.put(name, value); return this;
+	}
+	
+	public final WebTargetTemplateResolverBuilder encodeSlashInPath(boolean encodeSlashInPath) {
+		this.encodeSlashInPath = encodeSlashInPath; return this;
+	}
+	
+	@Override
+	public IWebTargetUpdater build() {
+		return new WebTargetTemplateResolver(templateValues, encodeSlashInPath);
 	}
 
-	public final SSCAttributeDefinitionsQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
-	}
-
-	public final SSCAttributeDefinitionsQueryBuilder orderBy(String orderBy) {
-		return super.paramOrderBy(orderBy);
-	}
-
-	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(String field, String value) {
-		return super.paramQAnd(field, value);
-	}
 }

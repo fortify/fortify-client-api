@@ -30,15 +30,10 @@ import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 public class WIEMacrosQueryBuilder extends AbstractWIEEntityQueryBuilder<WIEMacrosQueryBuilder> {
 	public WIEMacrosQueryBuilder(WIEAuthenticatingRestConnection conn) {
 		super(conn, true);
+		appendPath("/api/v1/macros");
 	}
 	
 	public WIEMacrosQueryBuilder names(String... names) {
 		return preProcessor(new JSONMapFilterRegEx("name", "\\Q"+String.join("\\E|\\Q", names)+"\\E", true));
 	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/macros";
-	}
-
 }

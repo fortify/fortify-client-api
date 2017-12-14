@@ -35,9 +35,9 @@ import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
 import com.fortify.api.util.rest.query.AbstractRestConnectionQuery.IRequestInitializer;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
-import com.fortify.api.util.rest.webtarget.WebTargetPathUpdater;
-import com.fortify.api.util.rest.webtarget.WebTargetTemplateResolver;
-import com.google.common.collect.ImmutableMap;
+import com.fortify.api.util.rest.webtarget.WebTargetPathUpdaterBuilder;
+import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdaterBuilder;
+import com.fortify.api.util.rest.webtarget.WebTargetTemplateResolverBuilder;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -83,10 +83,13 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 {
 	private final ConnType conn;
 	private final List<IWebTargetUpdaterBuilder> webTargetUpdaterBuilders = new ArrayList<>();
+	private final WebTargetPathUpdaterBuilder webTargetPathUpdaterBuilder = new WebTargetPathUpdaterBuilder();
+	private final WebTargetQueryParamUpdaterBuilder webTargetQueryParamUpdaterBuilder = new WebTargetQueryParamUpdaterBuilder();
+	private final WebTargetTemplateResolverBuilder webTargetTemplateResolverBuilder = new WebTargetTemplateResolverBuilder();
+	
 	private final List<IJSONMapPreProcessor> preProcessors = new ArrayList<>();
 	private int maxResults = -1;
 	private final boolean pagingSupported;
-	private final ImmutableMap.Builder<String, Object> templateValues = ImmutableMap.<String,Object>builder();
 	@Setter(AccessLevel.PROTECTED) private String httpMethod = HttpMethod.GET;
 	@Setter(AccessLevel.PROTECTED) private Entity<?> entity = null;
 	@Setter(AccessLevel.PROTECTED) private IRequestInitializer requestInitializer = null;
@@ -112,24 +115,34 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 		return (T)this;
 	}
 	
+	protected T queryParam(String paramName, String... paramValues) {
+		webTargetQueryParamUpdaterBuilder.queryParam(paramName, paramValues);
+		return _this();
+	}
+	
+	protected T appendPath(String path) {
+		webTargetPathUpdaterBuilder.appendPath(path);
+		return _this();
+	}
+	
+	protected T templateValue(String name, String value) {
+		webTargetTemplateResolverBuilder.templateValue(name, value);
+		return _this();
+	}
+	
 	protected <B extends IWebTargetUpdaterBuilder> B add(B builder) {
 		webTargetUpdaterBuilders.add(builder);
 		return builder;
 	}
 	
-	protected ImmutableMap.Builder<String, Object> templateValues() {
-		return templateValues;
-	}
-	
 	protected List<IWebTargetUpdater> getWebTargetUpdaters() {
 		List<IWebTargetUpdater> result = new ArrayList<>(webTargetUpdaterBuilders.size());
-		result.add(new WebTargetPathUpdater(getTargetPath()));
+		result.add(webTargetPathUpdaterBuilder.build());
+		result.add(webTargetQueryParamUpdaterBuilder.build());
 		for ( IWebTargetUpdaterBuilder builder : webTargetUpdaterBuilders ) {
 			result.add(builder.build());
 		}
-		result.add(new WebTargetTemplateResolver(getTemplateValues().build(), isEncodeSlashInPath()));
+		result.add(webTargetTemplateResolverBuilder.build());
 		return result;
 	}
-	
-	protected abstract String getTargetPath();
 }

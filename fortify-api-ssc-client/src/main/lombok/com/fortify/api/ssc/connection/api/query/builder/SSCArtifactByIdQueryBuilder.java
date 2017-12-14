@@ -27,7 +27,6 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -37,21 +36,14 @@ import com.fortify.api.ssc.connection.api.query.builder.param.SSCParamFields;
  *
  */
 public class SSCArtifactByIdQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCArtifactByIdQueryBuilder> {
-	private final SSCParamFields paramFields = add(new SSCParamFields());
-	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/artifacts/\\d+"})
 	public SSCArtifactByIdQueryBuilder(SSCAuthenticatingRestConnection conn, String artifactId) {
 		super(conn, false);
-		templateValues().put("artifactId", artifactId);
+		appendPath("/api/v1/artifacts");
+		appendPath(artifactId);
 	}
 	
 	public final SSCArtifactByIdQueryBuilder paramFields(String... fields) {
-		paramFields.paramFields(fields); return _this();
+		return super.paramFields(fields);
 	}
-	
-	@Override
-	protected String getTargetPath() {
-		return "/api/v1/artifacts/{artifactId}";
-	}
-
 }
