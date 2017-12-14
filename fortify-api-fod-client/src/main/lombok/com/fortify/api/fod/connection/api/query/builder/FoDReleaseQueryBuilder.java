@@ -30,6 +30,7 @@ public class FoDReleaseQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRel
 	public FoDReleaseQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/releases");
+		// TODO Add PreProcessor to add deep link?
 	}
 	
 	@Override

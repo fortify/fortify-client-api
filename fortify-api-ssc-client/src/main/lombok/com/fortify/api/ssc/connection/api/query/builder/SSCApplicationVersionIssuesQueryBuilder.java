@@ -28,11 +28,8 @@ import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
-import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.json.JSONMapEnrichWithDeepLink;
 import com.fortify.api.util.rest.query.AbstractRestConnectionQuery.IRequestInitializer;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -52,7 +49,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
 		appendPath("issues");
-		preProcessor(new SSCJSONMapEnrichWithIssueDeepLink(conn));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl()+"html/ssc/index.jsp#!/version/${projectVersionId}/fix/${id}"));
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
 			public void initRequest() {
@@ -103,14 +100,5 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	
 	public SSCApplicationVersionIssuesQueryBuilder includeSuppressed() {
 		issueSearchOptions.setIncludeSuppressed(true); return _this();
-	}
-	
-	@RequiredArgsConstructor
-	private static final class SSCJSONMapEnrichWithIssueDeepLink extends AbstractJSONMapEnrich {
-		private final SSCAuthenticatingRestConnection conn;
-		@Override
-		public void enrich(JSONMap json) {
-			json.put("deepLink", conn.api().issue().getIssueDeepLink(json));
-		}
 	}
 }

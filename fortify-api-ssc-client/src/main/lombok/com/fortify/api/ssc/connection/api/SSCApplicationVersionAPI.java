@@ -49,13 +49,6 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		return queryApplicationVersions().nameOrId(nameOrId, separator).useCache(true).build().getUnique();
 	}
 	
-	/**
-	 * @return Browser-accessible deep link for the current application version
-	 */
-	public final String getApplicationVersionDeepLink(String applicationVersionId) {
-		return conn().getBaseUrl()+"html/ssc/index.jsp#!/version/"+applicationVersionId+"/fix";
-	}
-	
 	public static void main(String[] args) {
 		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();

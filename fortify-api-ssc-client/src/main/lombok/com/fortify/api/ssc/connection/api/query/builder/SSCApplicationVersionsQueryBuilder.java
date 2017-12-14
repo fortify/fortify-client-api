@@ -24,15 +24,10 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query.builder;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
-import com.fortify.api.util.rest.json.JSONMap;
-
-import lombok.RequiredArgsConstructor;
+import com.fortify.api.util.rest.json.JSONMapEnrichWithDeepLink;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
@@ -46,7 +41,7 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	public SSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v1/projectVersions");
-		preProcessor(new SSCJSONMapEnrichWithApplicationVersionDeepLink(conn));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl()+"html/ssc/index.jsp#!/version/${id}/fix"));
 	}
 
 	public final SSCApplicationVersionsQueryBuilder paramFields(String... fields) {
@@ -86,17 +81,5 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	
 	public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId) {
 		return nameOrId(applicationVersionNameOrId, ":");
-	}
-	
-	@RequiredArgsConstructor
-	private static final class SSCJSONMapEnrichWithApplicationVersionDeepLink extends AbstractJSONMapEnrich {
-		private final SSCAuthenticatingRestConnection conn;
-		@Override
-		public void enrich(JSONMap json) {
-			String applicationVersionId = json.get("id", String.class);
-			if ( StringUtils.isNotBlank(applicationVersionId) ) {
-				json.put("deepLink", conn.api().applicationVersion().getApplicationVersionDeepLink(applicationVersionId));
-			}
-		}
 	}
 }

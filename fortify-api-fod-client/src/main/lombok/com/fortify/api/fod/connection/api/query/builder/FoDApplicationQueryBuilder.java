@@ -34,6 +34,7 @@ public class FoDApplicationQueryBuilder extends AbstractFoDEntityQueryBuilder<Fo
 	public FoDApplicationQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/applications");
+		// TODO Add PreProcessor to add deep link?
 	}
 	
 	@Override
