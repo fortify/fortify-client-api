@@ -102,8 +102,10 @@ public class SSCTokenSpecGenerator {
 		// methods?
 		// (i.e. field initializers, static blocks, ...)
 		Set<String> requiredActionsPermitted = new HashSet<>();
+		System.out.println("\nMethods in custom code that require SSC permitted actions: ");
 		for (Map.Entry<String, Set<String>> entry : methodsToAnnotationValuesMap.entrySet()) {
 			if (!entry.getKey().startsWith("com/fortify/api/ssc")) {
+				System.out.println(entry.getKey()+": "+entry.getValue());
 				requiredActionsPermitted.addAll(entry.getValue());
 			}
 		}
@@ -112,7 +114,7 @@ public class SSCTokenSpecGenerator {
 
 	protected static boolean findAnnotatedMethods(String[] jars, Map<String, Set<String>> methodsToAnnotationValuesMap) {
 		System.out.println("Scanning for methods annotated with @SSCRequiredActionsPermitted");
-		FindAnnotatedMethods classVisitor = new FindAnnotatedMethods(methodsToAnnotationValuesMap);
+		FindMethodsAnnotatedWithSSCRequiredActionsPermitted classVisitor = new FindMethodsAnnotatedWithSSCRequiredActionsPermitted(methodsToAnnotationValuesMap);
 		visitClasses(jars, classVisitor);
 		System.out.println("Methods and required actions permitted found until now:");
 		System.out.println(methodsToAnnotationValuesMap);
@@ -121,7 +123,7 @@ public class SSCTokenSpecGenerator {
 
 	protected static boolean findIndirectMethodInvocations(String[] jars, Map<String, Set<String>> methodsToAnnotationValuesMap) {
 		System.out.println("Next round of scanning for methods that indirectly call methods annotated with @SSCRequiredActionsPermitted");
-		FindMethodInvocations classVisitor = new FindMethodInvocations(methodsToAnnotationValuesMap);
+		FindInvocationsToMethodsInAnnotationValuesMap classVisitor = new FindInvocationsToMethodsInAnnotationValuesMap(methodsToAnnotationValuesMap);
 		visitClasses(jars, classVisitor);
 		System.out.println("Methods and required actions permitted found until now:");
 		System.out.println(methodsToAnnotationValuesMap);
@@ -157,15 +159,19 @@ public class SSCTokenSpecGenerator {
 			} catch ( IOException e ) { e.printStackTrace(); }
 		}
 	}
-
+	
+	/**
+	 * Abstract {@link ClassVisitor} implementation that keeps track of current class name
+	 * being visited.
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
 	static abstract class AbstractClassVisitor extends ClassVisitor {
-		private final Map<String, Set<String>> methodsToAnnotationValuesMap;
-		private boolean foundNew = false;
 		private String className;
-
-		public AbstractClassVisitor(Map<String, Set<String>> methodsToAnnotationValuesMap) {
+		
+		public AbstractClassVisitor() {
 			super(Opcodes.ASM5);
-			this.methodsToAnnotationValuesMap = methodsToAnnotationValuesMap;
 		}
 		
 		@Override
@@ -173,7 +179,27 @@ public class SSCTokenSpecGenerator {
 			this.className = name;
 			super.visit(version, access, name, signature, superName, interfaces);
 		}
+		
+		public String getClassName() {
+			return className;
+		}
+	}
 
+	/**
+	 * Abstract {@link ClassVisitor} implementation that allows for updating a
+	 * given methodsToAnnotationValuesMap.
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
+	static abstract class AbstractAnnotationValuesClassVisitor extends AbstractClassVisitor {
+		private final Map<String, Set<String>> methodsToAnnotationValuesMap;
+		private boolean foundNew = false;
+		
+		public AbstractAnnotationValuesClassVisitor(Map<String, Set<String>> methodsToAnnotationValuesMap) {
+			this.methodsToAnnotationValuesMap = methodsToAnnotationValuesMap;
+		}
+		
 		protected void addValues(String method, Set<String> values) {
 			Set<String> existingValues = methodsToAnnotationValuesMap.get(method);
 			if (existingValues == null) {
@@ -187,15 +213,18 @@ public class SSCTokenSpecGenerator {
 			return foundNew;
 		}
 		
-		public String getClassName() {
-			return className;
-		}
-		
 		public Map<String, Set<String>> getMethodsToAnnotationValuesMap() {
 			return methodsToAnnotationValuesMap;
 		}
 	}
 
+	/**
+	 * Abstract {@link MethodVisitor} implementation that keeps track of 
+	 * class name and method currently being visited.
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
 	static abstract class AbstractMethodVisitor extends MethodVisitor {
 		private final String className;
 		private final String methodName;
@@ -212,8 +241,14 @@ public class SSCTokenSpecGenerator {
 		}
 	}
 
-	static class FindAnnotatedMethods extends AbstractClassVisitor {
-		public FindAnnotatedMethods(Map<String, Set<String>> methodsToAnnotationValuesMap) {
+	/**
+	 * {@link ClassVisitor} implementation that finds all methods annotated with SSCRequiredActionsPermitted.
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
+	static class FindMethodsAnnotatedWithSSCRequiredActionsPermitted extends AbstractAnnotationValuesClassVisitor {
+		public FindMethodsAnnotatedWithSSCRequiredActionsPermitted(Map<String, Set<String>> methodsToAnnotationValuesMap) {
 			super(methodsToAnnotationValuesMap);
 		}
 
@@ -253,8 +288,14 @@ public class SSCTokenSpecGenerator {
 		}
 	}
 	
-	static class FindMethodInvocations extends AbstractClassVisitor {
-		public FindMethodInvocations(Map<String, Set<String>> methodsToAnnotationValuesMap) {
+	/**
+	 * {@link ClassVisitor} that finds all invocations to any method in the given methodsToAnnotationValuesMap
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
+	static class FindInvocationsToMethodsInAnnotationValuesMap extends AbstractAnnotationValuesClassVisitor {
+		public FindInvocationsToMethodsInAnnotationValuesMap(Map<String, Set<String>> methodsToAnnotationValuesMap) {
 			super(methodsToAnnotationValuesMap);
 		}
 
