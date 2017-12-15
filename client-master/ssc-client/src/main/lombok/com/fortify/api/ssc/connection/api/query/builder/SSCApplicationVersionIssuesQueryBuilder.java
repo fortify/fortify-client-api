@@ -105,20 +105,20 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandIssueDetails() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("issueDetails", 
+	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails() {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("details", 
 				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issueDetails/${id}")));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/comments"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandIssueComments() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("issueComments", 
+	public SSCApplicationVersionIssuesQueryBuilder onDemandComments() {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("comments", 
 				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/comments")));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/auditHistory"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandIssueAuditHistory() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("issueAuditHistory", 
+	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory() {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("auditHistory", 
 				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/auditHistory")));
 	}
 }
