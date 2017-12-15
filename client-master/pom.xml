@@ -25,19 +25,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.fortify.api.util</groupId>
-	<artifactId>fortify-api-util-master</artifactId>
+	<groupId>com.fortify.api.client</groupId>
+	<artifactId>client-master</artifactId>
 	<packaging>pom</packaging>
 	<parent>
 		<groupId>com.fortify.api</groupId>
-		<artifactId>fortify-api-master</artifactId>
+		<artifactId>master</artifactId>
 		<version>4.0-SNAPSHOT</version>
 	</parent>
 	<modules>
-		<module>fortify-api-util-spring</module>
-		<module>fortify-api-util-rest</module>
+		<module>fod-client</module>
+		<module>ssc-client</module>
+		<module>webinspect-client</module>
+		<module>wie-client</module>
 	</modules>
-	<description>This module is the parent module for various utility modules.</description>
+	<description>This module is the parent module for client API's for various Fortify products.</description>
 	<organization>
 		<name>HPE Security Fortify</name>
 		<url>http://www8.hp.com/us/en/software-solutions/application-security/</url>

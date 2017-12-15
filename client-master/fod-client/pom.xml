@@ -25,13 +25,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>fortify-api-util-spring</artifactId>
+	<artifactId>fod-client</artifactId>
 	<parent>
-		<groupId>com.fortify.api.util</groupId>
-		<artifactId>fortify-api-util-master</artifactId>
+		<groupId>com.fortify.api.client</groupId>
+		<artifactId>client-master</artifactId>
 		<version>4.0-SNAPSHOT</version>
 	</parent>
-	<description>This module defines various utility classes for working with Spring.</description>
 	<organization>
 		<name>HPE Security Fortify</name>
 		<url>http://www8.hp.com/us/en/software-solutions/application-security/</url>
@@ -51,50 +50,24 @@
 		</developer>
 	</developers>
 	<inceptionYear>2016</inceptionYear>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-beans</artifactId>
-				<version>4.2.5.RELEASE</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>4.2.5.RELEASE</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>4.2.5.RELEASE</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-expression</artifactId>
-				<version>4.2.5.RELEASE</version>
-				<scope>compile</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
+			<groupId>com.fortify.api.util</groupId>
+			<artifactId>rest-util</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-expression</artifactId>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<description>This module contains various utility classes for working with Fortify on Demand.</description>
 </project>
