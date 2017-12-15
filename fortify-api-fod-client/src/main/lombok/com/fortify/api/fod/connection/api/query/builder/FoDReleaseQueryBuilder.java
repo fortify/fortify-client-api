@@ -25,9 +25,9 @@
 package com.fortify.api.fod.connection.api.query.builder;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
+import com.fortify.api.util.rest.json.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.ondemand.AbstractOnDemandObjectWithConnection;
+import com.fortify.api.util.rest.json.JSONMapEnrichWithOnDemandProperty;
 
 public class FoDReleaseQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDReleaseQueryBuilder> {
 	public FoDReleaseQueryBuilder(FoDAuthenticatingRestConnection conn) {
@@ -99,27 +99,17 @@ public class FoDReleaseQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRel
 	}
 	
 	public FoDReleaseQueryBuilder embedOnDemandObjects() {
-		return preProcessor(new OnDemandApplicationPreProcessor());
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("application", new OnDemandApplication(getConn())));
 	}
 	
-	private static class OnDemandApplication extends AbstractOnDemandObjectWithConnection<FoDAuthenticatingRestConnection, JSONMap> {
+	private static class OnDemandApplication extends AbstractJSONMapOnDemandLoaderWithConnection<FoDAuthenticatingRestConnection> {
 		private static final long serialVersionUID = 1L;
-		private final String applicationId;
-		public OnDemandApplication(FoDAuthenticatingRestConnection conn, String applicationId) {
+		public OnDemandApplication(FoDAuthenticatingRestConnection conn) {
 			super(conn);
-			this.applicationId = applicationId;
 		}
 		@Override
-		public JSONMap getObject() {
-			return conn().api().application().getApplicationById(applicationId);
+		public Object getOnDemand(JSONMap parent) {
+			return conn().api().application().getApplicationById(parent.get("applicationId", String.class));
 		}
-	}
-	
-	private class OnDemandApplicationPreProcessor extends AbstractJSONMapEnrich {
-		@Override
-		protected void enrich(JSONMap json) {
-			json.put("application", new OnDemandApplication(getConn(), json.get("applicationId", String.class)));
-		}
-		
 	}
 }

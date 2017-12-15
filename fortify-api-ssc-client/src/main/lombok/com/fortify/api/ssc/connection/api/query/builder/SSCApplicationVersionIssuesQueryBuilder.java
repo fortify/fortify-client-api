@@ -28,10 +28,10 @@ import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
+import com.fortify.api.util.rest.json.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.JSONMapEnrichWithDeepLink;
-import com.fortify.api.util.rest.ondemand.AbstractOnDemandObjectWithConnection;
+import com.fortify.api.util.rest.json.JSONMapEnrichWithOnDemandProperty;
 import com.fortify.api.util.rest.query.AbstractRestConnectionQuery.IRequestInitializer;
 
 /**
@@ -106,27 +106,17 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	}
 	
 	public SSCApplicationVersionIssuesQueryBuilder embedOnDemandObjects() {
-		return preProcessor(new OnDemandIssueDetailsPreProcessor());
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("issueDetails", new OnDemandIssueDetails(getConn())));
 	}
 	
-	private static class OnDemandIssueDetails extends AbstractOnDemandObjectWithConnection<SSCAuthenticatingRestConnection, JSONMap> {
+	private static class OnDemandIssueDetails extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
 		private static final long serialVersionUID = 1L;
-		private final String issueId;
-		public OnDemandIssueDetails(SSCAuthenticatingRestConnection conn, String issueId) {
+		public OnDemandIssueDetails(SSCAuthenticatingRestConnection conn) {
 			super(conn);
-			this.issueId = issueId;
 		}
 		@Override
-		public JSONMap getObject() {
-			return conn().api().issue().getIssueDetails(issueId, false);
+		public Object getOnDemand(JSONMap parent) {
+			return conn().api().issue().getIssueDetails(parent.get("id", String.class), false);
 		}
-	}
-	
-	private class OnDemandIssueDetailsPreProcessor extends AbstractJSONMapEnrich {
-		@Override
-		protected void enrich(JSONMap json) {
-			json.put("issueDetails", new OnDemandIssueDetails(getConn(), json.get("id", String.class)));
-		}
-		
 	}
 }

@@ -70,7 +70,8 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	public static void main(String[] args) {
 		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
 		//System.out.println(conn.api().issue().queryIssues("6").embedOnDemandObjects().build().getAll());
-		System.out.println(conn.api().issue().queryIssues("6").embedOnDemandObjects().maxResults(2).build().getAll());
+		JSONList issues = conn.api().issue().queryIssues("6").embedOnDemandObjects().maxResults(2).build().getAll();
+		System.out.println(issues.asValueType(JSONMap.class).get(0).get("issueDetails"));
 	}
 	
 	/**

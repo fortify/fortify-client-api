@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.ondemand;
+package com.fortify.api.util.rest.json;
 
 import com.fortify.api.util.rest.connection.IRestConnection;
 
@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 @RequiredArgsConstructor @Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-public abstract class AbstractOnDemandObjectWithConnection<C extends IRestConnection, T> implements IOnDemandObject<T> {
+public abstract class AbstractJSONMapOnDemandLoaderWithConnection<C extends IRestConnection> implements IJSONMapOnDemandLoader {
 	private static final long serialVersionUID = 1L;
 	private final C conn;
 }

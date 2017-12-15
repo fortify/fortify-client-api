@@ -42,7 +42,6 @@ import org.springframework.core.convert.support.DefaultConversionService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fortify.api.util.rest.ondemand.IOnDemandObject;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
 /**
@@ -147,8 +146,8 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	}
 	
 	private Object getOnDemandValue(Object key, Object object) {
-		if ( object instanceof IOnDemandObject<?> ) {
-			object = ((IOnDemandObject<?>)object).getObject();
+		if ( object instanceof IJSONMapOnDemandLoader ) {
+			object = ((IJSONMapOnDemandLoader)object).getOnDemand(this);
 			put((String) key, object);
 		}
 		return object;

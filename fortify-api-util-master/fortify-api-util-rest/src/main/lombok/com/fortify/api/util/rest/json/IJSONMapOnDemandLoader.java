@@ -22,10 +22,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.ondemand;
+package com.fortify.api.util.rest.json;
 
 import java.io.Serializable;
 
-public interface IOnDemandObject<T> extends Serializable {
-	public T getObject();
+public interface IJSONMapOnDemandLoader extends Serializable {
+	public Object getOnDemand(JSONMap parent);
 }
