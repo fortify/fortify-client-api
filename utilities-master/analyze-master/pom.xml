@@ -34,8 +34,19 @@
 		<version>4.0-SNAPSHOT</version>
 	</parent>
 	<modules>
+		<module>analyze-api-usage-common</module>
 		<module>analyze-ssc-api-usage</module>
 	</modules>
+	<dependencyManagement>
+		<dependencies>
+		<dependency>
+			<groupId>com.fortify.api.utilities.analyze</groupId>
+			<artifactId>analyze-api-usage-common</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	</dependencyManagement>
 	<description>This module is the parent module for various command-line analyzer utilities.</description>
 	<organization>
 		<name>HPE Security Fortify</name>

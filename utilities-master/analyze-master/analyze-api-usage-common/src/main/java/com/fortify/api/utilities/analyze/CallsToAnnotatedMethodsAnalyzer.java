@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.token.spec.generator;
+package com.fortify.api.utilities.analyze;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -43,89 +43,30 @@ import org.objectweb.asm.Opcodes;
 
 // TODO Add documentation
 // TODO clean up this class
-public class SSCTokenSpecGenerator {
-	public static void main(String[] jars) throws IOException {
-		if ( jars==null || jars.length==0 ) {
-			System.err.println("Usage:\n");
-			System.err.println("\tjava -jar <fortify-api-ssc-token-spec-generator-[version].jar> <Jar file(s) to analyze>\n");
-			System.err.println("If your SSC client is available as a shaded JAR, you will only need to provide this single");
-			System.err.println("shaded JAR file. Otherwise, you will need to provide your main JAR file, as well as all");
-			System.err.println("dependencies, including the fortify-api-ssc-client-[version].jar file.");
-		} else {
-			Map<String, Set<String>> methodsToAnnotationValuesMap = new HashMap<>();
-			if (findAnnotatedMethods(jars, methodsToAnnotationValuesMap)) {
-				while (findIndirectMethodInvocations(jars, methodsToAnnotationValuesMap)) {
-				}
-			}
-			Set<String> requiredActionsPermitted = getRequiredActionsPermitted(methodsToAnnotationValuesMap);
-			printTokenDefinition(requiredActionsPermitted);
-		}
-	}
-
-	private static void printTokenDefinition(Set<String> requiredActionsPermitted) {
-		System.out.println("\n\nThe SSC token specification to be added to SSC's WEB-INF/internal/serviceContext.xml");
-		System.out.println("can be found below. Note that you will need to replace <tokenId> and <tokenName> with");
-		System.out.println("appropriate values.\n");
-		
-		System.out.println("This token specification is generated based on regular Java method calls to the SSC");
-		System.out.println("API. Custom REST API calls through the various executeRequest() methods are not taken");
-		System.out.println("into account, unless the corresponding methods are annotated with the appropriate");
-		System.out.println("@SSCRequiredActionsPermitted annotation. Any API calls made through Java reflection");
-		System.out.println("are never taken into account for generating this token specification.\n");
-		
-		StringBuffer sb = new StringBuffer(
-			"\t<bean id='<tokenId>' class='com.fortify.manager.security.ws.AuthenticationTokenSpec'>\n"+
-			"\t\t<property name='key' value='<tokenName>'/>\n"+
-			"\t\t<property name='maxDaysToLive' value='90' />\n"+
-			"\t\t<property name='actionPermitted'>\n"+
-			"\t\t\t<list value-type='java.lang.String'>\n");
-		for ( String requiredActionPermitted : requiredActionsPermitted ) {
-			sb.append("\t\t\t\t<value>"+requiredActionPermitted+"</value>\n");
-		}
-		sb.append(
-			"\t\t\t</list>\n"+
-			"\t\t</property>\n"+
-			"\t\t<property name='terminalActions'>\n"+
-			"\t\t\t<list value-type='java.lang.String'>\n"+
-			"\t\t\t\t<value>InvalidateTokenRequest</value>\n"+
-			"\t\t\t\t<value>DELETE=/api/v\\d+/auth/token</value>\n"+
-			"\t\t\t</list>\n"+
-			"\t\t</property>\n"+
-			"\t</bean>\n");
-		
-		System.out.println(sb.toString().replace('\'', '"'));
-		
-	}
-
-	protected static Set<String> getRequiredActionsPermitted(Map<String, Set<String>> methodsToAnnotationValuesMap) {
-		// TODO Should we also report any API method invocations outside of
-		// methods?
-		// (i.e. field initializers, static blocks, ...)
-		Set<String> requiredActionsPermitted = new HashSet<>();
-		System.out.println("\nMethods in custom code that require SSC permitted actions: ");
-		for (Map.Entry<String, Set<String>> entry : methodsToAnnotationValuesMap.entrySet()) {
-			if (!entry.getKey().startsWith("com/fortify/api/ssc")) {
-				System.out.println(entry.getKey()+": "+entry.getValue());
-				requiredActionsPermitted.addAll(entry.getValue());
+public class CallsToAnnotatedMethodsAnalyzer {
+	public Map<String, Set<String>> findDirectAndIndirectInvocationsToAnnotatedMethods(String[] jars, String annotation) {
+		Map<String, Set<String>> methodsToAnnotationValuesMap = new HashMap<>();
+		if (findAnnotatedMethods(jars, annotation, methodsToAnnotationValuesMap)) {
+			while (findIndirectMethodInvocations(jars, methodsToAnnotationValuesMap)) {
 			}
 		}
-		return requiredActionsPermitted;
+		return methodsToAnnotationValuesMap;
 	}
 
-	protected static boolean findAnnotatedMethods(String[] jars, Map<String, Set<String>> methodsToAnnotationValuesMap) {
-		System.out.println("Scanning for methods annotated with @SSCRequiredActionsPermitted");
-		FindMethodsAnnotatedWithSSCRequiredActionsPermitted classVisitor = new FindMethodsAnnotatedWithSSCRequiredActionsPermitted(methodsToAnnotationValuesMap);
+	protected boolean findAnnotatedMethods(String[] jars, String annotation, Map<String, Set<String>> methodsToAnnotationValuesMap) {
+		System.out.println("Scanning for methods annotated with annotation");
+		FindAnnotatedMethods classVisitor = new FindAnnotatedMethods(annotation, methodsToAnnotationValuesMap);
 		visitClasses(jars, classVisitor);
-		System.out.println("Methods and required actions permitted found until now:");
+		System.out.println("Methods and annotation values found until now:");
 		System.out.println(methodsToAnnotationValuesMap);
 		return classVisitor.hasFoundNew();
 	}
 
-	protected static boolean findIndirectMethodInvocations(String[] jars, Map<String, Set<String>> methodsToAnnotationValuesMap) {
-		System.out.println("Next round of scanning for methods that indirectly call methods annotated with @SSCRequiredActionsPermitted");
+	protected boolean findIndirectMethodInvocations(String[] jars, Map<String, Set<String>> methodsToAnnotationValuesMap) {
+		System.out.println("Next round of scanning for methods that call methods found in previous round");
 		FindInvocationsToMethodsInAnnotationValuesMap classVisitor = new FindInvocationsToMethodsInAnnotationValuesMap(methodsToAnnotationValuesMap);
 		visitClasses(jars, classVisitor);
-		System.out.println("Methods and required actions permitted found until now:");
+		System.out.println("Methods and annotation values found until now:");
 		System.out.println(methodsToAnnotationValuesMap);
 		return classVisitor.hasFoundNew();
 	}
@@ -167,7 +108,7 @@ public class SSCTokenSpecGenerator {
 	 * @author Ruud Senden
 	 *
 	 */
-	static abstract class AbstractClassVisitor extends ClassVisitor {
+	protected static abstract class AbstractClassVisitor extends ClassVisitor {
 		private String className;
 		
 		public AbstractClassVisitor() {
@@ -192,7 +133,7 @@ public class SSCTokenSpecGenerator {
 	 * @author Ruud Senden
 	 *
 	 */
-	static abstract class AbstractAnnotationValuesClassVisitor extends AbstractClassVisitor {
+	protected static abstract class AbstractAnnotationValuesClassVisitor extends AbstractClassVisitor {
 		private final Map<String, Set<String>> methodsToAnnotationValuesMap;
 		private boolean foundNew = false;
 		
@@ -225,7 +166,7 @@ public class SSCTokenSpecGenerator {
 	 * @author Ruud Senden
 	 *
 	 */
-	static abstract class AbstractMethodVisitor extends MethodVisitor {
+	protected static abstract class AbstractMethodVisitor extends MethodVisitor {
 		private final String className;
 		private final String methodName;
 		
@@ -242,14 +183,16 @@ public class SSCTokenSpecGenerator {
 	}
 
 	/**
-	 * {@link ClassVisitor} implementation that finds all methods annotated with SSCRequiredActionsPermitted.
+	 * {@link ClassVisitor} implementation that finds all methods annotated with the configured annotation.
 	 * 
 	 * @author Ruud Senden
 	 *
 	 */
-	static class FindMethodsAnnotatedWithSSCRequiredActionsPermitted extends AbstractAnnotationValuesClassVisitor {
-		public FindMethodsAnnotatedWithSSCRequiredActionsPermitted(Map<String, Set<String>> methodsToAnnotationValuesMap) {
+	protected static class FindAnnotatedMethods extends AbstractAnnotationValuesClassVisitor {
+		private final String annotation;
+		public FindAnnotatedMethods(String annotation, Map<String, Set<String>> methodsToAnnotationValuesMap) {
 			super(methodsToAnnotationValuesMap);
+			this.annotation = annotation;
 		}
 
 		@Override
@@ -258,7 +201,7 @@ public class SSCTokenSpecGenerator {
 				private Set<String> values = new HashSet<>();
 				@Override
 				public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-					if ("Lcom/fortify/api/ssc/annotation/SSCRequiredActionsPermitted;".equals(desc)) {
+					if (annotation.equals(desc)) {
 						return new AnnotationVisitor(Opcodes.ASM5) {
 							@Override
 							public AnnotationVisitor visitArray(String name) {
@@ -294,7 +237,7 @@ public class SSCTokenSpecGenerator {
 	 * @author Ruud Senden
 	 *
 	 */
-	static class FindInvocationsToMethodsInAnnotationValuesMap extends AbstractAnnotationValuesClassVisitor {
+	protected static class FindInvocationsToMethodsInAnnotationValuesMap extends AbstractAnnotationValuesClassVisitor {
 		public FindInvocationsToMethodsInAnnotationValuesMap(Map<String, Set<String>> methodsToAnnotationValuesMap) {
 			super(methodsToAnnotationValuesMap);
 		}
