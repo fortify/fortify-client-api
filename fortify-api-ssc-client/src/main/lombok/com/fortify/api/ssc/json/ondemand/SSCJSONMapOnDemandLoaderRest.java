@@ -22,17 +22,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.ssc.json.ondemand;
 
 import com.fortify.api.util.rest.connection.IRestConnection;
+import com.fortify.api.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
-
-@RequiredArgsConstructor @Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
-public abstract class AbstractJSONMapOnDemandLoaderWithConnection<C extends IRestConnection> implements IJSONMapOnDemandLoader {
+public class SSCJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
 	private static final long serialVersionUID = 1L;
-	private final C conn;
+
+	public SSCJSONMapOnDemandLoaderRest(IRestConnection conn, String pathTemplateExpression) {
+		super(conn, true, pathTemplateExpression, "data");
+	}
 }

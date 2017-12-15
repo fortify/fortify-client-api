@@ -22,48 +22,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.preprocessor;
 
-import java.util.List;
+import com.fortify.api.util.rest.json.JSONMap;
 
-import org.apache.commons.collections.CollectionUtils;
-
-import com.fortify.api.util.rest.query.PagingData;
-
-public class JSONMapProcessorWithPreProcessors implements IJSONMapProcessor {
-	private final List<IJSONMapPreProcessor> preProcessors;
-	private final IJSONMapProcessor processor;
-	
-	public JSONMapProcessorWithPreProcessors(List<IJSONMapPreProcessor> preProcessors, IJSONMapProcessor processor) {
-		this.preProcessors = preProcessors;
-		this.processor = processor;
+public abstract class AbstractJSONMapFilter implements IJSONMapPreProcessor {
+	private final boolean includeMatching;
+	public AbstractJSONMapFilter(boolean includeMatching) {
+		this.includeMatching = includeMatching;
 	}
 
 	@Override
-	public void process(JSONMap json) {
-		if ( preProcess(json) ) {
-			processor.process(json);
-		}
+	public boolean preProcess(JSONMap json) {
+		return includeMatching == isMatching(json);
 	}
 	
-	private boolean preProcess(JSONMap json) {
-		boolean result = true;
-		if ( CollectionUtils.isNotEmpty(preProcessors) ) {
-			for ( IJSONMapPreProcessor preProcessor : preProcessors ) {
-				result &= preProcessor.preProcess(json);
-				if ( !result ) { break; }
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public <T extends PagingData> void nextPage(T pagingData) {
-		processor.nextPage(pagingData);
-	}
-
-	
-	
-	
-
+	protected abstract boolean isMatching(JSONMap json);
 }

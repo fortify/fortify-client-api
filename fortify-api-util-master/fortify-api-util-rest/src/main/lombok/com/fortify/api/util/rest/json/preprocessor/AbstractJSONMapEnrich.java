@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,24 +22,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.preprocessor;
 
-import com.fortify.api.util.rest.query.PagingData;
+import com.fortify.api.util.rest.json.JSONMap;
 
-/**
- * Abstract base class for {@link IJSONMapProcessor} implementations.
- * 
- * @author Ruud Senden
- *
- */
-public abstract class AbstractJSONMapProcessor implements IJSONMapProcessor {
+public abstract class AbstractJSONMapEnrich implements IJSONMapPreProcessor {
 
-	/**
-	 * This default implementation does nothing; subclasses can override this method
-	 * to get informed whenever a next page of results is loaded.
-	 */
-	public <T extends PagingData> void nextPage(T pagingData) {
-		// Do nothing
+	@Override
+	public boolean preProcess(JSONMap json) {
+		enrich(json);
+		return true;
 	}
+
+	protected abstract void enrich(JSONMap json);
 
 }

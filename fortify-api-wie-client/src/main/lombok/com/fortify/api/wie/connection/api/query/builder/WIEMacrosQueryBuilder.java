@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.wie.connection.api.query.builder;
 
-import com.fortify.api.util.rest.json.JSONMapFilterRegEx;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterRegEx;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
 public class WIEMacrosQueryBuilder extends AbstractWIEEntityQueryBuilder<WIEMacrosQueryBuilder> {

@@ -22,25 +22,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.ondemand;
+
+import java.io.Serializable;
+
+import com.fortify.api.util.rest.json.JSONMap;
 
 /**
- * This interface is used to pre-process a given {@link JSONMap} instance
- * before {@link IJSONMapProcessor} is called. Implementations can modify
- * the given {@link JSONMap}, and/or indicate whether the given {@link JSONMap}
- * should be further processed or not.
+ * Interface to support on-demand loading of properties in JSONMap instances.
+ * Note that implementations should usually be {@link Serializable} to allow
+ * the {@link JSONMap} instance to be serialized if necessary.
  * 
  * @author Ruud Senden
  *
  */
-public interface IJSONMapPreProcessor {
+public interface IJSONMapOnDemandLoader extends Serializable {
 	/**
-	 * This method allows for modifying the given {@link JSONMap} before it
-	 * is processed by an {@link IJSONMapProcessor} instance, and/or exclude
-	 * the given {@link JSONMap} instance from further processing.
+	 * This method retrieves the value for the given property name
+	 * in the given parent {@link JSONMap}. Implementations can optionally
+	 * replace the on-demand loader in the parent with the retrieved
+	 * property value to avoid re-loading the property value whenever
+	 * the property is requested.
 	 * 
-	 * @param json
-	 * @return true if the given {@link JSONMap} should be included, false otherwise
+	 * @param propertyName
+	 * @param parent
+	 * @return
 	 */
-	public boolean preProcess(JSONMap json);
+	public Object getAndStoreOnDemand(String propertyName, JSONMap parent);
 }

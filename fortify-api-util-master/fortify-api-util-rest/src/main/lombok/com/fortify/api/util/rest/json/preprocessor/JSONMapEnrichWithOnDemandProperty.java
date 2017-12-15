@@ -22,22 +22,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.preprocessor;
 
-import com.fortify.api.util.spring.SpringExpressionUtil;
-import com.fortify.api.util.spring.expression.TemplateExpression;
+import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 
-public class JSONMapEnrichWithDeepLink extends AbstractJSONMapEnrich {
-	private final TemplateExpression deepLinkExpression;
-	public JSONMapEnrichWithDeepLink(TemplateExpression deepLinkExpression) {
-		this.deepLinkExpression = deepLinkExpression;
-	}
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class JSONMapEnrichWithOnDemandProperty extends AbstractJSONMapEnrich {
+	private final String propertyName;
+	private final IJSONMapOnDemandLoader onDemandLoader;
 	
-	public JSONMapEnrichWithDeepLink(String deepLinkExpression) {
-		this(SpringExpressionUtil.parseTemplateExpression(deepLinkExpression));
-	}
 	@Override
-	protected final void enrich(JSONMap json) {
-		json.put("deepLink", SpringExpressionUtil.evaluateExpression(json, deepLinkExpression, String.class));
+	protected void enrich(JSONMap json) {
+		json.put(propertyName, onDemandLoader);
 	}
 }

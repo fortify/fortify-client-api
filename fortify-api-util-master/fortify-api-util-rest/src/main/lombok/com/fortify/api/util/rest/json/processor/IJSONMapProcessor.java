@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,27 +22,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.processor;
 
-import java.util.regex.Pattern;
+import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.query.PagingData;
 
-public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
-	private final String fieldPath;
-	private final Pattern pattern;
-	
-	public JSONMapFilterRegEx(String fieldPath, Pattern pattern, boolean includeMatching) {
-		super(includeMatching);
-		this.fieldPath = fieldPath;
-		this.pattern = pattern;
-	}
-	
-	public JSONMapFilterRegEx(String fieldPath, String regex, boolean includeMatching) {
-		this(fieldPath, Pattern.compile(regex), includeMatching);
-	}
-
-	@Override
-	protected boolean isMatching(JSONMap json) {
-		String value = json.getPath(fieldPath, String.class);
-		return value==null ? false : pattern.matcher(value).matches();
-	}
+/**
+ * Interface for processing (possibly multi-page) lists of JSON objects.
+ * 
+ * @author Ruud Senden
+ *
+ */
+public interface IJSONMapProcessor {
+	/**
+	 * Allow implementations to process the current JSON object
+	 * from a list of one or more JSON objects.
+	 * @param json
+	 */
+	public void process(JSONMap json);
+	/**
+	 * For multi-page requests, this method will be invoked before 
+	 * loading the next page. For example this allows implementations
+	 * to display progress information.
+	 */
+	public <T extends PagingData> void nextPage(T pagingData);
 }

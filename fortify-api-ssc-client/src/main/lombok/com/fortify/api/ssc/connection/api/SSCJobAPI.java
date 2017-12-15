@@ -32,8 +32,8 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCJobsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.JSONMapFilterDateCompare;
-import com.fortify.api.util.rest.json.JSONMapFilterDateCompare.DateComparisonOperator;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterDateCompare;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterDateCompare.DateComparisonOperator;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 
 public class SSCJobAPI extends AbstractSSCAPI {

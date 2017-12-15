@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,27 +22,50 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.processor;
 
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+
+import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.json.preprocessor.IJSONMapPreProcessor;
 import com.fortify.api.util.rest.query.PagingData;
 
-/**
- * Interface for processing (possibly multi-page) lists of JSON objects.
- * 
- * @author Ruud Senden
- *
- */
-public interface IJSONMapProcessor {
-	/**
-	 * Allow implementations to process the current JSON object
-	 * from a list of one or more JSON objects.
-	 * @param json
-	 */
-	public void process(JSONMap json);
-	/**
-	 * For multi-page requests, this method will be invoked before 
-	 * loading the next page. For example this allows implementations
-	 * to display progress information.
-	 */
-	public <T extends PagingData> void nextPage(T pagingData);
+public class JSONMapProcessorWithPreProcessors implements IJSONMapProcessor {
+	private final List<IJSONMapPreProcessor> preProcessors;
+	private final IJSONMapProcessor processor;
+	
+	public JSONMapProcessorWithPreProcessors(List<IJSONMapPreProcessor> preProcessors, IJSONMapProcessor processor) {
+		this.preProcessors = preProcessors;
+		this.processor = processor;
+	}
+
+	@Override
+	public void process(JSONMap json) {
+		if ( preProcess(json) ) {
+			processor.process(json);
+		}
+	}
+	
+	private boolean preProcess(JSONMap json) {
+		boolean result = true;
+		if ( CollectionUtils.isNotEmpty(preProcessors) ) {
+			for ( IJSONMapPreProcessor preProcessor : preProcessors ) {
+				result &= preProcessor.preProcess(json);
+				if ( !result ) { break; }
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public <T extends PagingData> void nextPage(T pagingData) {
+		processor.nextPage(pagingData);
+	}
+
+	
+	
+	
+
 }

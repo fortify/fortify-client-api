@@ -24,11 +24,11 @@
  ******************************************************************************/
 package com.fortify.api.fod.connection.api.query.builder;
 
-import java.util.Map;
-
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
+import com.fortify.api.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
 import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.json.ondemand.AbstractJSONMapOnDemandLoader;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
 public class FoDApplicationQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDApplicationQueryBuilder> {
 	public FoDApplicationQueryBuilder(FoDAuthenticatingRestConnection conn) {
@@ -65,16 +65,24 @@ public class FoDApplicationQueryBuilder extends AbstractFoDEntityQueryBuilder<Fo
 	}
 	
 	public FoDApplicationQueryBuilder includeAttributesMap() {
-		return preProcessor(new JSONMapPreProcessorAddAttributesMap());
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("attributesMap", new AttributesMapOnDemandLoader()));
 	}
 	
-	private class JSONMapPreProcessorAddAttributesMap implements IJSONMapPreProcessor {
+	public FoDApplicationQueryBuilder onDemandReleases() {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("releases", 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}/releases")));
+	}
+	
+	private static class AttributesMapOnDemandLoader extends AbstractJSONMapOnDemandLoader {
+		private static final long serialVersionUID = 1L;
+		public AttributesMapOnDemandLoader() {
+			super(true);
+		}
+		
 		@Override
-		public boolean preProcess(JSONMap json) {
-			Map<String, String> attributesMap = json.getOrCreateJSONList("attributes")
+		public Object getOnDemand(String propertyName, JSONMap parent) {
+			return parent.getOrCreateJSONList("attributes")
 					.filter("value!='(Not Set)'", true).toMap("name", String.class, "value", String.class);
-			json.put("attributesMap", new JSONMap(attributesMap));
-			return true;
 		}
 	}
 }

@@ -28,10 +28,9 @@ import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.util.rest.json.AbstractJSONMapOnDemandLoaderWithConnection;
-import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.JSONMapEnrichWithDeepLink;
-import com.fortify.api.util.rest.json.JSONMapEnrichWithOnDemandProperty;
+import com.fortify.api.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 import com.fortify.api.util.rest.query.AbstractRestConnectionQuery.IRequestInitializer;
 
 /**
@@ -105,18 +104,21 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		issueSearchOptions.setIncludeSuppressed(true); return _this();
 	}
 	
-	public SSCApplicationVersionIssuesQueryBuilder embedOnDemandObjects() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("issueDetails", new OnDemandIssueDetails(getConn())));
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
+	public SSCApplicationVersionIssuesQueryBuilder onDemandIssueDetails() {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("issueDetails", 
+				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issueDetails/${id}")));
 	}
 	
-	private static class OnDemandIssueDetails extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
-		private static final long serialVersionUID = 1L;
-		public OnDemandIssueDetails(SSCAuthenticatingRestConnection conn) {
-			super(conn);
-		}
-		@Override
-		public Object getOnDemand(JSONMap parent) {
-			return conn().api().issue().getIssueDetails(parent.get("id", String.class), false);
-		}
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/comments"})
+	public SSCApplicationVersionIssuesQueryBuilder onDemandIssueComments() {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("issueComments", 
+				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/comments")));
+	}
+	
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/auditHistory"})
+	public SSCApplicationVersionIssuesQueryBuilder onDemandIssueAuditHistory() {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("issueAuditHistory", 
+				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/auditHistory")));
 	}
 }

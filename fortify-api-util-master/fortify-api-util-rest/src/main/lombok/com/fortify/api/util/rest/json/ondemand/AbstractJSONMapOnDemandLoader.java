@@ -22,41 +22,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.query;
+package com.fortify.api.util.rest.json.ondemand;
 
-import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;
 
-/**
- * This interface allows for querying REST API's.
- * 
- * @author Ruud Senden
- *
- */
-public interface IRestConnectionQuery {
+public abstract class AbstractJSONMapOnDemandLoader implements IJSONMapOnDemandLoader {
+	private static final long serialVersionUID = 1L;
+	private final boolean storeValue;
+	public AbstractJSONMapOnDemandLoader(boolean storeValue) {
+		this.storeValue = storeValue;
+	}
 
-	/**
-	 * Process all results from the REST API call. For large result sets,
-	 * this method usually provides better performance and requires less
-	 * memory than the {@link #getAll()} method.
-	 * 
-	 * @param processor
-	 */
-	void processAll(IJSONMapProcessor processor);
-
-	/**
-	 * Get all results from the REST API call
-	 * @return
-	 */
-	JSONList getAll();
-
-	/**
-	 * Get a unique result from the REST API call. If there are no
-	 * results, null will be returned. If there is more than one result,
-	 * an exception will be thrown.
-	 * @return
-	 */
-	JSONMap getUnique();
+	@Override
+	public final Object getAndStoreOnDemand(String propertyName, JSONMap parent) {
+		Object result = getOnDemand(propertyName, parent);
+		if ( storeValue ) {
+			parent.put(propertyName, result);
+		}
+		return result;
+	}
+	
+	public abstract Object getOnDemand(String propertyName, JSONMap parent);
 
 }

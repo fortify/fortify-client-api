@@ -22,18 +22,28 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.preprocessor;
 
-public abstract class AbstractJSONMapFilter implements IJSONMapPreProcessor {
-	private final boolean includeMatching;
-	public AbstractJSONMapFilter(boolean includeMatching) {
-		this.includeMatching = includeMatching;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+
+import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.spring.SpringExpressionUtil;
+
+public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
+	private final Expression expression;
+	
+	public JSONMapFilterSpEL(Expression expression, boolean includeMatching) {
+		super(includeMatching);
+		this.expression = expression;
+	}
+	
+	public JSONMapFilterSpEL(String expression, boolean includeMatching) {
+		this(new SpelExpressionParser().parseExpression(expression), includeMatching);
 	}
 
 	@Override
-	public boolean preProcess(JSONMap json) {
-		return includeMatching == isMatching(json);
+	protected boolean isMatching(JSONMap json) {
+		return SpringExpressionUtil.evaluateExpression(json, expression, Boolean.class);
 	}
-	
-	protected abstract boolean isMatching(JSONMap json);
 }

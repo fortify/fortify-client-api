@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,27 +22,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.processor;
 
-import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import com.fortify.api.util.rest.json.JSONList;
+import com.fortify.api.util.rest.json.JSONMap;
 
-import com.fortify.api.util.spring.SpringExpressionUtil;
+/**
+ * This {@link IJSONMapProcessor} implementation allows for building a
+ * {@link JSONList} instance that holds all {@link JSONMap} instances
+ * passed to the {@link #process(JSONMap)} method.
+ * 
+ * @author Ruud Senden
+ *
+ */
+public class JSONMapsToJSONListProcessor extends AbstractJSONMapProcessor {
+	private final JSONList jsonList = new JSONList();
 
-public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
-	private final Expression expression;
-	
-	public JSONMapFilterSpEL(Expression expression, boolean includeMatching) {
-		super(includeMatching);
-		this.expression = expression;
+	public JSONList getJsonList() {
+		return jsonList;
 	}
 	
-	public JSONMapFilterSpEL(String expression, boolean includeMatching) {
-		this(new SpelExpressionParser().parseExpression(expression), includeMatching);
+	public void process(JSONMap json) {
+		jsonList.add(json);
 	}
-
-	@Override
-	protected boolean isMatching(JSONMap json) {
-		return SpringExpressionUtil.evaluateExpression(json, expression, Boolean.class);
-	}
+	
+	
 }

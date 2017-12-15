@@ -22,20 +22,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.preprocessor;
 
-public class JSONMapFilterMaxResults extends AbstractJSONMapFilter { 
-	private final int maxResults;
-	private int count = 0;
+import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.spring.SpringExpressionUtil;
+import com.fortify.api.util.spring.expression.TemplateExpression;
+
+public class JSONMapEnrichWithDeepLink extends AbstractJSONMapEnrich {
+	private final TemplateExpression deepLinkExpression;
+	public JSONMapEnrichWithDeepLink(TemplateExpression deepLinkExpression) {
+		this.deepLinkExpression = deepLinkExpression;
+	}
 	
-	public JSONMapFilterMaxResults(int maxResults) {
-		super(true);
-		this.maxResults = maxResults;
+	public JSONMapEnrichWithDeepLink(String deepLinkExpression) {
+		this(SpringExpressionUtil.parseTemplateExpression(deepLinkExpression));
 	}
-
 	@Override
-	protected boolean isMatching(JSONMap json) {
-		return maxResults==-1 || count++ < maxResults;
+	protected final void enrich(JSONMap json) {
+		json.put("deepLink", SpringExpressionUtil.evaluateExpression(json, deepLinkExpression, String.class));
 	}
-
 }

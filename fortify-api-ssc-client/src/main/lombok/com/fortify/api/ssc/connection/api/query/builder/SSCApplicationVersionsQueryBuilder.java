@@ -27,7 +27,7 @@ package com.fortify.api.ssc.connection.api.query.builder;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.util.rest.json.JSONMapEnrichWithDeepLink;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances

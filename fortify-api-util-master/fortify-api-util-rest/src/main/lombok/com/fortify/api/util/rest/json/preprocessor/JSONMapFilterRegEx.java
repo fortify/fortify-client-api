@@ -22,24 +22,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.preprocessor;
 
-import java.util.Map;
+import java.util.regex.Pattern;
 
-public interface IJSONMap extends Map<String, Object> {
+import com.fortify.api.util.rest.json.JSONMap;
 
-	<T> T get(String key, Class<T> type);
+public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
+	private final String fieldPath;
+	private final Pattern pattern;
+	
+	public JSONMapFilterRegEx(String fieldPath, Pattern pattern, boolean includeMatching) {
+		super(includeMatching);
+		this.fieldPath = fieldPath;
+		this.pattern = pattern;
+	}
+	
+	public JSONMapFilterRegEx(String fieldPath, String regex, boolean includeMatching) {
+		this(fieldPath, Pattern.compile(regex), includeMatching);
+	}
 
-	<T> T getPath(String path, Class<T> type);
-
-	Object getPath(String path);
-
-	JSONMap getOrCreateJSONMap(String key);
-
-	JSONList getOrCreateJSONList(String key);
-
-	void putPaths(Map<String, Object> map);
-
-	void putPath(String path, Object value);
-
+	@Override
+	protected boolean isMatching(JSONMap json) {
+		String value = json.getPath(fieldPath, String.class);
+		return value==null ? false : pattern.matcher(value).matches();
+	}
 }

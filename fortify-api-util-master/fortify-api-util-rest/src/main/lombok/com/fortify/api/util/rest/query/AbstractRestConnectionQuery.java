@@ -32,13 +32,13 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.util.rest.connection.IRestConnection;
-import com.fortify.api.util.rest.json.IJSONMapPreProcessor;
-import com.fortify.api.util.rest.json.IJSONMapProcessor;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.JSONMapFilterMaxResults;
-import com.fortify.api.util.rest.json.JSONMapProcessorWithPreProcessors;
-import com.fortify.api.util.rest.json.JSONMapsToJSONListProcessor;
+import com.fortify.api.util.rest.json.preprocessor.IJSONMapPreProcessor;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterMaxResults;
+import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;
+import com.fortify.api.util.rest.json.processor.JSONMapProcessorWithPreProcessors;
+import com.fortify.api.util.rest.json.processor.JSONMapsToJSONListProcessor;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 
 import lombok.Getter;

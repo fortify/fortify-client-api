@@ -25,9 +25,8 @@
 package com.fortify.api.fod.connection.api.query.builder;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.api.util.rest.json.AbstractJSONMapOnDemandLoaderWithConnection;
-import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.JSONMapEnrichWithOnDemandProperty;
+import com.fortify.api.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
 public class FoDReleaseQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDReleaseQueryBuilder> {
 	public FoDReleaseQueryBuilder(FoDAuthenticatingRestConnection conn) {
@@ -98,18 +97,8 @@ public class FoDReleaseQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRel
 		return super.paramFilterAnd("isPassed", Boolean.toString(isPassed));
 	}
 	
-	public FoDReleaseQueryBuilder embedOnDemandObjects() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("application", new OnDemandApplication(getConn())));
-	}
-	
-	private static class OnDemandApplication extends AbstractJSONMapOnDemandLoaderWithConnection<FoDAuthenticatingRestConnection> {
-		private static final long serialVersionUID = 1L;
-		public OnDemandApplication(FoDAuthenticatingRestConnection conn) {
-			super(conn);
-		}
-		@Override
-		public Object getOnDemand(JSONMap parent) {
-			return conn().api().application().getApplicationById(parent.get("applicationId", String.class));
-		}
+	public FoDReleaseQueryBuilder onDemandApplication() {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty("application", 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}")));
 	}
 }

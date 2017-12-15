@@ -34,9 +34,9 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.JSONMapFilterDateCompare;
-import com.fortify.api.util.rest.json.JSONMapFilterDateCompare.DateComparisonOperator;
-import com.fortify.api.util.rest.json.JSONMapFilterRegEx;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterDateCompare;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterRegEx;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterDateCompare.DateComparisonOperator;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 

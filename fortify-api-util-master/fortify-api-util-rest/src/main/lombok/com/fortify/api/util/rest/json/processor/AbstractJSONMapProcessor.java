@@ -22,26 +22,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.processor;
+
+import com.fortify.api.util.rest.query.PagingData;
 
 /**
- * This {@link IJSONMapProcessor} implementation allows for building a
- * {@link JSONList} instance that holds all {@link JSONMap} instances
- * passed to the {@link #process(JSONMap)} method.
+ * Abstract base class for {@link IJSONMapProcessor} implementations.
  * 
  * @author Ruud Senden
  *
  */
-public class JSONMapsToJSONListProcessor extends AbstractJSONMapProcessor {
-	private final JSONList jsonList = new JSONList();
+public abstract class AbstractJSONMapProcessor implements IJSONMapProcessor {
 
-	public JSONList getJsonList() {
-		return jsonList;
+	/**
+	 * This default implementation does nothing; subclasses can override this method
+	 * to get informed whenever a next page of results is loaded.
+	 */
+	public <T extends PagingData> void nextPage(T pagingData) {
+		// Do nothing
 	}
-	
-	public void process(JSONMap json) {
-		jsonList.add(json);
-	}
-	
-	
+
 }

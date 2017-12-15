@@ -22,16 +22,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.fod.json.ondemand;
 
-public abstract class AbstractJSONMapEnrich implements IJSONMapPreProcessor {
+import com.fortify.api.util.rest.connection.IRestConnection;
+import com.fortify.api.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
 
-	@Override
-	public boolean preProcess(JSONMap json) {
-		enrich(json);
-		return true;
+public class FoDJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
+	private static final long serialVersionUID = 1L;
+
+	public FoDJSONMapOnDemandLoaderRest(IRestConnection conn, String pathTemplateExpression) {
+		super(conn, true, pathTemplateExpression, "items");
 	}
-
-	protected abstract void enrich(JSONMap json);
-
 }

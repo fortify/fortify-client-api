@@ -22,17 +22,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json;
+package com.fortify.api.util.rest.json.ondemand;
 
-import lombok.RequiredArgsConstructor;
+import com.fortify.api.util.rest.connection.IRestConnection;
 
-@RequiredArgsConstructor
-public class JSONMapEnrichWithOnDemandProperty extends AbstractJSONMapEnrich {
-	private final String propertyName;
-	private final IJSONMapOnDemandLoader onDemandLoader;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
+@Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
+public abstract class AbstractJSONMapOnDemandLoaderWithConnection<C extends IRestConnection> extends AbstractJSONMapOnDemandLoader {
+	private static final long serialVersionUID = 1L;
+	private final C conn;
 	
-	@Override
-	protected void enrich(JSONMap json) {
-		json.put(propertyName, onDemandLoader);
+	public AbstractJSONMapOnDemandLoaderWithConnection(C conn, boolean storeValue) {
+		super(storeValue);
+		this.conn = conn;
 	}
 }
