@@ -32,7 +32,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -43,6 +42,7 @@ import org.springframework.core.convert.support.DefaultConversionService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fortify.api.util.rest.ondemand.IOnDemandObject;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
 /**
@@ -78,9 +78,23 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	public JSONMap(Map<? extends String, ? extends Object> m) {
 		super(m);
 	}
+	
+	@Override
+	public Object getOrDefault(Object key, Object defaultValue) {
+		return getOnDemandValue(key, super.getOrDefault(key, defaultValue));
+	}
+
+	@Override
+	public Object get(Object key) {
+		return getOnDemandValue(key, super.get(key));
+	}
+	
+	public <T> T getOrDefault(Object key, T defaultValue, Class<T> type) {
+		return getConversionService().convert(getOrDefault(key, defaultValue), type);
+	}
 
 	public <T> T get(String key, Class<T> type) {
-		return getConversionService().convert(super.get(key), type);
+		return getConversionService().convert(get(key), type);
 	}
 	
 	public <T> T getPath(String path, Class<T> type) {
@@ -92,15 +106,11 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	}
 	
 	public JSONMap getOrCreateJSONMap(String key) {
-		return (JSONMap)computeIfAbsent(key, new Function<String, JSONMap>() {
-				public JSONMap apply(String key) { return new JSONMap(); };
-		});
+		return getOrDefault(key, new JSONMap(), JSONMap.class);
 	}
 	
 	public JSONList getOrCreateJSONList(String key) {
-		return (JSONList)computeIfAbsent(key, new Function<String, JSONList>() {
-				public JSONList apply(String key) { return new JSONList(); };
-		});
+		return getOrDefault(key, new JSONList(), JSONList.class);
 	}
 
 	public void putPaths(Map<String, Object> map, boolean ignoreNullOrEmptyValues) {
@@ -135,6 +145,14 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 			}
 		}
 	}
+	
+	private Object getOnDemandValue(Object key, Object object) {
+		if ( object instanceof IOnDemandObject<?> ) {
+			object = ((IOnDemandObject<?>)object).getObject();
+			put((String) key, object);
+		}
+		return object;
+	}
 
 	private boolean ignoreValue(Object value, boolean ignoreNullOrEmptyValues) {
 		return ignoreNullOrEmptyValues &&
@@ -152,7 +170,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	
 	private ConversionService getConversionService() {
 		DefaultConversionService result = new DefaultConversionService();
-		result.addConverter(String.class, Date.class, new Converter<String, Date>() {
+		result.addConverter(new Converter<String, Date>() {
 			@Override
 			public Date convert(String source) {
 				try {

@@ -28,7 +28,10 @@ import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
+import com.fortify.api.util.rest.json.AbstractJSONMapEnrich;
+import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.JSONMapEnrichWithDeepLink;
+import com.fortify.api.util.rest.ondemand.AbstractOnDemandObjectWithConnection;
 import com.fortify.api.util.rest.query.AbstractRestConnectionQuery.IRequestInitializer;
 
 /**
@@ -100,5 +103,30 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	
 	public SSCApplicationVersionIssuesQueryBuilder includeSuppressed() {
 		issueSearchOptions.setIncludeSuppressed(true); return _this();
+	}
+	
+	public SSCApplicationVersionIssuesQueryBuilder embedOnDemandObjects() {
+		return preProcessor(new OnDemandIssueDetailsPreProcessor());
+	}
+	
+	private static class OnDemandIssueDetails extends AbstractOnDemandObjectWithConnection<SSCAuthenticatingRestConnection, JSONMap> {
+		private static final long serialVersionUID = 1L;
+		private final String issueId;
+		public OnDemandIssueDetails(SSCAuthenticatingRestConnection conn, String issueId) {
+			super(conn);
+			this.issueId = issueId;
+		}
+		@Override
+		public JSONMap getObject() {
+			return conn().api().issue().getIssueDetails(issueId, false);
+		}
+	}
+	
+	private class OnDemandIssueDetailsPreProcessor extends AbstractJSONMapEnrich {
+		@Override
+		protected void enrich(JSONMap json) {
+			json.put("issueDetails", new OnDemandIssueDetails(getConn(), json.get("id", String.class)));
+		}
+		
 	}
 }
