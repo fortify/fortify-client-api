@@ -26,6 +26,9 @@ package com.fortify.api.util.rest.connection;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.NotSerializableException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,6 +86,7 @@ import com.fortify.api.util.rest.connection.connector.ApacheConnectorProvider;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.google.common.base.Splitter;
+import com.google.common.collect.MapMaker;
 
 import lombok.Data;
 import lombok.Getter;
@@ -100,12 +105,15 @@ import lombok.ToString;
  * TODO Update JavaDoc for executeRequest methods
  */
 @ToString
-public abstract class AbstractRestConnection implements IRestConnection {
+public abstract class AbstractRestConnection implements IRestConnection, Serializable {
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
+	// TODO Should this be a regular map or map with weak values?
+	private static final Map<String, IRestConnection> INSTANCES = new MapMaker().weakValues().makeMap();
 	@Getter private final String baseUrl;
 	private final ProxyConfig proxy;
 	private final Map<String, Object> connectionProperties;
 	private final CredentialsProvider credentialsProvider;
+	private final String connectionId;
 	private Client client;
 	
 	protected AbstractRestConnection(RestConnectionConfig<?> config) {
@@ -113,6 +121,10 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		this.proxy = config.getProxy();
 		this.connectionProperties = config.getConnectionProperties();
 		this.credentialsProvider = config.getCredentialsProvider();
+		this.connectionId = StringUtils.isBlank(config.getConnectionId()) ? null : (this.getClass().getName()+config.getConnectionId());
+		if ( this.connectionId != null ) {
+			INSTANCES.put(this.connectionId, this);
+		}
 	}
 	
 	/**
@@ -513,6 +525,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		private ProxyConfig proxy = getDefaultProxy();
 		private Map<String, Object> connectionProperties = getDefaultConnectionProperties();
 		private Credentials credentials = getDefaultCredentials();
+		private String connectionId = null;
 		
 		/**
 		 * Get the {@link CredentialsProvider} to use to authenticate with the
@@ -563,6 +576,60 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		public T uri(String uriWithProperties) {
 			setUri(uriWithProperties);
 			return getThis();
+		}
+		
+		/**
+		 * @see #setMultiJVMSerializationId(String)
+		 * @param connectionId
+		 * @return
+		 */
+		public T supportMultiJVMSerialization(String connectionId) {
+			setConnectionId(connectionId);
+			return getThis();
+		}
+		
+		/**
+		 * @see #setSingleJVMSerializationSupported(boolean)
+		 * @return
+		 */
+		public T supportSingleJVMSerialization() {
+			setSingleJVMSerializationSupported(true);
+			return getThis();
+		}
+		
+		/**
+		 * Enable support for serializing and de-serializing the connection instance
+		 * across multiple JVM's. For each JVM, the same connection id must be used,
+		 * and the connection instance must be initialized before de-serializing any
+		 * objects that reference this connection instance.
+		 *  
+		 * @param connectionId
+		 */
+		public void setMultiJVMSerializationId(String connectionId) {
+			setConnectionId(connectionId);
+		}
+		
+		/**
+		 * Enable support for serializing and de-serializing the connection instance
+		 * within a single JVM.
+		 *  
+		 * @param supported
+		 */
+		public void setSingleJVMSerializationSupported(boolean supported) {
+			if ( supported == true ) {
+				if ( StringUtils.isBlank(getConnectionId()) ) {
+					setConnectionId(UUID.randomUUID().toString());
+				}
+			} else {
+				this.connectionId = null;
+			}
+		}
+		
+		protected void setConnectionId(String connectionId) {
+			if ( StringUtils.isBlank(connectionId) ) {
+				throw new IllegalArgumentException("Connection id cannot be blank");
+			}
+			this.connectionId = connectionId;
 		}
 		
 		public void setCredentials(Credentials credentials) {
@@ -682,6 +749,41 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		@Override
 		public CredentialsProvider getCredentialsProvider() {
 			return null;
+		}
+	}
+	
+	/**
+	 * Serialize the connection id using {@link SerializedConnection}
+	 * @return
+	 * @throws ObjectStreamException
+	 */
+	protected Object writeReplace() throws ObjectStreamException {
+		return new SerializedConnection(this);
+	}
+	
+	/**
+	 * This class stores the connection id for serialization, and retrieves 
+	 * the connection instance from the instances cache upon de-serialization.
+	 *  
+	 * @author Ruud Senden
+	 *
+	 */
+	private static final class SerializedConnection implements Serializable {
+		private static final long serialVersionUID = 1L;
+		private String connectionId;
+		public SerializedConnection(AbstractRestConnection conn) throws NotSerializableException {
+			if ( StringUtils.isBlank(conn.connectionId) ) {
+				throw new NotSerializableException(conn.getClass().getName());
+			}
+			this.connectionId = conn.connectionId;
+		}
+		
+		private Object readResolve() throws ObjectStreamException {
+			IRestConnection result = INSTANCES.get(connectionId);
+			if ( result==null ) {
+				throw new IllegalStateException("Connection id "+connectionId+" not found");
+			}
+			return result;
 		}
 	}
 	
