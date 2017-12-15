@@ -25,17 +25,10 @@
 package com.fortify.api.fod.connection;
 
 import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.core.Form;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.CredentialsProvider;
 
 import com.fortify.api.fod.connection.api.FoDAPI;
 import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * This class provides an authenticated REST connection for FoD. Low-level API's are
@@ -58,7 +51,7 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 		return api;
 	}
 	
-	protected FoDAuthenticatingRestConnection(FoDRestConnectionConfig config) {
+	protected FoDAuthenticatingRestConnection(FoDRestConnectionConfig<?> config) {
 		super(config);
 		this.tokenProvider = new FoDTokenFactory(new FoDBasicRestConnection(config), config.getAuth());
 	}
@@ -82,97 +75,13 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	}
 	
 	/**
-	 * This class extends {@link RestConnectionConfig} to add additional FoD-related
-	 * builder methods.
-	 * 
-	 * @author Ruud Senden
-	 *
-	 */
-	@Data @EqualsAndHashCode(callSuper=true)
-	public static class FoDRestConnectionConfig extends RestConnectionConfigWithoutCredentialsProvider<FoDRestConnectionConfig> {
-		private String scope = "https://fod.fortify.com/";
-		private String clientId;
-		private String clientSecret;
-		private String tenant;
-		private String userName;
-		private String password;
-		
-		public FoDRestConnectionConfig clientId(String clientId) {
-			setClientId(clientId);
-			return getThis();
-		}
-		
-		public FoDRestConnectionConfig clientSecret(String clientSecret) {
-			setClientSecret(clientSecret);
-			return getThis();
-		}
-		
-		public FoDRestConnectionConfig tenant(String tenant) {
-			setTenant(tenant);
-			return getThis();
-		}
-		
-		public FoDRestConnectionConfig userName(String userName) {
-			setUserName(userName);
-			return getThis();
-		}
-		
-		public FoDRestConnectionConfig password(String password) {
-			setPassword(password);
-			return getThis();
-		}
-		
-		
-		
-		/**
-		 * For FoD we require our own credentials handling, so this method returns null
-		 */
-		@Override
-		public CredentialsProvider getCredentialsProvider() {
-			return null;
-		}
-		
-		public String getUserNameWithTenant() {
-			return getTenant() + "\\" + getUserName();
-		}
-		
-		public Form getAuth() {
-			if ( StringUtils.isNotBlank(clientId) && StringUtils.isNotBlank(clientSecret) ) {
-				return getAuthClientCredentials();
-			} else if ( StringUtils.isNotBlank(tenant) && StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password) ) {
-				return getAuthUserCredentials();
-			} else {
-				throw new RuntimeException("Either client id and secret, or tenant, user name and password must be specified");
-			}
-		}
-		
-		private Form getAuthClientCredentials() {
-			Form form = new Form();
-			form.param("scope", getScope());
-			form.param("grant_type", "client_credentials");
-			form.param("client_id", getClientId());
-			form.param("client_secret", getClientSecret());
-			return form;
-		}
-		
-		private Form getAuthUserCredentials() {
-			Form form = new Form();
-			form.param("scope", getScope());
-			form.param("grant_type", "password");
-			form.param("username", getUserNameWithTenant());
-			form.param("password", getPassword());
-			return form;
-		}
-	}
-	
-	/**
 	 * This class provides a builder pattern for configuring an {@link FoDAuthenticatingRestConnection} instance.
 	 * It re-uses builder functionality from {@link FoDRestConnectionConfig}, and adds a
 	 * {@link #build()} method to build an {@link FoDAuthenticatingRestConnection} instance.
 	 * 
 	 * @author Ruud Senden
 	 */
-	public static final class FoDAuthenticatingRestConnectionBuilder extends FoDRestConnectionConfig implements IRestConnectionBuilder<FoDAuthenticatingRestConnection> {
+	public static final class FoDAuthenticatingRestConnectionBuilder extends FoDRestConnectionConfig<FoDAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<FoDAuthenticatingRestConnection> {
 		@Override
 		public FoDAuthenticatingRestConnection build() {
 			return new FoDAuthenticatingRestConnection(this);

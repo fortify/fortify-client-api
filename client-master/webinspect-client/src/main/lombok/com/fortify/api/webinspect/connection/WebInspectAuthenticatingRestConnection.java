@@ -28,6 +28,8 @@ import javax.ws.rs.client.WebTarget;
 import org.apache.http.auth.Credentials;
 
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
+import com.fortify.api.util.rest.connection.RestConnectionConfig;
+import com.fortify.api.util.rest.connection.RestConnectionConfigWithoutCredentialsProvider;
 import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.webinspect.connection.api.WebInspectAPI;
 

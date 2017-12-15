@@ -41,7 +41,7 @@ import com.fortify.api.util.rest.connection.TooManyRequestsRetryStrategy;
  * due to FoD rate limiting.
  */
 public class FoDBasicRestConnection extends AbstractRestConnectionWithCache {
-	protected FoDBasicRestConnection(RestConnectionConfig<?> config) {
+	protected FoDBasicRestConnection(FoDRestConnectionConfig<?> config) {
 		super(config);
 	}
 	

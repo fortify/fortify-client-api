@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -24,32 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection;
 
-import javax.ws.rs.client.Invocation.Builder;
+import com.fortify.api.util.rest.connection.RestConnectionConfigWithoutCredentialsProvider;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
-import com.fortify.api.util.rest.connection.RestConnectionConfig;
-
-/**
- * This class provides a basic, non-authenticating REST connection
- * for SSC. It's main characteristics compared to a standard 
- * {@link AbstractRestConnectionWithCache} is that it will add an 
- * <code>Accept: application/json</code> header.
- * 
- * @author Ruud Senden
- *
- */
-public class SSCBasicRestConnection extends AbstractRestConnectionWithCache {
-	
-	protected SSCBasicRestConnection(RestConnectionConfig<?> config) {
-		super(config);
-	}
-	
-	/**
-	 * Update the {@link Builder} to add the Accept and OAuth headers.
-	 */
-	@Override
-	public Builder updateBuilder(Builder builder) {
-		return super.updateBuilder(builder)
-				.accept("application/json").header("Content-Type", "application/json");
-	}
+public class SSCRestConnectionConfig<T extends SSCRestConnectionConfig<T>> extends RestConnectionConfigWithoutCredentialsProvider<T> {
 }

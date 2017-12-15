@@ -39,6 +39,8 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
+import com.fortify.api.util.rest.connection.RestConnectionConfig;
+import com.fortify.api.util.rest.connection.RestConnectionConfigWithoutCredentialsProvider;
 import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.wie.connection.api.WIEAPI;

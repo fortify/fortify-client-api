@@ -32,6 +32,8 @@ import org.apache.http.auth.Credentials;
 import com.fortify.api.ssc.connection.api.SSCAPI;
 import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
+import com.fortify.api.util.rest.connection.RestConnectionConfig;
+import com.fortify.api.util.rest.connection.RestConnectionConfigWithoutCredentialsProvider;
 
 /**
  * This class provides an authenticated REST connection for SSC. Low-level API's are
@@ -60,18 +62,9 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	 * 
 	 * @param config
 	 */
-	protected SSCAuthenticatingRestConnection(RestConnectionConfig<?> config) {
+	protected SSCAuthenticatingRestConnection(SSCRestConnectionConfig<?> config) {
 		super(config);
 		this.tokenFactory = getTokenFactory(config);
-	}
-	
-	/**
-	 * This method returns an {@link SSCAuthenticatingRestConnectionBuilder} instance
-	 * that allows for building {@link SSCAuthenticatingRestConnection} instances.
-	 * @return
-	 */
-	public static final SSCAuthenticatingRestConnectionBuilder builder() {
-		return new SSCAuthenticatingRestConnectionBuilder();
 	}
 
 	/**
@@ -106,13 +99,22 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	}
 	
 	/**
+	 * This method returns an {@link SSCAuthenticatingRestConnectionBuilder} instance
+	 * that allows for building {@link SSCAuthenticatingRestConnection} instances.
+	 * @return
+	 */
+	public static final SSCAuthenticatingRestConnectionBuilder builder() {
+		return new SSCAuthenticatingRestConnectionBuilder();
+	}
+	
+	/**
 	 * This class provides a builder pattern for configuring an {@link SSCAuthenticatingRestConnection} instance.
 	 * It re-uses builder functionality from {@link RestConnectionConfigWithoutCredentialsProvider}, and adds a
 	 * {@link #build()} method to build an {@link SSCAuthenticatingRestConnection} instance.
 	 * 
 	 * @author Ruud Senden
 	 */
-	public static final class SSCAuthenticatingRestConnectionBuilder extends RestConnectionConfigWithoutCredentialsProvider<SSCAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<SSCAuthenticatingRestConnection> {
+	public static final class SSCAuthenticatingRestConnectionBuilder extends SSCRestConnectionConfig<SSCAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<SSCAuthenticatingRestConnection> {
 		@Override
 		public SSCAuthenticatingRestConnection build() {
 			return new SSCAuthenticatingRestConnection(this);

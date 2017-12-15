@@ -41,8 +41,8 @@
 	</modules>
 	<description>This module is the parent module for client API's for various Fortify products.</description>
 	<organization>
-		<name>HPE Security Fortify</name>
-		<url>http://www8.hp.com/us/en/software-solutions/application-security/</url>
+		<name>Micro Focus Fortify</name>
+		<url>https://software.microfocus.com/en-us/software/application-security</url>
 	</organization>
 	<licenses>
 		<license>
@@ -55,7 +55,7 @@
 		<developer>
 			<id>rsenden</id>
 			<name>Ruud Senden</name>
-			<organization>HPE Security Fortify</organization>
+			<organization>Micro Focus Fortify</organization>
 		</developer>
 	</developers>
 	<inceptionYear>2016</inceptionYear>
