@@ -33,7 +33,7 @@ import lombok.Getter;
  *
  * @param <C>
  */
-public abstract class AbstractRestConnectionRetriever<ConnType extends IRestConnection, BuilderType extends RestConnectionConfig<?> & IRestConnectionBuilder<ConnType>> implements IRestConnectionRetriever<ConnType> {
+public abstract class AbstractRestConnectionRetriever<ConnType extends IRestConnection, BuilderType extends AbstractRestConnectionConfig<?> & IRestConnectionBuilder<ConnType>> implements IRestConnectionRetriever<ConnType> {
 	private ConnType connection;
 	@Getter private final BuilderType config = createConfig();
 	

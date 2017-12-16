@@ -25,12 +25,8 @@ package com.fortify.api.webinspect.connection;
 
 import javax.ws.rs.client.WebTarget;
 
-import org.apache.http.auth.Credentials;
-
-import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
-import com.fortify.api.util.rest.connection.RestConnectionConfig;
-import com.fortify.api.util.rest.connection.RestConnectionConfigWithoutCredentialsProvider;
 import com.fortify.api.util.rest.connection.AbstractRestConnection;
+import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 import com.fortify.api.webinspect.connection.api.WebInspectAPI;
 
 /**
@@ -41,12 +37,12 @@ import com.fortify.api.webinspect.connection.api.WebInspectAPI;
  *
  */
 public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestConnection {
-	private final Credentials credentials;
+	private final String apiKey;
 	private final WebInspectAPI api = new WebInspectAPI(this);
 	
-	protected WebInspectAuthenticatingRestConnection(RestConnectionConfig<?> config) {
+	protected WebInspectAuthenticatingRestConnection(WebInspectRestConnectionConfig<?> config) {
 		super(config);
-		this.credentials = config.getCredentials();
+		this.apiKey = config.getApiKey();
 	}
 	
 	public final WebInspectAPI api() {
@@ -56,10 +52,8 @@ public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestC
 	@Override
 	protected WebTarget updateWebTarget(WebTarget webTarget) {
 		webTarget = super.updateWebTarget(webTarget);
-		if ( credentials != null ) {
-			if ( "apiKey".equalsIgnoreCase(credentials.getUserPrincipal().getName()) ) {
-				webTarget = webTarget.queryParam("api_key", credentials.getPassword());
-			}
+		if ( apiKey != null ) {
+			webTarget = webTarget.queryParam("api_key", apiKey);
 		}
 		return webTarget;
 	}
@@ -68,7 +62,7 @@ public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestC
 		return new WebInspectAuthenticatingRestConnectionBuilder();
 	}
 	
-	public static final class WebInspectAuthenticatingRestConnectionBuilder extends RestConnectionConfigWithoutCredentialsProvider<WebInspectAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<WebInspectAuthenticatingRestConnection> {
+	public static final class WebInspectAuthenticatingRestConnectionBuilder extends WebInspectRestConnectionConfig<WebInspectAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<WebInspectAuthenticatingRestConnection> {
 		@Override
 		public WebInspectAuthenticatingRestConnection build() {
 			return new WebInspectAuthenticatingRestConnection(this);

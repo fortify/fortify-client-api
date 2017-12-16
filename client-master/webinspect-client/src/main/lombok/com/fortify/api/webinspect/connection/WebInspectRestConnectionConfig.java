@@ -22,28 +22,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.webinspect.connection;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionMetricHistoriesQueryBuilder;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionConfig;
 
-public class SSCMetricsAPI extends AbstractSSCAPI {
-	public static enum MetricType {
-		performanceIndicator, variable
-	}
-	
-	public SSCMetricsAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
-	}
-	
-	public SSCApplicationVersionMetricHistoriesQueryBuilder queryApplicationVersionMetricHistories(String applicationVersionId, MetricType metricType) {
-		return new SSCApplicationVersionMetricHistoriesQueryBuilder(conn(), applicationVersionId, metricType);
-	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.variable).useCache(true).build().getAll());
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.performanceIndicator).useCache(true).build().getAll());
-	}
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data @EqualsAndHashCode(callSuper=true)
+public class WebInspectRestConnectionConfig<T extends WebInspectRestConnectionConfig<T>> extends AbstractRestConnectionConfig<T> {
+	private String apiKey;
+	
+	@Override
+	protected void parseUriUserInfo(String userInfo) {
+		apiKey = userInfo;
+	}
 }

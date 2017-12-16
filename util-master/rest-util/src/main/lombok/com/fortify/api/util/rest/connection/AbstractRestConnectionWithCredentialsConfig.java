@@ -24,14 +24,11 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
-import org.apache.http.client.CredentialsProvider;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 
-public class RestConnectionConfigWithoutCredentialsProvider<T extends RestConnectionConfig<T>> extends RestConnectionConfig<T> {
-	/**
-	 * Subclasses require own credentials handling, so this method returns null
-	 */
-	@Override
-	public CredentialsProvider getCredentialsProvider() {
-		return null;
+public class AbstractRestConnectionWithCredentialsConfig<T extends AbstractRestConnectionWithCredentialsConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
+	public Credentials getCredentials() {
+		return new UsernamePasswordCredentials(getUserName(), getPassword());
 	}
 }

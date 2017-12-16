@@ -27,13 +27,11 @@ package com.fortify.api.ssc.connection;
 import javax.ws.rs.client.Invocation.Builder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.auth.Credentials;
 
 import com.fortify.api.ssc.connection.api.SSCAPI;
 import com.fortify.api.util.rest.connection.AbstractRestConnection;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionConfig;
 import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
-import com.fortify.api.util.rest.connection.RestConnectionConfig;
-import com.fortify.api.util.rest.connection.RestConnectionConfigWithoutCredentialsProvider;
 
 /**
  * This class provides an authenticated REST connection for SSC. Low-level API's are
@@ -57,7 +55,7 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	}
 	
 	/**
-	 * Construct a new instance of this class based on the given {@link RestConnectionConfig}
+	 * Construct a new instance of this class based on the given {@link AbstractRestConnectionConfig}
 	 * instance. 
 	 * 
 	 * @param config
@@ -68,7 +66,7 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	}
 
 	/**
-	 * Get a token factory based on the given {@link RestConnectionConfig}.
+	 * Get a token factory based on the given {@link AbstractRestConnectionConfig}.
 	 * Depending on the configured credentials, this will return either an
 	 * {@link SSCTokenFactoryTokenCredentials} or {@link SSCTokenFactoryUserCredentials}
 	 * instance.
@@ -76,14 +74,11 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	 * @param config
 	 * @return
 	 */
-	private ISSCTokenFactory getTokenFactory(RestConnectionConfig<?> config) {
-		Credentials credentials = config.getCredentials();
-		String userName = credentials.getUserPrincipal()==null?null:credentials.getUserPrincipal().getName();
-		String password = credentials.getPassword();
-		if ( StringUtils.isBlank(userName) || "apitoken".equalsIgnoreCase(userName) ) {
-			return new SSCTokenFactoryTokenCredentials(password);
-		} else if ( StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password) ) {
-			return new SSCTokenFactoryUserCredentials(new SSCBasicRestConnection(config), userName, password);
+	private ISSCTokenFactory getTokenFactory(SSCRestConnectionConfig<?> config) {
+		if ( StringUtils.isNotBlank(config.getApiToken()) ) {
+			return new SSCTokenFactoryTokenCredentials(config.getApiToken());
+		} else if ( StringUtils.isNotBlank(config.getUserName()) && StringUtils.isNotBlank(config.getPassword()) ) {
+			return new SSCTokenFactoryUserCredentials(new SSCBasicRestConnection(config), config.getUserName(), config.getPassword());
 		} else {
 			throw new RuntimeException("Either SSC authentication token, or user name and password need to be specified");
 		}

@@ -32,40 +32,24 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.glassfish.jersey.client.ClientProperties;
 
 import com.google.common.base.Splitter;
 
 import lombok.Data;
 
+/**
+ * TODO Add JavaDoc
+ * @author Ruud Senden
+ *
+ * @param <T>
+ */
 @Data
-public class RestConnectionConfig<T extends RestConnectionConfig<T>> {
-	private String baseUrl = getDefaultBaseUrl();
-	private ProxyConfig proxy = getDefaultProxy();
-	private Map<String, Object> connectionProperties = getDefaultConnectionProperties();
-	private Credentials credentials = getDefaultCredentials();
+public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnectionConfig<T>> {
+	private URI baseUrl;
+	private ProxyConfig proxy;
+	private Map<String, Object> connectionProperties;
 	private String connectionId = null;
-	
-	/**
-	 * Get the {@link CredentialsProvider} to use to authenticate with the
-	 * REST service. This default implementation calls {@link #createCredentialsProvider()}
-	 * to create a {@link CredentialsProvider} instance, and then sets the
-	 * credentials as configured through {@link #setCredentials(Credentials)}
-	 * or {@link #credentials(Credentials)} with {@link AuthScope#ANY}.
-	 * 
-	 * Implementations that use custom authentication mechanisms should override
-	 * this method to return null.
-	 */
-	public CredentialsProvider getCredentialsProvider() {
-		CredentialsProvider result = createCredentialsProvider();
-		result.setCredentials(AuthScope.ANY, credentials);
-		return result;
-	}
 	
 	public T baseUrl(String baseUrl) {
 		setBaseUrl(baseUrl);
@@ -84,21 +68,6 @@ public class RestConnectionConfig<T extends RestConnectionConfig<T>> {
 	
 	public T connectionProperties(Map<String, Object> connectionProperties) {
 		setConnectionProperties(connectionProperties);
-		return getThis();
-	}
-	
-	public T credentials(Credentials credentials) {
-		setCredentials(credentials);
-		return getThis();
-	}
-	
-	public T credentials(String credentials) {
-		setCredentials(credentials);
-		return getThis();
-	}
-	
-	public T uri(String uriWithProperties) {
-		setUri(uriWithProperties);
 		return getThis();
 	}
 	
@@ -156,14 +125,6 @@ public class RestConnectionConfig<T extends RestConnectionConfig<T>> {
 		this.connectionId = connectionId;
 	}
 	
-	public void setCredentials(Credentials credentials) {
-		this.credentials = credentials;
-	}
-	
-	public void setCredentials(String credentialsString) {
-		setCredentials(new UsernamePasswordCredentials(credentialsString));
-	}
-	
 	public void setConnectionProperties(Map<String, Object> connectionProperties) {
 		this.connectionProperties = connectionProperties;
 	}
@@ -186,72 +147,49 @@ public class RestConnectionConfig<T extends RestConnectionConfig<T>> {
 		return (T)this;
 	}
 	
-	/**
-	 * Create the {@link CredentialsProvider} to use for requests.
-	 * This default implementation returns a {@link BasicCredentialsProvider}
-	 * instance.
-	 * @return
-	 */
-	protected CredentialsProvider createCredentialsProvider() {
-		return new BasicCredentialsProvider();
-	}
-	
-	protected String getDefaultBaseUrl() { return null; }
-	protected ProxyConfig getDefaultProxy() { return null; }
-	protected Map<String, Object> getDefaultConnectionProperties() { return null; }
-	protected Credentials getDefaultCredentials() { return null; }
-	
 	public void setBaseUrl(String baseUrl) {
-		this.baseUrl = validateAndNormalizeUrl(baseUrl);
+		parseBaseUrl(baseUrl);
 	}
 	
-	/**
-	 * Validate and normalize the given URL. This will check whether the protocol
-	 * is either HTTP or HTTPS, and it will add a trailing slash if necessary.
-	 * @param baseUrl
-	 * @return The validated and normalized URL
-	 */
-	protected String validateAndNormalizeUrl(String baseUrl) {
-		if (!baseUrl.endsWith("/")) {
-			baseUrl = baseUrl+"/";
-		}
-		if (!baseUrl.startsWith("http://") && !baseUrl.startsWith("https://")) {
-			throw new RuntimeException("URL protocol should be either http or https");
-		}
-		return baseUrl;
+	protected void setBaseUrl(URI baseUrl) {
+		this.baseUrl = baseUrl;
 	}
 	
-	public void setUri(String uriWithProperties) {
+	protected void parseBaseUrl(String uriWithProperties) {
 		String[] parts = uriWithProperties.split(";");
 		if ( parts.length > 0 ) {
-			URI uri = parseUri(parts[0]);
-			setBaseUrl(getBaseUrlFromUri(uri));
+			parseUriString(parts[0]);
 			if ( parts.length > 1 ) {
-				setConnectionProperties(parts[1]);
-			}
-			String userInfo = uri.getUserInfo();
-			if ( StringUtils.isNotBlank(userInfo) ) {
-				setCredentials(userInfo);
+				parseUriProperties(parts[1]);
 			}
 		}
-		
 	}
 
-	private URI parseUri(String uriString) {
+	protected void parseUriProperties(String propertiesFromUri) {
+		setConnectionProperties(propertiesFromUri);
+	}
+
+	protected void parseUriString(String uriString) {
 		try {
-			URI uri = new URI(uriString);
-			return uri;
+			parseUri(new URI(uriString));
 		} catch (URISyntaxException e) {
 			throw new IllegalArgumentException("Input cannot be parsed as URI: "+uriString);
 		}
 	}
+	
+	protected void parseUri(URI uri) {
+		parseUriUserInfo(uri.getUserInfo());
+		setBaseUrl(removeUserInfo(uri));
+	}
 
-	protected String getBaseUrlFromUri(URI uri) {
+	protected void parseUriUserInfo(String userInfo) {};
+
+	protected URI removeUserInfo(URI uri) {
 		if ( uri == null ) {
 			throw new RuntimeException("URI must be configured");
 		}
 		try {
-			return new URI(uri.getScheme(), null, uri.getHost(), uri.getPort(), uri.getPath(), null, null).toString();
+			return new URI(uri.getScheme(), null, uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(), null);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("Error constructing URI");
 		}

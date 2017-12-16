@@ -22,28 +22,32 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.util.rest.connection;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionMetricHistoriesQueryBuilder;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 
-public class SSCMetricsAPI extends AbstractSSCAPI {
-	public static enum MetricType {
-		performanceIndicator, variable
+public class AbstractRestConnectionWithCredentials extends AbstractRestConnection {
+	private final CredentialsProvider credentialsProvider;
+	public AbstractRestConnectionWithCredentials(AbstractRestConnectionWithCredentialsConfig<?> config) {
+		super(config);
+		this.credentialsProvider = createCredentialsProvider();
+		this.credentialsProvider.setCredentials(AuthScope.ANY, config.getCredentials());
 	}
 	
-	public SSCMetricsAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
+	@Override
+	protected CredentialsProvider getCredentialsProvider() {
+		return credentialsProvider;
 	}
 	
-	public SSCApplicationVersionMetricHistoriesQueryBuilder queryApplicationVersionMetricHistories(String applicationVersionId, MetricType metricType) {
-		return new SSCApplicationVersionMetricHistoriesQueryBuilder(conn(), applicationVersionId, metricType);
+	/**
+	 * Create the {@link CredentialsProvider} to use for requests.
+	 * This default implementation returns a {@link BasicCredentialsProvider}
+	 * instance.
+	 * @return
+	 */
+	protected CredentialsProvider createCredentialsProvider() {
+		return new BasicCredentialsProvider();
 	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.variable).useCache(true).build().getAll());
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.performanceIndicator).useCache(true).build().getAll());
-	}
-
 }

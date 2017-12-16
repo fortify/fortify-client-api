@@ -24,7 +24,18 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection;
 
-import com.fortify.api.util.rest.connection.RestConnectionConfigWithoutCredentialsProvider;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionWithUsernamePasswordConfig;
 
-public class SSCRestConnectionConfig<T extends SSCRestConnectionConfig<T>> extends RestConnectionConfigWithoutCredentialsProvider<T> {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data @EqualsAndHashCode(callSuper=true)
+public class SSCRestConnectionConfig<T extends SSCRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
+	private String apiToken;
+	
+	@Override
+	protected void parseUriUserInfo(String userInfo) {
+		// TODO First check if userInfo contains api token
+		super.parseUriUserInfo(userInfo);
+	}
 }

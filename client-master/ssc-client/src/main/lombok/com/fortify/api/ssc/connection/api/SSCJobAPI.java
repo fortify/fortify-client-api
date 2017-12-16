@@ -71,7 +71,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 	}
 	
 	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().uri("http://ssc:Admin123!@localhost:1710/ssc").build();
+		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
 		JSONMap job = conn.api().job().queryJobs().maxResults(1).build().getUnique();
 		System.out.println(job);
 		

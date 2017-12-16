@@ -26,7 +26,7 @@ package com.fortify.api.util.rest.connection;
 
 public class RestConnection extends AbstractRestConnection {
 
-	protected RestConnection(RestConnectionConfig<?> config) {
+	protected RestConnection(AbstractRestConnectionConfig<?> config) {
 		super(config);
 	}
 	
@@ -35,7 +35,7 @@ public class RestConnection extends AbstractRestConnection {
 	}
 	
 	
-	public static final class RestConnectionBuilder extends RestConnectionConfig<RestConnectionBuilder> implements IRestConnectionBuilder<RestConnection> {
+	public static final class RestConnectionBuilder extends AbstractRestConnectionConfig<RestConnectionBuilder> implements IRestConnectionBuilder<RestConnection> {
 		@Override
 		public RestConnection build() {
 			return new RestConnection(this);

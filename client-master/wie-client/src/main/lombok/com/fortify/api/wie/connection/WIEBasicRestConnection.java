@@ -26,7 +26,7 @@ package com.fortify.api.wie.connection;
 import javax.ws.rs.client.Invocation.Builder;
 
 import com.fortify.api.util.rest.connection.AbstractRestConnection;
-import com.fortify.api.util.rest.connection.RestConnectionConfig;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionConfig;
 
 /**
  * This {@link AbstractRestConnection} implementation provides various
@@ -36,7 +36,7 @@ import com.fortify.api.util.rest.connection.RestConnectionConfig;
  *
  */
 public class WIEBasicRestConnection extends AbstractRestConnection {
-	public WIEBasicRestConnection(RestConnectionConfig<?> config) {
+	public WIEBasicRestConnection(AbstractRestConnectionConfig<?> config) {
 		super(config);
 	}
 	

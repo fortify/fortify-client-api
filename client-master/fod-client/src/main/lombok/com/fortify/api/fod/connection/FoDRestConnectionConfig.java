@@ -27,29 +27,26 @@ package com.fortify.api.fod.connection;
 import javax.ws.rs.core.Form;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.CredentialsProvider;
 
-import com.fortify.api.util.rest.connection.RestConnectionConfig;
-import com.fortify.api.util.rest.connection.RestConnectionConfigWithoutCredentialsProvider;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionConfig;
+import com.fortify.api.util.rest.connection.AbstractRestConnectionWithUsernamePasswordConfig;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * This class extends {@link RestConnectionConfig} to add additional FoD-related
+ * This class extends {@link AbstractRestConnectionConfig} to add additional FoD-related
  * builder methods.
  * 
  * @author Ruud Senden
  *
  */
 @Data @EqualsAndHashCode(callSuper=true)
-public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> extends RestConnectionConfigWithoutCredentialsProvider<T> {
+public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
 	private String scope = "https://fod.fortify.com/";
 	private String clientId;
 	private String clientSecret;
 	private String tenant;
-	private String userName;
-	private String password;
 	
 	public T clientId(String clientId) {
 		setClientId(clientId);
@@ -66,34 +63,14 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		return getThis();
 	}
 	
-	public T userName(String userName) {
-		setUserName(userName);
-		return getThis();
-	}
-	
-	public T password(String password) {
-		setPassword(password);
-		return getThis();
-	}
-	
-	
-	
-	/**
-	 * For FoD we require our own credentials handling, so this method returns null
-	 */
-	@Override
-	public CredentialsProvider getCredentialsProvider() {
-		return null;
-	}
-	
 	public String getUserNameWithTenant() {
 		return getTenant() + "\\" + getUserName();
 	}
 	
 	public Form getAuth() {
-		if ( StringUtils.isNotBlank(clientId) && StringUtils.isNotBlank(clientSecret) ) {
+		if ( StringUtils.isNotBlank(getClientId()) && StringUtils.isNotBlank(getClientSecret()) ) {
 			return getAuthClientCredentials();
-		} else if ( StringUtils.isNotBlank(tenant) && StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password) ) {
+		} else if ( StringUtils.isNotBlank(getTenant()) && StringUtils.isNotBlank(getUserName()) && StringUtils.isNotBlank(getPassword()) ) {
 			return getAuthUserCredentials();
 		} else {
 			throw new RuntimeException("Either client id and secret, or tenant, user name and password must be specified");

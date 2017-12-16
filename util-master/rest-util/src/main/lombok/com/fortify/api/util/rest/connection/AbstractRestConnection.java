@@ -99,6 +99,8 @@ import lombok.extern.apachecommons.CommonsLog;
  *      (see http://stackoverflow.com/questions/9925113/httpclient-stuck-without-any-exception answer 3)
  *      
  * TODO Update JavaDoc for executeRequest methods
+ * 
+ * TODO Move credentialsprovider-related functionality down to corresponding subclass?
  */
 @CommonsLog
 @ToString
@@ -110,19 +112,17 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	private Properties cacheProperties; 
 	private LoadingCache<String, Cache<CacheKey, Object>> cacheManager;
 	
-	@Getter private final String baseUrl;
+	@Getter private final URI baseUrl;
 	private final ProxyConfig proxy;
 	private final Map<String, Object> connectionProperties;
-	private final CredentialsProvider credentialsProvider;
 	private final String connectionId;
 	private Client client;
 	
-	protected AbstractRestConnection(RestConnectionConfig<?> config) {
+	protected AbstractRestConnection(AbstractRestConnectionConfig<?> config) {
 		initCache();
 		this.baseUrl = config.getBaseUrl();
 		this.proxy = config.getProxy();
 		this.connectionProperties = config.getConnectionProperties();
-		this.credentialsProvider = config.getCredentialsProvider();
 		this.connectionId = StringUtils.isBlank(config.getConnectionId()) ? null : (this.getClass().getName()+config.getConnectionId());
 		if ( this.connectionId != null ) {
 			INSTANCES.put(this.connectionId, this);
@@ -384,7 +384,7 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	 * @return A {@link WebTarget} instance for the configured REST base URL.
 	 */
 	public final WebTarget getBaseResource() {
-		return getResource(baseUrl);
+		return getClient().target(baseUrl);
 	}
 	
 	/**
@@ -452,7 +452,7 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 			clientConfig.property(ClientProperties.PROXY_PASSWORD, proxy.getPassword());
 		}
 		clientConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
-		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, credentialsProvider);
+		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, getCredentialsProvider());
 		clientConfig.property(ApacheClientProperties.SERVICE_UNAVAILABLE_RETRY_STRATEGY, getServiceUnavailableRetryStrategy());
 		clientConfig.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
 		if ( connectionProperties != null ) {
@@ -465,6 +465,10 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 		clientConfig.register(MultiPartFeature.class);
 		clientConfig.register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME), Level.FINE, LoggingFeature.Verbosity.PAYLOAD_ANY, 10000));
 		return clientConfig;
+	}
+	
+	protected CredentialsProvider getCredentialsProvider() {
+		return null;
 	}
 	
 	protected ServiceUnavailableRetryStrategy getServiceUnavailableRetryStrategy() {

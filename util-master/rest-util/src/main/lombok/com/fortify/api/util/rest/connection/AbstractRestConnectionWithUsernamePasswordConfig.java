@@ -22,28 +22,31 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.util.rest.connection;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionMetricHistoriesQueryBuilder;
+import org.apache.http.auth.UsernamePasswordCredentials;
 
-public class SSCMetricsAPI extends AbstractSSCAPI {
-	public static enum MetricType {
-		performanceIndicator, variable
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data @EqualsAndHashCode(callSuper=true)
+public abstract class AbstractRestConnectionWithUsernamePasswordConfig<T extends AbstractRestConnectionWithUsernamePasswordConfig<T>> extends AbstractRestConnectionConfig<T> {
+	private String userName;
+	private String password;
+	
+	public T userName(String userName) {
+		setUserName(userName); return getThis();
 	}
 	
-	public SSCMetricsAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
+	public T password(String password) {
+		setPassword(password); return getThis();
 	}
 	
-	public SSCApplicationVersionMetricHistoriesQueryBuilder queryApplicationVersionMetricHistories(String applicationVersionId, MetricType metricType) {
-		return new SSCApplicationVersionMetricHistoriesQueryBuilder(conn(), applicationVersionId, metricType);
-	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.variable).useCache(true).build().getAll());
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.performanceIndicator).useCache(true).build().getAll());
+	@Override
+	protected void parseUriUserInfo(String userInfo) {
+		UsernamePasswordCredentials c = new UsernamePasswordCredentials(userInfo);
+		this.userName = c.getUserName();
+		this.password = c.getPassword();
 	}
 
 }

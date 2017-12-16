@@ -73,7 +73,7 @@ public class WebInspectMacroAPI extends AbstractWebInspectAPI {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		WebInspectAuthenticatingRestConnection conn = WebInspectAuthenticatingRestConnection.builder().uri("http://apiKey:test@rs-fortifywie.westeurope.cloudapp.azure.com:8088/webinspect;readTimeout=80000").build();
+		WebInspectAuthenticatingRestConnection conn = WebInspectAuthenticatingRestConnection.builder().baseUrl("http://apiKey:test@rs-fortifywie.westeurope.cloudapp.azure.com:8088/webinspect;readTimeout=80000").build();
 		System.out.println(conn.api().macro().getMacros());
 		//conn.api().macro().deleteMacro("test");
 		Path path = Paths.get("C:/Users/sendenr/Downloads/test.webmacro");

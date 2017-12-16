@@ -22,28 +22,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection.api;
+package com.fortify.api.util.rest.connection;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionMetricHistoriesQueryBuilder;
+public class RestConnectionWithCredentials extends AbstractRestConnectionWithCredentials {
 
-public class SSCMetricsAPI extends AbstractSSCAPI {
-	public static enum MetricType {
-		performanceIndicator, variable
+	protected RestConnectionWithCredentials(AbstractRestConnectionWithCredentialsConfig<?> config) {
+		super(config);
 	}
 	
-	public SSCMetricsAPI(SSCAuthenticatingRestConnection conn) {
-		super(conn);
+	public static final RestConnectionWithCredentialsBuilder builder() {
+		return new RestConnectionWithCredentialsBuilder();
 	}
 	
-	public SSCApplicationVersionMetricHistoriesQueryBuilder queryApplicationVersionMetricHistories(String applicationVersionId, MetricType metricType) {
-		return new SSCApplicationVersionMetricHistoriesQueryBuilder(conn(), applicationVersionId, metricType);
-	}
 	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.variable).useCache(true).build().getAll());
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.performanceIndicator).useCache(true).build().getAll());
+	public static final class RestConnectionWithCredentialsBuilder extends AbstractRestConnectionWithCredentialsConfig<RestConnectionWithCredentialsBuilder> implements IRestConnectionBuilder<RestConnectionWithCredentials> {
+		@Override
+		public RestConnectionWithCredentials build() {
+			return new RestConnectionWithCredentials(this);
+		}
 	}
 
 }
