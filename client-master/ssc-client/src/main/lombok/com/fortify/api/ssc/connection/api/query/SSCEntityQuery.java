@@ -31,8 +31,8 @@ import javax.ws.rs.client.WebTarget;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
-import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQuery;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.api.util.rest.query.PagingData;
 
 import lombok.Getter;
@@ -46,8 +46,8 @@ import lombok.Getter;
  * @author Ruud Senden
  */
 @Getter
-public class SSCEntityQuery extends AbstractRestConnectionWithCacheQuery<SSCAuthenticatingRestConnection, JSONMap> {
-	public SSCEntityQuery(AbstractRestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection,?> config) {
+public class SSCEntityQuery extends AbstractRestConnectionQuery<SSCAuthenticatingRestConnection, JSONMap> {
+	public SSCEntityQuery(AbstractRestConnectionQueryConfig<SSCAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 

@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.api.fod.connection.api.query.FoDEntityQuery;
-import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
@@ -53,7 +53,7 @@ import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractFoDEntityQueryBuilder<T> extends AbstractRestConnectionWithCacheQueryConfig<FoDAuthenticatingRestConnection, T> {
+public abstract class AbstractFoDEntityQueryBuilder<T> extends AbstractRestConnectionQueryConfig<FoDAuthenticatingRestConnection, T> {
 	private FoDParamFilter paramFilter = add(new FoDParamFilter());
 	
 	/**

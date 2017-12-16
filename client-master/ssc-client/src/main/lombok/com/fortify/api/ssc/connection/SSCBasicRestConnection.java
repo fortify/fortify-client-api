@@ -26,7 +26,7 @@ package com.fortify.api.ssc.connection;
 
 import javax.ws.rs.client.Invocation.Builder;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionWithCache;
+import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.connection.RestConnectionConfig;
 
 /**
@@ -38,7 +38,7 @@ import com.fortify.api.util.rest.connection.RestConnectionConfig;
  * @author Ruud Senden
  *
  */
-public class SSCBasicRestConnection extends AbstractRestConnectionWithCache {
+public class SSCBasicRestConnection extends AbstractRestConnection {
 	
 	protected SSCBasicRestConnection(RestConnectionConfig<?> config) {
 		super(config);

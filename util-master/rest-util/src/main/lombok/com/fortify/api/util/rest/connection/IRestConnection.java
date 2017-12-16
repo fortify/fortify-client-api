@@ -38,6 +38,7 @@ import javax.ws.rs.client.WebTarget;
 public interface IRestConnection {
 	public abstract <T> T executeRequest(String httpMethod, Builder builder, Entity<?> entity, Class<T> returnType);
 	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType);
+	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType, String cacheName);
 	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType);
 	public abstract WebTarget getBaseResource();
 	public abstract WebTarget getResource(String url);

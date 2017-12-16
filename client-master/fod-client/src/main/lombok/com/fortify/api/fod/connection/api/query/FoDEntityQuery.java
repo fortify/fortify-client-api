@@ -31,8 +31,8 @@ import javax.ws.rs.client.WebTarget;
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
-import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQuery;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.api.util.rest.query.PagingData;
 
 import lombok.Getter;
@@ -48,8 +48,8 @@ import lombok.Getter;
  * @author Ruud Senden
  */
 @Getter
-public class FoDEntityQuery extends AbstractRestConnectionWithCacheQuery<FoDAuthenticatingRestConnection, JSONMap> {
-	public FoDEntityQuery(AbstractRestConnectionWithCacheQueryConfig<FoDAuthenticatingRestConnection,?> config) {
+public class FoDEntityQuery extends AbstractRestConnectionQuery<FoDAuthenticatingRestConnection, JSONMap> {
+	public FoDEntityQuery(AbstractRestConnectionQueryConfig<FoDAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 

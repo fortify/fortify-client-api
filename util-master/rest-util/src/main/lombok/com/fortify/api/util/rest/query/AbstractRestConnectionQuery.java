@@ -76,6 +76,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	private final List<IWebTargetUpdater> webTargetUpdaters;
 	private final List<IJSONMapPreProcessor> preProcessors;
 	private final int maxResults;
+	private final boolean useCache;
 	private final boolean pagingSupported;
 	private final Entity<?> entity;
 	private final String httpMethod;
@@ -86,6 +87,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 		this.webTargetUpdaters = Collections.unmodifiableList(config.getWebTargetUpdaters());
 		this.preProcessors =  Collections.unmodifiableList(config.getPreProcessors());
 		this.maxResults = config.getMaxResults();
+		this.useCache = config.isUseCache();
 		this.pagingSupported = config.isPagingSupported();
 		this.entity = config.getEntity();
 		this.httpMethod = config.getHttpMethod();
@@ -142,8 +144,19 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	}
 	
 	protected ResponseType executeRequest(WebTarget target) {
-		return entity==null ? conn.executeRequest(httpMethod, target, getResponseTypeClass())
-				            : conn.executeRequest(httpMethod, target, entity, getResponseTypeClass());
+		if ( entity == null ) {
+			if ( useCache ) {
+				return conn.executeRequest(getHttpMethod(), target, getResponseTypeClass(), getCacheName());
+			} else {
+				return conn.executeRequest(httpMethod, target, getResponseTypeClass());
+			}
+		} else {
+			return conn.executeRequest(httpMethod, target, entity, getResponseTypeClass());
+		}
+	}
+	
+	protected String getCacheName() {
+		return this.getClass().getName();
 	}
 	
 	protected void updatePagingDataFromResponse(PagingData pagingData, ResponseType data) {

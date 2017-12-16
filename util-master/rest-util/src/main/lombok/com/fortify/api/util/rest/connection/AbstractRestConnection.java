@@ -30,6 +30,7 @@ import java.io.NotSerializableException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -38,6 +39,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,6 +70,7 @@ import org.glassfish.jersey.client.ClientResponse;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -76,28 +79,37 @@ import com.fortify.api.util.rest.connection.connector.ApacheClientProperties;
 import com.fortify.api.util.rest.connection.connector.ApacheConnectorProvider;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.MapMaker;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
- * Utility for working with a REST API. Instances of this class can be configured
- * with a base URL, optional proxy configuration, and optional credentials for 
- * authenticating with the remote system. Subclasses can override various methods
- * to customize the behavior of the connection or to implement more advanced 
- * authentication mechanisms. 
+ * Utility for working with a REST API. 
+ * 
+ * TODO Update JavaDoc, include info about caching (see Git history for JavaDoc in AbstractRestConnectionWithCache)
  * 
  * TODO Add various HttpClient timeouts to prevent the program from stalling.
  *      (see http://stackoverflow.com/questions/9925113/httpclient-stuck-without-any-exception answer 3)
  *      
  * TODO Update JavaDoc for executeRequest methods
  */
+@CommonsLog
 @ToString
 public abstract class AbstractRestConnection implements IRestConnection, Serializable {
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
 	// TODO Should this be a regular map or map with weak values?
 	private static final Map<String, IRestConnection> INSTANCES = new MapMaker().weakValues().makeMap();
+	
+	private Properties cacheProperties; 
+	private LoadingCache<String, Cache<CacheKey, Object>> cacheManager;
+	
 	@Getter private final String baseUrl;
 	private final ProxyConfig proxy;
 	private final Map<String, Object> connectionProperties;
@@ -106,6 +118,7 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	private Client client;
 	
 	protected AbstractRestConnection(RestConnectionConfig<?> config) {
+		initCache();
 		this.baseUrl = config.getBaseUrl();
 		this.proxy = config.getProxy();
 		this.connectionProperties = config.getConnectionProperties();
@@ -193,6 +206,53 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType, String cacheName) {
+		Cache<CacheKey, Object> cache = cacheManager.getUnchecked(cacheName);
+		CacheKey cacheKey = getCacheKey(httpMethod, webResource, returnType);
+		T result = (T)cache.getIfPresent(cacheKey);
+		if ( result == null ) {
+			log.trace("Cache miss: "+webResource.getUri());
+			result = executeRequest(httpMethod, webResource, returnType);
+			cache.put(cacheKey, result);
+		} else {
+			log.trace("Cache hit: "+webResource.getUri());
+		}
+		return result;
+	}
+	
+	protected void initCache() {
+		try {
+			cacheProperties = PropertiesLoaderUtils.loadAllProperties(getCachePropertiesResourceName());
+		} catch (IOException e) {
+			throw new RuntimeException("Error loading cache properties", e);
+		} 
+		cacheManager = CacheBuilder.from(cacheProperties.getProperty("cacheManager", getDefaultCacheManagerSpec()))
+				.build(new CacheLoader<String, Cache<CacheKey, Object>>() {
+					@Override
+					public Cache<CacheKey, Object> load(String key) throws Exception {
+						String cacheSpec = cacheProperties.getProperty(key, cacheProperties.getProperty("default", getDefaultCacheSpec()));
+						log.debug("Creating cache "+key+" with spec "+cacheSpec);
+						return CacheBuilder.from(cacheSpec).build();
+					}
+				});
+	}
+	
+	protected String getCachePropertiesResourceName() {
+		return this.getClass().getSimpleName()+"Cache.properties";
+	}
+	
+	protected String getDefaultCacheManagerSpec() {
+		return "";
+	}
+	
+	protected String getDefaultCacheSpec() {
+		return "maximumSize=1000,expireAfterWrite=60s";
+	}
+	
+	protected CacheKey getCacheKey(String httpMethod, WebTarget webResource, Class<?> returnType) {
+		return new CacheKey(httpMethod, webResource.getUri(), returnType);
+	}	
 
 	/**
 	 * Authenticating with the server may require several round trips,
@@ -484,6 +544,13 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("Unable to encode value "+input, e);
 		}
+	}
+	
+	@Data
+	protected static class CacheKey {
+		private final String httpMethod;
+		private final URI uri;
+		private final Class<?> returnType;
 	}
 
 	protected static class JacksonFeature implements Feature {

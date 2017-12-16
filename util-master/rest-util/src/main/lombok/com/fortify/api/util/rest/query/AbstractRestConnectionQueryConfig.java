@@ -89,6 +89,7 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 	
 	private final List<IJSONMapPreProcessor> preProcessors = new ArrayList<>();
 	private int maxResults = -1;
+	private boolean useCache;
 	private final boolean pagingSupported;
 	@Setter(AccessLevel.PROTECTED) private String httpMethod = HttpMethod.GET;
 	@Setter(AccessLevel.PROTECTED) private Entity<?> entity = null;
@@ -107,6 +108,11 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 	
 	public T maxResults(Integer maxResults) {
 		this.maxResults = maxResults;
+		return _this();
+	}
+	
+	public T useCache(boolean useCache) {
+		this.useCache = useCache;
 		return _this();
 	}
 	

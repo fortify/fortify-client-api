@@ -30,9 +30,9 @@ import javax.ws.rs.client.WebTarget;
 
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQuery;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQuery;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.api.util.rest.query.PagingData;
-import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
 /**
@@ -42,8 +42,8 @@ import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
  * 
  * @author Ruud Senden
  */
-public class WIEEntityQuery extends AbstractRestConnectionWithCacheQuery<WIEAuthenticatingRestConnection, JSONMap> {
-	public WIEEntityQuery(AbstractRestConnectionWithCacheQueryConfig<WIEAuthenticatingRestConnection,?> config) {
+public class WIEEntityQuery extends AbstractRestConnectionQuery<WIEAuthenticatingRestConnection, JSONMap> {
+	public WIEEntityQuery(AbstractRestConnectionQueryConfig<WIEAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 	

@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-import com.fortify.api.util.rest.query.AbstractRestConnectionWithCacheQueryConfig;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
@@ -53,7 +53,7 @@ import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConnectionWithCacheQueryConfig<SSCAuthenticatingRestConnection, T> {
+public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConnectionQueryConfig<SSCAuthenticatingRestConnection, T> {
 	private SSCParamQ paramQ = add(new SSCParamQ());
 	
 	/**
