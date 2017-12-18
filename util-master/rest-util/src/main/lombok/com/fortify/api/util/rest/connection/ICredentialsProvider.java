@@ -24,30 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
-import org.apache.http.auth.AuthScope;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.auth.Credentials;
 
-public class AbstractRestConnectionWithCredentials extends AbstractRestConnection {
-	private final CredentialsProvider credentialsProvider;
-	public AbstractRestConnectionWithCredentials(AbstractRestConnectionWithCredentialsConfig<?> config) {
-		super(config);
-		this.credentialsProvider = createCredentialsProvider();
-		this.credentialsProvider.setCredentials(AuthScope.ANY, config.getCredentials());
-	}
-	
-	@Override
-	protected CredentialsProvider getCredentialsProvider() {
-		return credentialsProvider;
-	}
-	
-	/**
-	 * Create the {@link CredentialsProvider} to use for requests.
-	 * This default implementation returns a {@link BasicCredentialsProvider}
-	 * instance.
-	 * @return
-	 */
-	protected CredentialsProvider createCredentialsProvider() {
-		return new BasicCredentialsProvider();
-	}
+public interface ICredentialsProvider {
+	public Credentials getCredentials();
 }

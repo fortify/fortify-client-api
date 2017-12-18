@@ -60,10 +60,12 @@ import javax.ws.rs.core.Response.StatusType;
 
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.ClientResponse;
@@ -116,6 +118,7 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	private final ProxyConfig proxy;
 	private final Map<String, Object> connectionProperties;
 	private final String connectionId;
+	private final CredentialsProvider credentialsProvider;
 	private Client client;
 	
 	protected AbstractRestConnection(AbstractRestConnectionConfig<?> config) {
@@ -124,11 +127,12 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 		this.proxy = config.getProxy();
 		this.connectionProperties = config.getConnectionProperties();
 		this.connectionId = StringUtils.isBlank(config.getConnectionId()) ? null : (this.getClass().getName()+config.getConnectionId());
+		this.credentialsProvider = createCredentialsProvider(config);
 		if ( this.connectionId != null ) {
 			INSTANCES.put(this.connectionId, this);
 		}
 	}
-	
+
 	/**
 	 * Execute a request for the given method using the given web resource.
 	 * @param httpMethod The HTTP method to be used, as specified by one of the constants
@@ -446,13 +450,13 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	
 	protected ClientConfig createClientConfig() {
 		ClientConfig clientConfig = new ClientConfig();
-		if ( proxy != null && proxy.getUri() != null ) {
-			clientConfig.property(ClientProperties.PROXY_URI, proxy.getUriString());
+		if ( proxy != null && StringUtils.isNotBlank(proxy.getUrl()) ) {
+			clientConfig.property(ClientProperties.PROXY_URI, proxy.getUrl());
 			clientConfig.property(ClientProperties.PROXY_USERNAME, proxy.getUserName());
 			clientConfig.property(ClientProperties.PROXY_PASSWORD, proxy.getPassword());
 		}
 		clientConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
-		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, getCredentialsProvider());
+		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, credentialsProvider);
 		clientConfig.property(ApacheClientProperties.SERVICE_UNAVAILABLE_RETRY_STRATEGY, getServiceUnavailableRetryStrategy());
 		clientConfig.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
 		if ( connectionProperties != null ) {
@@ -467,8 +471,28 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 		return clientConfig;
 	}
 	
-	protected CredentialsProvider getCredentialsProvider() {
-		return null;
+	/**
+	 * Create a {@link CredentialsProvider} for the given configuration.
+	 * @param config
+	 * @return
+	 */
+	protected CredentialsProvider createCredentialsProvider(AbstractRestConnectionConfig<?> config) {
+		CredentialsProvider result = null;
+		if ( config instanceof ICredentialsProvider ) {
+			result = createCredentialsProvider();
+			result.setCredentials(AuthScope.ANY, ((ICredentialsProvider)config).getCredentials());
+		}
+		return result;
+	}
+	
+	/**
+	 * Create the {@link CredentialsProvider} to use for requests.
+	 * This default implementation returns a {@link BasicCredentialsProvider}
+	 * instance.
+	 * @return
+	 */
+	protected CredentialsProvider createCredentialsProvider() {
+		return new BasicCredentialsProvider();
 	}
 	
 	protected ServiceUnavailableRetryStrategy getServiceUnavailableRetryStrategy() {

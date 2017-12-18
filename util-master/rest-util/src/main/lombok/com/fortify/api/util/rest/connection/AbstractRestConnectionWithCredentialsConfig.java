@@ -27,7 +27,8 @@ package com.fortify.api.util.rest.connection;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 
-public class AbstractRestConnectionWithCredentialsConfig<T extends AbstractRestConnectionWithCredentialsConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
+public abstract class AbstractRestConnectionWithCredentialsConfig<T extends AbstractRestConnectionWithCredentialsConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> implements ICredentialsProvider {
+	@Override
 	public Credentials getCredentials() {
 		return new UsernamePasswordCredentials(getUserName(), getPassword());
 	}

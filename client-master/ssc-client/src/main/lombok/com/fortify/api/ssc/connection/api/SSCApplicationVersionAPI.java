@@ -24,6 +24,9 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -50,7 +53,14 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	}
 	
 	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
+		Map<String,Object> properties = new HashMap<>();
+		properties.put("SSCBaseUrl", "http://localhost:1710/ssc");
+		properties.put("SSCUserName", "ssc");
+		properties.put("SSCPassword", "Admin123!");
+		properties.put("SSCProxy.url", "http://xxx.yyy/");
+		Map<String, Object> newMap = new HashMap<>();
+		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().fromMap(properties, "SSC", true).toMap(newMap, "Test", true).build();
+		System.out.println(newMap);
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();
 		for ( int i = 0 ; i < 10 ; i++ ) {
 			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").paramFields("id", "name").useCache(true).build().getAll());

@@ -24,8 +24,6 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
-import java.net.URI;
-
 import lombok.Data;
 
 /**
@@ -33,14 +31,7 @@ import lombok.Data;
  */
 @Data
 public class ProxyConfig {
-	private URI uri;
+	private String url;
 	private String userName;
 	private String password;
-	
-	public String getUriString() {
-		return uri==null?null:uri.toString();
-	}
-	public void setUriString(String uriString) {
-		this.uri = uriString==null?null:URI.create(uriString);
-	}
 }

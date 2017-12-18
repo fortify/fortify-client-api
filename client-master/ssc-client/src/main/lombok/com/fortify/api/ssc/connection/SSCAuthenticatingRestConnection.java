@@ -75,8 +75,8 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	 * @return
 	 */
 	private ISSCTokenFactory getTokenFactory(SSCRestConnectionConfig<?> config) {
-		if ( StringUtils.isNotBlank(config.getApiToken()) ) {
-			return new SSCTokenFactoryTokenCredentials(config.getApiToken());
+		if ( StringUtils.isNotBlank(config.getAuthToken()) ) {
+			return new SSCTokenFactoryTokenCredentials(config.getAuthToken());
 		} else if ( StringUtils.isNotBlank(config.getUserName()) && StringUtils.isNotBlank(config.getPassword()) ) {
 			return new SSCTokenFactoryUserCredentials(new SSCBasicRestConnection(config), config.getUserName(), config.getPassword());
 		} else {

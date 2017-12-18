@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
-public class RestConnectionWithCredentials extends AbstractRestConnectionWithCredentials {
+public class RestConnectionWithCredentials extends AbstractRestConnection {
 
 	protected RestConnectionWithCredentials(AbstractRestConnectionWithCredentialsConfig<?> config) {
 		super(config);

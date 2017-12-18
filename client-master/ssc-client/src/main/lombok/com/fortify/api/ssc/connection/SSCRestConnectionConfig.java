@@ -31,11 +31,15 @@ import lombok.EqualsAndHashCode;
 
 @Data @EqualsAndHashCode(callSuper=true)
 public class SSCRestConnectionConfig<T extends SSCRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
-	private String apiToken;
+	private String authToken;
 	
 	@Override
 	protected void parseUriUserInfo(String userInfo) {
 		// TODO First check if userInfo contains api token
 		super.parseUriUserInfo(userInfo);
+	}
+	
+	public T authToken(String authToken) {
+		setAuthToken(authToken); return getThis();
 	}
 }

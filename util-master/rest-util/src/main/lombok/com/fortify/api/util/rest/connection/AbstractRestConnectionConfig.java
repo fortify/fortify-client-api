@@ -34,9 +34,11 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.glassfish.jersey.client.ClientProperties;
 
+import com.fortify.api.util.spring.beans.AbstractBeanWithMapSupport;
 import com.google.common.base.Splitter;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * TODO Add JavaDoc
@@ -44,10 +46,10 @@ import lombok.Data;
  *
  * @param <T>
  */
-@Data
-public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnectionConfig<T>> {
+@Data @EqualsAndHashCode(callSuper=false)
+public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnectionConfig<T>> extends AbstractBeanWithMapSupport {
 	private URI baseUrl;
-	private ProxyConfig proxy;
+	private ProxyConfig proxy = new ProxyConfig();
 	private Map<String, Object> connectionProperties;
 	private String connectionId = null;
 	
@@ -87,6 +89,16 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	 */
 	public T supportSingleJVMSerialization() {
 		setSingleJVMSerializationSupported(true);
+		return getThis();
+	}
+	
+	public T fromMap(Map<String, Object> map, String prefix, boolean ignoreNonExisting) {
+		copyPropertiesFromMap(map, prefix, ignoreNonExisting);
+		return getThis();
+	}
+	
+	public T toMap(Map<String, Object> map, String prefix, boolean overwriteExisting) {
+		copyPropertiesToMap(map, prefix, overwriteExisting);
 		return getThis();
 	}
 	
@@ -178,7 +190,9 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	}
 	
 	protected void parseUri(URI uri) {
-		parseUriUserInfo(uri.getUserInfo());
+		if ( StringUtils.isNotBlank(uri.getUserInfo()) ) {
+			parseUriUserInfo(uri.getUserInfo());
+		}
 		setBaseUrl(removeUserInfo(uri));
 	}
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,22 +22,32 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.ssc.connection;
+package com.fortify.api.util.spring.beans;
 
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection.SSCAuthenticatingRestConnectionBuilder;
-import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
-import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
+import java.util.Map;
 
-/**
- * <p>This {@link IRestConnectionRetriever} implementation will create 
- * an authenticated SSC REST connection based on the given configuration</p>
- * 
- * @author Ruud Senden
- *
- */
-public abstract class SSCConnectionRetriever extends AbstractRestConnectionRetriever<SSCAuthenticatingRestConnection, SSCAuthenticatingRestConnectionBuilder> implements ISSCConnectionRetriever {
-	@Override
-	protected SSCAuthenticatingRestConnectionBuilder createConfig() {
-		return SSCAuthenticatingRestConnection.builder();
+import org.springframework.beans.BeansException;
+
+public class AbstractBeanWithMapSupport {
+	private final BeanWrapperWithMapSupport beanWrapper = new BeanWrapperWithMapSupport(this);
+
+	public void copyPropertiesFromMap(Map<String, Object> map, String prefix, boolean ignoreNonExisting) {
+		beanWrapper.copyPropertiesFromMap(map, prefix, ignoreNonExisting);
+	}
+
+	public void copyPropertiesToMap(Map<String, Object> map, String prefix, boolean overwriteExisting) {
+		beanWrapper.copyPropertiesToMap(map, prefix, overwriteExisting);
+	}
+
+	public void setPropertyValue(String name, Object value, boolean ignoreNonExisting) {
+		beanWrapper.setPropertyValue(name, value, ignoreNonExisting);
+	}
+
+	public void setPropertyValue(String propertyName, Object value) throws BeansException {
+		beanWrapper.setPropertyValue(propertyName, value);
+	}
+
+	public Object getPropertyValue(String propertyName) throws BeansException {
+		return beanWrapper.getPropertyValue(propertyName);
 	}
 }
