@@ -24,27 +24,48 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.json.preprocessor;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.fortify.api.util.rest.json.JSONMap;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
-	private final String fieldPath;
-	private final Pattern pattern;
+	private static final Function<String, Pattern> STRING_TO_PATTERN_TRANSFORMER = new Function<String, Pattern>() {
+		@Override
+		public Pattern apply(String input) {
+			return Pattern.compile(input);
+		}
+		
+	};
+	private final ImmutableMap<String, Pattern> fieldPathPatternsMap;
+	
+	public JSONMapFilterRegEx(Map<String, Pattern> fieldPathPatternsMap, boolean includeMatching) {
+		super(includeMatching);
+		this.fieldPathPatternsMap = ImmutableMap.copyOf(fieldPathPatternsMap);
+	}
 	
 	public JSONMapFilterRegEx(String fieldPath, Pattern pattern, boolean includeMatching) {
-		super(includeMatching);
-		this.fieldPath = fieldPath;
-		this.pattern = pattern;
+		this(ImmutableMap.of(fieldPath, pattern), includeMatching);
 	}
 	
 	public JSONMapFilterRegEx(String fieldPath, String regex, boolean includeMatching) {
 		this(fieldPath, Pattern.compile(regex), includeMatching);
 	}
+	
+	// We cannot create a constructor for this, as generic type erasure would result in duplicate constructor
+	public static final JSONMapFilterRegEx fromFieldPathToPatternStringMap(Map<String, String> fieldPathPatternsMap, boolean includeMatching) {
+		return new JSONMapFilterRegEx(Maps.transformValues(fieldPathPatternsMap, STRING_TO_PATTERN_TRANSFORMER), includeMatching);
+	}
 
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		String value = json.getPath(fieldPath, String.class);
-		return value==null ? false : pattern.matcher(value).matches();
+		for ( Map.Entry<String, Pattern> entry : fieldPathPatternsMap.entrySet() ) {
+			String value = json.getPath(entry.getKey(), String.class);
+			if ( !entry.getValue().matcher(value).matches() ) { return false; }
+		}
+		return true;
 	}
 }

@@ -45,5 +45,5 @@ public interface IJSONMapProcessor {
 	 * loading the next page. For example this allows implementations
 	 * to display progress information.
 	 */
-	public <T extends PagingData> void nextPage(T pagingData);
+	public void nextPage(PagingData pagingData);
 }

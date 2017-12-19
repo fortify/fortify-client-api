@@ -41,8 +41,13 @@ public class FoDReleaseQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRel
 	}
 	
 	@Override
-	public FoDReleaseQueryBuilder paramFilterAnd(String field, String value) {
-		return super.paramFilterAnd(field, value);
+	public FoDReleaseQueryBuilder paramFilterAnd(String field, String... values) {
+		return super.paramFilterAnd(field, values);
+	}
+	
+	@Override
+	public FoDReleaseQueryBuilder paramFilterAnd(String filter) {
+		return super.paramFilterAnd(filter);
 	}
 	
 	@Override

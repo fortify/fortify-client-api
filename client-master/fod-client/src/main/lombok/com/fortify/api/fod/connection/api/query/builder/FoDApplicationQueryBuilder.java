@@ -43,8 +43,13 @@ public class FoDApplicationQueryBuilder extends AbstractFoDEntityQueryBuilder<Fo
 	}
 	
 	@Override
-	public FoDApplicationQueryBuilder paramFilterAnd(String field, String value) {
-		return super.paramFilterAnd(field, value);
+	public FoDApplicationQueryBuilder paramFilterAnd(String field, String... values) {
+		return super.paramFilterAnd(field, values);
+	}
+	
+	@Override
+	public FoDApplicationQueryBuilder paramFilterAnd(String filter) {
+		return super.paramFilterAnd(filter);
 	}
 	
 	@Override

@@ -60,7 +60,7 @@ public class JSONMapProcessorWithPreProcessors implements IJSONMapProcessor {
 	}
 
 	@Override
-	public <T extends PagingData> void nextPage(T pagingData) {
+	public void nextPage(PagingData pagingData) {
 		processor.nextPage(pagingData);
 	}
 

@@ -92,16 +92,16 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		return super.queryParam("qm", queryMode.name());
 	}
 	
-	public SSCApplicationVersionIssuesQueryBuilder includeHidden() {
-		issueSearchOptions.setIncludeHidden(true); return _this();
+	public SSCApplicationVersionIssuesQueryBuilder includeHidden(boolean includeHidden) {
+		issueSearchOptions.setIncludeHidden(includeHidden); return _this();
 	}
 		
-	public SSCApplicationVersionIssuesQueryBuilder includeRemoved() {
-		issueSearchOptions.setIncludeRemoved(true); return _this();
+	public SSCApplicationVersionIssuesQueryBuilder includeRemoved(boolean includeRemoved) {
+		issueSearchOptions.setIncludeRemoved(includeRemoved); return _this();
 	}
 	
-	public SSCApplicationVersionIssuesQueryBuilder includeSuppressed() {
-		issueSearchOptions.setIncludeSuppressed(true); return _this();
+	public SSCApplicationVersionIssuesQueryBuilder includeSuppressed(boolean includeSuppressed) {
+		issueSearchOptions.setIncludeSuppressed(includeSuppressed); return _this();
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})

@@ -24,10 +24,12 @@
  ******************************************************************************/
 package com.fortify.api.fod.connection.api.query.builder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map.Entry;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
@@ -37,6 +39,8 @@ import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  * <p>This abstract base class is used to build {@link FoDEntityQuery} instances. Concrete implementations
@@ -111,18 +115,28 @@ public abstract class AbstractFoDEntityQueryBuilder<T> extends AbstractRestConne
 	}
 	
 	/**
-	 * Add the 'filter' query parameter to the request configuration. 
-	 * If already set, the new field and value will be 'and-ed' to the
-	 * current query parameter value.
-	 * 
-	 * TODO Add support for ORed values (multiple values separated by pipe symbol)
+	 * Add the given field and values to the 'filter' query
+	 * parameter. Multiple values for the same field (either
+	 * through a single call or multiple calls to this method)
+	 * will be OR-ed together.
 	 * 
 	 * @param field
-	 * @param value
+	 * @param values
 	 * @return
 	 */
-	protected T paramFilterAnd(String field, String value) {
-		paramFilter.paramFilterAnd(field, value); return _this();
+	protected T paramFilterAnd(String field, String... values) {
+		paramFilter.paramFilterAnd(field, values); return _this();
+	}
+	
+	/**
+	 * Add the given filter string (formatted according to FoD
+	 * REST API documentation) to the 'filter' query parameter.
+	 * 
+	 * @param filter
+	 * @return
+	 */
+	protected T paramFilterAnd(String filter) {
+		paramFilter.paramFilterAnd(filter); return _this();
 	}
 	
 	/**
@@ -133,29 +147,50 @@ public abstract class AbstractFoDEntityQueryBuilder<T> extends AbstractRestConne
 	 *
 	 */
 	private static class FoDParamFilter implements IWebTargetUpdaterBuilder {
-		private final Map<String, String> paramFilterAnds = new HashMap<>();
+		private final ListMultimap<String, String> paramFilterAndsMap = ArrayListMultimap.create();
+		private final List<String> paramFilterAndsList = new ArrayList<>();
 		
-		public final FoDParamFilter paramFilterAnd(String field, String value) {
-			paramFilterAnds.put(field, value);
+		public final FoDParamFilter paramFilterAnd(String field, String... values) {
+			paramFilterAndsMap.putAll(field, Arrays.asList(values));
+			return this;
+		}
+		
+		public final FoDParamFilter paramFilterAnd(String paramFilterAnd) {
+			paramFilterAndsList.add(paramFilterAnd);
 			return this;
 		}
 
 		@Override
 		public IWebTargetUpdater build() {
-			String filter = null;
-			if ( MapUtils.isNotEmpty(paramFilterAnds) ) {
-				StringBuffer sb = new StringBuffer();
-				for ( Map.Entry<String, String> entry : paramFilterAnds.entrySet() ) {
-					String qAppend = entry.getKey()+":"+entry.getValue()+"";
-					if ( sb.length() == 0 ) {
-						sb.append(qAppend);
-					} else {
-						sb.append("+"+qAppend);
-					}
+			StringBuffer sb = new StringBuffer();
+			appendParamFilterAndsMap(sb);
+			appendParamFilterAndsList(sb);
+			return new WebTargetQueryParamUpdater("filter", sb.toString());
+		}
+
+		private void appendParamFilterAndsList(StringBuffer sb) {
+			if ( !paramFilterAndsList.isEmpty() ) {
+				for ( String filterAppend : paramFilterAndsList ) {
+					appendFilter(sb, filterAppend);
 				}
-				filter = sb.toString();
 			}
-			return new WebTargetQueryParamUpdater("q", filter);
+		}
+
+		private void appendParamFilterAndsMap(StringBuffer sb) {
+			if ( !paramFilterAndsMap.isEmpty() ) {
+				for ( Entry<String, Collection<String>> entry : paramFilterAndsMap.asMap().entrySet() ) {
+					String filterAppend = entry.getKey()+":"+StringUtils.join(entry.getValue(),'|');
+					appendFilter(sb, filterAppend);
+				}
+			}
+		}
+
+		private void appendFilter(StringBuffer sb, String filterAppend) {
+			if ( sb.length() == 0 ) {
+				sb.append(filterAppend);
+			} else {
+				sb.append("+"+filterAppend);
+			}
 		}
 
 	} 
