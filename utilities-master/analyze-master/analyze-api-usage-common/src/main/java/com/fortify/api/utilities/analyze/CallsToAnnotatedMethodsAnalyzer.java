@@ -54,7 +54,7 @@ public class CallsToAnnotatedMethodsAnalyzer {
 	}
 
 	protected boolean findAnnotatedMethods(String[] jars, String annotation, Map<String, Set<String>> methodsToAnnotationValuesMap) {
-		System.out.println("Scanning for methods annotated with annotation");
+		System.out.println("Scanning for methods annotated with annotation "+annotation);
 		FindAnnotatedMethods classVisitor = new FindAnnotatedMethods(annotation, methodsToAnnotationValuesMap);
 		visitClasses(jars, classVisitor);
 		System.out.println("Methods and annotation values found until now:");

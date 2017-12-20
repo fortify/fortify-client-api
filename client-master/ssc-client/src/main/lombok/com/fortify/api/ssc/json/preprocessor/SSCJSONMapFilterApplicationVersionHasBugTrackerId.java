@@ -21,10 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.processrunner.ssc.json.preprocessor;
-
-import java.util.Arrays;
-import java.util.Collection;
+package com.fortify.api.ssc.json.preprocessor;
 
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -32,34 +29,27 @@ import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter;
 import com.fortify.api.util.rest.query.IRestConnectionQueryConfigAware;
 
 /**
- * Filter SSC application versions based on whether the SSC application version
- * contains values for all configured attribute name(s).
+ * Filter SSC application versions based on the SSC bug tracker plugin id configured
+ * for each application version.
  * 
  * @author Ruud Senden
  *
  */
-public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
-	private final Collection<String> attributeNames;
-
-	// TODO Propagate @SSCRequiredActionsPermitted from setRestConnectionQueryConfig
-	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,
-			Collection<String> attributeNames) {
+public class SSCJSONMapFilterApplicationVersionHasBugTrackerId extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder>{
+	private final String bugTrackerPluginId;
+	
+	public SSCJSONMapFilterApplicationVersionHasBugTrackerId(MatchMode matchMode, String bugTrackerPluginId) {
 		super(matchMode);
-		this.attributeNames = attributeNames;
+		this.bugTrackerPluginId = bugTrackerPluginId;
 	}
-
-	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode, String... attributeNames) {
-		this(matchMode, Arrays.asList(attributeNames));
-	}
-
+	
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		JSONMap attributeValuesByName = json.get("attributeValuesByName", JSONMap.class);
-		return attributeValuesByName.keySet().containsAll(attributeNames);
+		return bugTrackerPluginId.equals(json.getPath("bugTracker.bugTracker.id"));
 	}
-
+	
 	@Override
-	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
-		currentBuilder.onDemandAttributeValuesByName("attributeValuesByName");
+	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder builder) {
+		builder.onDemandBugTracker("bugTracker");
 	}
 }

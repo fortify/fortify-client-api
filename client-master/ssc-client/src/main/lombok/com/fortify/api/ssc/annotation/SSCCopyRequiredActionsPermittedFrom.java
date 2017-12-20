@@ -22,19 +22,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.wie.connection.api.query.builder;
+package com.fortify.api.ssc.annotation;
 
-import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMode;
-import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterRegEx;
-import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
-public class WIEMacrosQueryBuilder extends AbstractWIEEntityQueryBuilder<WIEMacrosQueryBuilder> {
-	public WIEMacrosQueryBuilder(WIEAuthenticatingRestConnection conn) {
-		super(conn, true);
-		appendPath("/api/v1/macros");
-	}
-	
-	public WIEMacrosQueryBuilder names(String... names) {
-		return preProcessor(new JSONMapFilterRegEx("name", "\\Q"+String.join("\\E|\\Q", names)+"\\E", MatchMode.INCLUDE));
-	}
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+@Documented
+@Retention(CLASS)
+@Target({METHOD, CONSTRUCTOR})
+public @interface SSCCopyRequiredActionsPermittedFrom {
+	String value();
 }

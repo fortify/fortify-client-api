@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.processrunner.ssc.json.preprocessor;
+package com.fortify.api.ssc.json.preprocessor;
 
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -29,23 +29,23 @@ import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter;
 import com.fortify.api.util.rest.query.IRestConnectionQueryConfigAware;
 
 /**
- * Filter SSC application versions based on the SSC bug tracker plugin id configured
+ * Filter SSC application versions based on the SSC bug tracker plugin short display name configured
  * for each application version.
  * 
  * @author Ruud Senden
  *
  */
-public class SSCJSONMapFilterApplicationVersionHasBugTrackerId extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder>{
-	private final String bugTrackerPluginId;
+public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder>{
+	private final String bugTrackerPluginShortDisplayName;
 	
-	public SSCJSONMapFilterApplicationVersionHasBugTrackerId(MatchMode matchMode, String bugTrackerPluginId) {
+	public SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName(MatchMode matchMode, String bugTrackerPluginShortDisplayName) {
 		super(matchMode);
-		this.bugTrackerPluginId = bugTrackerPluginId;
+		this.bugTrackerPluginShortDisplayName = bugTrackerPluginShortDisplayName;
 	}
 	
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		return bugTrackerPluginId.equals(json.getPath("bugTracker.bugTracker.id"));
+		return bugTrackerPluginShortDisplayName.equals(json.getPath("bugTracker.bugTracker.shortDisplayName"));
 	}
 	
 	@Override

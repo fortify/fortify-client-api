@@ -21,41 +21,46 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.processrunner.ssc.json.preprocessor;
+package com.fortify.api.ssc.json.preprocessor;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
+import com.fortify.api.ssc.annotation.SSCCopyRequiredActionsPermittedFrom;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
-import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter;
 import com.fortify.api.util.rest.query.IRestConnectionQueryConfigAware;
 
 /**
- * Filter SSC application versions based on whether the SSC application version contains
- * the configured custom tag name(s).
+ * Filter SSC application versions based on whether the SSC application version
+ * contains values for all configured attribute name(s).
  * 
  * @author Ruud Senden
  *
  */
-public class SSCJSONMapFilterApplicationVersionHasAllCustomTags extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
-	private final List<String> customTagNames;
-	
-	// TODO Propagate @SSCRequiredActionsPermitted from currentBuilder.onDemandCustomTags
-	public SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode matchMode, String... customTagNames) {
+public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
+	private final Collection<String> attributeNames;
+
+	@SSCCopyRequiredActionsPermittedFrom("setRestConnectionQueryConfig")
+	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,
+			Collection<String> attributeNames) {
 		super(matchMode);
-		this.customTagNames = Arrays.asList(customTagNames);
+		this.attributeNames = attributeNames;
 	}
-	
+
+	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode, String... attributeNames) {
+		this(matchMode, Arrays.asList(attributeNames));
+	}
+
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		List<String> avCustomTagNames = json.get("customTagsNamesOnly", JSONList.class).getValues("name", String.class);
-		return avCustomTagNames.containsAll(customTagNames);
+		JSONMap attributeValuesByName = json.get("attributeValuesByName", JSONMap.class);
+		return attributeValuesByName.keySet().containsAll(attributeNames);
 	}
 
 	@Override
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
-		currentBuilder.onDemandCustomTags("customTagsNamesOnly","name");
+		currentBuilder.onDemandAttributeValuesByName("attributeValuesByName");
 	}
 }

@@ -21,35 +21,42 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.processrunner.ssc.json.preprocessor;
+package com.fortify.api.ssc.json.preprocessor;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.fortify.api.ssc.annotation.SSCCopyRequiredActionsPermittedFrom;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
+import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter;
 import com.fortify.api.util.rest.query.IRestConnectionQueryConfigAware;
 
 /**
- * Filter SSC application versions based on the SSC bug tracker plugin short display name configured
- * for each application version.
+ * Filter SSC application versions based on whether the SSC application version contains
+ * the configured custom tag name(s).
  * 
  * @author Ruud Senden
  *
  */
-public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder>{
-	private final String bugTrackerPluginShortDisplayName;
+public class SSCJSONMapFilterApplicationVersionHasAllCustomTags extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
+	private final List<String> customTagNames;
 	
-	public SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName(MatchMode matchMode, String bugTrackerPluginShortDisplayName) {
+	@SSCCopyRequiredActionsPermittedFrom("setRestConnectionQueryConfig")
+	public SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode matchMode, String... customTagNames) {
 		super(matchMode);
-		this.bugTrackerPluginShortDisplayName = bugTrackerPluginShortDisplayName;
+		this.customTagNames = Arrays.asList(customTagNames);
 	}
 	
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		return bugTrackerPluginShortDisplayName.equals(json.getPath("bugTracker.bugTracker.shortDisplayName"));
+		List<String> avCustomTagNames = json.get("customTagsNamesOnly", JSONList.class).getValues("name", String.class);
+		return avCustomTagNames.containsAll(customTagNames);
 	}
-	
+
 	@Override
-	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder builder) {
-		builder.onDemandBugTracker("bugTracker");
+	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
+		currentBuilder.onDemandCustomTags("customTagsNamesOnly","name");
 	}
 }

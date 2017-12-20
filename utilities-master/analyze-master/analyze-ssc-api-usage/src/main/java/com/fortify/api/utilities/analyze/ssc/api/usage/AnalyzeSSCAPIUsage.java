@@ -44,6 +44,7 @@ public class AnalyzeSSCAPIUsage {
 		} else {
 			Map<String, Set<String>> methodsToAnnotationValuesMap = 
 					new CallsToAnnotatedMethodsAnalyzer().findDirectAndIndirectInvocationsToAnnotatedMethods(jars, "Lcom/fortify/api/ssc/annotation/SSCRequiredActionsPermitted;");
+					// TODO new CallsToAnnotatedMethodsAnalyzer().findDirectAndIndirectInvocationsToAnnotatedMethods(jars, "Lcom/fortify/api/ssc/annotation/SSCCopyRequiredActionsPermittedFrom;");
 			Set<String> requiredActionsPermitted = getRequiredActionsPermitted(methodsToAnnotationValuesMap);
 			printTokenDefinition(requiredActionsPermitted);
 		}

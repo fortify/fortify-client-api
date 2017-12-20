@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query.builder;
 
+import com.fortify.api.ssc.annotation.SSCCopyRequiredActionsPermittedFrom;
 import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
@@ -155,7 +156,7 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	private static final class SSCJSONMapOnDemandLoaderAttributeValuesByName extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
 		private static final long serialVersionUID = 1L;
 
-		@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/attributes", "GET=/api/v\\d+/attributeDefinitions"})
+		@SSCCopyRequiredActionsPermittedFrom("getOnDemand")
 		public SSCJSONMapOnDemandLoaderAttributeValuesByName(SSCAuthenticatingRestConnection conn) {
 			super(conn, true);
 		}
