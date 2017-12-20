@@ -26,7 +26,7 @@ package com.fortify.api.ssc.json.preprocessor;
 import java.util.Arrays;
 import java.util.Collection;
 
-import com.fortify.api.ssc.annotation.SSCCopyRequiredActionsPermittedFrom;
+import com.fortify.api.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter;
@@ -42,9 +42,7 @@ import com.fortify.api.util.rest.query.IRestConnectionQueryConfigAware;
 public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
 	private final Collection<String> attributeNames;
 
-	@SSCCopyRequiredActionsPermittedFrom("setRestConnectionQueryConfig")
-	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,
-			Collection<String> attributeNames) {
+	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,	Collection<String> attributeNames) {
 		super(matchMode);
 		this.attributeNames = attributeNames;
 	}
@@ -59,7 +57,7 @@ public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends
 		return attributeValuesByName.keySet().containsAll(attributeNames);
 	}
 
-	@Override
+	@Override @SSCCopyToConstructors
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
 		currentBuilder.onDemandAttributeValuesByName("attributeValuesByName");
 	}

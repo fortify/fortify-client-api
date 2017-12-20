@@ -26,7 +26,7 @@ package com.fortify.api.ssc.json.preprocessor;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fortify.api.ssc.annotation.SSCCopyRequiredActionsPermittedFrom;
+import com.fortify.api.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -43,7 +43,6 @@ import com.fortify.api.util.rest.query.IRestConnectionQueryConfigAware;
 public class SSCJSONMapFilterApplicationVersionHasAllCustomTags extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
 	private final List<String> customTagNames;
 	
-	@SSCCopyRequiredActionsPermittedFrom("setRestConnectionQueryConfig")
 	public SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode matchMode, String... customTagNames) {
 		super(matchMode);
 		this.customTagNames = Arrays.asList(customTagNames);
@@ -55,7 +54,7 @@ public class SSCJSONMapFilterApplicationVersionHasAllCustomTags extends Abstract
 		return avCustomTagNames.containsAll(customTagNames);
 	}
 
-	@Override
+	@Override @SSCCopyToConstructors
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
 		currentBuilder.onDemandCustomTags("customTagsNamesOnly","name");
 	}

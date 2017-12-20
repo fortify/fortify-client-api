@@ -44,10 +44,10 @@ import org.objectweb.asm.Opcodes;
 // TODO Add documentation
 // TODO clean up this class
 public class CallsToAnnotatedMethodsAnalyzer {
-	public Map<String, Set<String>> findDirectAndIndirectInvocationsToAnnotatedMethods(String[] jars, String annotation) {
+	public Map<String, Set<String>> findDirectAndIndirectInvocationsToAnnotatedMethods(String[] jars, String annotation, String copyToConstructorsAnnotation) {
 		Map<String, Set<String>> methodsToAnnotationValuesMap = new HashMap<>();
 		if (findAnnotatedMethods(jars, annotation, methodsToAnnotationValuesMap)) {
-			while (findIndirectMethodInvocations(jars, methodsToAnnotationValuesMap)) {
+			while (findCopyToConstructorAnnotatedMethods(jars, copyToConstructorsAnnotation, methodsToAnnotationValuesMap) || findIndirectMethodInvocations(jars, methodsToAnnotationValuesMap)) {
 			}
 		}
 		return methodsToAnnotationValuesMap;
@@ -56,6 +56,15 @@ public class CallsToAnnotatedMethodsAnalyzer {
 	protected boolean findAnnotatedMethods(String[] jars, String annotation, Map<String, Set<String>> methodsToAnnotationValuesMap) {
 		System.out.println("Scanning for methods annotated with annotation "+annotation);
 		FindAnnotatedMethods classVisitor = new FindAnnotatedMethods(annotation, methodsToAnnotationValuesMap);
+		visitClasses(jars, classVisitor);
+		System.out.println("Methods and annotation values found until now:");
+		System.out.println(methodsToAnnotationValuesMap);
+		return classVisitor.hasFoundNew();
+	}
+	
+	protected boolean findCopyToConstructorAnnotatedMethods(String[] jars, String copyToConstructorsAnnotation, Map<String, Set<String>> methodsToAnnotationValuesMap) {
+		System.out.println("Scanning for methods annotated with annotation "+copyToConstructorsAnnotation);
+		FindCopyToConstructorAnnotatedMethods classVisitor = new FindCopyToConstructorAnnotatedMethods(copyToConstructorsAnnotation, methodsToAnnotationValuesMap);
 		visitClasses(jars, classVisitor);
 		System.out.println("Methods and annotation values found until now:");
 		System.out.println(methodsToAnnotationValuesMap);
@@ -142,12 +151,14 @@ public class CallsToAnnotatedMethodsAnalyzer {
 		}
 		
 		protected void addValues(String method, Set<String> values) {
-			Set<String> existingValues = methodsToAnnotationValuesMap.get(method);
-			if (existingValues == null) {
-				existingValues = new HashSet<String>();
-				methodsToAnnotationValuesMap.put(method, existingValues);
+			if ( method != null && values != null ) {
+				Set<String> existingValues = methodsToAnnotationValuesMap.get(method);
+				if (existingValues == null) {
+					existingValues = new HashSet<String>();
+					methodsToAnnotationValuesMap.put(method, existingValues);
+				}
+				foundNew |= existingValues.addAll(values);
 			}
-			foundNew |= existingValues.addAll(values);
 		}
 
 		public boolean hasFoundNew() {
@@ -179,6 +190,10 @@ public class CallsToAnnotatedMethodsAnalyzer {
 		// TODO Add method parameter types
 		public String getMethodDescription() {
 			return className+"."+methodName;
+		}
+		
+		public String getConstructorDescription() {
+			return className+".<init>";
 		}
 	}
 
@@ -226,6 +241,33 @@ public class CallsToAnnotatedMethodsAnalyzer {
 					if ( !values.isEmpty() ) {
 						addValues(getMethodDescription(), values);
 					}
+				}
+			};
+		}
+	}
+	
+	/**
+	 * {@link ClassVisitor} implementation that finds all methods annotated with the configured annotation.
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
+	protected static class FindCopyToConstructorAnnotatedMethods extends AbstractAnnotationValuesClassVisitor {
+		private final String copyToConstructorAnnotation;
+		public FindCopyToConstructorAnnotatedMethods(String copyToConstructorAnnotation, Map<String, Set<String>> methodsToAnnotationValuesMap) {
+			super(methodsToAnnotationValuesMap);
+			this.copyToConstructorAnnotation = copyToConstructorAnnotation;
+		}
+
+		@Override
+		public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
+			return new AbstractMethodVisitor(getClassName(), name) {
+				@Override
+				public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+					if (copyToConstructorAnnotation.equals(desc)) {
+						addValues(getConstructorDescription(), getMethodsToAnnotationValuesMap().get(getMethodDescription()));
+					}
+					return null;
 				}
 			};
 		}

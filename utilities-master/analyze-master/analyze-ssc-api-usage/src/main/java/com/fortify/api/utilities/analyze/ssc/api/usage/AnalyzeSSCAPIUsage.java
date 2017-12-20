@@ -43,7 +43,7 @@ public class AnalyzeSSCAPIUsage {
 			System.err.println("dependencies, including the fortify-api-ssc-client-[version].jar file.");
 		} else {
 			Map<String, Set<String>> methodsToAnnotationValuesMap = 
-					new CallsToAnnotatedMethodsAnalyzer().findDirectAndIndirectInvocationsToAnnotatedMethods(jars, "Lcom/fortify/api/ssc/annotation/SSCRequiredActionsPermitted;");
+					new CallsToAnnotatedMethodsAnalyzer().findDirectAndIndirectInvocationsToAnnotatedMethods(jars, "Lcom/fortify/api/ssc/annotation/SSCRequiredActionsPermitted;", "Lcom/fortify/api/ssc/annotation/SSCCopyToConstructors;");
 					// TODO new CallsToAnnotatedMethodsAnalyzer().findDirectAndIndirectInvocationsToAnnotatedMethods(jars, "Lcom/fortify/api/ssc/annotation/SSCCopyRequiredActionsPermittedFrom;");
 			Set<String> requiredActionsPermitted = getRequiredActionsPermitted(methodsToAnnotationValuesMap);
 			printTokenDefinition(requiredActionsPermitted);
