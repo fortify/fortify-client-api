@@ -22,23 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json.preprocessor;
+package com.fortify.api.util.rest.query;
 
-import java.util.Date;
-
-public class JSONMapFilterDateCompare extends JSONMapFilterSpEL {
-	public static enum DateComparisonOperator {
-		lt, gt, le, ge, eq, ne
-	}
-	
-	public JSONMapFilterDateCompare(String fieldPath, DateComparisonOperator operator, Date compareDate, boolean includeMatching) {
-		super(getDateExpression(fieldPath, operator, compareDate), includeMatching);
-	}
-
-	private static String getDateExpression(String fieldPath, DateComparisonOperator operator, Date compareDate) {
-		String expression = "getPath('"+fieldPath+"', T(java.util.Date))?.getTime() "+operator.name()+" "+compareDate.getTime()+"L";
-		return expression;
-	}
-	
-	
+public interface IRestConnectionQueryConfigAware<T> {
+	public void setRestConnectionQueryConfig(T config);
 }

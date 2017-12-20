@@ -24,13 +24,27 @@
  ******************************************************************************/
 package com.fortify.api.ssc.json.ondemand;
 
+import javax.ws.rs.client.WebTarget;
+
 import com.fortify.api.util.rest.connection.IRestConnection;
+import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
 
 public class SSCJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
 	private static final long serialVersionUID = 1L;
+	private final String[] fields;
 
-	public SSCJSONMapOnDemandLoaderRest(IRestConnection conn, String pathTemplateExpression) {
+	public SSCJSONMapOnDemandLoaderRest(IRestConnection conn, String pathTemplateExpression, String... fields) {
 		super(conn, true, pathTemplateExpression, "data");
+		this.fields = fields;
+	}
+	
+	@Override
+	protected WebTarget getWebTarget(JSONMap parent) {
+		WebTarget result = super.getWebTarget(parent);
+		if ( fields!=null && fields.length > 0 ) {
+			result = result.queryParam("fields", String.join(",", fields));
+		}
+		return result;
 	}
 }

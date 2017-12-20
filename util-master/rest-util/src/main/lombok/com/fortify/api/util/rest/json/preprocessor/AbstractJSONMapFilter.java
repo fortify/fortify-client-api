@@ -27,9 +27,11 @@ package com.fortify.api.util.rest.json.preprocessor;
 import com.fortify.api.util.rest.json.JSONMap;
 
 public abstract class AbstractJSONMapFilter implements IJSONMapPreProcessor {
+	public enum MatchMode { INCLUDE, EXCLUDE }
+	
 	private final boolean includeMatching;
-	public AbstractJSONMapFilter(boolean includeMatching) {
-		this.includeMatching = includeMatching;
+	public AbstractJSONMapFilter(MatchMode matchMode) {
+		this.includeMatching = MatchMode.INCLUDE.equals(matchMode);
 	}
 
 	@Override

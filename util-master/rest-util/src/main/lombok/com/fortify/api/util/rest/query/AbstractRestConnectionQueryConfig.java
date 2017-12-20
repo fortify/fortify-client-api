@@ -101,7 +101,11 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 		this.pagingSupported = pagingSupported;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public T preProcessor(IJSONMapPreProcessor preProcessor) {
+		if ( preProcessor instanceof IRestConnectionQueryConfigAware ) {
+			((IRestConnectionQueryConfigAware<T>)preProcessor).setRestConnectionQueryConfig(_this());
+		}
 		this.preProcessors.add(preProcessor);
 		return _this();
 	}

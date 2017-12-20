@@ -31,7 +31,7 @@ public class JSONMapFilterMaxResults extends AbstractJSONMapFilter {
 	private int count = 0;
 	
 	public JSONMapFilterMaxResults(int maxResults) {
-		super(true);
+		super(MatchMode.INCLUDE);
 		this.maxResults = maxResults;
 	}
 

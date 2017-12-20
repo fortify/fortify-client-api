@@ -25,9 +25,6 @@
 package com.fortify.api.ssc.connection.api;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -60,22 +57,24 @@ public class SSCAttributeAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Get all application version attribute values for the given application version,
-	 * indexed by attribute name.
+	 * indexed by attribute name. Attributes without any value will not be included
+	 * in the result.
 	 * @param applicationVersionId
 	 * @return
 	 */
-	public Map<String, List<String>> getApplicationVersionAttributeValuesByName(String applicationVersionId) {
-		Map<String, List<String>> result = new HashMap<String, List<String>>();
+	public JSONMap getApplicationVersionAttributeValuesByName(String applicationVersionId) {
+		JSONMap result = new JSONMap();
 		JSONList attrs = getApplicationVersionAttributes(applicationVersionId, true, "guid","value","values");
 		JSONList attrDefs = getAttributeDefinitions(true, "guid","name");
 		for ( JSONMap attr : attrs.asValueType(JSONMap.class) ) {
 			String attrName = attrDefs.mapValue("guid", attr.get("guid", String.class), "name", String.class);
-			JSONList attrValuesArray = attr.get("values", JSONList.class);
+			JSONList attrValues = attr.get("values", JSONList.class);
 			String attrValue = attr.get("value", String.class);
-			List<String> attrValues = StringUtils.isNotBlank(attrValue) 
-					? Arrays.asList(attrValue) 
-					: attrValuesArray==null ? null : attrValuesArray.getValues("name", String.class);
-			result.put(attrName, attrValues);
+			if ( StringUtils.isNotBlank(attrValue) ) {
+				result.put(attrName, new JSONList(Arrays.asList(attrValue))); 
+			} else if ( attrValues!=null && attrValues.size()>0 ) {
+				result.put(attrName, new JSONList(attrValues.getValues("name", String.class)));
+			}
 		}
 		return result;
 	}

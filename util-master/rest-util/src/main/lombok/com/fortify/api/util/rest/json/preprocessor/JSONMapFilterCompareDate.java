@@ -24,26 +24,21 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.json.preprocessor;
 
-import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import java.util.Date;
 
-import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.spring.SpringExpressionUtil;
-
-public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
-	private final Expression expression;
-	
-	public JSONMapFilterSpEL(Expression expression, MatchMode matchMode) {
-		super(matchMode);
-		this.expression = expression;
+public class JSONMapFilterCompareDate extends JSONMapFilterSpEL {
+	public static enum DateComparisonOperator {
+		lt, gt, le, ge, eq, ne
 	}
 	
-	public JSONMapFilterSpEL(String expression, MatchMode matchMode) {
-		this(new SpelExpressionParser().parseExpression(expression), matchMode);
+	public JSONMapFilterCompareDate(String fieldPath, DateComparisonOperator operator, Date compareDate, MatchMode matchMode) {
+		super(getDateExpression(fieldPath, operator, compareDate), matchMode);
 	}
 
-	@Override
-	protected boolean isMatching(JSONMap json) {
-		return SpringExpressionUtil.evaluateExpression(json, expression, Boolean.class);
+	private static String getDateExpression(String fieldPath, DateComparisonOperator operator, Date compareDate) {
+		String expression = "getPath('"+fieldPath+"', T(java.util.Date))?.getTime() "+operator.name()+" "+compareDate.getTime()+"L";
+		return expression;
 	}
+	
+	
 }

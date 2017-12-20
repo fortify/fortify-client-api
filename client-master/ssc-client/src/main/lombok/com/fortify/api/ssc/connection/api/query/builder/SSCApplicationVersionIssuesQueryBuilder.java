@@ -105,9 +105,9 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails() {
+	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails(String... fields) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty("details", 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issueDetails/${id}")));
+				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issueDetails/${id}", fields)));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/comments"})

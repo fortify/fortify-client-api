@@ -57,11 +57,13 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		properties.put("SSCBaseUrl", "http://localhost:1710/ssc");
 		properties.put("SSCUserName", "ssc");
 		properties.put("SSCPassword", "Admin123!");
-		properties.put("SSCProxy.url", "http://xxx.yyy/");
+		//properties.put("SSCProxy.url", "http://xxx.yyy/");
 		Map<String, Object> newMap = new HashMap<>();
 		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().fromMap(properties, "SSC", true).toMap(newMap, "Test", true).build();
 		System.out.println(newMap);
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();
+		System.out.println(api.queryApplicationVersions().id("6").onDemandCustomTags("customTagNames", "name").build().getUnique().get("customTagNames"));
+		/*
 		for ( int i = 0 ; i < 10 ; i++ ) {
 			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").paramFields("id", "name").useCache(true).build().getAll());
 			System.out.println(api.queryApplicationVersions().id("6").useCache(true).build().getAll());
@@ -69,6 +71,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 			System.out.println(api.getApplicationVersionByNameOrId("WebGoat:5.0", ":"));
 			System.out.println(api.queryApplicationVersions().useCache(true).build().getAll());
 		}
+		*/
 	}
 
 }

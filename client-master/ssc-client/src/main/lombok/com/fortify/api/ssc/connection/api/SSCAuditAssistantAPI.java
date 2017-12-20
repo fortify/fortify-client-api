@@ -34,9 +34,10 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterDateCompare;
+import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMode;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterCompareDate;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterRegEx;
-import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterDateCompare.DateComparisonOperator;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterCompareDate.DateComparisonOperator;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
@@ -78,13 +79,13 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 				// Query for artifact upload job
 			.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				// Only for selected application version 
-			.preProcessor(new JSONMapFilterRegEx("projectVersionId", applicationVersionId, true))
+			.preProcessor(new JSONMapFilterRegEx("projectVersionId", applicationVersionId, MatchMode.INCLUDE))
 				// Only for artifact names starting with 'AA_' (Audit Assistant)
-			.preProcessor(new JSONMapFilterRegEx("artifactName", "AA_.*\\.fpr", true))
+			.preProcessor(new JSONMapFilterRegEx("artifactName", "AA_.*\\.fpr", MatchMode.INCLUDE))
 				// Only include jobs finished after now (to wait for processing completion)
-			.preProcessor(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, now, true))
+			.preProcessor(new JSONMapFilterCompareDate("finishTime", DateComparisonOperator.gt, now, MatchMode.INCLUDE))
 				// Only include jobs started after now
-			.preProcessor(new JSONMapFilterDateCompare("startTime", DateComparisonOperator.gt, now, true))
+			.preProcessor(new JSONMapFilterCompareDate("startTime", DateComparisonOperator.gt, now, MatchMode.INCLUDE))
 			.build();
 		if ( invokeAuditAssistant(applicationVersionId) ) {
 			JSONList jobs = jobApi.waitForJobCreation(jobQuery, timeOutSeconds);

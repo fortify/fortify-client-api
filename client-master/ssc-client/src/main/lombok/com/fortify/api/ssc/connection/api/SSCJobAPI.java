@@ -32,8 +32,9 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCJobsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterDateCompare;
-import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterDateCompare.DateComparisonOperator;
+import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMode;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterCompareDate;
+import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterCompareDate.DateComparisonOperator;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 
 public class SSCJobAPI extends AbstractSSCAPI {
@@ -77,7 +78,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		
 		IRestConnectionQuery query = conn.api().job().queryJobs()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
-				.preProcessor(new JSONMapFilterDateCompare("finishTime", DateComparisonOperator.gt, new Date(), true)).build();
+				.preProcessor(new JSONMapFilterCompareDate("finishTime", DateComparisonOperator.gt, new Date(), MatchMode.INCLUDE)).build();
 		System.out.println(query.toString());
 		System.out.println(conn.api().job().waitForJobCreation(query, 60));
 	}

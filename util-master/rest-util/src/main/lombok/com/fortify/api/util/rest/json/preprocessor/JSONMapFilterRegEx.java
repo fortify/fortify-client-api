@@ -42,29 +42,29 @@ public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
 	};
 	private final ImmutableMap<String, Pattern> fieldPathPatternsMap;
 	
-	public JSONMapFilterRegEx(Map<String, Pattern> fieldPathPatternsMap, boolean includeMatching) {
-		super(includeMatching);
+	public JSONMapFilterRegEx(Map<String, Pattern> fieldPathPatternsMap, MatchMode matchMode) {
+		super(matchMode);
 		this.fieldPathPatternsMap = ImmutableMap.copyOf(fieldPathPatternsMap);
 	}
 	
-	public JSONMapFilterRegEx(String fieldPath, Pattern pattern, boolean includeMatching) {
-		this(ImmutableMap.of(fieldPath, pattern), includeMatching);
+	public JSONMapFilterRegEx(String fieldPath, Pattern pattern, MatchMode matchMode) {
+		this(ImmutableMap.of(fieldPath, pattern), matchMode);
 	}
 	
-	public JSONMapFilterRegEx(String fieldPath, String regex, boolean includeMatching) {
-		this(fieldPath, Pattern.compile(regex), includeMatching);
+	public JSONMapFilterRegEx(String fieldPath, String regex, MatchMode matchMode) {
+		this(fieldPath, Pattern.compile(regex), matchMode);
 	}
 	
 	// We cannot create a constructor for this, as generic type erasure would result in duplicate constructor
-	public static final JSONMapFilterRegEx fromFieldPathToPatternStringMap(Map<String, String> fieldPathPatternsMap, boolean includeMatching) {
-		return new JSONMapFilterRegEx(Maps.transformValues(fieldPathPatternsMap, STRING_TO_PATTERN_TRANSFORMER), includeMatching);
+	public static final JSONMapFilterRegEx fromFieldPathToPatternStringMap(Map<String, String> fieldPathPatternsMap, MatchMode matchMode) {
+		return new JSONMapFilterRegEx(Maps.transformValues(fieldPathPatternsMap, STRING_TO_PATTERN_TRANSFORMER), matchMode);
 	}
 
 	@Override
 	protected boolean isMatching(JSONMap json) {
 		for ( Map.Entry<String, Pattern> entry : fieldPathPatternsMap.entrySet() ) {
 			String value = json.getPath(entry.getKey(), String.class);
-			if ( !entry.getValue().matcher(value).matches() ) { return false; }
+			if ( value==null || !entry.getValue().matcher(value).matches() ) { return false; }
 		}
 		return true;
 	}
