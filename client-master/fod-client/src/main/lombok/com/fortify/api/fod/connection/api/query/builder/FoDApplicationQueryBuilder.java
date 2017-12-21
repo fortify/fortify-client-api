@@ -69,12 +69,12 @@ public class FoDApplicationQueryBuilder extends AbstractFoDEntityQueryBuilder<Fo
 		return super.paramFilterAnd("applicationType", applicationType);
 	}
 	
-	public FoDApplicationQueryBuilder includeAttributesMap() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("attributesMap", new AttributesMapOnDemandLoader()));
+	public FoDApplicationQueryBuilder onDemandAttributesMap(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, new AttributesMapOnDemandLoader()));
 	}
 	
-	public FoDApplicationQueryBuilder onDemandReleases() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("releases", 
+	public FoDApplicationQueryBuilder onDemandReleases(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}/releases")));
 	}
 	

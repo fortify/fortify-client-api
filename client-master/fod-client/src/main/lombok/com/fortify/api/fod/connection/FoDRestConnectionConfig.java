@@ -43,7 +43,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data @EqualsAndHashCode(callSuper=true)
 public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
-	private String scope = "https://fod.fortify.com/";
+	private String scope = "api-tenant";
 	private String clientId;
 	private String clientSecret;
 	private String tenant;
