@@ -1,0 +1,72 @@
+/*******************************************************************************
+ * (c) Copyright 2017 EntIT Software LLC
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a 
+ * copy of this software and associated documentation files (the 
+ * "Software"), to deal in the Software without restriction, including without 
+ * limitation the rights to use, copy, modify, merge, publish, distribute, 
+ * sublicense, and/or sell copies of the Software, and to permit persons to 
+ * whom the Software is furnished to do so, subject to the following 
+ * conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included 
+ * in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY 
+ * KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
+ * IN THE SOFTWARE.
+ ******************************************************************************/
+package com.fortify.api.client.samples;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
+import com.fortify.api.webinspect.connection.WebInspectAuthenticatingRestConnection;
+
+public class WebInspectSamples extends AbstractSamples {
+	private final WebInspectAuthenticatingRestConnection conn;
+	
+	
+	public WebInspectSamples(String baseUrlWithCredentials) {
+		this.conn = WebInspectAuthenticatingRestConnection.builder().baseUrl(baseUrlWithCredentials).build();
+	}
+
+	public static void main(String[] args) throws Exception {
+		if ( args.length < 1 ) {
+			throw new IllegalArgumentException("WebInspect URL in format http[s]://[apiKey@]host:port/ must be provided as first parameter");
+		}
+		if ( args.length < 2 ) {
+			throw new IllegalArgumentException("WebInspect macro path must be provided as second parameter");
+		}
+		WebInspectSamples samples = new WebInspectSamples(args[0]);
+		samples.sample1QueryMacros();
+		samples.sample2UploadMacro(args[1]);
+		samples.sample3QueryMacros();
+	}
+	
+	public final void sample1QueryMacros() throws Exception {
+		print("\n\n---- Query macros ----");
+		print(conn.api().macro().getMacros());
+	}
+	
+	public final void sample2UploadMacro(String macroPath) throws Exception {
+		print("\n\n---- Upload macro ----");
+		Path path = Paths.get(macroPath);
+		byte[] data = Files.readAllBytes(path);
+		conn.api().macro().uploadMacro(UUID.randomUUID().toString(), data);
+	}
+	
+	public final void sample3QueryMacros() throws Exception {
+		sample1QueryMacros();
+	}
+	
+
+}

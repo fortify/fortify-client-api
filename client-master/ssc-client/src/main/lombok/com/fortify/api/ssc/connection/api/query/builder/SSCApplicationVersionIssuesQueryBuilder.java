@@ -64,7 +64,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		return super.paramFields(fields);
 	}
 
-	public final SSCApplicationVersionIssuesQueryBuilder orderBy(String orderBy) {
+	public final SSCApplicationVersionIssuesQueryBuilder paramOrderBy(String orderBy) {
 		return super.paramOrderBy(orderBy);
 	}
 

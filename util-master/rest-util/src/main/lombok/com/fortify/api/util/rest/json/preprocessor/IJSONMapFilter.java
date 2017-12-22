@@ -22,34 +22,21 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package test;
+package com.fortify.api.util.rest.json.preprocessor;
 
-import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
+import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig;
 
-public class WIESamples extends AbstractSamples {
-	private final WIEAuthenticatingRestConnection conn;
-	
-	
-	public WIESamples(String baseUrlWithCredentials) {
-		this.conn = WIEAuthenticatingRestConnection.builder().baseUrl(baseUrlWithCredentials).build();
-	}
+/**
+ * Marker interface for {@link IJSONMapPreProcessor} implementations that perform filtering.
+ * Any {@link IJSONMapPreProcessor} implementation that may return false for the {@link #preProcess(JSONMap)}
+ * method <b><i>must</i></b> implement this interface in order for {@link AbstractRestConnectionQueryConfig#maxResults(Integer)}
+ * to work correctly. Note that any filter implementations that extend from {@link AbstractJSONMapFilter}
+ * already implement this interface.
+ * 
+ * @author Ruud Senden
+ *
+ */
+public interface IJSONMapFilter extends IJSONMapPreProcessor {
 
-	public static void main(String[] args) throws Exception {
-		if ( args.length < 1 ) {
-			throw new IllegalArgumentException("WIE URL in format http[s]://<user>:<password>@<host>[:port]/WIE/REST must be provided as first parameter");
-		}
-		WIESamples samples = new WIESamples(args[0]);
-		samples.sample1QueryAllMacros();
-		samples.sample2QueryMacrosByName();
-	}
-	
-	public final void sample1QueryAllMacros() throws Exception {
-		print("\n\n---- Query all macros ----");
-		print(conn.api().macro().queryMacros().build().getAll());
-	}
-	
-	public final void sample2QueryMacrosByName() throws Exception {
-		print("\n\n---- Query macros 'test' and 'anotherTest' ----");
-		print(conn.api().macro().queryMacros().names("test", "anotherTest").build().getAll());
-	}
 }

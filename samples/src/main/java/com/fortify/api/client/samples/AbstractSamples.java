@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package test;
+package com.fortify.api.client.samples;
 
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -36,8 +36,14 @@ public abstract class AbstractSamples {
 		print(json.toIndentedString());
 	}
 	
-	protected void print(Object string) {
-		System.out.println(string);
+	protected void print(Object obj) {
+		System.out.println(obj);
+		System.out.flush();
+	}
+	
+	protected void printInfo(Object obj) {
+		System.out.println("---- "+obj+" ----");
+		System.out.flush();
 	}
 
 }

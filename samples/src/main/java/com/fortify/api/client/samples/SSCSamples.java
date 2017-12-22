@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package test;
+package com.fortify.api.client.samples;
 
 import java.io.File;
 import java.util.Date;
@@ -63,18 +63,26 @@ public class SSCSamples extends AbstractSamples {
 		}
 		SSCSamples samples = new SSCSamples(args[0]);
 		samples.sample1QueryApplicationVersions();
-		samples.sample2UploadAndQueryArtifacts(args[1]);
-		samples.sample3InvokeAuditAssistant();
-		samples.sample4QueryApplicationVersionIssues();
-		samples.sample5QueryJobs();
-		samples.sample6WaitForJobCreation();
-		samples.sample7QueryMetrics();
+		JSONMap artifact = samples.sample2UploadAndQueryArtifacts(args[1]);
+		samples.sample3ApproveArtifact(artifact);
+		samples.sample4InvokeAuditAssistant();
+		samples.sample5QueryApplicationVersionIssues();
+		samples.sample6QueryJobs();
+		samples.sample7WaitForJobCreation();
+		samples.sample8QueryMetrics();
 	}
 	
 	public final void sample1QueryApplicationVersions() throws Exception {
-		print("\n\n---- Query application versions ----");
+		printInfo("Query application versions");
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();
+		
+		printInfo("Query all versions, max 3 results");
+		print(api.queryApplicationVersions().applicationName("WebGoat").maxResults(3).paramFields("id").build().getAll());
+		
+		printInfo("Get custom tag names for current application version");
 		print(api.queryApplicationVersions().id(applicationVersionId).onDemandCustomTags("customTagNames", "name").build().getUnique().get("customTagNames"));
+		
+		printInfo("Various application version queries to demonstrate caching");
 		for ( int i = 0 ; i < 10 ; i++ ) {
 			print(api.queryApplicationVersions().applicationName("WebGoat").paramFields("id", "name").useCache(true).build().getAll());
 			print(api.queryApplicationVersions().id(applicationVersionId).useCache(true).build().getAll());
@@ -86,21 +94,34 @@ public class SSCSamples extends AbstractSamples {
 		}
 	}
 	
-	public final void sample2UploadAndQueryArtifacts(String artifactPath) throws Exception {
-		print("\n\n---- Upload artifact and wait at most 1 minute for processing to complete ----");
+	public final JSONMap sample2UploadAndQueryArtifacts(String artifactPath) throws Exception {
+		printInfo("Upload artifact and wait at most 1 minute for processing to complete");
 		String artifactId = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion(applicationVersionId, new File(artifactPath), 60);
 		print(artifactId);
-		print(conn.api().artifact().getArtifactById(artifactId, true));
-		print(conn.api().artifact().getArtifactById(artifactId, true).get("uploadDate", Date.class).getClass().getName());
+		if ( artifactId != null ) {
+			JSONMap artifact = conn.api().artifact().getArtifactById(artifactId, true);
+			print(artifact);
+			print(artifact.get("uploadDate", Date.class).getClass().getName());
+			return artifact;
+		} else {
+			return null;
+		}
 	}
 	
-	public final void sample3InvokeAuditAssistant() throws Exception {
-		print("\n\n---- Invoke audit assistant and waiting for completion (wait at most 5 minutes)----");
+	public final void sample3ApproveArtifact(JSONMap artifact) {
+		printInfo("Approve artifact if necessary");
+		if ( artifact != null && artifact.get("status", String.class).equals("REQUIRE_AUTH") ) {
+			conn.api().artifact().approveArtifact(artifact.get("id",String.class), "Auto-approved");
+		}
+	}
+	
+	public final void sample4InvokeAuditAssistant() throws Exception {
+		printInfo("Invoke audit assistant and waiting for completion (wait at most 5 minutes)");
 		print(conn.api().auditAssistant().invokeAuditAssistant(applicationVersionId, 300));
 	}
 	
-	public final void sample4QueryApplicationVersionIssues() throws Exception {
-		print("\n\n---- Query application version issues including on-demand data ----");
+	public final void sample5QueryApplicationVersionIssues() throws Exception {
+		printInfo("Query application version issues including on-demand data");
 		JSONList issues = conn.api().issue().queryIssues(applicationVersionId).onDemandDetails().onDemandAuditHistory().onDemandComments().maxResults(1).build().getAll();
 		print(issues);
 		print(issues.asValueType(JSONMap.class).get(0).get("issueDetails"));
@@ -111,15 +132,15 @@ public class SSCSamples extends AbstractSamples {
 		print(issues);
 	}
 	
-	public final void sample5QueryJobs() throws Exception {
-		print("\n\n---- Query jobs ----");
+	public final void sample6QueryJobs() throws Exception {
+		printInfo("Query jobs ----");
 		JSONMap job = conn.api().job().queryJobs().maxResults(1).build().getUnique();
 		print(job);
 	}
 	
-	public final void sample6WaitForJobCreation() throws Exception {
-		print("\n\n---- Wait 60 seconds for artifact upload job creation ----");
-		print("(please upload artifact to application version WebGoat 5.0) ----");
+	public final void sample7WaitForJobCreation() throws Exception {
+		printInfo("Wait 60 seconds for artifact upload job creation");
+		printInfo("(please upload artifact to application version WebGoat 5.0)");
 		IRestConnectionQuery query = conn.api().job().queryJobs()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				.preProcessor(new JSONMapFilterCompareDate(MatchMode.INCLUDE, "finishTime", DateComparisonOperator.gt, new Date())).build();
@@ -127,8 +148,8 @@ public class SSCSamples extends AbstractSamples {
 		print(conn.api().job().waitForJobCreation(query, 60));
 	}
 	
-	public final void sample7QueryMetrics() throws Exception {
-		print("\n\n---- Query metrics ----");
+	public final void sample8QueryMetrics() throws Exception {
+		printInfo("Query metrics");
 		print(conn.api().metrics().queryApplicationVersionMetricHistories(applicationVersionId, MetricType.variable).useCache(true).build().getAll());
 		print(conn.api().metrics().queryApplicationVersionMetricHistories(applicationVersionId, MetricType.performanceIndicator).useCache(true).build().getAll());
 	}

@@ -22,51 +22,34 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package test;
+package com.fortify.api.client.samples;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
+import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
-import com.fortify.api.webinspect.connection.WebInspectAuthenticatingRestConnection;
-
-public class WebInspectSamples extends AbstractSamples {
-	private final WebInspectAuthenticatingRestConnection conn;
+public class WIESamples extends AbstractSamples {
+	private final WIEAuthenticatingRestConnection conn;
 	
 	
-	public WebInspectSamples(String baseUrlWithCredentials) {
-		this.conn = WebInspectAuthenticatingRestConnection.builder().baseUrl(baseUrlWithCredentials).build();
+	public WIESamples(String baseUrlWithCredentials) {
+		this.conn = WIEAuthenticatingRestConnection.builder().baseUrl(baseUrlWithCredentials).build();
 	}
 
 	public static void main(String[] args) throws Exception {
 		if ( args.length < 1 ) {
-			throw new IllegalArgumentException("WebInspect URL in format http[s]://[apiKey@]host:port/ must be provided as first parameter");
+			throw new IllegalArgumentException("WIE URL in format http[s]://<user>:<password>@<host>[:port]/WIE/REST must be provided as first parameter");
 		}
-		if ( args.length < 2 ) {
-			throw new IllegalArgumentException("WebInspect macro path must be provided as second parameter");
-		}
-		WebInspectSamples samples = new WebInspectSamples(args[0]);
-		samples.sample1QueryMacros();
-		samples.sample2UploadMacro(args[1]);
-		samples.sample3QueryMacros();
+		WIESamples samples = new WIESamples(args[0]);
+		samples.sample1QueryAllMacros();
+		samples.sample2QueryMacrosByName();
 	}
 	
-	public final void sample1QueryMacros() throws Exception {
-		print("\n\n---- Query macros ----");
-		print(conn.api().macro().getMacros());
+	public final void sample1QueryAllMacros() throws Exception {
+		print("\n\n---- Query all macros ----");
+		print(conn.api().macro().queryMacros().build().getAll());
 	}
 	
-	public final void sample2UploadMacro(String macroPath) throws Exception {
-		print("\n\n---- Upload macro ----");
-		Path path = Paths.get(macroPath);
-		byte[] data = Files.readAllBytes(path);
-		conn.api().macro().uploadMacro(UUID.randomUUID().toString(), data);
+	public final void sample2QueryMacrosByName() throws Exception {
+		print("\n\n---- Query macros 'test' and 'anotherTest' ----");
+		print(conn.api().macro().queryMacros().names("test", "anotherTest").build().getAll());
 	}
-	
-	public final void sample3QueryMacros() throws Exception {
-		sample1QueryMacros();
-	}
-	
-
 }

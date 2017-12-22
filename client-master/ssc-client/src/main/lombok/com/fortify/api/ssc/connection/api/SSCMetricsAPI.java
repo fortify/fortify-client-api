@@ -26,6 +26,7 @@ package com.fortify.api.ssc.connection.api;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionMetricHistoriesQueryBuilder;
+import com.fortify.api.util.rest.json.JSONList;
 
 public class SSCMetricsAPI extends AbstractSSCAPI {
 	public static enum MetricType {
@@ -38,5 +39,9 @@ public class SSCMetricsAPI extends AbstractSSCAPI {
 	
 	public SSCApplicationVersionMetricHistoriesQueryBuilder queryApplicationVersionMetricHistories(String applicationVersionId, MetricType metricType) {
 		return new SSCApplicationVersionMetricHistoriesQueryBuilder(conn(), applicationVersionId, metricType);
+	}
+	
+	public JSONList getApplicationVersionMetrics(String applicationVersionId, MetricType metricType, boolean useCache) {
+		return queryApplicationVersionMetricHistories(applicationVersionId, metricType).useCache(useCache).build().getAll();
 	}
 }

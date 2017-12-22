@@ -35,8 +35,11 @@ public class SSCRestConnectionConfig<T extends SSCRestConnectionConfig<T>> exten
 	
 	@Override
 	protected void parseUriUserInfo(String userInfo) {
-		// TODO First check if userInfo contains api token
-		super.parseUriUserInfo(userInfo);
+		if ( userInfo != null && userInfo.startsWith("authToken:") ) {
+			setAuthToken(userInfo.substring("authToken:".length()));
+		} else {
+			super.parseUriUserInfo(userInfo);
+		}
 	}
 	
 	public T authToken(String authToken) {

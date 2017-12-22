@@ -26,7 +26,7 @@ package com.fortify.api.util.rest.json.preprocessor;
 
 import com.fortify.api.util.rest.json.JSONMap;
 
-public abstract class AbstractJSONMapFilter implements IJSONMapPreProcessor {
+public abstract class AbstractJSONMapFilter implements IJSONMapFilter {
 	public enum MatchMode { INCLUDE, EXCLUDE }
 	
 	private final boolean includeMatching;

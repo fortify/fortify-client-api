@@ -46,11 +46,15 @@ public class SSCApplicationVersionArtifactsQueryBuilder extends AbstractSSCAppli
 		return super.paramFields(fields);
 	}
 
-	public final SSCApplicationVersionArtifactsQueryBuilder orderBy(String orderBy) {
+	public final SSCApplicationVersionArtifactsQueryBuilder paramOrderBy(String orderBy) {
 		return super.paramOrderBy(orderBy);
 	}
 
 	public final SSCApplicationVersionArtifactsQueryBuilder paramQAnd(String field, String value) {
 		return super.paramQAnd(field, value);
+	}
+	
+	public final SSCApplicationVersionArtifactsQueryBuilder paramEmbedScans() {
+		return super.paramEmbed("scans");
 	}
 }

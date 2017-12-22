@@ -53,7 +53,7 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 		return super.paramFields(fields);
 	}
 
-	public final SSCApplicationVersionsQueryBuilder orderBy(String orderBy) {
+	public final SSCApplicationVersionsQueryBuilder paramOrderBy(String orderBy) {
 		return super.paramOrderBy(orderBy);
 	}
 

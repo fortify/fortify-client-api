@@ -34,6 +34,7 @@ import javax.ws.rs.client.WebTarget;
 import com.fortify.api.util.rest.connection.IRestConnection;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
+import com.fortify.api.util.rest.json.preprocessor.IJSONMapFilter;
 import com.fortify.api.util.rest.json.preprocessor.IJSONMapPreProcessor;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterMaxResults;
 import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;
@@ -81,6 +82,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	private final Entity<?> entity;
 	private final String httpMethod;
 	private final IRequestInitializer requestInitializer;
+	private final boolean hasFilters;
 	
 	protected AbstractRestConnectionQuery(AbstractRestConnectionQueryConfig<ConnType, ?> config) {
 		this.conn = config.getConn();
@@ -92,6 +94,13 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 		this.entity = config.getEntity();
 		this.httpMethod = config.getHttpMethod();
 		this.requestInitializer = config.getRequestInitializer();
+		boolean hasFilters = false;
+		for ( IJSONMapPreProcessor preProcessor : this.preProcessors ) {
+			if ( preProcessor instanceof IJSONMapFilter ) {
+				hasFilters = true; break;
+			}
+		}
+		this.hasFilters = hasFilters;
 	}
 	
 	/* (non-Javadoc)
@@ -99,7 +108,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	 */
 	@Override
 	public void processAll(IJSONMapProcessor processor) {
-		processAll(getWebTarget(), new PagingData().max(maxResults), processor);
+		processAll(getWebTarget(), new PagingData(hasFilters).max(maxResults), processor);
 	}
 
 	/* (non-Javadoc)
@@ -118,7 +127,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	@Override
 	public JSONMap getUnique() {
 		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(getWebTarget(), new PagingData().max(Math.min(2, maxResults)), processor);
+		processAll(getWebTarget(), new PagingData(hasFilters).max(Math.min(2, maxResults)), processor);
 		JSONList list = processor.getJsonList();
 		if ( list == null || list.size() == 0 ) {
 			return null;
@@ -179,17 +188,16 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	 */
 	private void processAll(WebTarget target, PagingData pagingData, IJSONMapProcessor processor) {
 		if ( requestInitializer != null ) { requestInitializer.initRequest(); }
+		List<IJSONMapPreProcessor> preProcessorsWithMaxResults = new ArrayList<>(preProcessors);
+		preProcessorsWithMaxResults.add(new JSONMapFilterMaxResults(maxResults));
+		processor = new JSONMapProcessorWithPreProcessors(preProcessorsWithMaxResults, processor);
 		if ( !pagingSupported ) {
-			List<IJSONMapPreProcessor> preProcessorsWithMaxResults = new ArrayList<>(preProcessors);
-			preProcessorsWithMaxResults.add(new JSONMapFilterMaxResults(maxResults));
-			processor = new JSONMapProcessorWithPreProcessors(preProcessorsWithMaxResults, processor);
-			processSingleRequest(target, processor);
+			processSingleRequest(target, processor, null);
 		} else {
-			processor = new JSONMapProcessorWithPreProcessors(preProcessors, processor);
 			do {
 				processor.nextPage(pagingData);
 				WebTarget pagingTarget = updateWebTargetWithPagingData(target, pagingData);
-				ResponseType response = processSingleRequest(pagingTarget, processor);
+				ResponseType response = processSingleRequest(pagingTarget, processor, pagingData);
 				updatePagingDataFromResponse(pagingData, response);
 			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getPageSize()>0 );
 		}
@@ -198,12 +206,15 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
 	 */
-	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor) {
+	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor, PagingData pagingData) {
 		ResponseType data = executeRequest(target);
 		JSONList list = getJSONListFromResponse(data);
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
 				processor.process(obj);
+				if ( pagingData != null ) {
+					pagingData.addToCurrentCount(1);
+				}
 			}
 		}
 		return data;

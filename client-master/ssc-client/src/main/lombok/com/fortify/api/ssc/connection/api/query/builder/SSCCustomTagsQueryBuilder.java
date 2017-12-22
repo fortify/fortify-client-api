@@ -46,7 +46,7 @@ public final class SSCCustomTagsQueryBuilder extends AbstractSSCEntityQueryBuild
 		return super.paramFields(fields);
 	}
 
-	public final SSCCustomTagsQueryBuilder orderBy(String orderBy) {
+	public final SSCCustomTagsQueryBuilder paramOrderBy(String orderBy) {
 		return super.paramOrderBy(orderBy);
 	}
 }

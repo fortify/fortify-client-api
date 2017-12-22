@@ -40,13 +40,25 @@ public class PagingData {
 	private int max = -1;
 	private int total = -1;
 	private int lastPageSize = -1;
+	private int currentCount = 0;
+	private final boolean hasFilters;
+	
+	public PagingData(boolean hasFilters) {
+		this.hasFilters = hasFilters;
+	}
 	
 	public int getPageSize() {
-		if ( this.max==-1 ) {
+		if ( this.max==-1 || this.currentCount < this.max ) {
 			return pageSize; 
+		} else if ( hasFilters) {
+			return pageSize;
 		} else {
 			return Math.min(pageSize, max-start);
 		}
+	}
+	
+	public void addToCurrentCount(int count) {
+		this.currentCount+=count;
 	}
 	
 	public void setLastPageSize(int lastPageSize) {
