@@ -31,8 +31,8 @@ public class JSONMapFilterCompareDate extends JSONMapFilterSpEL {
 		lt, gt, le, ge, eq, ne
 	}
 	
-	public JSONMapFilterCompareDate(String fieldPath, DateComparisonOperator operator, Date compareDate, MatchMode matchMode) {
-		super(getDateExpression(fieldPath, operator, compareDate), matchMode);
+	public JSONMapFilterCompareDate(MatchMode matchMode, String fieldPath, DateComparisonOperator operator, Date compareDate) {
+		super(matchMode, getDateExpression(fieldPath, operator, compareDate));
 	}
 
 	private static String getDateExpression(String fieldPath, DateComparisonOperator operator, Date compareDate) {

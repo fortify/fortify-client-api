@@ -87,7 +87,7 @@ public class FoDApplicationQueryBuilder extends AbstractFoDEntityQueryBuilder<Fo
 		@Override
 		public Object getOnDemand(String propertyName, JSONMap parent) {
 			return parent.getOrCreateJSONList("attributes")
-					.filter("value!='(Not Set)'", true).toMap("name", String.class, "value", String.class);
+					.filter("value!='(Not Set)'", true).toJSONMap("name", String.class, "value", String.class);
 		}
 	}
 }

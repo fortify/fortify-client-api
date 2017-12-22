@@ -35,6 +35,6 @@ public class WIEMacrosQueryBuilder extends AbstractWIEEntityQueryBuilder<WIEMacr
 	}
 	
 	public WIEMacrosQueryBuilder names(String... names) {
-		return preProcessor(new JSONMapFilterRegEx("name", "\\Q"+String.join("\\E|\\Q", names)+"\\E", MatchMode.INCLUDE));
+		return preProcessor(new JSONMapFilterRegEx(MatchMode.INCLUDE, "name", "\\Q"+String.join("\\E|\\Q", names)+"\\E"));
 	}
 }

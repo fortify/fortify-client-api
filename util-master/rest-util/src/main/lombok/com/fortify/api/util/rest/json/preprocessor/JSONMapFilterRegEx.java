@@ -42,22 +42,22 @@ public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
 	};
 	private final ImmutableMap<String, Pattern> fieldPathPatternsMap;
 	
-	public JSONMapFilterRegEx(Map<String, Pattern> fieldPathPatternsMap, MatchMode matchMode) {
+	public JSONMapFilterRegEx(MatchMode matchMode, Map<String, Pattern> fieldPathPatternsMap) {
 		super(matchMode);
 		this.fieldPathPatternsMap = ImmutableMap.copyOf(fieldPathPatternsMap);
 	}
 	
-	public JSONMapFilterRegEx(String fieldPath, Pattern pattern, MatchMode matchMode) {
-		this(ImmutableMap.of(fieldPath, pattern), matchMode);
+	public JSONMapFilterRegEx(MatchMode matchMode, String fieldPath, Pattern pattern) {
+		this(matchMode, ImmutableMap.of(fieldPath, pattern));
 	}
 	
-	public JSONMapFilterRegEx(String fieldPath, String regex, MatchMode matchMode) {
-		this(fieldPath, Pattern.compile(regex), matchMode);
+	public JSONMapFilterRegEx(MatchMode matchMode, String fieldPath, String regex) {
+		this(matchMode, fieldPath, Pattern.compile(regex));
 	}
 	
 	// We cannot create a constructor for this, as generic type erasure would result in duplicate constructor
-	public static final JSONMapFilterRegEx fromFieldPathToPatternStringMap(Map<String, String> fieldPathPatternsMap, MatchMode matchMode) {
-		return new JSONMapFilterRegEx(Maps.transformValues(fieldPathPatternsMap, STRING_TO_PATTERN_TRANSFORMER), matchMode);
+	public static final JSONMapFilterRegEx fromFieldPathToPatternStringMap(MatchMode matchMode, Map<String, String> fieldPathPatternsMap) {
+		return new JSONMapFilterRegEx(matchMode, Maps.transformValues(fieldPathPatternsMap, STRING_TO_PATTERN_TRANSFORMER));
 	}
 
 	@Override

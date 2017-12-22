@@ -106,6 +106,10 @@ public class JSONList extends ArrayList<Object> {
 		return result;
 	}
 	
+	public final <V> JSONMap toJSONMap(String keyExpression, Class<String> keyType, String valueExpression, Class<V> valueType) {
+		return new JSONMap(toMap(keyExpression, keyType, valueExpression, valueType));
+	}
+
 	public final <K, V> LinkedHashMap<K, V> toMap(String keyExpression, Class<K> keyType, Class<V> valueType) {
 		return toMap(keyExpression, keyType, "#this", valueType);
 	}

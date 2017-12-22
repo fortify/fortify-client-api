@@ -25,9 +25,9 @@
 package com.fortify.api.utilities.analyze.ssc.api.usage;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.fortify.api.utilities.analyze.CallsToAnnotatedMethodsAnalyzer;
 
@@ -89,7 +89,7 @@ public class AnalyzeSSCAPIUsage {
 		// TODO Should we also report any API method invocations outside of
 		// methods?
 		// (i.e. field initializers, static blocks, ...)
-		Set<String> requiredActionsPermitted = new HashSet<>();
+		Set<String> requiredActionsPermitted = new TreeSet<>();
 		System.out.println("\nMethods in custom code that require SSC permitted actions: ");
 		for (Map.Entry<String, Set<String>> entry : methodsToAnnotationValuesMap.entrySet()) {
 			if (!entry.getKey().startsWith("com/fortify/api/ssc")) {

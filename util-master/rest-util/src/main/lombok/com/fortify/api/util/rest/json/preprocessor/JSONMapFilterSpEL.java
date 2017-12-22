@@ -33,13 +33,13 @@ import com.fortify.api.util.spring.SpringExpressionUtil;
 public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
 	private final Expression expression;
 	
-	public JSONMapFilterSpEL(Expression expression, MatchMode matchMode) {
+	public JSONMapFilterSpEL(MatchMode matchMode, Expression expression) {
 		super(matchMode);
 		this.expression = expression;
 	}
 	
-	public JSONMapFilterSpEL(String expression, MatchMode matchMode) {
-		this(new SpelExpressionParser().parseExpression(expression), matchMode);
+	public JSONMapFilterSpEL(MatchMode matchMode, String expression) {
+		this(matchMode, new SpelExpressionParser().parseExpression(expression));
 	}
 
 	@Override

@@ -78,8 +78,8 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	 * @param connectionId
 	 * @return
 	 */
-	public T supportMultiJVMSerialization(String connectionId) {
-		setConnectionId(connectionId);
+	public T enableSerializationMultiJVM(String connectionId) {
+		setMultiJVMSerializationId(connectionId);
 		return getThis();
 	}
 	
@@ -87,7 +87,7 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	 * @see #setSingleJVMSerializationSupported(boolean)
 	 * @return
 	 */
-	public T supportSingleJVMSerialization() {
+	public T enableSerializationSingleJVM() {
 		setSingleJVMSerializationSupported(true);
 		return getThis();
 	}

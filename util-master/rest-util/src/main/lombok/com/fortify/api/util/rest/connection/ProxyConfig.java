@@ -24,13 +24,16 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 /**
  * This class defines a proxy configuration.
  */
 @Data
-public class ProxyConfig {
+public class ProxyConfig implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String url;
 	private String userName;
 	private String password;
