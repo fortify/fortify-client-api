@@ -33,7 +33,7 @@ public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChi
 	public FoDReleaseVulnerabilitiesQueryBuilder(FoDAuthenticatingRestConnection conn, String releaseId) {
 		super(conn, releaseId, true);
 		appendPath("vulnerabilities");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl().toString().replace("https://api.", "https://")+"redirect/Issues/${vulnId}"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl().toString().replace("https://api.", "https://")+"/redirect/Issues/${vulnId}"));
 	}
 	
 	@Override
