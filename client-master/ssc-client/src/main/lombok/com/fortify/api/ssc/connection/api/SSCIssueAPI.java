@@ -67,19 +67,6 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 				Entity.entity(issueSearchOptions.getJSONRequestData(), "application/json"), JSONMap.class);
 	}
 	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
-		//System.out.println(conn.api().issue().queryIssues("6").embedOnDemandObjects().build().getAll());
-		JSONList issues = conn.api().issue().queryIssues("6").onDemandDetails().onDemandAuditHistory().onDemandComments().maxResults(1).build().getAll();
-		System.out.println(issues);
-		System.out.println(issues.asValueType(JSONMap.class).get(0).get("issueDetails"));
-		System.out.println(issues);
-		System.out.println(issues.asValueType(JSONMap.class).get(0).get("issueComments"));
-		System.out.println(issues);
-		System.out.println(issues.asValueType(JSONMap.class).get(0).get("issueAuditHistory"));
-		System.out.println(issues);
-	}
-	
 	/**
 	 * This class describes the SSC issue search options, allowing to either 
 	 * include or exclude removed, hidden and suppressed issues.

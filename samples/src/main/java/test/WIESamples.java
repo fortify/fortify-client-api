@@ -22,36 +22,34 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.fod.connection.api;
+package test;
 
-import java.util.Collection;
+import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
+public class WIESamples extends AbstractSamples {
+	private final WIEAuthenticatingRestConnection conn;
+	
+	
+	public WIESamples(String baseUrlWithCredentials) {
+		this.conn = WIEAuthenticatingRestConnection.builder().baseUrl(baseUrlWithCredentials).build();
+	}
 
-import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.api.fod.connection.api.query.builder.FoDReleaseVulnerabilitiesQueryBuilder;
-import com.fortify.api.util.rest.json.JSONMap;
-
-public class FoDVulnerabilityAPI extends AbstractFoDAPI {
-	public FoDVulnerabilityAPI(FoDAuthenticatingRestConnection conn) {
-		super(conn);
+	public static void main(String[] args) throws Exception {
+		if ( args.length < 1 ) {
+			throw new IllegalArgumentException("WIE URL in format http[s]://<user>:<password>@<host>[:port]/WIE/REST must be provided as first parameter");
+		}
+		WIESamples samples = new WIESamples(args[0]);
+		samples.sample1QueryAllMacros();
+		samples.sample2QueryMacrosByName();
 	}
 	
-	public FoDReleaseVulnerabilitiesQueryBuilder queryVulnerabilities(String releaseId) {
-		return new FoDReleaseVulnerabilitiesQueryBuilder(conn(), releaseId);
+	public final void sample1QueryAllMacros() throws Exception {
+		print("\n\n---- Query all macros ----");
+		print(conn.api().macro().queryMacros().build().getAll());
 	}
 	
-	public void bulkEdit(String releaseId, JSONMap data) {
-		String path = String.format("/api/v3/releases/%s/vulnerabilities/bulk-edit", releaseId);
-		conn().executeRequest(HttpMethod.POST, conn().getBaseResource().path(path), Entity.entity(data,MediaType.APPLICATION_JSON), JSONMap.class);
-	}
-	
-	public void addCommentToVulnerabilities(String releaseId, String comment, Collection<String> vulnIds) {
-		JSONMap data = new JSONMap();
-		data.put("comment", comment);
-		data.put("vulnerabilityIds", vulnIds);
-		bulkEdit(releaseId, data);
+	public final void sample2QueryMacrosByName() throws Exception {
+		print("\n\n---- Query macros 'test' and 'anotherTest' ----");
+		print(conn.api().macro().queryMacros().names("test", "anotherTest").build().getAll());
 	}
 }

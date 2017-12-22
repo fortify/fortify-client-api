@@ -30,50 +30,50 @@ import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.ondemand.AbstractJSONMapOnDemandLoader;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
-public class FoDApplicationQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDApplicationQueryBuilder> {
-	public FoDApplicationQueryBuilder(FoDAuthenticatingRestConnection conn) {
+public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDApplicationsQueryBuilder> {
+	public FoDApplicationsQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/applications");
 		// TODO Add PreProcessor to add deep link?
 	}
 	
 	@Override
-	public FoDApplicationQueryBuilder paramFields(String... fields) {
+	public FoDApplicationsQueryBuilder paramFields(String... fields) {
 		return super.paramFields(fields);
 	}
 	
 	@Override
-	public FoDApplicationQueryBuilder paramFilterAnd(String field, String... values) {
+	public FoDApplicationsQueryBuilder paramFilterAnd(String field, String... values) {
 		return super.paramFilterAnd(field, values);
 	}
 	
 	@Override
-	public FoDApplicationQueryBuilder paramFilterAnd(String filter) {
+	public FoDApplicationsQueryBuilder paramFilterAnd(String filter) {
 		return super.paramFilterAnd(filter);
 	}
 	
 	@Override
-	public FoDApplicationQueryBuilder paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
+	public FoDApplicationsQueryBuilder paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
 		return super.paramOrderBy(orderBy, orderByDirection);
 	}
 	
-	public FoDApplicationQueryBuilder applicationId(String applicationId) {
+	public FoDApplicationsQueryBuilder applicationId(String applicationId) {
 		return super.paramFilterAnd("applicationId", applicationId);
 	}
 	
-	public FoDApplicationQueryBuilder applicationName(String applicationName) {
+	public FoDApplicationsQueryBuilder applicationName(String applicationName) {
 		return super.paramFilterAnd("applicationName", applicationName);
 	}
 	
-	public FoDApplicationQueryBuilder applicationType(String applicationType) {
+	public FoDApplicationsQueryBuilder applicationType(String applicationType) {
 		return super.paramFilterAnd("applicationType", applicationType);
 	}
 	
-	public FoDApplicationQueryBuilder onDemandAttributesMap(String propertyName) {
+	public FoDApplicationsQueryBuilder onDemandAttributesMap(String propertyName) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, new AttributesMapOnDemandLoader()));
 	}
 	
-	public FoDApplicationQueryBuilder onDemandReleases(String propertyName) {
+	public FoDApplicationsQueryBuilder onDemandReleases(String propertyName) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}/releases")));
 	}

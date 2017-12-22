@@ -25,7 +25,7 @@
 package com.fortify.api.fod.connection.api;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.api.fod.connection.api.query.builder.FoDReleaseQueryBuilder;
+import com.fortify.api.fod.connection.api.query.builder.FoDReleasesQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 
 public class FoDReleaseAPI extends AbstractFoDAPI {
@@ -33,8 +33,8 @@ public class FoDReleaseAPI extends AbstractFoDAPI {
 		super(conn);
 	}
 	
-	public FoDReleaseQueryBuilder queryReleases() {
-		return new FoDReleaseQueryBuilder(conn());
+	public FoDReleasesQueryBuilder queryReleases() {
+		return new FoDReleasesQueryBuilder(conn());
 	}
 	
 	public JSONMap getReleaseById(String releaseId) {

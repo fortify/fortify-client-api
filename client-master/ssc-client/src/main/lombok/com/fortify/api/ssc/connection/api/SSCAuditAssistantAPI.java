@@ -96,10 +96,4 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 		}
 		return result;
 	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
-		System.out.println(conn.api().auditAssistant().invokeAuditAssistant("8", 300));
-	}
-
 }

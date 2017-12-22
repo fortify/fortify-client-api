@@ -25,7 +25,7 @@
 package com.fortify.api.fod.connection.api;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.api.fod.connection.api.query.builder.FoDApplicationQueryBuilder;
+import com.fortify.api.fod.connection.api.query.builder.FoDApplicationsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 
 public class FoDApplicationAPI extends AbstractFoDAPI {
@@ -33,8 +33,8 @@ public class FoDApplicationAPI extends AbstractFoDAPI {
 		super(conn);
 	}
 	
-	public FoDApplicationQueryBuilder queryApplications() {
-		return new FoDApplicationQueryBuilder(conn());
+	public FoDApplicationsQueryBuilder queryApplications() {
+		return new FoDApplicationsQueryBuilder(conn());
 	}
 	
 	public JSONMap getApplicationById(String applicationId) {

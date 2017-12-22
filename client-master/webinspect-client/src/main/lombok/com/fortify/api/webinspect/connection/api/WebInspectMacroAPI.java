@@ -25,9 +25,6 @@
 package com.fortify.api.webinspect.connection.api;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 
 import javax.ws.rs.HttpMethod;
@@ -70,14 +67,5 @@ public class WebInspectMacroAPI extends AbstractWebInspectAPI {
 				e.printStackTrace();
 			}
         }
-	}
-	
-	public static void main(String[] args) throws IOException {
-		WebInspectAuthenticatingRestConnection conn = WebInspectAuthenticatingRestConnection.builder().baseUrl("http://apiKey:test@rs-fortifywie.westeurope.cloudapp.azure.com:8088/webinspect;readTimeout=80000").build();
-		System.out.println(conn.api().macro().getMacros());
-		//conn.api().macro().deleteMacro("test");
-		Path path = Paths.get("C:/Users/sendenr/Downloads/test.webmacro");
-		byte[] data = Files.readAllBytes(path);
-		conn.api().macro().uploadMacro("MyTest", data);
 	}
 }

@@ -22,36 +22,22 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.fod.connection.api;
+package test;
 
-import java.util.Collection;
-
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-
-import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.api.fod.connection.api.query.builder.FoDReleaseVulnerabilitiesQueryBuilder;
+import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
-public class FoDVulnerabilityAPI extends AbstractFoDAPI {
-	public FoDVulnerabilityAPI(FoDAuthenticatingRestConnection conn) {
-		super(conn);
+public abstract class AbstractSamples {
+	protected void print(JSONMap json) {
+		print(json.toIndentedString());
 	}
 	
-	public FoDReleaseVulnerabilitiesQueryBuilder queryVulnerabilities(String releaseId) {
-		return new FoDReleaseVulnerabilitiesQueryBuilder(conn(), releaseId);
+	protected void print(JSONList json) {
+		print(json.toIndentedString());
 	}
 	
-	public void bulkEdit(String releaseId, JSONMap data) {
-		String path = String.format("/api/v3/releases/%s/vulnerabilities/bulk-edit", releaseId);
-		conn().executeRequest(HttpMethod.POST, conn().getBaseResource().path(path), Entity.entity(data,MediaType.APPLICATION_JSON), JSONMap.class);
+	protected void print(Object string) {
+		System.out.println(string);
 	}
-	
-	public void addCommentToVulnerabilities(String releaseId, String comment, Collection<String> vulnIds) {
-		JSONMap data = new JSONMap();
-		data.put("comment", comment);
-		data.put("vulnerabilityIds", vulnIds);
-		bulkEdit(releaseId, data);
-	}
+
 }

@@ -24,9 +24,6 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
@@ -51,27 +48,4 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
 		return queryApplicationVersions().nameOrId(nameOrId, separator).useCache(true).build().getUnique();
 	}
-	
-	public static void main(String[] args) {
-		Map<String,Object> properties = new HashMap<>();
-		properties.put("SSCBaseUrl", "http://localhost:1710/ssc");
-		properties.put("SSCUserName", "ssc");
-		properties.put("SSCPassword", "Admin123!");
-		//properties.put("SSCProxy.url", "http://xxx.yyy/");
-		Map<String, Object> newMap = new HashMap<>();
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().fromMap(properties, "SSC", true).toMap(newMap, "Test", true).build();
-		System.out.println(newMap);
-		SSCApplicationVersionAPI api = conn.api().applicationVersion();
-		System.out.println(api.queryApplicationVersions().id("6").onDemandCustomTags("customTagNames", "name").build().getUnique().get("customTagNames"));
-		/*
-		for ( int i = 0 ; i < 10 ; i++ ) {
-			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").paramFields("id", "name").useCache(true).build().getAll());
-			System.out.println(api.queryApplicationVersions().id("6").useCache(true).build().getAll());
-			System.out.println(api.queryApplicationVersions().applicationName("WebGoat").versionName("5.0").useCache(true).build().getUnique());
-			System.out.println(api.getApplicationVersionByNameOrId("WebGoat:5.0", ":"));
-			System.out.println(api.queryApplicationVersions().useCache(true).build().getAll());
-		}
-		*/
-	}
-
 }

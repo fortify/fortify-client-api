@@ -39,11 +39,4 @@ public class SSCMetricsAPI extends AbstractSSCAPI {
 	public SSCApplicationVersionMetricHistoriesQueryBuilder queryApplicationVersionMetricHistories(String applicationVersionId, MetricType metricType) {
 		return new SSCApplicationVersionMetricHistoriesQueryBuilder(conn(), applicationVersionId, metricType);
 	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.variable).useCache(true).build().getAll());
-		System.out.println(conn.api().metrics().queryApplicationVersionMetricHistories("6", MetricType.performanceIndicator).useCache(true).build().getAll());
-	}
-
 }

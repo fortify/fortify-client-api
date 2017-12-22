@@ -42,6 +42,7 @@ import org.springframework.core.convert.support.DefaultConversionService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fortify.api.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
@@ -186,6 +187,14 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	public String toString() {
 		try {
 			return new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return super.toString();
+		}
+	}
+	
+	public String toIndentedString() {
+		try {
+			return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(this);
 		} catch (JsonProcessingException e) {
 			return super.toString();
 		}

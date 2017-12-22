@@ -45,6 +45,12 @@
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>5.0.3</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	</dependencyManagement>
 	<description>This module is the parent module for various command-line analyzer utilities.</description>

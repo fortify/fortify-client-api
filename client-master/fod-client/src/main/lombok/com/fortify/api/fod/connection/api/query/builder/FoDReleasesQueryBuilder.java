@@ -28,54 +28,54 @@ import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.api.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
-public class FoDReleaseQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDReleaseQueryBuilder> {
-	public FoDReleaseQueryBuilder(FoDAuthenticatingRestConnection conn) {
+public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDReleasesQueryBuilder> {
+	public FoDReleasesQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/releases");
 		// TODO Add PreProcessor to add deep link?
 	}
 	
 	@Override
-	public FoDReleaseQueryBuilder paramFields(String... fields) {
+	public FoDReleasesQueryBuilder paramFields(String... fields) {
 		return super.paramFields(fields);
 	}
 	
 	@Override
-	public FoDReleaseQueryBuilder paramFilterAnd(String field, String... values) {
+	public FoDReleasesQueryBuilder paramFilterAnd(String field, String... values) {
 		return super.paramFilterAnd(field, values);
 	}
 	
 	@Override
-	public FoDReleaseQueryBuilder paramFilterAnd(String filter) {
+	public FoDReleasesQueryBuilder paramFilterAnd(String filter) {
 		return super.paramFilterAnd(filter);
 	}
 	
 	@Override
-	public FoDReleaseQueryBuilder paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
+	public FoDReleasesQueryBuilder paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
 		return super.paramOrderBy(orderBy, orderByDirection);
 	}
 	
-	public FoDReleaseQueryBuilder releaseId(String releaseId) {
+	public FoDReleasesQueryBuilder releaseId(String releaseId) {
 		return super.paramFilterAnd("releaseId", releaseId);
 	}
 	
-	public FoDReleaseQueryBuilder releaseName(String releaseName) {
+	public FoDReleasesQueryBuilder releaseName(String releaseName) {
 		return super.paramFilterAnd("releaseName", releaseName);
 	}
 	
-	public FoDReleaseQueryBuilder applicationAndReleaseName(String applicationName, String releaseName) {
+	public FoDReleasesQueryBuilder applicationAndReleaseName(String applicationName, String releaseName) {
 		return applicationName(applicationName).releaseName(releaseName);
 	}
 	
-	public FoDReleaseQueryBuilder applicationId(String applicationId) {
+	public FoDReleasesQueryBuilder applicationId(String applicationId) {
 		return super.paramFilterAnd("applicationId", applicationId);
 	}
 	
-	public FoDReleaseQueryBuilder applicationName(String applicationName) {
+	public FoDReleasesQueryBuilder applicationName(String applicationName) {
 		return super.paramFilterAnd("applicationName", applicationName);
 	}
 	
-	public FoDReleaseQueryBuilder nameOrId(String applicationAndReleaseNameOrId, String separator) {
+	public FoDReleasesQueryBuilder nameOrId(String applicationAndReleaseNameOrId, String separator) {
 		String[] appVersionElements = applicationAndReleaseNameOrId.split(separator);
 		if ( appVersionElements.length == 1 ) {
 			return releaseId(appVersionElements[0]);
@@ -86,23 +86,23 @@ public class FoDReleaseQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRel
 		}
 	}
 	
-	public FoDReleaseQueryBuilder nameOrId(String applicationAndReleaseNameOrId) {
+	public FoDReleasesQueryBuilder nameOrId(String applicationAndReleaseNameOrId) {
 		return nameOrId(applicationAndReleaseNameOrId, ":");
 	}
 	
-	public FoDReleaseQueryBuilder rating(int rating) {
+	public FoDReleasesQueryBuilder rating(int rating) {
 		return super.paramFilterAnd("rating", rating+"");
 	}
 	
-	public FoDReleaseQueryBuilder sdlcStatusType(String sdlcStatusType) {
+	public FoDReleasesQueryBuilder sdlcStatusType(String sdlcStatusType) {
 		return super.paramFilterAnd("sdlcStatusType", sdlcStatusType);
 	}
 	
-	public FoDReleaseQueryBuilder isPassed(boolean isPassed) {
+	public FoDReleasesQueryBuilder isPassed(boolean isPassed) {
 		return super.paramFilterAnd("isPassed", Boolean.toString(isPassed));
 	}
 	
-	public FoDReleaseQueryBuilder onDemandApplication() {
+	public FoDReleasesQueryBuilder onDemandApplication() {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty("application", 
 				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}")));
 	}

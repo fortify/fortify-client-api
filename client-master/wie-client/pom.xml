@@ -46,17 +46,16 @@
 			<artifactId>rest-util</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.jvnet</groupId>
-			<artifactId>mimepull</artifactId>
-			<version>1.6</version>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

@@ -32,9 +32,6 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCJobsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMode;
-import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterCompareDate;
-import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterCompareDate.DateComparisonOperator;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 
 public class SSCJobAPI extends AbstractSSCAPI {
@@ -70,17 +67,4 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		}
 		return jobs;
 	}
-	
-	public static void main(String[] args) {
-		SSCAuthenticatingRestConnection conn = SSCAuthenticatingRestConnection.builder().baseUrl("http://ssc:Admin123!@localhost:1710/ssc").build();
-		JSONMap job = conn.api().job().queryJobs().maxResults(1).build().getUnique();
-		System.out.println(job);
-		
-		IRestConnectionQuery query = conn.api().job().queryJobs()
-				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
-				.preProcessor(new JSONMapFilterCompareDate(MatchMode.INCLUDE, "finishTime", DateComparisonOperator.gt, new Date())).build();
-		System.out.println(query.toString());
-		System.out.println(conn.api().job().waitForJobCreation(query, 60));
-	}
-
 }
