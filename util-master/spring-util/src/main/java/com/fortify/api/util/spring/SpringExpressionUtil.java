@@ -25,6 +25,7 @@
 package com.fortify.api.util.spring;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -54,6 +55,10 @@ public class SpringExpressionUtil {
 	private static final StandardEvaluationContext SPEL_CONTEXT = createStandardEvaluationContext();
 	
 	protected SpringExpressionUtil() {}
+	
+	public static final void addPropertyAccessors(PropertyAccessor... propertyAccessors) {
+		PROPERTY_ACCESSORS.addAll(Arrays.asList(propertyAccessors));
+	}
 	
 	/**
 	 * Automatically load all PropertyAccessor implementations
