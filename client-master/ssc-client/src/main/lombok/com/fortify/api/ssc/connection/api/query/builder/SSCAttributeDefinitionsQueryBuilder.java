@@ -46,8 +46,8 @@ public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntity
 		return super.paramFields(fields);
 	}
 
-	public final SSCAttributeDefinitionsQueryBuilder paramOrderBy(String orderBy) {
-		return super.paramOrderBy(orderBy);
+	public final SSCAttributeDefinitionsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
+		return super.paramOrderBy(orderBy, direction);
 	}
 
 	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(String field, String value) {

@@ -101,7 +101,10 @@ public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConne
 	 * @param orderBy
 	 * @return
 	 */
-	protected T paramOrderBy(String orderBy) {
+	protected T paramOrderBy(String orderBy, SSCOrderByDirection direction) {
+		if ( SSCOrderByDirection.DESC.equals(direction) ) {
+			orderBy = "-"+orderBy;
+		}
 		return queryParam("orderby", orderBy);
 	}
 	

@@ -52,7 +52,7 @@ public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChi
 	}
 	
 	@Override
-	public FoDReleaseVulnerabilitiesQueryBuilder paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
+	public FoDReleaseVulnerabilitiesQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
 		return super.paramOrderBy(orderBy, orderByDirection);
 	}
 	

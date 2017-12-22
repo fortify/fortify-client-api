@@ -46,8 +46,8 @@ public final class SSCJobsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSC
 		return super.paramFields(fields);
 	}
 
-	public final SSCJobsQueryBuilder paramOrderBy(String orderBy) {
-		return super.paramOrderBy(orderBy);
+	public final SSCJobsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
+		return super.paramOrderBy(orderBy, direction);
 	}
 
 	public final SSCJobsQueryBuilder paramQAnd(String field, String value) {

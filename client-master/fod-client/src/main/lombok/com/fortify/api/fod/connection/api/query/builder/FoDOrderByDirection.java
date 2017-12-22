@@ -24,6 +24,6 @@
  ******************************************************************************/
 package com.fortify.api.fod.connection.api.query.builder;
 
-public enum OrderByDirection {
+public enum FoDOrderByDirection {
 	ASC, DESC
 }

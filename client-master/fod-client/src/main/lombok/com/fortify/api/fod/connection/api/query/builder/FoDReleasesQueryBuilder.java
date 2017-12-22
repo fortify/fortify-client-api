@@ -51,7 +51,7 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	}
 	
 	@Override
-	public FoDReleasesQueryBuilder paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
+	public FoDReleasesQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
 		return super.paramOrderBy(orderBy, orderByDirection);
 	}
 	

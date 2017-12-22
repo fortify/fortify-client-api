@@ -53,7 +53,7 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 	}
 	
 	@Override
-	public FoDApplicationsQueryBuilder paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
+	public FoDApplicationsQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
 		return super.paramOrderBy(orderBy, orderByDirection);
 	}
 	

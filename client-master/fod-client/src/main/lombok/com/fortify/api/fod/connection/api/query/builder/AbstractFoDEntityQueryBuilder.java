@@ -95,11 +95,11 @@ public abstract class AbstractFoDEntityQueryBuilder<T> extends AbstractRestConne
 	 * @param orderByDirection
 	 * @return
 	 */
-	protected T paramOrderByDirection(OrderByDirection orderByDirection) {
+	protected T paramOrderByDirection(FoDOrderByDirection orderByDirection) {
 		return queryParam("orderByDirection", orderByDirection.name());
 	}
 	
-	protected T paramOrderBy(String orderBy, OrderByDirection orderByDirection) {
+	protected T paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
 		paramOrderBy(orderBy);
 		return paramOrderByDirection(orderByDirection);
 	}

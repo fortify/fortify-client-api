@@ -24,37 +24,6 @@
  ******************************************************************************/
 package com.fortify.api.ssc.connection.api.query.builder;
 
-import com.fortify.api.ssc.annotation.SSCRequiredActionsPermitted;
-import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
-
-/**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying application version artifacts.
- * 
- * @author Ruud Senden
- *
- */
-public class SSCApplicationVersionArtifactsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionArtifactsQueryBuilder> {
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/artifacts"})
-	public SSCApplicationVersionArtifactsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
-		super(conn, applicationVersionId, true);
-		appendPath("artifacts");
-	}
-
-	public final SSCApplicationVersionArtifactsQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
-	}
-
-	public final SSCApplicationVersionArtifactsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		return super.paramOrderBy(orderBy, direction);
-	}
-
-	public final SSCApplicationVersionArtifactsQueryBuilder paramQAnd(String field, String value) {
-		return super.paramQAnd(field, value);
-	}
-	
-	public final SSCApplicationVersionArtifactsQueryBuilder paramEmbedScans() {
-		return super.paramEmbed("scans");
-	}
+public enum SSCOrderByDirection {
+	ASC, DESC
 }

@@ -28,10 +28,14 @@ import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;
 
 /**
- * This interface is used to pre-process a given {@link JSONMap} instance
+ * <p>This interface is used to pre-process a given {@link JSONMap} instance
  * before {@link IJSONMapProcessor} is called. Implementations can modify
  * the given {@link JSONMap}, and/or indicate whether the given {@link JSONMap}
- * should be further processed or not.
+ * should be further processed or not.</p>
+ * 
+ * <p>Note: any {@link IJSONMapPreProcessor} that perform filtering (i.e. may return
+ * false for the {@link #preProcess(JSONMap)} method) <b><i>must</i></b> implement
+ * the {@link IJSONMapFilter} interface instead.</p>
  * 
  * @author Ruud Senden
  *
