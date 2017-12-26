@@ -93,16 +93,38 @@ import lombok.ToString;
 import lombok.extern.apachecommons.CommonsLog;
 
 /**
- * Utility for working with a REST API. 
+ * <p>Base class for low-level functionality for accessing REST API's. Concrete implementations
+ * can override various methods to fine-tune behavior related to calling REST API's. Instances
+ * of this class are configured using a corresponding {@link AbstractRestConnectionConfig} instance.
+ * Concrete implementations usually provide a static builder() method that returns a subclass
+ * of {@link AbstractRestConnectionConfig} which also implements the {@link IRestConnectionBuilder}
+ * interface, allowing clients to easily build a concrete {@link AbstractRestConnection} implementation.</p>
  * 
- * TODO Update JavaDoc, include info about caching (see Git history for JavaDoc in AbstractRestConnectionWithCache)
+ * <p>This base class allows for caching REST results by calling the {@link #executeRequest(String, WebTarget, Class, String)}
+ * method, specifying the cache name to use as the last method parameter. Caches can be configured 
+ * through a properties file named [ConnectionClassName]Cache.properties. This properties file can 
+ * contain the following entries:
+ *  <ul>
+ *   <li>cacheManager:[cacheSpec]<br/>
+ *       Cache specification for the connection-specific cache manager. You can use this
+ *       for example to limit the total number of caches, or to clean up complete caches
+ *       based on a time-out. By default, caches are kept indefinitely.</li>
+ *   <li>default:[cacheSpec]<br/>
+ *       Default cache specification for individual caches. If not specified, the default
+ *       specification will be 'maximumSize=1000,expireAfterWrite=60s'.</li>
+ *   <li>[cacheName]:[cacheSpec]<br/>
+ *       Cache specification for individual caches.</li>
+ *  </ul>
+ *  The format for the cache specification is described here:
+ *  <a href="https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html">https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html</a>
+ *  </p>
  * 
- * TODO Add various HttpClient timeouts to prevent the program from stalling.
- *      (see http://stackoverflow.com/questions/9925113/httpclient-stuck-without-any-exception answer 3)
- *      
- * TODO Update JavaDoc for executeRequest methods
- * 
- * TODO Move credentialsprovider-related functionality down to corresponding subclass?
+ * <p>This base class allows for serialization of instances using a customized serialization mechanism.
+ * This customized serialization mechanism must be enabled using the 
+ * {@link AbstractRestConnectionConfig#enableSerializationSingleJVM()} or 
+ * {@link AbstractRestConnectionConfig#enableSerializationMultiJVM(String)} methods. Upon serialization,
+ * only the connection id is serialized. Upon deserialization, this connection id is looked up in
+ * the static connection instances map.</p>
  */
 @CommonsLog
 @ToString

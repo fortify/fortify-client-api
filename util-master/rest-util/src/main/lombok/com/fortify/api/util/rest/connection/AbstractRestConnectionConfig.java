@@ -40,7 +40,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * TODO Add JavaDoc
+ * This abstract base class allows for configuring {@link AbstractRestConnection} instances.
+ * 
  * @author Ruud Senden
  *
  * @param <T>

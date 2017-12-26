@@ -24,6 +24,13 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
+/**
+ * This {@link AbstractRestConnection} implementation allows for building 
+ * non-authenticating REST connection instances.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class RestConnection extends AbstractRestConnection {
 
 	protected RestConnection(AbstractRestConnectionConfig<?> config) {

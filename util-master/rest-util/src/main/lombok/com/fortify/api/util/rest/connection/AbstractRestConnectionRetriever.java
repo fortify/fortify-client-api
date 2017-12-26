@@ -28,7 +28,11 @@ import lombok.Getter;
 
 /**
  * This abstract {@link IRestConnectionRetriever} implementation can be used as a base
- * class for {@link IRestConnectionRetriever} implementations.
+ * class for {@link IRestConnectionRetriever} implementations. Based on the configured
+ * {@link AbstractRestConnectionConfig} instance that also implements the 
+ * {@link IRestConnectionBuilder} interface, it allows for configuring REST connection
+ * properties, building the connection, and caching the connection built.
+ * 
  * @author Ruud Senden
  *
  * @param <C>

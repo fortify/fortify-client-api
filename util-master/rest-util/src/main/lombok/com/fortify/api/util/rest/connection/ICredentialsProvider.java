@@ -26,6 +26,14 @@ package com.fortify.api.util.rest.connection;
 
 import org.apache.http.auth.Credentials;
 
+/**
+ * This interface can be implemented by {@link AbstractRestConnectionConfig} implementations
+ * that can generate Apache HttpClient {@link Credentials} instances for HttpClient-based
+ * authentication (i.e. Basic Authentication, NTLM authentication, ...).
+ * 
+ * @author Ruud Senden
+ *
+ */
 public interface ICredentialsProvider {
 	public Credentials getCredentials();
 }

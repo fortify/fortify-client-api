@@ -29,6 +29,15 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * This {@link AbstractRestConnectionConfig} implementation adds properties for
+ * configuring user name and password, either explicitly or by parsing the 
+ * user info provided in the base URL.
+ * 
+ * @author Ruud Senden
+ *
+ * @param <T>
+ */
 @Data @EqualsAndHashCode(callSuper=true)
 public abstract class AbstractRestConnectionWithUsernamePasswordConfig<T extends AbstractRestConnectionWithUsernamePasswordConfig<T>> extends AbstractRestConnectionConfig<T> {
 	private String userName;
@@ -42,6 +51,7 @@ public abstract class AbstractRestConnectionWithUsernamePasswordConfig<T extends
 		setPassword(password); return getThis();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void parseUriUserInfo(String userInfo) {
 		UsernamePasswordCredentials c = new UsernamePasswordCredentials(userInfo);

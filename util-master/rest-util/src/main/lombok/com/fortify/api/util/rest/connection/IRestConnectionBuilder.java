@@ -24,6 +24,13 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
+/**
+ * Interface for building {@link IRestConnection} instances.
+ * 
+ * @author Ruud Senden
+ *
+ * @param <C> Concrete {@link IRestConnection} type being built by the current {@link IRestConnectionBuilder} implementation
+ */
 public interface IRestConnectionBuilder<C extends IRestConnection> {
 	public C build();
 }
