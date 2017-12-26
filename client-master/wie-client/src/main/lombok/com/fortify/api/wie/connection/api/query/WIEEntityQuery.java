@@ -42,20 +42,19 @@ import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
  * 
  * @author Ruud Senden
  */
-public class WIEEntityQuery extends AbstractRestConnectionQuery<WIEAuthenticatingRestConnection, JSONMap> {
+public class WIEEntityQuery extends AbstractRestConnectionQuery<JSONMap> {
 	public WIEEntityQuery(AbstractRestConnectionQueryConfig<WIEAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 	
 	@Override
 	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
-		return target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getNextPageSize());
+		return target.queryParam("start", ""+pagingData.getNextPageStart()).queryParam("limit", ""+pagingData.getNextPageSize());
 	}
 	
 	@Override
 	protected void updatePagingDataFromResponse(PagingData pagingData, JSONMap data) {
-		pagingData.setTotal( data.get("count", Integer.class) );
-		pagingData.setLastPageSize( data.get("data", JSONList.class).size() );
+		pagingData.setTotalAvailable( data.get("count", Integer.class) );
 	}
 	
 	@Override

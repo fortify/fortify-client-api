@@ -24,6 +24,17 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.query;
 
+import com.fortify.api.util.rest.json.preprocessor.IJSONMapPreProcessor;
+
+/**
+ * This interface can be implemented by {@link IJSONMapPreProcessor} implementations
+ * to get the current {@link AbstractRestConnectionQueryConfig} instance injected,
+ * allowing to query or update query configuration properties.
+ * 
+ * @author Ruud Senden
+ *
+ * @param <T>
+ */
 public interface IRestConnectionQueryConfigAware<T> {
 	public void setRestConnectionQueryConfig(T config);
 }

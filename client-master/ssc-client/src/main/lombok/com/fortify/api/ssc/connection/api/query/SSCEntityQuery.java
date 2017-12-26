@@ -46,20 +46,19 @@ import lombok.Getter;
  * @author Ruud Senden
  */
 @Getter
-public class SSCEntityQuery extends AbstractRestConnectionQuery<SSCAuthenticatingRestConnection, JSONMap> {
+public class SSCEntityQuery extends AbstractRestConnectionQuery<JSONMap> {
 	public SSCEntityQuery(AbstractRestConnectionQueryConfig<SSCAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 
 	@Override
 	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
-		return target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getNextPageSize());
+		return target.queryParam("start", ""+pagingData.getNextPageStart()).queryParam("limit", ""+pagingData.getNextPageSize());
 	}
 	
 	@Override
 	protected void updatePagingDataFromResponse(PagingData pagingData, JSONMap data) {
-		pagingData.setTotal( data.get("count", Integer.class) );
-		pagingData.setLastPageSize( data.get("data", JSONList.class).size() );
+		pagingData.setTotalAvailable( data.get("count", Integer.class) );
 	}
 	
 	@Override

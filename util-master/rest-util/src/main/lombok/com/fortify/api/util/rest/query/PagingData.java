@@ -24,78 +24,106 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.query;
 
-import lombok.Data;
+import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;
+
+import lombok.Getter;
+import lombok.ToString;
 
 /**
- * This class is used to hold data related to paging, like current start position and
- * page size.
+ * This class is used to hold and calculate data related to paging.
  * 
  * @author Ruud Senden
  *
  */
-@Data 
+@Getter @ToString
 public class PagingData {
-	private int start = 0;
+	private int processedTotal = 0;
+	private int processedLastPage = 0;
+	private int processedCurrentPage = 0;
+	private int processedTotalNotFiltered = 0;
+	private int totalAvailable = -1;
 	private int pageSize = 50;
-	private int max = -1;
-	private int total = -1;
-	private int lastPageSize = -1;
-	private int currentCount = 0;
-	private final boolean hasFilters;
+	private int maxResults = -1;
 	
-	public PagingData(boolean hasFilters) {
-		this.hasFilters = hasFilters;
+	/**
+	 * Get the start position for the next page to be loaded.
+	 * {@link AbstractRestConnectionQuery} implementations will
+	 * usually add this information to paged REST requests.
+	 * @return
+	 */
+	public int getNextPageStart() {
+		return processedTotal;
 	}
 	
 	/**
-	 * This method returns the page size for the next paged query.
-	 * If no maximum results haven been configured, this method
-	 * simply returns the configured page size. Otherwise, if
-	 * processing filters have been configured, this method either
-	 * returns the current page size if we haven't reached the
-	 * maximum results, or 0 if we have reached the maximum number
-	 * of results. If no processing filters have been configured,
-	 * we return either 0 if the last page size is smaller than the
-	 * requested page size (meaning there are no more results), or
-	 * the smaller number of the configured page size, or the number
-	 * of remaining results to be loaded.
+	 * Get the size for the next page to be loaded.
+	 * {@link AbstractRestConnectionQuery} implementations will
+	 * usually add this information to paged REST requests.
 	 * @return
 	 */
 	public int getNextPageSize() {
-		if ( this.max==-1 ) {
-			return pageSize; 
-		} else if ( hasFilters) {
-			if ( this.currentCount < this.max ) {
-				return pageSize;
-			} else {
-				return 0;
-			}
+		if ( isMaxResultsReached() || processedLastPage < pageSize ) {
+			// If we've loaded all required results, or the last page size was smaller than expected 
+			// (meaning no more results), return 0.
+			return 0;
+		} else if ( maxResults < 0 || processedTotalNotFiltered < processedTotal ) {
+			// If no max results is configured, or if results are being filtered, simply return configured page size
+			return pageSize;
 		} else {
-			if ( lastPageSize < pageSize ) {
-				return 0;
-			} else {
-				return Math.min(pageSize, max-start);
-			}
+			// For non-filtered results, return either configured page size, or remaining
+			// number of results to be loaded if this is smaller than configured page
+			// size.
+			return Math.min(pageSize, maxResults - processedTotalNotFiltered );
 		}
 	}
 	
 	/**
-	 * Add the given count to the current count of
-	 * total results loaded so far.
-	 * @param count
+	 * Indicate whether we've already loaded the maximum number of results
+	 * (if configured).
+	 * @return
 	 */
-	public void addToCurrentCount(int count) {
-		this.currentCount+=count;
+	public boolean isMaxResultsReached() {
+		return maxResults != -1 && processedTotalNotFiltered >= maxResults;
 	}
 	
 	/**
-	 * Set the number of results retrieved during
-	 * the last paging request.
-	 * @param lastPageSize
+	 * Set the available total number of results. This is used for
+	 * information purposes only (for example to be printed/logged
+	 * in the {@link IJSONMapProcessor#notifyNextPage(PagingData)}
+	 * method).
+	 * 
+	 * @param totalAvailable
 	 */
-	public void setLastPageSize(int lastPageSize) {
-		this.lastPageSize = lastPageSize;
-		this.start = this.start + lastPageSize;
+	public void setTotalAvailable(int totalAvailable) {
+		this.totalAvailable = totalAvailable;
+	}
+	
+	/**
+	 * Package-private method for initializing processing
+	 * for next page. This updates the processedLastPage
+	 * and processedCurrentPage variables.
+	 */
+	void initForNextPage() {
+		processedLastPage = processedCurrentPage;
+		processedCurrentPage = 0;
+	}
+	
+	/**
+	 * Package-private method for updating the number
+	 * of processed results.
+	 * @param count
+	 */
+	void addProcessed(int count) {
+		processedTotal += count; processedCurrentPage += count;
+	}
+	
+	/**
+	 * Package-private method for updating the number
+	 * of non-filtered processed results.
+	 * @param count
+	 */
+	void addProcessedNotFiltered(int count) {
+		processedTotalNotFiltered += count;
 	}
 	
 	/**
@@ -104,8 +132,16 @@ public class PagingData {
 	 * @param max
 	 * @return
 	 */
-	public PagingData max(int max) {
-		setMax(max);
+	public PagingData maxResults(int max) {
+		this.maxResults  = max;
+		return this;
+	}
+	
+	/**
+	 * Configure the page size; default is 50
+	 */
+	public PagingData pageSize(int pageSize) {
+		this.pageSize = pageSize;
 		return this;
 	}
 }

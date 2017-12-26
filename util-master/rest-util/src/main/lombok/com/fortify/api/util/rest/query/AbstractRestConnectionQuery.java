@@ -24,7 +24,6 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.query;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,15 +33,10 @@ import javax.ws.rs.client.WebTarget;
 import com.fortify.api.util.rest.connection.IRestConnection;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.preprocessor.IJSONMapFilter;
 import com.fortify.api.util.rest.json.preprocessor.IJSONMapPreProcessor;
-import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterMaxResults;
 import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;
-import com.fortify.api.util.rest.json.processor.JSONMapProcessorWithPreProcessors;
 import com.fortify.api.util.rest.json.processor.JSONMapsToJSONListProcessor;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
-
-import lombok.Getter;
 
 /**
  * <p>This abstract class provides an implementation for {@link IRestConnectionQuery} to allow for
@@ -71,9 +65,8 @@ import lombok.Getter;
  * 
  * @author Ruud Senden
  */
-@Getter
-public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnection, ResponseType> implements IRestConnectionQuery {
-	private final ConnType conn;
+public abstract class AbstractRestConnectionQuery<ResponseType> implements IRestConnectionQuery {
+	private final IRestConnection conn;
 	private final List<IWebTargetUpdater> webTargetUpdaters;
 	private final List<IJSONMapPreProcessor> preProcessors;
 	private final int maxResults;
@@ -82,9 +75,8 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	private final Entity<?> entity;
 	private final String httpMethod;
 	private final IRequestInitializer requestInitializer;
-	private final boolean hasFilters;
 	
-	protected AbstractRestConnectionQuery(AbstractRestConnectionQueryConfig<ConnType, ?> config) {
+	protected AbstractRestConnectionQuery(AbstractRestConnectionQueryConfig<?, ?> config) {
 		this.conn = config.getConn();
 		this.webTargetUpdaters = Collections.unmodifiableList(config.getWebTargetUpdaters());
 		this.preProcessors =  Collections.unmodifiableList(config.getPreProcessors());
@@ -94,13 +86,6 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 		this.entity = config.getEntity();
 		this.httpMethod = config.getHttpMethod();
 		this.requestInitializer = config.getRequestInitializer();
-		boolean hasFilters = false;
-		for ( IJSONMapPreProcessor preProcessor : this.preProcessors ) {
-			if ( preProcessor instanceof IJSONMapFilter ) {
-				hasFilters = true; break;
-			}
-		}
-		this.hasFilters = hasFilters;
 	}
 	
 	/* (non-Javadoc)
@@ -108,7 +93,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	 */
 	@Override
 	public void processAll(IJSONMapProcessor processor) {
-		processAll(getWebTarget(), new PagingData(hasFilters).max(maxResults), processor);
+		processAll(getWebTarget(), new PagingData().maxResults(maxResults), processor);
 	}
 
 	/* (non-Javadoc)
@@ -127,7 +112,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	@Override
 	public JSONMap getUnique() {
 		JSONMapsToJSONListProcessor processor = new JSONMapsToJSONListProcessor();
-		processAll(getWebTarget(), new PagingData(hasFilters).max(Math.min(2, maxResults)), processor);
+		processAll(getWebTarget(), new PagingData().maxResults(Math.min(2, maxResults)), processor);
 		JSONList list = processor.getJsonList();
 		if ( list == null || list.size() == 0 ) {
 			return null;
@@ -155,7 +140,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	protected ResponseType executeRequest(WebTarget target) {
 		if ( entity == null ) {
 			if ( useCache ) {
-				return conn.executeRequest(getHttpMethod(), target, getResponseTypeClass(), getCacheName());
+				return conn.executeRequest(httpMethod, target, getResponseTypeClass(), getCacheName());
 			} else {
 				return conn.executeRequest(httpMethod, target, getResponseTypeClass());
 			}
@@ -188,33 +173,29 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 	 */
 	private void processAll(WebTarget target, PagingData pagingData, IJSONMapProcessor processor) {
 		if ( requestInitializer != null ) { requestInitializer.initRequest(); }
-		List<IJSONMapPreProcessor> preProcessorsWithMaxResults = new ArrayList<>(preProcessors);
-		preProcessorsWithMaxResults.add(new JSONMapFilterMaxResults(maxResults));
-		processor = new JSONMapProcessorWithPreProcessors(preProcessorsWithMaxResults, processor);
+		processor = new JSONMapProcessorWithPreProcessorsAndPagingSupport(preProcessors, processor, pagingData);
 		if ( !pagingSupported ) {
-			processSingleRequest(target, processor, null);
+			processSingleRequest(target, processor);
 		} else {
 			do {
-				processor.nextPage(pagingData);
+				processor.notifyNextPage(pagingData);
+				pagingData.initForNextPage();
 				WebTarget pagingTarget = updateWebTargetWithPagingData(target, pagingData);
-				ResponseType response = processSingleRequest(pagingTarget, processor, pagingData);
+				ResponseType response = processSingleRequest(pagingTarget, processor);
 				updatePagingDataFromResponse(pagingData, response);
-			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getNextPageSize()>0 );
+			} while ( pagingData.getNextPageSize()>0 );
 		}
 	}
 	
 	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
 	 */
-	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor, PagingData pagingData) {
+	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor) {
 		ResponseType data = executeRequest(target);
 		JSONList list = getJSONListFromResponse(data);
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
 				processor.process(obj);
-				if ( pagingData != null ) {
-					pagingData.addToCurrentCount(1);
-				}
 			}
 		}
 		return data;

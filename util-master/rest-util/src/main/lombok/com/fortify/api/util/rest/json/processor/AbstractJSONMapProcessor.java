@@ -38,7 +38,7 @@ public abstract class AbstractJSONMapProcessor implements IJSONMapProcessor {
 	 * This default implementation does nothing; subclasses can override this method
 	 * to get informed whenever a next page of results is loaded.
 	 */
-	public void nextPage(PagingData pagingData) {
+	public void notifyNextPage(PagingData pagingData) {
 		// Do nothing
 	}
 

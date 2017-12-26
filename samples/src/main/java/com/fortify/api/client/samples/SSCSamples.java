@@ -77,7 +77,9 @@ public class SSCSamples extends AbstractSamples {
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();
 		
 		printInfo("Query all versions, max 3 results");
-		print(api.queryApplicationVersions().applicationName("WebGoat").maxResults(3).paramFields("id").build().getAll());
+		JSONList results = api.queryApplicationVersions().applicationName("WebGoat").maxResults(3).paramFields("id").build().getAll();
+		print(results);
+		print("count: "+results.size());
 		
 		printInfo("Get custom tag names for current application version");
 		print(api.queryApplicationVersions().id(applicationVersionId).onDemandCustomTags("customTagNames", "name").build().getUnique().get("customTagNames"));

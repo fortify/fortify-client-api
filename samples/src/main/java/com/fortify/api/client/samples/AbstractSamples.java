@@ -42,7 +42,7 @@ public abstract class AbstractSamples {
 	}
 	
 	protected void printInfo(Object obj) {
-		System.out.println("---- "+obj+" ----");
+		System.out.println("\n\n---- "+obj+" ----");
 		System.out.flush();
 	}
 

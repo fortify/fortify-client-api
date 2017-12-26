@@ -43,25 +43,22 @@ import lombok.Getter;
  * query builder implementations in the {@link  com.fortify.api.fod.connection.api.query.builder}
  * package.
  * 
- * TODO Verify JSON field names for paging
- * 
  * @author Ruud Senden
  */
 @Getter
-public class FoDEntityQuery extends AbstractRestConnectionQuery<FoDAuthenticatingRestConnection, JSONMap> {
+public class FoDEntityQuery extends AbstractRestConnectionQuery<JSONMap> {
 	public FoDEntityQuery(AbstractRestConnectionQueryConfig<FoDAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 
 	@Override
 	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
-		return target.queryParam("offset", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getNextPageSize());
+		return target.queryParam("offset", ""+pagingData.getNextPageStart()).queryParam("limit", ""+pagingData.getNextPageSize());
 	}
 	
 	@Override
 	protected void updatePagingDataFromResponse(PagingData pagingData, JSONMap data) {
-		pagingData.setTotal( data.get("totalCount", Integer.class) );
-		pagingData.setLastPageSize( data.get("items", JSONList.class).size() );
+		pagingData.setTotalAvailable( data.get("totalCount", Integer.class) );
 	}
 	
 	@Override
