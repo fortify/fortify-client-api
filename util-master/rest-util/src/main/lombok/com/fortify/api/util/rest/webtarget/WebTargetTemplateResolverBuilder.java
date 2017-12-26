@@ -29,6 +29,15 @@ import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * {@link IWebTargetUpdaterBuilder} implementation for building
+ * {@link WebTargetTemplateResolver} instances. This builder 
+ * allows template values to be configured through the 
+ * {@link #templateValue(String, Object)} method.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @RequiredArgsConstructor
 public class WebTargetTemplateResolverBuilder implements IWebTargetUpdaterBuilder {
 	private final Map<String,Object> templateValues = new HashMap<>();

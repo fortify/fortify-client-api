@@ -47,25 +47,63 @@ public class PagingData {
 		this.hasFilters = hasFilters;
 	}
 	
-	public int getPageSize() {
-		if ( this.max==-1 || this.currentCount < this.max ) {
+	/**
+	 * This method returns the page size for the next paged query.
+	 * If no maximum results haven been configured, this method
+	 * simply returns the configured page size. Otherwise, if
+	 * processing filters have been configured, this method either
+	 * returns the current page size if we haven't reached the
+	 * maximum results, or 0 if we have reached the maximum number
+	 * of results. If no processing filters have been configured,
+	 * we return either 0 if the last page size is smaller than the
+	 * requested page size (meaning there are no more results), or
+	 * the smaller number of the configured page size, or the number
+	 * of remaining results to be loaded.
+	 * @return
+	 */
+	public int getNextPageSize() {
+		if ( this.max==-1 ) {
 			return pageSize; 
 		} else if ( hasFilters) {
-			return pageSize;
+			if ( this.currentCount < this.max ) {
+				return pageSize;
+			} else {
+				return 0;
+			}
 		} else {
-			return Math.min(pageSize, max-start);
+			if ( lastPageSize < pageSize ) {
+				return 0;
+			} else {
+				return Math.min(pageSize, max-start);
+			}
 		}
 	}
 	
+	/**
+	 * Add the given count to the current count of
+	 * total results loaded so far.
+	 * @param count
+	 */
 	public void addToCurrentCount(int count) {
 		this.currentCount+=count;
 	}
 	
+	/**
+	 * Set the number of results retrieved during
+	 * the last paging request.
+	 * @param lastPageSize
+	 */
 	public void setLastPageSize(int lastPageSize) {
 		this.lastPageSize = lastPageSize;
 		this.start = this.start + lastPageSize;
 	}
 	
+	/**
+	 * Configure the maximum number of results to
+	 * be loaded.
+	 * @param max
+	 * @return
+	 */
 	public PagingData max(int max) {
 		setMax(max);
 		return this;

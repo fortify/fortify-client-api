@@ -55,7 +55,7 @@ public class FoDEntityQuery extends AbstractRestConnectionQuery<FoDAuthenticatin
 
 	@Override
 	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
-		return target.queryParam("offset", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
+		return target.queryParam("offset", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getNextPageSize());
 	}
 	
 	@Override

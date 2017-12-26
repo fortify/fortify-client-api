@@ -34,8 +34,9 @@ import org.springframework.expression.TypedValue;
 import org.springframework.stereotype.Component;
 
 /**
- * A SpEL {@link PropertyAccessor} that knows how to read on Map objects.
- * This allows Map keys to be treated as regular object properties.
+ * A SpEL {@link PropertyAccessor} that knows how to read and write 
+ * on Map objects. This allows Map keys to be treated as regular 
+ * object properties.
  */
 @Component
 public class MapPropertyAccessor implements PropertyAccessor, Ordered {

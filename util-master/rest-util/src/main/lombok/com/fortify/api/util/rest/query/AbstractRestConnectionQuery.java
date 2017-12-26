@@ -199,7 +199,7 @@ public abstract class AbstractRestConnectionQuery<ConnType extends IRestConnecti
 				WebTarget pagingTarget = updateWebTargetWithPagingData(target, pagingData);
 				ResponseType response = processSingleRequest(pagingTarget, processor, pagingData);
 				updatePagingDataFromResponse(pagingData, response);
-			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getPageSize()>0 );
+			} while ( pagingData.getStart() < pagingData.getTotal() && pagingData.getNextPageSize()>0 );
 		}
 	}
 	

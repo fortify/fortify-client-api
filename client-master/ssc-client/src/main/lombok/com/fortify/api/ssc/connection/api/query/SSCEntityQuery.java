@@ -53,7 +53,7 @@ public class SSCEntityQuery extends AbstractRestConnectionQuery<SSCAuthenticatin
 
 	@Override
 	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
-		return target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
+		return target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getNextPageSize());
 	}
 	
 	@Override

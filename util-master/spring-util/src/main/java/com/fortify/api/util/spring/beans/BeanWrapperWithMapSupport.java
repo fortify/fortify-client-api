@@ -28,8 +28,17 @@ import java.beans.PropertyDescriptor;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
+/**
+ * This {@link BeanWrapper} implementation allows for setting bean properties
+ * from a {@link Map}, and generating a {@link Map} based on current bean
+ * properties.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class BeanWrapperWithMapSupport extends BeanWrapperImpl {
 
 	public BeanWrapperWithMapSupport() {}

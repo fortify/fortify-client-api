@@ -34,6 +34,7 @@ import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.beans.factory.support.BeanDefinitionReader;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -42,6 +43,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class provides utility methods for working with Spring {@link ApplicationContext} instances,
+ * like reading {@link ApplicationContext} data from XML configuration files and managing related
+ * {@link PropertyEditor} instances.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public final class SpringContextUtil {
 	private static final Log LOG = LogFactory.getLog(SpringContextUtil.class);
 	private static final Map<Class<?>, Class<? extends PropertyEditor>> PROPERTY_EDITORS = getPropertyEditors();
@@ -51,7 +60,7 @@ public final class SpringContextUtil {
 	/**
 	 * Automatically load all {@link PropertyEditorWithTargetClass} implementations
 	 * (annotated with {@link Component}) from 
-	 * com.fortify.util.spring.propertyeditor (sub-)packages. 
+	 * com.fortify.api.util.spring.propertyeditor (sub-)packages. 
 	 * @return
 	 */
 	private static final Map<Class<?>, Class<? extends PropertyEditor>> getPropertyEditors() {

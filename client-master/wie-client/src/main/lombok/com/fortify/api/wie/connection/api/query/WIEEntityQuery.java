@@ -36,7 +36,7 @@ import com.fortify.api.util.rest.query.PagingData;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
 /**
- * <p>This abstract class can be used as a base class for querying entity data from SSC. </p>
+ * <p>This abstract class can be used as a base class for querying entity data from WIE. </p>
  * 
  * TODO Add more JavaDoc
  * 
@@ -49,7 +49,7 @@ public class WIEEntityQuery extends AbstractRestConnectionQuery<WIEAuthenticatin
 	
 	@Override
 	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
-		return target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getPageSize());
+		return target.queryParam("start", ""+pagingData.getStart()).queryParam("limit", ""+pagingData.getNextPageSize());
 	}
 	
 	@Override
