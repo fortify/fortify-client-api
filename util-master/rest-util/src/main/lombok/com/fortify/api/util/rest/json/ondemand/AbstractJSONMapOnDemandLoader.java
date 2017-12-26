@@ -26,6 +26,14 @@ package com.fortify.api.util.rest.json.ondemand;
 
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This abstract {@link IJSONMapOnDemandLoader} implementation allows
+ * for optionally replacing the on-demand loader with the actual on-demand
+ * data upon first access to the on-demand property.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public abstract class AbstractJSONMapOnDemandLoader implements IJSONMapOnDemandLoader {
 	private static final long serialVersionUID = 1L;
 	private final boolean storeValue;

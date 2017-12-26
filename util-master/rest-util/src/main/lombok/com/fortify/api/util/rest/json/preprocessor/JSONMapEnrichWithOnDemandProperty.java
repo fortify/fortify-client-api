@@ -29,6 +29,14 @@ import com.fortify.api.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * This {@link AbstractJSONMapEnrich} implementation allows for enriching a
+ * given {@link JSONMap} instance on-demand data using the configured 
+ * {@link IJSONMapOnDemandLoader} implementation.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @RequiredArgsConstructor
 public class JSONMapEnrichWithOnDemandProperty extends AbstractJSONMapEnrich {
 	private final String propertyName;

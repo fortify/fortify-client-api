@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,21 +22,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
+/**
+ * <p>This package provides various interfaces and classes for pre-processing JSONMap instances
+ *    before {@link IJSONMapProcessor} is called.</p>
+ */
 package com.fortify.api.util.rest.json.preprocessor;
 
-import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig;
-
-/**
- * Marker interface for {@link IJSONMapPreProcessor} implementations that perform filtering.
- * Any {@link IJSONMapPreProcessor} implementation that may return false for the {@link #preProcess(JSONMap)}
- * method <b><i>must</i></b> implement this interface in order for {@link AbstractRestConnectionQueryConfig#maxResults(Integer)}
- * to work correctly. Note that any filter implementations that extend from {@link AbstractJSONMapFilter}
- * already implement this interface.
- * 
- * @author Ruud Senden
- *
- */
-public interface IJSONMapFilter extends IJSONMapPreProcessor {
-
-}
+import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;

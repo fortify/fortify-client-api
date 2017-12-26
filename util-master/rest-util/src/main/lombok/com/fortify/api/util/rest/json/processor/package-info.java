@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,28 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json.preprocessor;
-
-import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;
-
 /**
- * <p>This interface is used to pre-process a given {@link JSONMap} instance
- * before {@link IJSONMapProcessor} is called. Implementations can modify
- * the given {@link JSONMap}, and/or indicate whether the given {@link JSONMap}
- * should be further processed or not.</p>
- * 
- * @author Ruud Senden
- *
+ * <p>This package provides various interfaces and classes for processing JSONMap instances.</p>
  */
-public interface IJSONMapPreProcessor {
-	/**
-	 * This method allows for modifying the given {@link JSONMap} before it
-	 * is processed by an {@link IJSONMapProcessor} instance, and/or exclude
-	 * the given {@link JSONMap} instance from further processing.
-	 * 
-	 * @param json
-	 * @return true if the given {@link JSONMap} should be included, false otherwise
-	 */
-	public boolean preProcess(JSONMap json);
-}
+package com.fortify.api.util.rest.json.processor;

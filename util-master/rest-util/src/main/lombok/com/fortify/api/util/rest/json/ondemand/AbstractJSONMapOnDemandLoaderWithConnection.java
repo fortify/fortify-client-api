@@ -30,6 +30,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * This {@link AbstractJSONMapOnDemandLoader} extension allows for storing
+ * and retrieving a reference to the current {@link IRestConnection} implementation
+ * that was used to create this {@link IJSONMapOnDemandLoader} instance.
+ * 
+ * @author Ruud Senden
+ *
+ * @param <C>
+ */
 @Getter(AccessLevel.PROTECTED) @Accessors(fluent=true)
 public abstract class AbstractJSONMapOnDemandLoaderWithConnection<C extends IRestConnection> extends AbstractJSONMapOnDemandLoader {
 	private static final long serialVersionUID = 1L;

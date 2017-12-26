@@ -26,6 +26,15 @@ package com.fortify.api.util.rest.json.preprocessor;
 
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This abstract implementation for {@link IJSONMapPreProcessor} allows for
+ * enriching a given {@link JSONMap} with additional data. Concrete implementations
+ * must implement the {@link #enrich(JSONMap)} method to actually enrich the
+ * given {@link JSONMap}.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public abstract class AbstractJSONMapEnrich implements IJSONMapPreProcessor {
 
 	@Override

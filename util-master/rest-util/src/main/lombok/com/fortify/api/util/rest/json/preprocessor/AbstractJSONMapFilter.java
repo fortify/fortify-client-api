@@ -26,7 +26,17 @@ package com.fortify.api.util.rest.json.preprocessor;
 
 import com.fortify.api.util.rest.json.JSONMap;
 
-public abstract class AbstractJSONMapFilter implements IJSONMapFilter {
+/**
+ * This abstract implementation for {@link IJSONMapPreProcessor} allows for
+ * filtering {@link JSONMap} instances. Subclasses must provide an implementation
+ * for the {@link #isMatching(JSONMap)} method; this abstract base class allows
+ * for configuring whether matched {@link JSONMap} instances should be included
+ * or excluded from further processing.
+ * 
+ * @author Ruud Senden
+ *
+ */
+public abstract class AbstractJSONMapFilter implements IJSONMapPreProcessor {
 	public enum MatchMode { INCLUDE, EXCLUDE }
 	
 	private final boolean includeMatching;

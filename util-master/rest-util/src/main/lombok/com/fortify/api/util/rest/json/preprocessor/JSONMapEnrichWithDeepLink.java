@@ -28,6 +28,14 @@ import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 import com.fortify.api.util.spring.expression.TemplateExpression;
 
+/**
+ * This {@link AbstractJSONMapEnrich} implementation allows for enriching a
+ * given {@link JSONMap} instance with a 'deepLink' property by evaluating the
+ * configured {@link TemplateExpression}.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class JSONMapEnrichWithDeepLink extends AbstractJSONMapEnrich {
 	private final TemplateExpression deepLinkExpression;
 	public JSONMapEnrichWithDeepLink(TemplateExpression deepLinkExpression) {

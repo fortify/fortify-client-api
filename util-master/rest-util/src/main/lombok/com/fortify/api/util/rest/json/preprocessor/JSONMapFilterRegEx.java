@@ -32,6 +32,18 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
+/**
+ * This {@link AbstractJSONMapFilter} implementation allows for filtering
+ * {@link JSONMap} instances by evaluating the configured {@link Pattern}
+ * instances against the value for the corresponding JSON property path.
+ * If any of the {@link Pattern} doesn't match the corresponding property
+ * value, the given {@link JSONMap} instance is considered as 'not matching',
+ * and as a result (depending on the configured {@link MatchMode}) will
+ * be either included or excluded from further processing.
+ *  
+ * @author Ruud Senden
+ *
+ */
 public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
 	private static final Function<String, Pattern> STRING_TO_PATTERN_TRANSFORMER = new Function<String, Pattern>() {
 		@Override

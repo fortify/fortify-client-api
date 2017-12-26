@@ -27,7 +27,8 @@ package com.fortify.api.util.rest.json.processor;
 import com.fortify.api.util.rest.query.PagingData;
 
 /**
- * Abstract base class for {@link IJSONMapProcessor} implementations.
+ * Abstract base class for {@link IJSONMapProcessor} implementations, providing an
+ * empty implementation for the {@link #notifyNextPage(PagingData)} method.
  * 
  * @author Ruud Senden
  *

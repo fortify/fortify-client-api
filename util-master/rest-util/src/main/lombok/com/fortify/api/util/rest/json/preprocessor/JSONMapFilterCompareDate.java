@@ -26,6 +26,16 @@ package com.fortify.api.util.rest.json.preprocessor;
 
 import java.util.Date;
 
+import com.fortify.api.util.rest.json.JSONMap;
+
+/**
+ * This {@link JSONMapFilterSpEL} implementation allows for filtering {@link JSONMap}
+ * instances by comparing the value for the configured JSON property path against a 
+ * given {@link Date}, using the configured {@link DateComparisonOperator}.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class JSONMapFilterCompareDate extends JSONMapFilterSpEL {
 	public static enum DateComparisonOperator {
 		lt, gt, le, ge, eq, ne

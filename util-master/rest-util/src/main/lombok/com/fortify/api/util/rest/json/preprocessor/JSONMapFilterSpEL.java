@@ -30,6 +30,16 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
+/**
+ * This {@link AbstractJSONMapFilter} implementation evaluates the
+ * configured SpEL expression against a given {@link JSONMap} instance,
+ * and either includes or excludes (based on the configured {@link MatchMode})
+ * this {@link JSONMap} instance from further processing based on the
+ * expression evaluation result.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
 	private final Expression expression;
 	
