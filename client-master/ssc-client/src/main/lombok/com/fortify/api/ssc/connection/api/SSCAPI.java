@@ -30,7 +30,12 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
- * This class provides a unified entry point to the various SSC API's.
+ * <p>This is the main class for accessing higher-level SSC client API functionality.
+ * Actual API functions are provided by the various SSC*API classes; this main API
+ * class merely provides access to these SSC*API instances.</p>
+ * 
+ * <p>Instances of this class are usually not created directly, but rather
+ * accessed via the {@link SSCAuthenticatingRestConnection#api()} method.</p>
  * 
  * @author Ruud Senden
  *

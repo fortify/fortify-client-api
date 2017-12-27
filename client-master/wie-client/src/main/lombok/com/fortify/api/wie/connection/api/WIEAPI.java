@@ -29,6 +29,17 @@ import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * <p>This is the main class for accessing higher-level WIE client API functionality.
+ * Actual API functions are provided by the various WIE*API classes; this main API
+ * class merely provides access to these WIE*API instances.</p>
+ * 
+ * <p>Instances of this class are usually not created directly, but rather
+ * accessed via the {@link WIEAuthenticatingRestConnection#api()} method.</p>
+ * 
+ * @author Ruud Senden
+ *
+ */
 @Accessors(fluent = true)
 @Getter
 public class WIEAPI extends AbstractWIEAPI {

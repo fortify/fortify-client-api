@@ -30,7 +30,12 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 
 /**
- * This class provides a unified entry point to the various FoD API's.
+ * <p>This is the main class for accessing higher-level FoD client API functionality.
+ * Actual API functions are provided by the various FoD*API classes; this main API
+ * class merely provides access to these FoD*API instances.</p>
+ * 
+ * <p>Instances of this class are usually not created directly, but rather
+ * accessed via the {@link FoDAuthenticatingRestConnection#api()} method.</p>
  * 
  * @author Ruud Senden
  *

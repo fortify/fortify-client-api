@@ -31,6 +31,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * Base class for WebInspect API classes, providing functionality for configuring and 
+ * accessing the current {@link WebInspectAuthenticatingRestConnection} instance.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @Accessors(fluent=true) @Getter(AccessLevel.PROTECTED) @RequiredArgsConstructor
 public class AbstractWebInspectAPI {
 	private final WebInspectAuthenticatingRestConnection conn;

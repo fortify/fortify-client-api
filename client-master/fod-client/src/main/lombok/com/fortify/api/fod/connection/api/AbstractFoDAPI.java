@@ -32,9 +32,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * This abstract class holds the {@link FoDAuthenticatingRestConnection} instance
- * that is used to perform the various API functions. Actual API's are provided
- * through the {@link FoDAPI} class.
+ * Base class for FoD API classes, providing functionality for configuring and 
+ * accessing the current {@link FoDAuthenticatingRestConnection} instance.
  * 
  * @author Ruud Senden
  *

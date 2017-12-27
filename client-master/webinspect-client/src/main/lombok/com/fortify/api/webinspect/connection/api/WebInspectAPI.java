@@ -29,6 +29,17 @@ import com.fortify.api.webinspect.connection.WebInspectAuthenticatingRestConnect
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * <p>This is the main class for accessing higher-level WebInspect client API functionality.
+ * Actual API functions are provided by the various WebInspect*API classes; this main API
+ * class merely provides access to these WebInspect*API instances.</p>
+ * 
+ * <p>Instances of this class are usually not created directly, but rather
+ * accessed via the {@link WebInspectAuthenticatingRestConnection#api()} method.</p>
+ * 
+ * @author Ruud Senden
+ *
+ */
 @Accessors(fluent = true)
 @Getter
 public class WebInspectAPI extends AbstractWebInspectAPI {

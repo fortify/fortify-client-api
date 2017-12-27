@@ -31,6 +31,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
+/**
+ * Base class for WIE API classes, providing functionality for configuring and 
+ * accessing the current {@link WIEAuthenticatingRestConnection} instance.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @Accessors(fluent=true) @Getter(AccessLevel.PROTECTED) @RequiredArgsConstructor
 public class AbstractWIEAPI {
 	private final WIEAuthenticatingRestConnection conn;
