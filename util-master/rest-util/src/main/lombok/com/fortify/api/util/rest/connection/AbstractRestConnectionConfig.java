@@ -40,7 +40,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * This abstract base class allows for configuring {@link AbstractRestConnection} instances.
+ * This abstract base class allows for configuring {@link AbstractRestConnection} instances
+ * by setting properties like base URL, proxy configuration and additional connection properties.
  * 
  * @author Ruud Senden
  *
@@ -106,7 +107,7 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	
 	/**
 	 * Enable support for serializing and de-serializing the connection instance
-	 * within a single JVM.
+	 * within a single JVM. This simply generates a random and unique connection id.
 	 *  
 	 * @param supported
 	 */

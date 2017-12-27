@@ -24,7 +24,8 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
-import javax.ws.rs.client.Client;
+import java.net.URI;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
@@ -40,7 +41,7 @@ public interface IRestConnection {
 	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType);
 	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType, String cacheName);
 	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType);
+	public abstract URI getBaseUrl();
 	public abstract WebTarget getBaseResource();
 	public abstract WebTarget getResource(String url);
-	public abstract Client getClient();
 }

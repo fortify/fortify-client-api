@@ -29,7 +29,7 @@ package com.fortify.api.util.rest.connection;
  * 
  * @author Ruud Senden
  *
- * @param <C>
+ * @param <C> Concrete type of the {@link IRestConnection} retrieved through the {@link #getConnection()} method.
  */
 public interface IRestConnectionRetriever<C extends IRestConnection> {
 	public C getConnection();

@@ -125,6 +125,10 @@ import lombok.extern.apachecommons.CommonsLog;
  * {@link AbstractRestConnectionConfig#enableSerializationMultiJVM(String)} methods. Upon serialization,
  * only the connection id is serialized. Upon deserialization, this connection id is looked up in
  * the static connection instances map.</p>
+ * 
+ * <p>Implementations may choose to also provide more high-level functionality. Usually such implementations
+ * provide an api() method that provides access to these more high-level functionalities, keeping the
+ * actual connection implementation lean and clean.</p>
  */
 @CommonsLog
 @ToString

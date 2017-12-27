@@ -24,9 +24,13 @@
  ******************************************************************************/
 package com.fortify.api.util.rest.connection;
 
+import org.apache.http.auth.UsernamePasswordCredentials;
+
 /**
  * This {@link AbstractRestConnection} implementation allows for building 
- * authenticating REST connection instances.
+ * authenticating REST connection instances, using the standard 
+ * {@link UsernamePasswordCredentials}-based authentication mechanisms 
+ * provided by Apache HttpClient (i.e. Basic authentication).
  * 
  * @author Ruud Senden
  *
