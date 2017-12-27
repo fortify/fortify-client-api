@@ -24,6 +24,9 @@
  ******************************************************************************/
 package com.fortify.client.fod.connection;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.ws.rs.core.Form;
 
 import org.apache.commons.lang.StringUtils;
@@ -49,6 +52,7 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 	private String clientId;
 	private String clientSecret;
 	private String tenant;
+	private URI    browserBaseUrl;
 	
 	public T clientId(String clientId) {
 		setClientId(clientId);
@@ -69,7 +73,25 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		return getTenant() + "\\" + getUserName();
 	}
 	
-	public Form getAuth() {
+	@Override
+	protected void setBaseUrl(URI uri) {
+		URI apiUrl, browserUrl;
+		try {
+			if (uri.getHost().startsWith("api.") ) {
+				apiUrl = uri;
+				browserUrl = new URI(uri.getScheme(), null, uri.getHost().substring("api.".length()), uri.getPort(), uri.getPath(), uri.getQuery(), null);
+			} else {
+				apiUrl = new URI(uri.getScheme(), null, "api."+uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(), null);
+				browserUrl = uri;
+			}
+			super.setBaseUrl(apiUrl);
+			setBrowserBaseUrl(browserUrl);
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Error constructing URI");
+		}
+	}
+	
+	Form getAuth() {
 		if ( StringUtils.isNotBlank(getClientId()) && StringUtils.isNotBlank(getClientSecret()) ) {
 			return getAuthClientCredentials();
 		} else if ( StringUtils.isNotBlank(getTenant()) && StringUtils.isNotBlank(getUserName()) && StringUtils.isNotBlank(getPassword()) ) {

@@ -106,6 +106,7 @@ public class PagingData {
 			// size.
 			nextPageSize = Math.min(pageSize, maxResults - processedTotalNotFiltered );
 		}
+		processedCurrentPage = 0;
 		return nextPageSize;
 	}
 	

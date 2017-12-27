@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.fod.connection;
 
+import java.net.URI;
+
 import javax.ws.rs.client.Invocation.Builder;
 
 import com.fortify.client.fod.api.FoDAPI;
@@ -41,6 +43,7 @@ import com.fortify.util.rest.connection.IRestConnectionBuilder;
  */
 public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	private final FoDTokenFactory tokenProvider;
+	private final URI browserBaseUrl;
 	private final FoDAPI api = new FoDAPI(this);
 	
 	/**
@@ -53,7 +56,12 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	
 	protected FoDAuthenticatingRestConnection(FoDRestConnectionConfig<?> config) {
 		super(config);
+		this.browserBaseUrl = config.getBrowserBaseUrl();
 		this.tokenProvider = new FoDTokenFactory(new FoDBasicRestConnection(config), config.getAuth());
+	}
+	
+	public URI getBrowserBaseUrl() {
+		return browserBaseUrl;
 	}
 	
 	/**
