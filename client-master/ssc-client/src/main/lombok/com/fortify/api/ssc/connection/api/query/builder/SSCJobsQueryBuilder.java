@@ -29,11 +29,11 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying jobs.
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC jobs.
  * 
  * @author Ruud Senden
- *
+ * 
  */
 public final class SSCJobsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCJobsQueryBuilder> {
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/jobs"})

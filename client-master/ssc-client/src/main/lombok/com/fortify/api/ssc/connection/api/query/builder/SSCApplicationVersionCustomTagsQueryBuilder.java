@@ -29,8 +29,8 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying custom tags assigned to an application version.
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC application version custom tags.
  * 
  * @author Ruud Senden
  *

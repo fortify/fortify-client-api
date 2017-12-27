@@ -35,11 +35,11 @@ import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying application versions.
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC application versions.
  * 
  * @author Ruud Senden
- *
+ * 
  */
 public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCApplicationVersionsQueryBuilder> {
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})

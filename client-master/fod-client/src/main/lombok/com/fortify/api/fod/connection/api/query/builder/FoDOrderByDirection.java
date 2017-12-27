@@ -24,6 +24,13 @@
  ******************************************************************************/
 package com.fortify.api.fod.connection.api.query.builder;
 
+/**
+ * This enumeration allows for specifying whether REST query results should 
+ * be ordered in ascending or descending order.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public enum FoDOrderByDirection {
 	ASC, DESC
 }

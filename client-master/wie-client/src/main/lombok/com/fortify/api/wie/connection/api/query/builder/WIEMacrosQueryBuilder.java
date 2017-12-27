@@ -27,7 +27,15 @@ package com.fortify.api.wie.connection.api.query.builder;
 import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMode;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterRegEx;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
+import com.fortify.api.wie.connection.api.query.WIEEntityQuery;
 
+/**
+ * This class allows for building an {@link WIEEntityQuery} instance that allows for
+ * querying WIE macro's.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WIEMacrosQueryBuilder extends AbstractWIEEntityQueryBuilder<WIEMacrosQueryBuilder> {
 	public WIEMacrosQueryBuilder(WIEAuthenticatingRestConnection conn) {
 		super(conn, true);

@@ -40,6 +40,12 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.webinspect.connection.WebInspectAuthenticatingRestConnection;
 
+/**
+ * This class is used to access WebInspect macro-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WebInspectMacroAPI extends AbstractWebInspectAPI {
 	public WebInspectMacroAPI(WebInspectAuthenticatingRestConnection conn) {
 		super(conn);

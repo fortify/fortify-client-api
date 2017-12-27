@@ -31,6 +31,12 @@ import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionFil
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This class is used to access SSC issue template related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	public SSCIssueTemplateAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

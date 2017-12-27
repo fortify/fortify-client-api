@@ -34,6 +34,12 @@ import javax.ws.rs.core.MediaType;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.webinspect.connection.WebInspectAuthenticatingRestConnection;
 
+/**
+ * This class is used to access functionality related to WebInspect Proxies.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WebInspectProxyAPI extends AbstractWebInspectAPI {
 	public WebInspectProxyAPI(WebInspectAuthenticatingRestConnection conn) {
 		super(conn);

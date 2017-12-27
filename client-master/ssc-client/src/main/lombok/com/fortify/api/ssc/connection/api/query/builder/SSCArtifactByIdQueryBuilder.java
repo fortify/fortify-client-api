@@ -29,11 +29,11 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying artifacts by artifact id.
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC artifacts by id.
  * 
  * @author Ruud Senden
- *
+ * 
  */
 public class SSCArtifactByIdQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCArtifactByIdQueryBuilder> {
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/artifacts/\\d+"})

@@ -40,11 +40,12 @@ import com.fortify.api.util.rest.webtarget.WebTargetQueryParamUpdater;
 
 /**
  * <p>This abstract base class is used to build {@link SSCEntityQuery} instances. Concrete implementations
- * will need to provide the actual SSC REST API endpoint by calling the {@link #appendPath(String)}
- * method in their constructor.</p>
+ * will need to provide the actual SSC REST API endpoint by calling the {@link #appendPath(String)} method
+ * (usually in their constructor), and indicate whether this endpoint supports paging (by providing the
+ * pagingSupported parameter to the constructor of this superclass).</p>
  * 
  * <p>This class provides various protected methods for configuring common SSC request parameters,
- * like 'q' and 'orderby'. Depending on the whether the target SSC endpoint supports these parameters,
+ * like 'fields' and 'orderBy'. Depending on whether the target SSC endpoint supports these parameters,
  * concrete implementations can override these methods as 'public' to make the generic method available, 
  * and/or provide more specialized builder methods that call these generic methods, for example to support
  * specific fields to be added to the 'q' parameter.</p>  

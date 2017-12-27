@@ -32,6 +32,12 @@ import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 import com.fortify.api.wie.connection.api.query.builder.WIEMacrosQueryBuilder;
 
+/**
+ * This class is used to access WIE macro-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WIEMacroAPI extends AbstractWIEAPI {
 
 	public WIEMacroAPI(WIEAuthenticatingRestConnection conn) {

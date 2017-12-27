@@ -25,9 +25,17 @@
 package com.fortify.api.fod.connection.api.query.builder;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.api.fod.connection.api.query.FoDEntityQuery;
 import com.fortify.api.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
+/**
+ * This class allows for building an {@link FoDEntityQuery} instance that allows for
+ * querying FoD releases.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDReleasesQueryBuilder> {
 	public FoDReleasesQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);

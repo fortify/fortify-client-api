@@ -29,11 +29,11 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying issue details by issue id.
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC issue details by id.
  * 
  * @author Ruud Senden
- *
+ * 
  */
 public class SSCIssueDetailsByIdQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCIssueDetailsByIdQueryBuilder> {
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})

@@ -46,14 +46,12 @@ public class WebInspectAPI extends AbstractWebInspectAPI {
 	private final WebInspectProxyAPI proxy;
 	private final WebInspectScanAPI scan;
 	private final WebInspectMacroAPI macro;
-	private final WebInspectSecureBaseAPI secureBase;
 	
 	public WebInspectAPI(WebInspectAuthenticatingRestConnection conn) {
 		super(conn);
 		this.proxy = new WebInspectProxyAPI(conn);
 		this.scan = new WebInspectScanAPI(conn);
 		this.macro = new WebInspectMacroAPI(conn);
-		this.secureBase = new WebInspectSecureBaseAPI(conn);
 	}
 
 }

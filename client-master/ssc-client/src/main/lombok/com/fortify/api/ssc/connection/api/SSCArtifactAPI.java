@@ -39,6 +39,12 @@ import com.fortify.api.ssc.connection.api.query.builder.SSCArtifactByIdQueryBuil
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
+/**
+ * This class is used to access SSC artifact-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCArtifactAPI extends AbstractSSCAPI {
 	public SSCArtifactAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

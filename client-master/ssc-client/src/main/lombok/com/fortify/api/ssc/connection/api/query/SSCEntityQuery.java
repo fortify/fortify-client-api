@@ -35,8 +35,6 @@ import com.fortify.api.util.rest.query.AbstractRestConnectionQuery;
 import com.fortify.api.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.api.util.rest.query.PagingData;
 
-import lombok.Getter;
-
 /**
  * This class provides SSC-specific functionality for handling paging and processing REST responses.
  * Usually this class is instantiated through the various build() methods provided by the 
@@ -45,7 +43,6 @@ import lombok.Getter;
  * 
  * @author Ruud Senden
  */
-@Getter
 public class SSCEntityQuery extends AbstractRestConnectionQuery<JSONMap> {
 	public SSCEntityQuery(AbstractRestConnectionQueryConfig<SSCAuthenticatingRestConnection,?> config) {
 		super(config);

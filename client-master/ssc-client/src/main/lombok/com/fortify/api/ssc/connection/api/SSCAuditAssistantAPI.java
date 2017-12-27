@@ -41,6 +41,12 @@ import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterCompareDate.Date
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
+/**
+ * This class is used to access SSC Audit Assistant related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 	public SSCAuditAssistantAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

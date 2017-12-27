@@ -36,9 +36,10 @@ import com.fortify.api.util.rest.query.PagingData;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
 /**
- * <p>This abstract class can be used as a base class for querying entity data from WIE. </p>
- * 
- * TODO Add more JavaDoc
+ * This class provides WIE-specific functionality for handling paging and processing REST responses.
+ * Usually this class is instantiated through the various build() methods provided by the 
+ * query builder implementations in the {@link  com.fortify.api.wie.connection.api.query.builder}
+ * package.
  * 
  * @author Ruud Senden
  */

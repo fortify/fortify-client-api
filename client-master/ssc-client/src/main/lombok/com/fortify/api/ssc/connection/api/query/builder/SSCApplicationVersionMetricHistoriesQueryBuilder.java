@@ -30,11 +30,11 @@ import com.fortify.api.ssc.connection.api.SSCMetricsAPI.MetricType;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying application version metrics (variables and performance indicators).
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC application version metrics (variables and performance indicators).
  * 
  * @author Ruud Senden
- *
+ * 
  */
 public class SSCApplicationVersionMetricHistoriesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionMetricHistoriesQueryBuilder> {
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/performanceIndicatorHistories", "GET=/api/v\\d+/projectVersions/\\d+/variableHistories"})

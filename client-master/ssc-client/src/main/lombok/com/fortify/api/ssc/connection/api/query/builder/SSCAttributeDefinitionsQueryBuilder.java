@@ -29,11 +29,11 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying application version attribute definitions.
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC attribute definitions.
  * 
  * @author Ruud Senden
- *
+ * 
  */
 public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCAttributeDefinitionsQueryBuilder> {
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/attributeDefinitions"})

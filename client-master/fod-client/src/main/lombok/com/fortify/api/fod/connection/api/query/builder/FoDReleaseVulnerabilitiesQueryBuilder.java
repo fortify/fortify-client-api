@@ -25,10 +25,18 @@
 package com.fortify.api.fod.connection.api.query.builder;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.api.fod.connection.api.query.FoDEntityQuery;
 import com.fortify.api.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
+/**
+ * This class allows for building an {@link FoDEntityQuery} instance that allows for
+ * querying FoD release vulnerabilities.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChildEntityQueryBuilder<FoDReleaseVulnerabilitiesQueryBuilder> {
 	public FoDReleaseVulnerabilitiesQueryBuilder(FoDAuthenticatingRestConnection conn, String releaseId) {
 		super(conn, releaseId, true);

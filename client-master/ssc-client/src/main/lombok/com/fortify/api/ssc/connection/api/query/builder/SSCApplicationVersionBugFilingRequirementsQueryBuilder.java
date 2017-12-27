@@ -33,8 +33,8 @@ import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.util.rest.json.JSONMap;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying bug filing requirements.
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC bug filing requirements.
  * 
  * @author Ruud Senden
  *

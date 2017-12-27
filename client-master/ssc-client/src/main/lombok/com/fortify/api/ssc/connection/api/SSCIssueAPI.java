@@ -37,6 +37,12 @@ import com.fortify.api.ssc.connection.api.query.builder.SSCIssueDetailsByIdQuery
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This class is used to access SSC issue-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCIssueAPI extends AbstractSSCAPI {
 	public SSCIssueAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

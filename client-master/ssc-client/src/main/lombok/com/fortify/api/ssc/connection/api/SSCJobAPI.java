@@ -34,6 +34,12 @@ import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 
+/**
+ * This class is used to access SSC job-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCJobAPI extends AbstractSSCAPI {
 	public SSCJobAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

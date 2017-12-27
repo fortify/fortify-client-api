@@ -44,14 +44,15 @@ import com.google.common.collect.ListMultimap;
 
 /**
  * <p>This abstract base class is used to build {@link FoDEntityQuery} instances. Concrete implementations
- * will need to provide the actual FoD REST API endpoint by implementing the {@link #getTargetPath()}
- * method, and provide any builder methods for configuring the query request.</p>
+ * will need to provide the actual FoD REST API endpoint by calling the {@link #appendPath(String)} method
+ * (usually in their constructor), and indicate whether this endpoint supports paging (by providing the
+ * pagingSupported parameter to the constructor of this superclass).</p>
  * 
  * <p>This class provides various protected methods for configuring common FoD request parameters,
- * like 'filter' and 'orderBy'. Depending on the whether the target FoD endpoint supports these parameters,
+ * like 'filter' and 'orderBy'. Depending on whether the target FoD endpoint supports these parameters,
  * concrete implementations can override these methods as 'public' to make the generic method available, 
  * and/or provide more specialized builder methods that call these generic methods, for example to support
- * specific fields to be added to the 'q' parameter.</p>  
+ * specific fields to be added to the 'filter' parameter.</p>  
  *  
  * @author Ruud Senden
  *

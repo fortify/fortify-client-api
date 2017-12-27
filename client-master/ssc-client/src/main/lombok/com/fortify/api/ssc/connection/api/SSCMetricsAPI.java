@@ -28,6 +28,12 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionMetricHistoriesQueryBuilder;
 import com.fortify.api.util.rest.json.JSONList;
 
+/**
+ * This class is used to access SSC metrics-related functionality (variables and performance indicators).
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCMetricsAPI extends AbstractSSCAPI {
 	public static enum MetricType {
 		performanceIndicator, variable

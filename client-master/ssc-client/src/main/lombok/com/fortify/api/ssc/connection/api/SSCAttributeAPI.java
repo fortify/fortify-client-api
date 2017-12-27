@@ -34,6 +34,12 @@ import com.fortify.api.ssc.connection.api.query.builder.SSCAttributeDefinitionsQ
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This class is used to access SSC attribute-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCAttributeAPI extends AbstractSSCAPI {
 	public SSCAttributeAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

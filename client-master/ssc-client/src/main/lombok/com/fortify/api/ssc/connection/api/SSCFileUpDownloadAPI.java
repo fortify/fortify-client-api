@@ -55,7 +55,12 @@ import com.fortify.api.util.spring.SpringExpressionUtil;
 
 import lombok.extern.apachecommons.CommonsLog;
 
-
+/**
+ * This class is used to access SSC functionality related to up- and downloading files.
+ * 
+ * @author Ruud Senden
+ *
+ */
 @CommonsLog
 public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
 	/**

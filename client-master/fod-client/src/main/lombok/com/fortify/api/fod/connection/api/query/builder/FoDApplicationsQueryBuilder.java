@@ -25,11 +25,19 @@
 package com.fortify.api.fod.connection.api.query.builder;
 
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.api.fod.connection.api.query.FoDEntityQuery;
 import com.fortify.api.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.ondemand.AbstractJSONMapOnDemandLoader;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
+/**
+ * This class allows for building an {@link FoDEntityQuery} instance that allows for
+ * querying FoD applications.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDApplicationsQueryBuilder> {
 	public FoDApplicationsQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);

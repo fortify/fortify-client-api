@@ -28,6 +28,12 @@ import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.api.ssc.connection.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This class is used to access SSC application version related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	public SSCApplicationVersionAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);

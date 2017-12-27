@@ -34,8 +34,8 @@ import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProp
 import com.fortify.api.util.rest.query.IRequestInitializer;
 
 /**
- * This builder class can be used to build {@link SSCEntityQuery} instances
- * for querying application version vulnerabilities.
+ * This class allows for building an {@link SSCEntityQuery} instance that allows for
+ * querying SSC application version issues.
  * 
  * @author Ruud Senden
  *

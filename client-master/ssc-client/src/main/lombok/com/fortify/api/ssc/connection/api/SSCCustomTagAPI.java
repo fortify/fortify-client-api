@@ -41,6 +41,12 @@ import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.spring.SpringExpressionUtil;
 
+/**
+ * This class is used to access SSC custom tag related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCCustomTagAPI extends AbstractSSCAPI {
 	
 	public SSCCustomTagAPI(SSCAuthenticatingRestConnection conn) {

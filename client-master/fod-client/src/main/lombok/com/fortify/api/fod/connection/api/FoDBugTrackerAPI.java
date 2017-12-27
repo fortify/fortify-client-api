@@ -33,6 +33,12 @@ import javax.ws.rs.core.MediaType;
 import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This class is used to access FoD bug tracker related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class FoDBugTrackerAPI extends AbstractFoDAPI {
 	public FoDBugTrackerAPI(FoDAuthenticatingRestConnection conn) {
 		super(conn);

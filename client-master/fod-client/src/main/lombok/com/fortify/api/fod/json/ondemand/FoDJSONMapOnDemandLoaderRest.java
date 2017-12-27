@@ -27,6 +27,15 @@ package com.fortify.api.fod.json.ondemand;
 import com.fortify.api.util.rest.connection.IRestConnection;
 import com.fortify.api.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
 
+/**
+ * This {@link JSONMapOnDemandLoaderRest} implementation allows for loading
+ * on-demand data from FoD. Instances of this class can be configured with
+ * a path template expression indicating the FoD REST endpoint to load the
+ * data from.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class FoDJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
 	private static final long serialVersionUID = 1L;
 

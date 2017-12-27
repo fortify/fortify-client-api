@@ -28,6 +28,12 @@ import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.api.fod.connection.api.query.builder.FoDReleasesQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This class is used to access FoD release-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class FoDReleaseAPI extends AbstractFoDAPI {
 	public FoDReleaseAPI(FoDAuthenticatingRestConnection conn) {
 		super(conn);

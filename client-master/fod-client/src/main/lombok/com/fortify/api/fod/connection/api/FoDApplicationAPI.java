@@ -28,6 +28,12 @@ import com.fortify.api.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.api.fod.connection.api.query.builder.FoDApplicationsQueryBuilder;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * This class is used to access FoD application-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class FoDApplicationAPI extends AbstractFoDAPI {
 	public FoDApplicationAPI(FoDAuthenticatingRestConnection conn) {
 		super(conn);

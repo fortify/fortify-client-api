@@ -34,6 +34,12 @@ import javax.ws.rs.core.MediaType;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
+/**
+ * This class is used to access WIE scan-related functionality.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WIEScanAPI extends AbstractWIEAPI {
 
 	public WIEScanAPI(WIEAuthenticatingRestConnection conn) {

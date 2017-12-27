@@ -30,6 +30,16 @@ import com.fortify.api.util.rest.connection.IRestConnection;
 import com.fortify.api.util.rest.json.JSONMap;
 import com.fortify.api.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
 
+/**
+ * This {@link JSONMapOnDemandLoaderRest} implementation allows for loading
+ * on-demand data from SSC. Instances of this class can be configured with
+ * a path template expression indicating the SSC REST endpoint to load the
+ * data from, and optionally a list of fields to be loaded (if supported by 
+ * the REST endpoint).
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
 	private static final long serialVersionUID = 1L;
 	private final String[] fields;

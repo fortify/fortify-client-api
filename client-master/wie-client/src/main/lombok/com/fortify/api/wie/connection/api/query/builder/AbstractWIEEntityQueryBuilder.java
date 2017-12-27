@@ -29,6 +29,16 @@ import com.fortify.api.util.rest.query.IRestConnectionQuery;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 import com.fortify.api.wie.connection.api.query.WIEEntityQuery;
 
+/**
+ * <p>This abstract base class is used to build {@link WIEEntityQuery} instances. Concrete implementations
+ * will need to provide the actual WIE REST API endpoint by calling the {@link #appendPath(String)} method
+ * (usually in their constructor), and indicate whether this endpoint supports paging (by providing the
+ * pagingSupported parameter to the constructor of this superclass).</p>
+ *  
+ * @author Ruud Senden
+ *
+ * @param <T> Concrete builder type
+ */
 public abstract class AbstractWIEEntityQueryBuilder<T> extends AbstractRestConnectionQueryConfig<WIEAuthenticatingRestConnection, T> {
 	
 	protected AbstractWIEEntityQueryBuilder(WIEAuthenticatingRestConnection conn, boolean pagingSupported) {
