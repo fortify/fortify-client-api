@@ -56,74 +56,154 @@ import com.fortify.api.util.spring.SpringExpressionUtil;
 public class JSONMap extends LinkedHashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @see LinkedHashMap#LinkedHashMap()
+	 */
 	public JSONMap() {
 		super();
 	}
 
+	/**
+	 * @see LinkedHashMap#LinkedHashMap(int, float, boolean)
+	 */
 	public JSONMap(int initialCapacity, float loadFactor, boolean accessOrder) {
 		super(initialCapacity, loadFactor, accessOrder);
 	}
 
-
-
+	/**
+	 * @see LinkedHashMap#LinkedHashMap(int, float)
+	 */
 	public JSONMap(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 	}
 
-
-
+	/**
+	 * @see LinkedHashMap#LinkedHashMap(int)
+	 */
 	public JSONMap(int initialCapacity) {
 		super(initialCapacity);
 	}
 
+	/**
+	 * @see LinkedHashMap#LinkedHashMap(Map)
+	 */
 	public JSONMap(Map<? extends String, ? extends Object> m) {
 		super(m);
 	}
 	
+	/**
+	 * @see LinkedHashMap#getOrDefault(Object, Object). This override
+	 * adds support for loading on-demand values.
+	 */
 	@Override
 	public Object getOrDefault(Object key, Object defaultValue) {
 		return getOnDemandValue(key, super.getOrDefault(key, defaultValue));
 	}
 
+	/**
+	 * @see LinkedHashMap#get(Object). This override
+	 * adds support for loading on-demand values.
+	 */
 	@Override
 	public Object get(Object key) {
 		return getOnDemandValue(key, super.get(key));
 	}
 	
+	/**
+	 * @see #getOrDefault(Object, Object). This overloaded method
+	 * adds support for converting the value to the given type.
+	 */
 	public <T> T getOrDefault(Object key, T defaultValue, Class<T> type) {
 		return getConversionService().convert(getOrDefault(key, defaultValue), type);
 	}
 
+	/**
+	 * @see #get(Object). This overloaded method adds support for 
+	 * converting the value to the given type.
+	 */
 	public <T> T get(String key, Class<T> type) {
 		return getConversionService().convert(get(key), type);
 	}
 	
+	/**
+	 * This method allows for getting the value for the given property
+	 * path, and converts this value to the given type.
+	 */
 	public <T> T getPath(String path, Class<T> type) {
 		return getConversionService().convert(getPath(path), type);
 	}
 	
+	/**
+	 * This method allows for getting the value for the given property
+	 * path.
+	 */
 	public Object getPath(String path) {
 		return SpringExpressionUtil.evaluateExpression(this, path, Object.class);
 	}
 	
+	/**
+	 * Get the {@link JSONMap} instance with the given key, or return a 
+	 * new {@link JSONMap} instance if the given key does not exist.
+	 * @param key
+	 * @return
+	 */
 	public JSONMap getOrCreateJSONMap(String key) {
 		return getOrDefault(key, new JSONMap(), JSONMap.class);
 	}
 	
+	/**
+	 * Get the {@link JSONList} instance with the given key, or return a 
+	 * new {@link JSONList} instance if the given key does not exist.
+	 * @param key
+	 * @return
+	 */
 	public JSONList getOrCreateJSONList(String key) {
 		return getOrDefault(key, new JSONList(), JSONList.class);
 	}
 
+	/**
+	 * Add multiple values to this {@link JSONMap}, each value under the
+	 * corresponding property path. See {@link #putPath(String, Object, boolean)}
+	 * for more information.
+	 * @param map
+	 * @param ignoreNullOrEmptyValues
+	 */
 	public void putPaths(Map<String, Object> map, boolean ignoreNullOrEmptyValues) {
 		for ( Map.Entry<String, Object> entry : map.entrySet() ) {
 			putPath(entry.getKey(), entry.getValue(), ignoreNullOrEmptyValues);
 		}
 	}
 	
+	/**
+	 * Add multiple values to this {@link JSONMap}, each value under the
+	 * corresponding property path. See {@link #putPath(String, Object)}
+	 * for more information.
+	 * @param map
+	 */
+	public void putPaths(Map<String, Object> map) {
+		for ( Map.Entry<String, Object> entry : map.entrySet() ) {
+			putPath(entry.getKey(), entry.getValue());
+		}
+	}
+	
+	/**
+	 * Add a value to this {@link JSONMap} under the given property path.
+	 * This will create the property path if it does not yet exist.
+	 * @param path
+	 * @param value
+	 */
 	public void putPath(String path, Object value) {
 		putPath(path, value, false);
 	}
 	
+	/**
+	 * Add a value to this {@link JSONMap} under the given property path.
+	 * This will create the property path if it does not yet exist. Depending
+	 * on the ignoreNullOrEmptyValues parameter, values that are null, blank 
+	 * strings, or empty collections or arrays, will be ignored.
+	 * @param path
+	 * @param value
+	 */
 	public void putPath(String path, Object value, boolean ignoreNullOrEmptyValues) {
 		putPath(Arrays.asList(path.split("\\.")), value, ignoreNullOrEmptyValues);
 	}
@@ -162,12 +242,6 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 					|| (value instanceof Object[] && ArrayUtils.isEmpty((Object[])value)) );
 	}
 	
-	public void putPaths(Map<String, Object> map) {
-		for ( Map.Entry<String, Object> entry : map.entrySet() ) {
-			putPath(entry.getKey(), entry.getValue());
-		}
-	}
-	
 	private ConversionService getConversionService() {
 		DefaultConversionService result = new DefaultConversionService();
 		result.addConverter(new Converter<String, Date>() {
@@ -183,6 +257,10 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 		return result;
 	}
 	
+	/**
+	 * Return a JSON string representation of this {@link JSONMap} instance. Note that
+	 * this is on a best-effort basis; the return value may not always be valid JSON.
+	 */
 	@Override
 	public String toString() {
 		try {
@@ -192,6 +270,11 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 		}
 	}
 	
+	/**
+	 * Return an indented JSON string representation of this {@link JSONMap} instance.
+	 * Note that this is on a best-effort basis; the return value may not always be valid 
+	 * JSON.
+	 */
 	public String toIndentedString() {
 		try {
 			return new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(this);

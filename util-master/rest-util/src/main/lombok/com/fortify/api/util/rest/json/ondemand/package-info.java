@@ -23,7 +23,7 @@
  * IN THE SOFTWARE.
  ******************************************************************************/
 /**
- * <p>This package allows for loading additional JSON data on-demand as the
+ * <p>This package allows for on-demand loading of additional JSON data, as the
  * corresponding properties in a given {@link com.fortify.api.util.rest.json.JSONMap} 
  * are being accessed.</p>
  */

@@ -153,17 +153,43 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 		return this.getClass().getName();
 	}
 	
-	protected void updatePagingDataFromResponse(PagingData pagingData, ResponseType data) {
+	/**
+	 * This method must be overridden by all implementations that support paging, to update the
+	 * {@link PagingData} object with information from the last request, for example the total
+	 * number of available results. This method is only called if this class is configured
+	 * with {@link #pagingSupported}==true.
+	 * @param pagingData
+	 * @param responseData
+	 */
+	protected void updatePagingDataFromResponse(PagingData pagingData, ResponseType responseData) {
 		throw new UnsupportedOperationException("Paging is not supported by "+this.getClass().getName());
 	}
 
+	/**
+	 * This method must be overridden by all implementations that support paging, to add information
+	 * about page start and size to the request. This method is only called if this class is configured
+	 * with {@link #pagingSupported}==true.
+	 * @param target
+	 * @param pagingData
+	 * @return Updated {@link WebTarget}
+	 */
 	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
 		throw new UnsupportedOperationException("Paging is not supported by "+this.getClass().getName());
 	}
 	
+	/**
+	 * This method must be implemented by subclasses to return the response type class.
+	 * @return
+	 */
 	protected abstract Class<ResponseType> getResponseTypeClass();
 
-	protected abstract JSONList getJSONListFromResponse(ResponseType data);
+	/**
+	 * This method must be implemented by subclasses to get a {@link JSONList} instance
+	 * from the response data.
+	 * @param responseData
+	 * @return
+	 */
+	protected abstract JSONList getJSONListFromResponse(ResponseType responseData);
 	
 	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
@@ -199,9 +225,5 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 			}
 		}
 		return data;
-	}
-	
-	public static interface IRequestInitializer {
-		public void initRequest();
 	}
 }

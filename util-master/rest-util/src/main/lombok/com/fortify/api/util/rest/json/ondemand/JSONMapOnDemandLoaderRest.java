@@ -33,7 +33,8 @@ import com.fortify.api.util.spring.SpringExpressionUtil;
 
 /**
  * This {@link AbstractJSONMapOnDemandLoaderWithConnection} implementation allows for
- * dynamically loading on-demand data when a given JSON property is being accessed.
+ * dynamically loading on-demand data from the configured REST endpoint when a given 
+ * JSON property is being accessed.
  *  
  * @author Ruud Senden
  *

@@ -31,8 +31,9 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * This {@link AbstractJSONMapEnrich} implementation allows for enriching a
- * given {@link JSONMap} instance on-demand data using the configured 
- * {@link IJSONMapOnDemandLoader} implementation.
+ * given {@link JSONMap} instance with on-demand data by adding the configured
+ * {@link IJSONMapOnDemandLoader} instance to the {@link JSONMap} under the
+ * configured property name.
  * 
  * @author Ruud Senden
  *

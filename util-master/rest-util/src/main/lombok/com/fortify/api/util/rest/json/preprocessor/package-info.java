@@ -23,8 +23,10 @@
  * IN THE SOFTWARE.
  ******************************************************************************/
 /**
- * <p>This package provides various interfaces and classes for pre-processing JSONMap instances
- *    before {@link IJSONMapProcessor} is called.</p>
+ * <p>This package provides various interfaces and classes for pre-processing 
+ *    {@link com.fortify.api.util.rest.json.JSONMap} instances before 
+ *    {@link IJSONMapProcessor#process(com.fortify.api.util.rest.json.JSONMap)} 
+ *    is called.</p>
  */
 package com.fortify.api.util.rest.json.preprocessor;
 

@@ -33,6 +33,11 @@ import com.fortify.api.util.rest.json.processor.IJSONMapProcessor;
  * the given {@link JSONMap}, and/or indicate whether the given {@link JSONMap}
  * should be further processed or not.</p>
  * 
+ * <p>Usually you will not implement this interface directly, but rather extend
+ * from either {@link AbstractJSONMapEnrich} or {@link AbstractJSONMapFilter},
+ * depending on whether you want to either enrich or filter {@link JSONMap}
+ * instances.
+ * 
  * @author Ruud Senden
  *
  */

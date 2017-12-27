@@ -22,33 +22,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.util.rest.json.preprocessor;
-
-import com.fortify.api.util.rest.json.JSONMap;
-import com.fortify.api.util.spring.SpringExpressionUtil;
-import com.fortify.api.util.spring.expression.TemplateExpression;
+package com.fortify.api.util.rest.query;
 
 /**
- * This {@link AbstractJSONMapEnrich} implementation allows for enriching a
- * given {@link JSONMap} instance with a 'deepLink' property by evaluating the
- * configured {@link TemplateExpression} on the {@link JSONMap} instance and
- * storing the evaluation result as the 'deepLink' property in the {@link JSONMap}
- * instance.
+ * This interface allows for doing some initialization before
+ * {@link AbstractRestConnectionQuery} starts loading query results
+ * from the REST endpoint. This can for example be used to invoke
+ * another REST endpoint to do some configuration before executing
+ * the query. 
  * 
  * @author Ruud Senden
  *
  */
-public class JSONMapEnrichWithDeepLink extends AbstractJSONMapEnrich {
-	private final TemplateExpression deepLinkExpression;
-	public JSONMapEnrichWithDeepLink(TemplateExpression deepLinkExpression) {
-		this.deepLinkExpression = deepLinkExpression;
-	}
-	
-	public JSONMapEnrichWithDeepLink(String deepLinkExpression) {
-		this(SpringExpressionUtil.parseTemplateExpression(deepLinkExpression));
-	}
-	@Override
-	protected final void enrich(JSONMap json) {
-		json.put("deepLink", SpringExpressionUtil.evaluateExpression(json, deepLinkExpression, String.class));
-	}
+public interface IRequestInitializer {
+	public void initRequest();
 }

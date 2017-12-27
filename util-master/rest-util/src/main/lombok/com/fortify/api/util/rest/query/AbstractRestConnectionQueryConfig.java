@@ -32,7 +32,6 @@ import javax.ws.rs.client.Entity;
 
 import com.fortify.api.util.rest.connection.IRestConnection;
 import com.fortify.api.util.rest.json.preprocessor.IJSONMapPreProcessor;
-import com.fortify.api.util.rest.query.AbstractRestConnectionQuery.IRequestInitializer;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.api.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.api.util.rest.webtarget.WebTargetPathUpdaterBuilder;

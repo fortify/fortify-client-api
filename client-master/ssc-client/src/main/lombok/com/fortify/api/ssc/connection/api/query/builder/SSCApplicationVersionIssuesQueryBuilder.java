@@ -31,7 +31,7 @@ import com.fortify.api.ssc.connection.api.query.SSCEntityQuery;
 import com.fortify.api.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
 import com.fortify.api.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
-import com.fortify.api.util.rest.query.AbstractRestConnectionQuery.IRequestInitializer;
+import com.fortify.api.util.rest.query.IRequestInitializer;
 
 /**
  * This builder class can be used to build {@link SSCEntityQuery} instances
