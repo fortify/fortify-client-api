@@ -47,42 +47,41 @@
 		<module>util-master</module>
 		<module>client-master</module>
 		<module>utilities-master</module>
-		<module>samples</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.fortify.api.util</groupId>
+				<groupId>com.fortify.util</groupId>
 				<artifactId>spring-util</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.api.util</groupId>
+				<groupId>com.fortify.util</groupId>
 				<artifactId>rest-util</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.api.client</groupId>
+				<groupId>com.fortify.client</groupId>
 				<artifactId>fod-client</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.api.client</groupId>
+				<groupId>com.fortify.client</groupId>
 				<artifactId>ssc-client</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.api.client</groupId>
+				<groupId>com.fortify.client</groupId>
 				<artifactId>webinspect-client</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.api.client</groupId>
+				<groupId>com.fortify.client</groupId>
 				<artifactId>wie-client</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>

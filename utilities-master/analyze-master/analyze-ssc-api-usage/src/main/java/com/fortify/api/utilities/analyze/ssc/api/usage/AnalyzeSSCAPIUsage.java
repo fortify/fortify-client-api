@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.fortify.api.utilities.analyze.CallsToAnnotatedMethodsAnalyzer;
+import com.fortify.utilities.analyze.CallsToAnnotatedMethodsAnalyzer;
 
 // TODO Add documentation
 // TODO clean up this class

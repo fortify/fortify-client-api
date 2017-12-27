@@ -25,7 +25,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.fortify.api.client</groupId>
+	<groupId>com.fortify.client</groupId>
 	<artifactId>client-master</artifactId>
 	<packaging>pom</packaging>
 	<parent>
@@ -38,6 +38,7 @@
 		<module>ssc-client</module>
 		<module>webinspect-client</module>
 		<module>wie-client</module>
+		<module>samples</module>
 	</modules>
 	<description>This module is the parent module for client API's for various Fortify products.</description>
 	<organization>

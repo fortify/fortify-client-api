@@ -17,7 +17,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>analyze-ssc-api-usage</artifactId>
 	<parent>
-		<groupId>com.fortify.api.utilities.analyze</groupId>
+		<groupId>com.fortify.utilities.analyze</groupId>
 		<artifactId>utilities-analyze-master</artifactId>
 		<version>4.0-SNAPSHOT</version>
 	</parent>
@@ -42,7 +42,7 @@
 	<inceptionYear>2017</inceptionYear>
 	<dependencies>
 		<dependency>
-			<groupId>com.fortify.api.utilities.analyze</groupId>
+			<groupId>com.fortify.utilities.analyze</groupId>
 			<artifactId>analyze-api-usage-common</artifactId>
 		</dependency>
 	</dependencies>
@@ -62,7 +62,7 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>com.fortify.api.utilities.analyze.ssc.api.usage.AnalyzeSSCAPIUsage</mainClass>
+									<mainClass>com.fortify.utilities.analyze.ssc.api.usage.AnalyzeSSCAPIUsage</mainClass>
 								</transformer>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />

@@ -17,7 +17,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>analyze-api-usage-common</artifactId>
 	<parent>
-		<groupId>com.fortify.api.utilities.analyze</groupId>
+		<groupId>com.fortify.utilities.analyze</groupId>
 		<artifactId>utilities-analyze-master</artifactId>
 		<version>4.0-SNAPSHOT</version>
 	</parent>

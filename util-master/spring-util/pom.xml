@@ -17,7 +17,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>spring-util</artifactId>
 	<parent>
-		<groupId>com.fortify.api.util</groupId>
+		<groupId>com.fortify.util</groupId>
 		<artifactId>util-master</artifactId>
 		<version>4.0-SNAPSHOT</version>
 	</parent>
