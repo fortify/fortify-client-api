@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,27 +22,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.api.webinspect.connection;
-
-import com.fortify.api.util.rest.connection.AbstractRestConnectionConfig;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 /**
- * This class extends {@link AbstractRestConnectionConfig}, adding functionality
- * for configuring the WebInspect API token.
- * 
- * @author Ruud Senden
- *
- * @param <T>
+ * <p>This package contains various examples used to demonstrate the use of
+ *    the various Fortify client API's.</p>
  */
-@Data @EqualsAndHashCode(callSuper=true)
-public class WebInspectRestConnectionConfig<T extends WebInspectRestConnectionConfig<T>> extends AbstractRestConnectionConfig<T> {
-	private String apiKey;
-	
-	@Override
-	protected void parseUriUserInfo(String userInfo) {
-		apiKey = userInfo;
-	}
-}
+package com.fortify.api.client.samples;

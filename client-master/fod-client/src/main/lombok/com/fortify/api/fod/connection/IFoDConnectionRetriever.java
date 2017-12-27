@@ -28,8 +28,11 @@ import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
 /**
  * Marker interface that extends {@link IRestConnectionRetriever}
- * to differentiate from other (non-FoD) connection factories,
+ * to differentiate from other (non-FoD) connection retrievers,
  * for example when using auto-wiring.
+ * 
+ * @author Ruud Senden
+ *
  */
 public interface IFoDConnectionRetriever extends IRestConnectionRetriever<FoDAuthenticatingRestConnection> {
 }

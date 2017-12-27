@@ -26,6 +26,12 @@ package com.fortify.api.client.samples;
 
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection;
 
+/**
+ * This class demonstrates the use of (parts of) the WIE client API.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WIESamples extends AbstractSamples {
 	private final WIEAuthenticatingRestConnection conn;
 	
@@ -44,12 +50,12 @@ public class WIESamples extends AbstractSamples {
 	}
 	
 	public final void sample1QueryAllMacros() throws Exception {
-		print("\n\n---- Query all macros ----");
+		printHeader("\n\n---- Query all macros ----");
 		print(conn.api().macro().queryMacros().build().getAll());
 	}
 	
 	public final void sample2QueryMacrosByName() throws Exception {
-		print("\n\n---- Query macros 'test' and 'anotherTest' ----");
+		printHeader("\n\n---- Query macros 'test' and 'anotherTest' ----");
 		print(conn.api().macro().queryMacros().names("test", "anotherTest").build().getAll());
 	}
 }

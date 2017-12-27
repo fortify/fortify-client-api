@@ -25,13 +25,12 @@
 package com.fortify.api.wie.connection;
 
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
-import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 import com.fortify.api.wie.connection.WIEAuthenticatingRestConnection.WIEAuthenticatingRestConnectionBuilder;
 
 /**
- * <p>This {@link IRestConnectionRetriever} will create 
- * an authenticated WIE REST connection based on the given
- * configuration</p>
+ * <p>This {@link AbstractRestConnectionRetriever} implementation
+ * provides functionality for configuring and creating an 
+ * authenticated WIE REST connection.</p>
  * 
  * @author Ruud Senden
  *

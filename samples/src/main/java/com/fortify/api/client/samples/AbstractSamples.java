@@ -27,6 +27,13 @@ package com.fortify.api.client.samples;
 import com.fortify.api.util.rest.json.JSONList;
 import com.fortify.api.util.rest.json.JSONMap;
 
+/**
+ * Abstract base class for samples, providing functionality for printing
+ * information.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public abstract class AbstractSamples {
 	protected void print(JSONMap json) {
 		print(json.toIndentedString());
@@ -41,7 +48,7 @@ public abstract class AbstractSamples {
 		System.out.flush();
 	}
 	
-	protected void printInfo(Object obj) {
+	protected void printHeader(Object obj) {
 		System.out.println("\n\n---- "+obj+" ----");
 		System.out.flush();
 	}

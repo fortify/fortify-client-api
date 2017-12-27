@@ -28,7 +28,7 @@ import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
 /**
  * Marker interface that extends {@link IRestConnectionRetriever}
- * to differentiate from other (non-SSC) connection factories,
+ * to differentiate from other (non-SSC) connection retrievers,
  * for example when using auto-wiring.
  * 
  * @author Ruud Senden

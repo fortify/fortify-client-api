@@ -25,7 +25,8 @@
 package com.fortify.api.ssc.connection;
 
 /**
- * Factory for SSC authentication tokens
+ * Factory interface for SSC authentication tokens.
+ * 
  * @author Ruud Senden
  *
  */

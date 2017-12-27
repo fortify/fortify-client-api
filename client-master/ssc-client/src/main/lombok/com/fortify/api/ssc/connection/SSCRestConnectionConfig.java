@@ -29,6 +29,15 @@ import com.fortify.api.util.rest.connection.AbstractRestConnectionWithUsernamePa
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * This class extends {@link AbstractRestConnectionWithUsernamePasswordConfig}, adding 
+ * functionality for configuring an SSC authentication token (in addition to 
+ * configuring SSC user name and password as provided by our superclass).
+ * 
+ * @author Ruud Senden
+ *
+ * @param <T>
+ */
 @Data @EqualsAndHashCode(callSuper=true)
 public class SSCRestConnectionConfig<T extends SSCRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
 	private String authToken;

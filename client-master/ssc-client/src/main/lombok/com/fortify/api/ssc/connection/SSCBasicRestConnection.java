@@ -32,7 +32,7 @@ import com.fortify.api.util.rest.connection.AbstractRestConnectionConfig;
 /**
  * This class provides a basic, non-authenticating REST connection
  * for SSC. It's main characteristics compared to a standard 
- * {@link AbstractRestConnectionWithCache} is that it will add an 
+ * {@link AbstractRestConnection} is that it will add an 
  * <code>Accept: application/json</code> header.
  * 
  * @author Ruud Senden
@@ -45,7 +45,7 @@ public class SSCBasicRestConnection extends AbstractRestConnection {
 	}
 	
 	/**
-	 * Update the {@link Builder} to add the Accept and OAuth headers.
+	 * Update the {@link Builder} to add the Accept header.
 	 */
 	@Override
 	public Builder updateBuilder(Builder builder) {

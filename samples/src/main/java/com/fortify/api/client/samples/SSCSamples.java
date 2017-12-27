@@ -38,6 +38,12 @@ import com.fortify.api.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMo
 import com.fortify.api.util.rest.json.preprocessor.JSONMapFilterCompareDate.DateComparisonOperator;
 import com.fortify.api.util.rest.query.IRestConnectionQuery;
 
+/**
+ * This class demonstrates the use of (parts of) the SSC client API.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class SSCSamples extends AbstractSamples {
 	private final SSCAuthenticatingRestConnection conn;
 	private final JSONMap applicationVersion;
@@ -73,18 +79,18 @@ public class SSCSamples extends AbstractSamples {
 	}
 	
 	public final void sample1QueryApplicationVersions() throws Exception {
-		printInfo("Query application versions");
+		printHeader("Query application versions");
 		SSCApplicationVersionAPI api = conn.api().applicationVersion();
 		
-		printInfo("Query all versions, max 3 results");
+		printHeader("Query all versions, max 3 results");
 		JSONList results = api.queryApplicationVersions().applicationName("WebGoat").maxResults(3).paramFields("id").build().getAll();
 		print(results);
 		print("count: "+results.size());
 		
-		printInfo("Get custom tag names for current application version");
+		printHeader("Get custom tag names for current application version");
 		print(api.queryApplicationVersions().id(applicationVersionId).onDemandCustomTags("customTagNames", "name").build().getUnique().get("customTagNames"));
 		
-		printInfo("Various application version queries to demonstrate caching");
+		printHeader("Various application version queries to demonstrate caching");
 		for ( int i = 0 ; i < 10 ; i++ ) {
 			print(api.queryApplicationVersions().applicationName("WebGoat").paramFields("id", "name").useCache(true).build().getAll());
 			print(api.queryApplicationVersions().id(applicationVersionId).useCache(true).build().getAll());
@@ -97,7 +103,7 @@ public class SSCSamples extends AbstractSamples {
 	}
 	
 	public final JSONMap sample2UploadAndQueryArtifacts(String artifactPath) throws Exception {
-		printInfo("Upload artifact and wait at most 1 minute for processing to complete");
+		printHeader("Upload artifact and wait at most 1 minute for processing to complete");
 		String artifactId = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion(applicationVersionId, new File(artifactPath), 60);
 		print(artifactId);
 		if ( artifactId != null ) {
@@ -111,19 +117,19 @@ public class SSCSamples extends AbstractSamples {
 	}
 	
 	public final void sample3ApproveArtifact(JSONMap artifact) {
-		printInfo("Approve artifact if necessary");
+		printHeader("Approve artifact if necessary");
 		if ( artifact != null && artifact.get("status", String.class).equals("REQUIRE_AUTH") ) {
 			conn.api().artifact().approveArtifact(artifact.get("id",String.class), "Auto-approved");
 		}
 	}
 	
 	public final void sample4InvokeAuditAssistant() throws Exception {
-		printInfo("Invoke audit assistant and waiting for completion (wait at most 5 minutes)");
+		printHeader("Invoke audit assistant and waiting for completion (wait at most 5 minutes)");
 		print(conn.api().auditAssistant().invokeAuditAssistant(applicationVersionId, 300));
 	}
 	
 	public final void sample5QueryApplicationVersionIssues() throws Exception {
-		printInfo("Query application version issues including on-demand data");
+		printHeader("Query application version issues including on-demand data");
 		JSONList issues = conn.api().issue().queryIssues(applicationVersionId).onDemandDetails().onDemandAuditHistory().onDemandComments().maxResults(1).build().getAll();
 		print(issues);
 		print(issues.asValueType(JSONMap.class).get(0).get("issueDetails"));
@@ -135,14 +141,14 @@ public class SSCSamples extends AbstractSamples {
 	}
 	
 	public final void sample6QueryJobs() throws Exception {
-		printInfo("Query jobs ----");
+		printHeader("Query jobs ----");
 		JSONMap job = conn.api().job().queryJobs().maxResults(1).build().getUnique();
 		print(job);
 	}
 	
 	public final void sample7WaitForJobCreation() throws Exception {
-		printInfo("Wait 60 seconds for artifact upload job creation");
-		printInfo("(please upload artifact to application version WebGoat 5.0)");
+		printHeader("Wait 60 seconds for artifact upload job creation");
+		printHeader("(please upload artifact to application version WebGoat 5.0)");
 		IRestConnectionQuery query = conn.api().job().queryJobs()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				.preProcessor(new JSONMapFilterCompareDate(MatchMode.INCLUDE, "finishTime", DateComparisonOperator.gt, new Date())).build();
@@ -151,7 +157,7 @@ public class SSCSamples extends AbstractSamples {
 	}
 	
 	public final void sample8QueryMetrics() throws Exception {
-		printInfo("Query metrics");
+		printHeader("Query metrics");
 		print(conn.api().metrics().queryApplicationVersionMetricHistories(applicationVersionId, MetricType.variable).useCache(true).build().getAll());
 		print(conn.api().metrics().queryApplicationVersionMetricHistories(applicationVersionId, MetricType.performanceIndicator).useCache(true).build().getAll());
 	}

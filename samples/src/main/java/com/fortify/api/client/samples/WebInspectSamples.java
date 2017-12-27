@@ -31,6 +31,12 @@ import java.util.UUID;
 
 import com.fortify.api.webinspect.connection.WebInspectAuthenticatingRestConnection;
 
+/**
+ * This class demonstrates the use of (parts of) the WebInspect client API.
+ * 
+ * @author Ruud Senden
+ *
+ */
 public class WebInspectSamples extends AbstractSamples {
 	private final WebInspectAuthenticatingRestConnection conn;
 	
@@ -53,12 +59,12 @@ public class WebInspectSamples extends AbstractSamples {
 	}
 	
 	public final void sample1QueryMacros() throws Exception {
-		print("\n\n---- Query macros ----");
+		printHeader("\n\n---- Query macros ----");
 		print(conn.api().macro().getMacros());
 	}
 	
 	public final void sample2UploadMacro(String macroPath) throws Exception {
-		print("\n\n---- Upload macro ----");
+		printHeader("\n\n---- Upload macro ----");
 		Path path = Paths.get(macroPath);
 		byte[] data = Files.readAllBytes(path);
 		conn.api().macro().uploadMacro(UUID.randomUUID().toString(), data);

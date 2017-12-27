@@ -28,18 +28,20 @@ import javax.ws.rs.core.Form;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fortify.api.util.rest.connection.AbstractRestConnectionConfig;
 import com.fortify.api.util.rest.connection.AbstractRestConnectionWithUsernamePasswordConfig;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * This class extends {@link AbstractRestConnectionConfig} to add additional FoD-related
- * builder methods.
+ * This class extends {@link AbstractRestConnectionWithUsernamePasswordConfig}, adding 
+ * functionality for configuring an FoD tenant (in addition to 
+ * configuring FoD user name and password as provided by our superclass),
+ * or configuring FoD client id and client secret.
  * 
  * @author Ruud Senden
  *
+ * @param <T>
  */
 @Data @EqualsAndHashCode(callSuper=true)
 public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {

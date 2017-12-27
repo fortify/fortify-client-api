@@ -30,8 +30,10 @@ import com.fortify.api.util.rest.connection.IRestConnectionBuilder;
 import com.fortify.api.webinspect.connection.api.WebInspectAPI;
 
 /**
- * This {@link AbstractRestConnection} implementation provides various
- * methods for working with the WebInspect Enterprise API.
+ * This class provides an authenticated REST connection for WebInspect. Low-level API's are
+ * available through the various executeRequest() methods provided by {@link AbstractRestConnection}.
+ * Higher-level API's are available through the {@link #api()} method. Instances of this class
+ * can be created using the {@link #builder()} method.
  * 
  * @author Ruud Senden
  *

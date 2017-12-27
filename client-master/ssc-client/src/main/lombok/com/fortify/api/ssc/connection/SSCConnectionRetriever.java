@@ -26,11 +26,11 @@ package com.fortify.api.ssc.connection;
 
 import com.fortify.api.ssc.connection.SSCAuthenticatingRestConnection.SSCAuthenticatingRestConnectionBuilder;
 import com.fortify.api.util.rest.connection.AbstractRestConnectionRetriever;
-import com.fortify.api.util.rest.connection.IRestConnectionRetriever;
 
 /**
- * <p>This {@link IRestConnectionRetriever} implementation will create 
- * an authenticated SSC REST connection based on the given configuration</p>
+ * <p>This {@link AbstractRestConnectionRetriever} implementation
+ * provides functionality for configuring and creating an 
+ * authenticated SSC REST connection.</p>
  * 
  * @author Ruud Senden
  *

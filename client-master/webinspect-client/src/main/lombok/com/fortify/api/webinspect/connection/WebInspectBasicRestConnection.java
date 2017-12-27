@@ -29,8 +29,10 @@ import com.fortify.api.util.rest.connection.AbstractRestConnection;
 import com.fortify.api.util.rest.connection.AbstractRestConnectionConfig;
 
 /**
- * This {@link AbstractRestConnection} implementation provides various
- * methods for working with the WebInspect Enterprise API.
+ * This class provides a basic, non-authenticating REST connection
+ * for WebInspect. It's main characteristics compared to a standard 
+ * {@link AbstractRestConnection} is that it will add an 
+ * <code>Accept: application/json</code> header.
  * 
  * @author Ruud Senden
  *
@@ -41,7 +43,7 @@ public class WebInspectBasicRestConnection extends AbstractRestConnection {
 	}
 	
 	/**
-	 * Update the {@link Builder} to add the Accept and OAuth headers.
+	 * Update the {@link Builder} to add the Accept header.
 	 */
 	@Override
 	public Builder updateBuilder(Builder builder) {
