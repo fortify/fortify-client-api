@@ -38,12 +38,12 @@ import lombok.ToString;
 @Getter @ToString
 public class PagingData {
 	private int processedTotal = 0;
-	private int processedLastPage = 0;
-	private int processedCurrentPage = 0;
+	private int processedCurrentPage = -1;
 	private int processedTotalNotFiltered = 0;
 	private int totalAvailable = -1;
 	private int pageSize = 50;
 	private int maxResults = -1;
+	private int nextPageSize = -1;
 	
 	/**
 	 * Get the start position for the next page to be loaded.
@@ -62,19 +62,7 @@ public class PagingData {
 	 * @return
 	 */
 	public int getNextPageSize() {
-		if ( isMaxResultsReached() || processedLastPage < pageSize ) {
-			// If we've loaded all required results, or the last page size was smaller than expected 
-			// (meaning no more results), return 0.
-			return 0;
-		} else if ( maxResults < 0 || processedTotalNotFiltered < processedTotal ) {
-			// If no max results is configured, or if results are being filtered, simply return configured page size
-			return pageSize;
-		} else {
-			// For non-filtered results, return either configured page size, or remaining
-			// number of results to be loaded if this is smaller than configured page
-			// size.
-			return Math.min(pageSize, maxResults - processedTotalNotFiltered );
-		}
+		return nextPageSize;
 	}
 	
 	/**
@@ -99,13 +87,26 @@ public class PagingData {
 	}
 	
 	/**
-	 * Package-private method for initializing processing
-	 * for next page. This updates the processedLastPage
-	 * and processedCurrentPage variables.
+	 * Package-private method for calculating next page size, returning
+	 * the newly calculated page size. This method must be called before
+	 * any call to {@link #getNextPageSize()}, and after processing each
+	 * page.
 	 */
-	void initForNextPage() {
-		processedLastPage = processedCurrentPage;
-		processedCurrentPage = 0;
+	int calculateNextPageSize() {
+		if ( isMaxResultsReached() || (processedCurrentPage>-1 && processedCurrentPage < pageSize) ) {
+			// If we've loaded all required results, or the current page size was smaller than expected 
+			// (meaning no more results), return 0.
+			nextPageSize = 0;
+		} else if ( maxResults < 0 || processedTotalNotFiltered < processedTotal ) {
+			// If no max results is configured, or if results are being filtered, simply return configured page size
+			nextPageSize = pageSize;
+		} else {
+			// For non-filtered results, return either configured page size, or remaining
+			// number of results to be loaded if this is smaller than configured page
+			// size.
+			nextPageSize = Math.min(pageSize, maxResults - processedTotalNotFiltered );
+		}
+		return nextPageSize;
 	}
 	
 	/**

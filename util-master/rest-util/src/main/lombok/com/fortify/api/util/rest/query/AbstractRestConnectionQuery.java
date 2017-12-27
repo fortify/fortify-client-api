@@ -175,26 +175,26 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 		if ( requestInitializer != null ) { requestInitializer.initRequest(); }
 		processor = new JSONMapProcessorWithPreProcessorsAndPagingSupport(preProcessors, processor, pagingData);
 		if ( !pagingSupported ) {
-			processSingleRequest(target, processor);
+			processSingleRequest(target, processor, pagingData);
 		} else {
-			do {
+			while (pagingData.calculateNextPageSize() > 0) {
 				processor.notifyNextPage(pagingData);
-				pagingData.initForNextPage();
 				WebTarget pagingTarget = updateWebTargetWithPagingData(target, pagingData);
-				ResponseType response = processSingleRequest(pagingTarget, processor);
+				ResponseType response = processSingleRequest(pagingTarget, processor, pagingData);
 				updatePagingDataFromResponse(pagingData, response);
-			} while ( pagingData.getNextPageSize()>0 );
+			}
 		}
 	}
 	
 	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
 	 */
-	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor) {
+	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor, PagingData pagingData) {
 		ResponseType data = executeRequest(target);
 		JSONList list = getJSONListFromResponse(data);
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
+				if ( pagingData.isMaxResultsReached() ) { break; }
 				processor.process(obj);
 			}
 		}
