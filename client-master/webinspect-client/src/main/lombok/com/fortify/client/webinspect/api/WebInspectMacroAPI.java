@@ -40,12 +40,15 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import com.fortify.client.webinspect.connection.WebInspectAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 /**
  * This class is used to access WebInspect macro-related functionality.
  * 
  * @author Ruud Senden
  *
  */
+@CommonsLog
 public class WebInspectMacroAPI extends AbstractWebInspectAPI {
 	public WebInspectMacroAPI(WebInspectAuthenticatingRestConnection conn) {
 		super(conn);
@@ -69,8 +72,7 @@ public class WebInspectMacroAPI extends AbstractWebInspectAPI {
         	try {
 				multiPart.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn("Error closing FormDataMultiPart", e);
 			}
         }
 	}

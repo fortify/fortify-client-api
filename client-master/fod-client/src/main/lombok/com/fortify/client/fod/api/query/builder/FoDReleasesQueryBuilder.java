@@ -27,6 +27,7 @@ package com.fortify.client.fod.api.query.builder;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.client.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
+import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 
 /**
@@ -40,7 +41,7 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	public FoDReleasesQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/releases");
-		// TODO Add PreProcessor to add deep link?
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Releases/${releaseId}"));
 	}
 	
 	@Override

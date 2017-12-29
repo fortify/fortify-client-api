@@ -44,6 +44,8 @@ import com.fortify.util.rest.connection.AbstractRestConnectionWithUsernamePasswo
 import com.fortify.util.rest.connection.IRestConnectionBuilder;
 import com.fortify.util.rest.json.JSONMap;
 
+import lombok.extern.apachecommons.CommonsLog;
+
 /**
  * This class provides an authenticated REST connection for WIE. Low-level API's are
  * available through the various executeRequest() methods provided by {@link AbstractRestConnection}.
@@ -53,6 +55,7 @@ import com.fortify.util.rest.json.JSONMap;
  * @author Ruud Senden
  *
  */
+@CommonsLog
 public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 	private String apiKey = null;
 	private final WIEAPI api = new WIEAPI(this);
@@ -108,8 +111,7 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
         	try {
 				multiPart.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn("Error closing FormDataMultiPart", e);
 			}
         }
 	}

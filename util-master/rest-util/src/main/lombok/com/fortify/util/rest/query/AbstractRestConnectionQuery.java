@@ -118,16 +118,10 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 			return null;
 		}
 		if ( list.size() > 1 ) {
-			throw new RuntimeException("More than one object found: "+list); // TODO Use less generic exception type
+			throw new IllegalStateException("More than one object found: "+list);
 		}
 		return list.asValueType(JSONMap.class).get(0);
 	}
-	
-	/*
-	public int getCount() {
-		return -1; // TODO
-	}
-	*/
 	
 	protected final WebTarget getWebTarget() {
 		WebTarget webTarget = conn.getBaseResource();
