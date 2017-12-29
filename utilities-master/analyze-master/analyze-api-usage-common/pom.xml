@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>com.fortify.utilities.analyze</groupId>
 		<artifactId>utilities-analyze-master</artifactId>
-		<version>4.0-SNAPSHOT</version>
+		<version>4.0</version>
 	</parent>
 	<organization>
 		<name>Micro Focus Fortify</name>

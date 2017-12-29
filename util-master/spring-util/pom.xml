@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>com.fortify.util</groupId>
 		<artifactId>util-master</artifactId>
-		<version>4.0-SNAPSHOT</version>
+		<version>4.0</version>
 	</parent>
 	<description>This module defines various utility classes for working with Spring.</description>
 	<organization>
