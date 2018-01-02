@@ -25,10 +25,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.fortify.api</groupId>
-	<artifactId>api-master</artifactId>
+	<groupId>com.fortify.client.api</groupId>
+	<artifactId>client-api-master</artifactId>
 	<version>4.0</version>
 	<packaging>pom</packaging>
+	<modules>
+		<module>util</module>
+		<module>client-api</module>
+	</modules>
+	<description>This module is the parent module for client API's, sampels and utilities for various Fortify products.</description>
 	<organization>
 		<name>Micro Focus Fortify</name>
 		<url>https://software.microfocus.com/en-us/software/application-security</url>
@@ -53,46 +58,41 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<project.build.sourceEncoding>cp1252</project.build.sourceEncoding>
 	</properties>
-	<modules>
-		<module>util-master</module>
-		<module>client-master</module>
-		<module>utilities-master</module>
-	</modules>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.fortify.util</groupId>
+				<groupId>com.fortify.client.api.util</groupId>
 				<artifactId>spring-util</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.util</groupId>
+				<groupId>com.fortify.client.api.util</groupId>
 				<artifactId>rest-util</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.client</groupId>
-				<artifactId>fod-client</artifactId>
+				<groupId>com.fortify.client.api</groupId>
+				<artifactId>fod-client-api</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.client</groupId>
-				<artifactId>ssc-client</artifactId>
+				<groupId>com.fortify.client.api</groupId>
+				<artifactId>ssc-client-api</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.client</groupId>
-				<artifactId>webinspect-client</artifactId>
+				<groupId>com.fortify.client.api</groupId>
+				<artifactId>webinspect-client-api</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.fortify.client</groupId>
-				<artifactId>wie-client</artifactId>
+				<groupId>com.fortify.client.api</groupId>
+				<artifactId>wie-client-api</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
@@ -336,5 +336,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<description>This module contains several sub-modules that provide utilities for working with Fortify products, as well as generic utility classes used by some existing Fortify integrations.</description>
 </project>
