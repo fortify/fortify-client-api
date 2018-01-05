@@ -45,7 +45,7 @@ public class WIEMacroAPI extends AbstractWIEAPI {
 	}
 	
 	public WIEMacrosQueryBuilder queryMacros() {
-		return new WIEMacrosQueryBuilder(conn()).useCache(true);
+		return new WIEMacrosQueryBuilder(conn());
 	}
 	
 	public byte[] getMacroData(String macroId) {

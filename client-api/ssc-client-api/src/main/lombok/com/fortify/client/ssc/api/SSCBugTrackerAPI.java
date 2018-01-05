@@ -135,7 +135,9 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	}
 	
 	/**
-	 * File a bug via an SSC native bug tracker integration
+	 * File a bug via an SSC native bug tracker integration. Before calling this method, the 
+	 * {@link #authenticateForBugFiling(String, String, String)} must have been called
+	 * (if {@link #isBugTrackerAuthenticationRequired(String)} returns true).
 	 * @param applicationVersionId
 	 * @param issueDetails
 	 * @param issueInstanceIds
@@ -144,7 +146,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
 	public JSONMap fileBug(String applicationVersionId, Map<String,Object> issueDetails, List<String> issueInstanceIds) {
 		// TODO Clean up this code
-		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId);
+		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId, true);
 		Set<String> processedDependentParams = new HashSet<String>();
 		boolean allDependentParamsProcessed = false;
 		while ( !allDependentParamsProcessed ) {
@@ -197,19 +199,17 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @return
 	 */
 	public boolean isBugTrackerAuthenticationRequired(String applicationVersionId) {
-		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId);
+		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId, false);
 		return SpringExpressionUtil.evaluateExpression(bugFilingRequirements, "requiresAuthentication", Boolean.class);
 	}
 	
 	/**
 	 * Get a JSONMap describing the initial bug filing requirements for the given application version
-	 * This method explicitly disables caching, as the SSC response will be different before and
-	 * after authentication.
 	 * @param applicationVersionId
 	 * @return
 	 */
-	private JSONMap getInitialBugFilingRequirements(String applicationVersionId) {
-		return queryApplicationVersionBugFilingRequirements(applicationVersionId).useCache(false).build().getUnique();
+	private JSONMap getInitialBugFilingRequirements(String applicationVersionId, boolean useCache) {
+		return queryApplicationVersionBugFilingRequirements(applicationVersionId).useCache(useCache).build().getUnique();
 	}
 	
 	/**

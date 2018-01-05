@@ -57,7 +57,7 @@ public class SSCSamples extends AbstractSamples {
 	
 	public SSCSamples(String baseUrlWithCredentials) {
 		this.conn = SSCAuthenticatingRestConnection.builder().baseUrl(baseUrlWithCredentials).build();
-		this.applicationVersion = conn.api(SSCApplicationVersionAPI.class).getApplicationVersionByNameOrId("WebGoat:5.0", ":");
+		this.applicationVersion = conn.api(SSCApplicationVersionAPI.class).getApplicationVersionByNameOrId("WebGoat:5.0", true);
 		if ( this.applicationVersion == null ) {
 			throw new IllegalStateException("Your SSC instance must have an application 'WebGoat' with version '5.0'");
 		}
@@ -100,7 +100,7 @@ public class SSCSamples extends AbstractSamples {
 			print(api.queryApplicationVersions().applicationName("WebGoat").paramFields("id", "name").useCache(true).build().getAll());
 			print(api.queryApplicationVersions().id(applicationVersionId).useCache(true).build().getAll());
 			print(api.queryApplicationVersions().applicationName("WebGoat").versionName("5.0").useCache(true).build().getUnique());
-			print(api.getApplicationVersionByNameOrId("WebGoat:5.0", ":"));
+			print(api.getApplicationVersionByNameOrId("WebGoat:5.0", true));
 			print(api.queryApplicationVersions().useCache(true).onDemandAttributeValuesByName("test")
 					.preProcessor(new SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode.INCLUDE, "test")).build().getAll());
 			print(api.queryApplicationVersions().useCache(true).build().getAll());

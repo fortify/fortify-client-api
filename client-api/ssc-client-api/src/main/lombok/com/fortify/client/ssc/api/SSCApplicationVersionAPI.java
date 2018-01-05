@@ -43,15 +43,19 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		return new SSCApplicationVersionsQueryBuilder(conn());
 	}
 	
-	public JSONMap getApplicationVersionById(String applicationVersionId) {
-		return queryApplicationVersions().id(applicationVersionId).useCache(true).build().getUnique();
+	public JSONMap getApplicationVersionById(String applicationVersionId, boolean useCache) {
+		return queryApplicationVersions().id(applicationVersionId).useCache(useCache).build().getUnique();
 	}
 	
-	public JSONMap getApplicationVersionByName(String applicationName, String versionName) {
-		return queryApplicationVersions().applicationName(applicationName).versionName(versionName).useCache(true).build().getUnique();
+	public JSONMap getApplicationVersionByName(String applicationName, String versionName, boolean useCache) {
+		return queryApplicationVersions().applicationName(applicationName).versionName(versionName).useCache(useCache).build().getUnique();
 	}
 	
-	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
-		return queryApplicationVersions().nameOrId(nameOrId, separator).useCache(true).build().getUnique();
+	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator, boolean useCache) {
+		return queryApplicationVersions().nameOrId(nameOrId, separator).useCache(useCache).build().getUnique();
+	}
+	
+	public JSONMap getApplicationVersionByNameOrId(String nameOrId, boolean useCache) {
+		return queryApplicationVersions().nameOrId(nameOrId).useCache(useCache).build().getUnique();
 	}
 }

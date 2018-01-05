@@ -61,12 +61,12 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		return new SSCCustomTagsQueryBuilder(conn());
 	}
 	
-	public JSONList getCustomTags() {
-		return queryCustomTags().useCache(true).build().getAll();
+	public JSONList getCustomTags(boolean useCache) {
+		return queryCustomTags().useCache(useCache).build().getAll();
 	}
 
-	public JSONList getApplicationVersionCustomTags(String applicationVersionId) {
-		return queryApplicationVersionCustomTags(applicationVersionId).useCache(true).build().getAll();
+	public JSONList getApplicationVersionCustomTags(String applicationVersionId, boolean useCache) {
+		return queryApplicationVersionCustomTags(applicationVersionId).useCache(useCache).build().getAll();
 	}
 	
 	/**
@@ -74,8 +74,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	 * @param applicationVersionId
 	 * @return
 	 */
-	public List<String> getApplicationVersionCustomTagNames(String applicationVersionId) {
-		return getApplicationVersionCustomTags(applicationVersionId).getValues("name", String.class);
+	public List<String> getApplicationVersionCustomTagNames(String applicationVersionId, boolean useCache) {
+		return getApplicationVersionCustomTags(applicationVersionId, useCache).getValues("name", String.class);
 	}
 	
 	/**
@@ -83,8 +83,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	 * @param applicationVersionId
 	 * @return
 	 */
-	public List<String> getApplicationVersionCustomTagGuids(String applicationVersionId) {
-		return getApplicationVersionCustomTags(applicationVersionId).getValues("guid", String.class);
+	public List<String> getApplicationVersionCustomTagGuids(String applicationVersionId, boolean useCache) {
+		return getApplicationVersionCustomTags(applicationVersionId, useCache).getValues("guid", String.class);
 	}
 	
 	/**
@@ -92,8 +92,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	 * @param customTagName
 	 * @return
 	 */
-	public String getCustomTagGuid(String customTagName) {
-		return getCustomTags().mapValue("name.toLowerCase()", customTagName.toLowerCase(), "guid", String.class);
+	public String getCustomTagGuid(String customTagName, boolean useCache) {
+		return getCustomTags(useCache).mapValue("name.toLowerCase()", customTagName.toLowerCase(), "guid", String.class);
 	}
 	
 	/**
@@ -101,8 +101,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	 * @param customTagGUID
 	 * @return
 	 */
-	public String getCustomTagName(String customTagGUID) {
-		return getCustomTags().mapValue("guid", customTagGUID, "name", String.class);
+	public String getCustomTagName(String customTagGUID, boolean useCache) {
+		return getCustomTags(useCache).mapValue("guid", customTagGUID, "name", String.class);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		JSONList customTagAuditValues = new JSONList(customTagNamesAndValues.size());
 		for ( Map.Entry<String, String> customTagNameAndValue : customTagNamesAndValues.entrySet() ) {
 			JSONMap customTagAudit = new JSONMap();
-			customTagAudit.put("customTagGuid", getCustomTagGuid(customTagNameAndValue.getKey()));
+			customTagAudit.put("customTagGuid", getCustomTagGuid(customTagNameAndValue.getKey(), true));
 			customTagAudit.put("textValue", customTagNameAndValue.getValue());
 			customTagAuditValues.add(customTagAudit);
 		}
