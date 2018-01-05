@@ -142,23 +142,33 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	}
 	
 	/**
-	 * Get the {@link JSONMap} instance with the given key, or return a 
-	 * new {@link JSONMap} instance if the given key does not exist.
+	 * Get the {@link JSONMap} instance with the given key, or create and
+	 * return a new {@link JSONMap} instance if the given key does not exist.
 	 * @param key
 	 * @return
 	 */
 	public JSONMap getOrCreateJSONMap(String key) {
-		return getOrDefault(key, new JSONMap(), JSONMap.class);
+		JSONMap result = get(key, JSONMap.class);
+		if ( result == null ) {
+			result = new JSONMap();
+			put(key, result);
+		}
+		return result;
 	}
 	
 	/**
-	 * Get the {@link JSONList} instance with the given key, or return a 
-	 * new {@link JSONList} instance if the given key does not exist.
+	 * Get the {@link JSONList} instance with the given key, or create and
+	 * return a new {@link JSONList} instance if the given key does not exist.
 	 * @param key
 	 * @return
 	 */
 	public JSONList getOrCreateJSONList(String key) {
-		return getOrDefault(key, new JSONList(), JSONList.class);
+		JSONList result = get(key, JSONList.class);
+		if ( result == null ) {
+			result = new JSONList();
+			put(key, result);
+		}
+		return result;
 	}
 
 	/**

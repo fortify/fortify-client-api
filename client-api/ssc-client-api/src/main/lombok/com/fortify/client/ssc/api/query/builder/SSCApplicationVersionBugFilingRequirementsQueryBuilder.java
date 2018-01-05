@@ -30,7 +30,7 @@ import javax.ws.rs.client.Entity;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.util.rest.json.JSONMap;
+import com.fortify.util.rest.json.JSONList;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -51,11 +51,11 @@ public class SSCApplicationVersionBugFilingRequirementsQueryBuilder extends Abst
 	}
 	
 	public final SSCApplicationVersionBugFilingRequirementsQueryBuilder paramChangedParamIdentifier(String paramChangedParamIdentifier) {
-		return super.queryParam("changeParamIdentifier", paramChangedParamIdentifier);
+		return super.queryParam("changedParamIdentifier", paramChangedParamIdentifier);
 	}
 	
 	@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements"})
-	public final SSCApplicationVersionBugFilingRequirementsQueryBuilder paramBugParams(JSONMap bugParams) {
+	public final SSCApplicationVersionBugFilingRequirementsQueryBuilder paramBugParams(JSONList bugParams) {
 		super.setEntity(Entity.entity(bugParams, "application/json"));
 		super.setHttpMethod(HttpMethod.PUT);
 		return _this();

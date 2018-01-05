@@ -24,7 +24,6 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -204,11 +203,13 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Get a JSONMap describing the initial bug filing requirements for the given application version
+	 * This method explicitly disables caching, as the SSC response will be different before and
+	 * after authentication.
 	 * @param applicationVersionId
 	 * @return
 	 */
 	private JSONMap getInitialBugFilingRequirements(String applicationVersionId) {
-		return queryApplicationVersionBugFilingRequirements(applicationVersionId).useCache(true).build().getUnique();
+		return queryApplicationVersionBugFilingRequirements(applicationVersionId).useCache(false).build().getUnique();
 	}
 	
 	/**
@@ -220,10 +221,10 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @return
 	 */
 	private JSONMap getBugFilingRequirements(String applicationVersionId, JSONMap data, String changedParamIdentifier) {
-		List<JSONMap> request = new ArrayList<JSONMap>();
+		JSONList request = new JSONList();
 		request.add(data);
 		return queryApplicationVersionBugFilingRequirements(applicationVersionId)
-				.paramChangedParamIdentifier(changedParamIdentifier).paramBugParams(data)
+				.paramChangedParamIdentifier(changedParamIdentifier).paramBugParams(request)
 				.build().getUnique();
 	}
 }

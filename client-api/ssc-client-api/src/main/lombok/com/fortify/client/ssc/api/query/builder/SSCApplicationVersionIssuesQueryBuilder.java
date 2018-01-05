@@ -24,14 +24,19 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
+import java.util.List;
+
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
+import com.fortify.util.rest.json.JSONList;
+import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
 import com.fortify.util.rest.query.IRequestInitializer;
+import com.fortify.util.spring.SpringExpressionUtil;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -51,7 +56,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
 		appendPath("issues");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl()+"/html/ssc/index.jsp#!/version/${projectVersionId}/fix/${id}"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl()+"/html/ssc/index.jsp#!/version/${projectVersionId}/fix/${id}/"));
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
 			public void initRequest() {
@@ -107,7 +112,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
 	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails(String... fields) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty("details", 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issueDetails/${id}", fields)));
+				new SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(getConn(), fields)));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/comments"})
@@ -120,5 +125,24 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory() {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty("auditHistory", 
 				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/auditHistory")));
+	}
+	
+	private static final class SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames extends SSCJSONMapOnDemandLoaderRest {
+		private static final long serialVersionUID = 1L;
+		private final SSCAuthenticatingRestConnection conn;
+
+		public SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(SSCAuthenticatingRestConnection conn, String... fields) {
+			super(conn, "/api/v1/issueDetails/${id}", fields);
+			this.conn = conn;
+		}
+		
+		@Override
+		protected Object getResult(JSONMap restResult) {
+			List<JSONMap> customTags = SpringExpressionUtil.evaluateExpression(restResult, "data.customTagValues", JSONList.class).asValueType(JSONMap.class);
+			for ( JSONMap customTag : customTags ) {
+				customTag.put("customTagName", conn.api().customTag().getCustomTagName(customTag.get("customTagGuid", String.class)));
+			}
+			return super.getResult(restResult);
+		}		
 	}
 }

@@ -62,11 +62,11 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	}
 	
 	public JSONList getCustomTags() {
-		return queryCustomTags().build().getAll();
+		return queryCustomTags().useCache(true).build().getAll();
 	}
 
 	public JSONList getApplicationVersionCustomTags(String applicationVersionId) {
-		return queryApplicationVersionCustomTags(applicationVersionId).build().getAll();
+		return queryApplicationVersionCustomTags(applicationVersionId).useCache(true).build().getAll();
 	}
 	
 	/**

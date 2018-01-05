@@ -25,6 +25,7 @@
 package com.fortify.client.ssc.json.preprocessor;
 
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
+import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.AbstractJSONMapFilter;
 import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
@@ -46,7 +47,11 @@ public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName ext
 	
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		return bugTrackerPluginShortDisplayName.equals(json.getPath("bugTracker.bugTracker.shortDisplayName"));
+		JSONList bugTrackers = json.get("bugTracker", JSONList.class);
+		if ( bugTrackers!=null && bugTrackers.size()>0 ) {
+			return bugTrackers.find("bugTracker?.shortDisplayName", bugTrackerPluginShortDisplayName, JSONMap.class) != null;
+		}
+		return false;
 	}
 	
 	@Override
