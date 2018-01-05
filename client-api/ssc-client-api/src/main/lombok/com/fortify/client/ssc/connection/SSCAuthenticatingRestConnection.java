@@ -28,7 +28,6 @@ import javax.ws.rs.client.Invocation.Builder;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fortify.client.ssc.api.SSCAPI;
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.AbstractRestConnectionConfig;
 import com.fortify.util.rest.connection.IRestConnectionBuilder;
@@ -44,15 +43,6 @@ import com.fortify.util.rest.connection.IRestConnectionBuilder;
  */
 public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	private final ISSCTokenFactory tokenFactory;
-	private final SSCAPI api = new SSCAPI(this);
-	
-	/**
-	 * Get a more high-level API for accessing SSC. 
-	 * @return
-	 */
-	public SSCAPI api() {
-		return api;
-	}
 	
 	/**
 	 * Construct a new instance of this class based on the given {@link AbstractRestConnectionConfig}

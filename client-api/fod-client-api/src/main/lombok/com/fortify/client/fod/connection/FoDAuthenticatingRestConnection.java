@@ -28,7 +28,6 @@ import java.net.URI;
 
 import javax.ws.rs.client.Invocation.Builder;
 
-import com.fortify.client.fod.api.FoDAPI;
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.IRestConnectionBuilder;
 
@@ -44,15 +43,6 @@ import com.fortify.util.rest.connection.IRestConnectionBuilder;
 public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	private final FoDTokenFactory tokenProvider;
 	private final URI browserBaseUrl;
-	private final FoDAPI api = new FoDAPI(this);
-	
-	/**
-	 * Get a more high-level API for accessing SSC. 
-	 * @return
-	 */
-	public FoDAPI api() {
-		return api;
-	}
 	
 	protected FoDAuthenticatingRestConnection(FoDRestConnectionConfig<?> config) {
 		super(config);

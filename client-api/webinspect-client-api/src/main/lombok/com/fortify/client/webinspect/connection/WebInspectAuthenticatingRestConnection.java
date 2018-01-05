@@ -26,7 +26,6 @@ package com.fortify.client.webinspect.connection;
 
 import javax.ws.rs.client.WebTarget;
 
-import com.fortify.client.webinspect.api.WebInspectAPI;
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.IRestConnectionBuilder;
 
@@ -41,15 +40,10 @@ import com.fortify.util.rest.connection.IRestConnectionBuilder;
  */
 public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestConnection {
 	private final String apiKey;
-	private final WebInspectAPI api = new WebInspectAPI(this);
 	
 	protected WebInspectAuthenticatingRestConnection(WebInspectRestConnectionConfig<?> config) {
 		super(config);
 		this.apiKey = config.getApiKey();
-	}
-	
-	public final WebInspectAPI api() {
-		return api;
 	}
 	
 	@Override

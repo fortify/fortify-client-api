@@ -26,6 +26,7 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
+import com.fortify.client.ssc.api.SSCAttributeAPI;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
@@ -162,7 +163,7 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 		
 		@Override @SSCCopyToConstructors
 		public Object getOnDemand(String propertyName, JSONMap parent) {
-			return conn().api().attribute().getApplicationVersionAttributeValuesByName(parent.get("id",String.class));
+			return conn().api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class));
 		}
 		
 	}

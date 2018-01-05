@@ -38,7 +38,6 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
-import com.fortify.client.wie.api.WIEAPI;
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.AbstractRestConnectionWithUsernamePasswordConfig;
 import com.fortify.util.rest.connection.IRestConnectionBuilder;
@@ -58,7 +57,6 @@ import lombok.extern.apachecommons.CommonsLog;
 @CommonsLog
 public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 	private String apiKey = null;
-	private final WIEAPI api = new WIEAPI(this);
 	private final WIEBasicRestConnection basicConn;
 	private final JSONMap auth;
 	
@@ -73,10 +71,6 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 		result.put("username", config.getUserName());
 		result.put("password", config.getPassword());
 		return result;
-	}
-
-	public final WIEAPI api() {
-		return api;
 	}
 	
 	@Override

@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import com.fortify.client.webinspect.api.WebInspectMacroAPI;
 import com.fortify.client.webinspect.connection.WebInspectAuthenticatingRestConnection;
 
 /**
@@ -60,14 +61,14 @@ public class WebInspectSamples extends AbstractSamples {
 	
 	public final void sample1QueryMacros() throws Exception {
 		printHeader("\n\n---- Query macros ----");
-		print(conn.api().macro().getMacros());
+		print(conn.api(WebInspectMacroAPI.class).getMacros());
 	}
 	
 	public final void sample2UploadMacro(String macroPath) throws Exception {
 		printHeader("\n\n---- Upload macro ----");
 		Path path = Paths.get(macroPath);
 		byte[] data = Files.readAllBytes(path);
-		conn.api().macro().uploadMacro(UUID.randomUUID().toString(), data);
+		conn.api(WebInspectMacroAPI.class).uploadMacro(UUID.randomUUID().toString(), data);
 	}
 	
 	public final void sample3QueryMacros() throws Exception {

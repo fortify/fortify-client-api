@@ -30,12 +30,14 @@ import java.io.NotSerializableException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,7 @@ import javax.ws.rs.core.Response.StatusType;
 
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.reflect.ConstructorUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
@@ -139,6 +142,7 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	
 	private Properties cacheProperties; 
 	private LoadingCache<String, Cache<CacheKey, Object>> cacheManager;
+	private final Map<Class<?>, Object> apis = new HashMap<>();
 	
 	@Getter private final URI baseUrl;
 	private final ProxyConfig proxy;
@@ -157,6 +161,20 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 		if ( this.connectionId != null ) {
 			INSTANCES.put(this.connectionId, this);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T api(Class<T> type) {
+		Object result = apis.get(type);
+		if ( result == null ) {
+			try {
+				result = ConstructorUtils.invokeConstructor(type, new Object[]{this});
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+				throw new IllegalArgumentException("Cannot load API class "+type.getName(), e);
+			}
+			apis.put(type, result);
+		}
+		return (T) result;
 	}
 
 	/**

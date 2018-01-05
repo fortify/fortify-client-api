@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.samples;
 
+import com.fortify.client.wie.api.WIEMacroAPI;
 import com.fortify.client.wie.connection.WIEAuthenticatingRestConnection;
 
 /**
@@ -51,11 +52,11 @@ public class WIESamples extends AbstractSamples {
 	
 	public final void sample1QueryAllMacros() throws Exception {
 		printHeader("\n\n---- Query all macros ----");
-		print(conn.api().macro().queryMacros().build().getAll());
+		print(conn.api(WIEMacroAPI.class).queryMacros().build().getAll());
 	}
 	
 	public final void sample2QueryMacrosByName() throws Exception {
 		printHeader("\n\n---- Query macros 'test' and 'anotherTest' ----");
-		print(conn.api().macro().queryMacros().names("test", "anotherTest").build().getAll());
+		print(conn.api(WIEMacroAPI.class).queryMacros().names("test", "anotherTest").build().getAll());
 	}
 }

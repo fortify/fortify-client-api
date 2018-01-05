@@ -68,7 +68,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 				.path("/download/currentStateFprDownload.html")
 				.queryParam("id", ""+applicationVersionId)
 				.queryParam("includeSource", includeSource);
-		return conn().api().fileUpDownload().downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
+		return conn().api(SSCFileUpDownloadAPI.class).downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
 	}
 	
 	@SSCRequiredActionsPermitted({"POST=/download/artifactDownload.html"})
@@ -76,7 +76,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		WebTarget webTarget = conn().getBaseResource()
 				.path("/download/artifactDownload.html")
 				.queryParam("id", ""+artifactId);
-		return conn().api().fileUpDownload().downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
+		return conn().api(SSCFileUpDownloadAPI.class).downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
 	}
 	
 	@SSCRequiredActionsPermitted({"POST=/upload/resultFileUpload.html"})
@@ -84,7 +84,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		WebTarget webTarget = conn().getBaseResource()
 				.path("/upload/resultFileUpload.html")
 				.queryParam("entityId", ""+applicationVersionId);
-		return conn().api().fileUpDownload().uploadFile(webTarget, FileTokenType.UPLOAD, fprFile);
+		return conn().api(SSCFileUpDownloadAPI.class).uploadFile(webTarget, FileTokenType.UPLOAD, fprFile);
 	}
 	
 	@SSCRequiredActionsPermitted({"POST=/api/\\d+/artifacts/\\d+/action"})
@@ -99,7 +99,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 	
 	public final JSONMap getJobForUpload(JSONMap uploadResult, int secondsToWaitForCompletion) {
 		String jobId = uploadResult.get("id", String.class);
-		return conn().api().job().waitForJobCompletion(jobId, secondsToWaitForCompletion);
+		return conn().api(SSCJobAPI.class).waitForJobCompletion(jobId, secondsToWaitForCompletion);
 	}
 	
 	public final String getArtifactIdForUploadJob(JSONMap job) {

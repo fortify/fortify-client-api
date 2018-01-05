@@ -27,6 +27,8 @@ package com.fortify.client.ssc.api.query.builder;
 import java.util.List;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
+import com.fortify.client.ssc.api.SSCCustomTagAPI;
+import com.fortify.client.ssc.api.SSCIssueAPI;
 import com.fortify.client.ssc.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
@@ -60,7 +62,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
 			public void initRequest() {
-				conn.api().issue().updateApplicationVersionIssueSearchOptions(applicationVersionId, issueSearchOptions);
+				conn.api(SSCIssueAPI.class).updateApplicationVersionIssueSearchOptions(applicationVersionId, issueSearchOptions);
 			}
 		});
 	}
@@ -140,7 +142,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		protected Object getResult(JSONMap restResult) {
 			List<JSONMap> customTags = SpringExpressionUtil.evaluateExpression(restResult, "data.customTagValues", JSONList.class).asValueType(JSONMap.class);
 			for ( JSONMap customTag : customTags ) {
-				customTag.put("customTagName", conn.api().customTag().getCustomTagName(customTag.get("customTagGuid", String.class)));
+				customTag.put("customTagName", conn.api(SSCCustomTagAPI.class).getCustomTagName(customTag.get("customTagGuid", String.class)));
 			}
 			return super.getResult(restResult);
 		}		

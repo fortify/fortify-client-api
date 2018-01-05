@@ -28,13 +28,18 @@ import java.io.File;
 import java.util.Date;
 
 import com.fortify.client.ssc.api.SSCApplicationVersionAPI;
+import com.fortify.client.ssc.api.SSCArtifactAPI;
+import com.fortify.client.ssc.api.SSCAuditAssistantAPI;
+import com.fortify.client.ssc.api.SSCIssueAPI;
+import com.fortify.client.ssc.api.SSCJobAPI;
+import com.fortify.client.ssc.api.SSCMetricsAPI;
 import com.fortify.client.ssc.api.SSCMetricsAPI.MetricType;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.preprocessor.SSCJSONMapFilterApplicationVersionHasAllCustomTags;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.preprocessor.JSONMapFilterCompareDate;
 import com.fortify.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMode;
+import com.fortify.util.rest.json.preprocessor.JSONMapFilterCompareDate;
 import com.fortify.util.rest.json.preprocessor.JSONMapFilterCompareDate.DateComparisonOperator;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 
@@ -52,7 +57,7 @@ public class SSCSamples extends AbstractSamples {
 	
 	public SSCSamples(String baseUrlWithCredentials) {
 		this.conn = SSCAuthenticatingRestConnection.builder().baseUrl(baseUrlWithCredentials).build();
-		this.applicationVersion = conn.api().applicationVersion().getApplicationVersionByNameOrId("WebGoat:5.0", ":");
+		this.applicationVersion = conn.api(SSCApplicationVersionAPI.class).getApplicationVersionByNameOrId("WebGoat:5.0", ":");
 		if ( this.applicationVersion == null ) {
 			throw new IllegalStateException("Your SSC instance must have an application 'WebGoat' with version '5.0'");
 		}
@@ -80,7 +85,7 @@ public class SSCSamples extends AbstractSamples {
 	
 	public final void sample1QueryApplicationVersions() throws Exception {
 		printHeader("Query application versions");
-		SSCApplicationVersionAPI api = conn.api().applicationVersion();
+		SSCApplicationVersionAPI api = conn.api(SSCApplicationVersionAPI.class);
 		
 		printHeader("Query all versions, max 3 results");
 		JSONList results = api.queryApplicationVersions().applicationName("WebGoat").maxResults(3).paramFields("id").build().getAll();
@@ -104,10 +109,10 @@ public class SSCSamples extends AbstractSamples {
 	
 	public final JSONMap sample2UploadAndQueryArtifacts(String artifactPath) throws Exception {
 		printHeader("Upload artifact and wait at most 1 minute for processing to complete");
-		String artifactId = conn.api().artifact().uploadArtifactAndWaitProcessingCompletion(applicationVersionId, new File(artifactPath), 60);
+		String artifactId = conn.api(SSCArtifactAPI.class).uploadArtifactAndWaitProcessingCompletion(applicationVersionId, new File(artifactPath), 60);
 		print(artifactId);
 		if ( artifactId != null ) {
-			JSONMap artifact = conn.api().artifact().getArtifactById(artifactId, true);
+			JSONMap artifact = conn.api(SSCArtifactAPI.class).getArtifactById(artifactId, true);
 			print(artifact);
 			print(artifact.get("uploadDate", Date.class).getClass().getName());
 			return artifact;
@@ -119,18 +124,18 @@ public class SSCSamples extends AbstractSamples {
 	public final void sample3ApproveArtifact(JSONMap artifact) {
 		printHeader("Approve artifact if necessary");
 		if ( artifact != null && artifact.get("status", String.class).equals("REQUIRE_AUTH") ) {
-			conn.api().artifact().approveArtifact(artifact.get("id",String.class), "Auto-approved");
+			conn.api(SSCArtifactAPI.class).approveArtifact(artifact.get("id",String.class), "Auto-approved");
 		}
 	}
 	
 	public final void sample4InvokeAuditAssistant() throws Exception {
 		printHeader("Invoke audit assistant and waiting for completion (wait at most 5 minutes)");
-		print(conn.api().auditAssistant().invokeAuditAssistant(applicationVersionId, 300));
+		print(conn.api(SSCAuditAssistantAPI.class).invokeAuditAssistant(applicationVersionId, 300));
 	}
 	
 	public final void sample5QueryApplicationVersionIssues() throws Exception {
 		printHeader("Query application version issues including on-demand data");
-		JSONList issues = conn.api().issue().queryIssues(applicationVersionId).onDemandDetails().onDemandAuditHistory().onDemandComments().maxResults(1).build().getAll();
+		JSONList issues = conn.api(SSCIssueAPI.class).queryIssues(applicationVersionId).onDemandDetails().onDemandAuditHistory().onDemandComments().maxResults(1).build().getAll();
 		print(issues);
 		print(issues.asValueType(JSONMap.class).get(0).get("issueDetails"));
 		print(issues);
@@ -142,24 +147,24 @@ public class SSCSamples extends AbstractSamples {
 	
 	public final void sample6QueryJobs() throws Exception {
 		printHeader("Query jobs ----");
-		JSONMap job = conn.api().job().queryJobs().maxResults(1).build().getUnique();
+		JSONMap job = conn.api(SSCJobAPI.class).queryJobs().maxResults(1).build().getUnique();
 		print(job);
 	}
 	
 	public final void sample7WaitForJobCreation() throws Exception {
 		printHeader("Wait 60 seconds for artifact upload job creation");
 		printHeader("(please upload artifact to application version WebGoat 5.0)");
-		IRestConnectionQuery query = conn.api().job().queryJobs()
+		IRestConnectionQuery query = conn.api(SSCJobAPI.class).queryJobs()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				.preProcessor(new JSONMapFilterCompareDate(MatchMode.INCLUDE, "finishTime", DateComparisonOperator.gt, new Date())).build();
 		print(query.toString());
-		print(conn.api().job().waitForJobCreation(query, 60));
+		print(conn.api(SSCJobAPI.class).waitForJobCreation(query, 60));
 	}
 	
 	public final void sample8QueryMetrics() throws Exception {
 		printHeader("Query metrics");
-		print(conn.api().metrics().queryApplicationVersionMetricHistories(applicationVersionId, MetricType.variable).useCache(true).build().getAll());
-		print(conn.api().metrics().queryApplicationVersionMetricHistories(applicationVersionId, MetricType.performanceIndicator).useCache(true).build().getAll());
+		print(conn.api(SSCMetricsAPI.class).queryApplicationVersionMetricHistories(applicationVersionId, MetricType.variable).useCache(true).build().getAll());
+		print(conn.api(SSCMetricsAPI.class).queryApplicationVersionMetricHistories(applicationVersionId, MetricType.performanceIndicator).useCache(true).build().getAll());
 	}
 	
 

@@ -79,7 +79,7 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 	 */
 	public String invokeAuditAssistant(String applicationVersionId, long timeOutSeconds) {
 		String result = null;
-		SSCJobAPI jobApi = conn().api().job();
+		SSCJobAPI jobApi = conn().api(SSCJobAPI.class);
 		Date now = new Date();
 		IRestConnectionQuery jobQuery = jobApi.queryJobs()
 				// Query for artifact upload job
