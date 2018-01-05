@@ -56,6 +56,6 @@ public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName ext
 	
 	@Override
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder builder) {
-		builder.onDemandBugTracker("bugTracker");
+		builder.onDemandBugTracker();
 	}
 }

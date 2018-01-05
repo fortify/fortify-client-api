@@ -78,8 +78,16 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 		return super.paramFilterAnd("applicationType", applicationType);
 	}
 	
+	public FoDApplicationsQueryBuilder onDemandAttributesMap() {
+		return onDemandAttributesMap("attributesMap");
+	}
+	
 	public FoDApplicationsQueryBuilder onDemandAttributesMap(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, new AttributesMapOnDemandLoader()));
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, new FoDApplicationAttributesMapOnDemandLoader()));
+	}
+	
+	public FoDApplicationsQueryBuilder onDemandReleases() {
+		return onDemandReleases("releases");
 	}
 	
 	public FoDApplicationsQueryBuilder onDemandReleases(String propertyName) {
@@ -87,9 +95,9 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}/releases")));
 	}
 	
-	private static class AttributesMapOnDemandLoader extends AbstractJSONMapOnDemandLoader {
+	private static class FoDApplicationAttributesMapOnDemandLoader extends AbstractJSONMapOnDemandLoader {
 		private static final long serialVersionUID = 1L;
-		public AttributesMapOnDemandLoader() {
+		public FoDApplicationAttributesMapOnDemandLoader() {
 			super(true);
 		}
 		

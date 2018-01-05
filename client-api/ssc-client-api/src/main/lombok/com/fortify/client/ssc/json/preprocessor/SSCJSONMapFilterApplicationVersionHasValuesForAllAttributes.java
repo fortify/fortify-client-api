@@ -60,6 +60,6 @@ public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends
 
 	@Override @SSCCopyToConstructors
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
-		currentBuilder.onDemandAttributeValuesByName("attributeValuesByName");
+		currentBuilder.onDemandAttributeValuesByName();
 	}
 }

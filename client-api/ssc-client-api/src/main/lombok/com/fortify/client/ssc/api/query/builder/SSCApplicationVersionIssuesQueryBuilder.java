@@ -111,21 +111,33 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		issueSearchOptions.setIncludeSuppressed(includeSuppressed); return _this();
 	}
 	
+	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails() {
+		return onDemandDetails("details");
+	}
+	
+	public SSCApplicationVersionIssuesQueryBuilder onDemandComments() {
+		return onDemandComments("comments");
+	}
+	
+	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory() {
+		return onDemandAuditHistory("auditHistory");
+	}
+	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails(String... fields) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("details", 
+	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails(String propertyName, String... fields) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(getConn(), fields)));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/comments"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandComments() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("comments", 
+	public SSCApplicationVersionIssuesQueryBuilder onDemandComments(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/comments")));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/auditHistory"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("auditHistory", 
+	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/auditHistory")));
 	}
 	

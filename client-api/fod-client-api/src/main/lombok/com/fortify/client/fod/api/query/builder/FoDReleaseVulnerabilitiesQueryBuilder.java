@@ -87,57 +87,101 @@ public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChi
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandAllData() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("allData", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/all-data")));
+		return onDemandAllData("allData");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandSummary() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("summary", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/summary")));
+		return onDemandSummary("summary");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandDetails() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("details", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/details")));
+		return onDemandDetails("details");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandRecommendations() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("recommendations", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/recommendations")));
+		return onDemandRecommendations("recommendations");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandHistory() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("history", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/history")));
+		return onDemandHistory("history");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandScreenshots() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("screenshots", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/screenshots")));
+		return onDemandScreenshots("screenshots");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandRequestResponse() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("response", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/response")));
+		return onDemandRequestResponse("requestResponse");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandHeaders() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("headers", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/headers")));
+		return onDemandHeaders("headers");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandParameters() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("parameters", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/parameters")));
+		return onDemandParameters("parameters");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandTraces() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("traces", 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/traces")));
+		return onDemandTraces("traces");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandAuditOptions() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("auditOptions", 
+		return onDemandAuditOptions("auditOptions");
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandAllData(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/all-data")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandSummary(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/summary")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandDetails(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/details")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandRecommendations(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/recommendations")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandHistory(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/history")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandScreenshots(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/screenshots")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandRequestResponse(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/response")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandHeaders(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/headers")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandParameters(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/parameters")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandTraces(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/traces")));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder onDemandAuditOptions(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/auditOptions")));
 	}
 }

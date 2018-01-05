@@ -112,7 +112,11 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	}
 	
 	public FoDReleasesQueryBuilder onDemandApplication() {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty("application", 
+		return onDemandApplication("application");
+	}
+	
+	public FoDReleasesQueryBuilder onDemandApplication(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}")));
 	}
 }

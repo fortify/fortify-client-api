@@ -51,6 +51,6 @@ public class SSCJSONMapFilterApplicationVersionHasBugTrackerId extends AbstractJ
 	
 	@Override
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder builder) {
-		builder.onDemandBugTracker("bugTracker");
+		builder.onDemandBugTracker();
 	}
 }

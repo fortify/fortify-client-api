@@ -89,6 +89,46 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 		return nameOrId(applicationVersionNameOrId, ":");
 	}
 	
+	public SSCApplicationVersionsQueryBuilder onDemandAttributes() {
+		return onDemandAttributes("attributes");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandAttributeValuesByName() {
+		return onDemandAttributeValuesByName("attributeValuesByName");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandBugTracker() {
+		return onDemandBugTracker("bugTracker");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandCustomTags() {
+		return onDemandCustomTags("customTags");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandFilterSets() {
+		return onDemandFilterSets("filterSets");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandIssueSearchOptions() {
+		return onDemandIssueSearchOptions("issueSearchOptions");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandPerformanceIndicatorHistories() {
+		return onDemandPerformanceIndicatorHistories("performanceHistories");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandVariableHistories() {
+		return onDemandVariableHistories("variableHistories");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandResponsibilities() {
+		return onDemandResponsibilities("responsibilities");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder onDemandResultProcessingRules() {
+		return onDemandResultProcessingRules("processingRules");
+	}
+	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/attributes"})
 	public SSCApplicationVersionsQueryBuilder onDemandAttributes(String propertyName, String... fields) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
