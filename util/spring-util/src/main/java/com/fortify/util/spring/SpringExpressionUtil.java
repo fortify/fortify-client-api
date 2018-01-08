@@ -97,19 +97,19 @@ public class SpringExpressionUtil {
 	/**
 	 * Parse the given string as a SpEL expression.
 	 * @param exprStr
-	 * @return The SpEL {@link Expression} object for the given expression string 
+	 * @return The SpEL {@link Expression} object for the given expression string, or null if input is null
 	 */
 	public static final SimpleExpression parseSimpleExpression(String exprStr) {
-		return new SimpleExpression(SPEL_PARSER.parseExpression(exprStr));
+		return exprStr==null ? null : new SimpleExpression(SPEL_PARSER.parseExpression(exprStr));
 	}
 	
 	/**
 	 * Parse the given string as a SpEL template expression.
 	 * @param exprStr
-	 * @return The SpEL {@link Expression} object for the given expression string 
+	 * @return The SpEL {@link Expression} object for the given expression string, or null if input is null 
 	 */
 	public static final TemplateExpression parseTemplateExpression(String exprStr) {
-		return new TemplateExpression(SPEL_PARSER.parseExpression(exprStr.replace("\\n", "\n"), new TemplateParserContext("${","}")));
+		return exprStr==null ? null : new TemplateExpression(SPEL_PARSER.parseExpression(exprStr.replace("\\n", "\n"), new TemplateParserContext("${","}")));
 	}
 	
 	public static final <T> T evaluateExpression(Object input, Expression expression, Class<T> returnType) {

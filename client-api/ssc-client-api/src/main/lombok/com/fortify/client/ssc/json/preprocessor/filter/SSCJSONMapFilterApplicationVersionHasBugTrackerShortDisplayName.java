@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC, a Micro Focus company
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,29 +22,40 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.json.preprocessor;
+package com.fortify.client.ssc.json.preprocessor.filter;
 
+import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
+import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
-
-import lombok.RequiredArgsConstructor;
+import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter;
+import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
 
 /**
- * This {@link AbstractJSONMapEnrich} implementation allows for enriching a
- * given {@link JSONMap} instance with on-demand data by adding the configured
- * {@link IJSONMapOnDemandLoader} instance to the {@link JSONMap} under the
- * configured property name.
+ * Filter SSC application versions based on the SSC bug tracker plugin short display name configured
+ * for each application version.
  * 
  * @author Ruud Senden
  *
  */
-@RequiredArgsConstructor
-public class JSONMapEnrichWithOnDemandProperty extends AbstractJSONMapEnrich {
-	private final String propertyName;
-	private final IJSONMapOnDemandLoader onDemandLoader;
+public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder>{
+	private final String bugTrackerPluginShortDisplayName;
+	
+	public SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName(MatchMode matchMode, String bugTrackerPluginShortDisplayName) {
+		super(matchMode);
+		this.bugTrackerPluginShortDisplayName = bugTrackerPluginShortDisplayName;
+	}
 	
 	@Override
-	protected void enrich(JSONMap json) {
-		json.put(propertyName, onDemandLoader);
+	protected boolean isMatching(JSONMap json) {
+		JSONList bugTrackers = json.get("bugTracker", JSONList.class);
+		if ( bugTrackers!=null && bugTrackers.size()>0 ) {
+			return bugTrackers.find("bugTracker?.shortDisplayName", bugTrackerPluginShortDisplayName, JSONMap.class) != null;
+		}
+		return false;
+	}
+	
+	@Override
+	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder builder) {
+		builder.onDemandBugTracker();
 	}
 }

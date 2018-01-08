@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.json.preprocessor;
+package com.fortify.util.rest.json.preprocessor.filter;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -31,6 +31,8 @@ import com.fortify.util.rest.json.JSONMap;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+
+import lombok.Getter;
 
 /**
  * This {@link AbstractJSONMapFilter} implementation allows for filtering
@@ -44,6 +46,7 @@ import com.google.common.collect.Maps;
  * @author Ruud Senden
  *
  */
+@Getter
 public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
 	private static final Function<String, Pattern> STRING_TO_PATTERN_TRANSFORMER = new Function<String, Pattern>() {
 		@Override

@@ -52,7 +52,7 @@ import com.fortify.util.spring.SpringExpressionUtil;
  *
  */
 public class SSCBugTrackerAPI extends AbstractSSCAPI {
-	protected SSCBugTrackerAPI(SSCAuthenticatingRestConnection conn) {
+	public SSCBugTrackerAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
 	}
 	

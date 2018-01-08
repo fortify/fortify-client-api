@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2017 EntIT Software LLC, a Micro Focus company
+ * (c) Copyright 2017 EntIT Software LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -22,33 +22,18 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.json.preprocessor;
-
-import java.util.Date;
+package com.fortify.util.rest.json.preprocessor.filter;
 
 import com.fortify.util.rest.json.JSONMap;
 
 /**
- * This {@link JSONMapFilterSpEL} implementation allows for filtering {@link JSONMap}
- * instances by comparing the value for the configured JSON property path against a 
- * given {@link Date}, using the configured {@link DateComparisonOperator}.
- * 
+ * This interface can be implemented to be notified about {@link JSONMap}
+ * objects being filtered, indicating whether a given {@link JSONMap} object
+ * is either included or excluded by the current {@link AbstractJSONMapFilter}
+ * instance.
  * @author Ruud Senden
  *
  */
-public class JSONMapFilterCompareDate extends JSONMapFilterSpEL {
-	public static enum DateComparisonOperator {
-		lt, gt, le, ge, eq, ne
-	}
-	
-	public JSONMapFilterCompareDate(MatchMode matchMode, String fieldPath, DateComparisonOperator operator, Date compareDate) {
-		super(matchMode, getDateExpression(fieldPath, operator, compareDate));
-	}
-
-	private static String getDateExpression(String fieldPath, DateComparisonOperator operator, Date compareDate) {
-		String expression = "getPath('"+fieldPath+"', T(java.util.Date))?.getTime() "+operator.name()+" "+compareDate.getTime()+"L";
-		return expression;
-	}
-	
-	
+public interface IJSONMapFilterListener {
+	public void filtered(JSONMap json, boolean isIncluded, AbstractJSONMapFilter filter);
 }

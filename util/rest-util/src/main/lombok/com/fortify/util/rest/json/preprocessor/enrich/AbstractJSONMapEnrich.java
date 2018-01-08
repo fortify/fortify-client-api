@@ -22,9 +22,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.json.preprocessor;
+package com.fortify.util.rest.json.preprocessor.enrich;
 
 import com.fortify.util.rest.json.JSONMap;
+import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
 
 /**
  * This abstract implementation for {@link IJSONMapPreProcessor} allows for

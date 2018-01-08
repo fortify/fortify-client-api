@@ -32,8 +32,8 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
-import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
-import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for

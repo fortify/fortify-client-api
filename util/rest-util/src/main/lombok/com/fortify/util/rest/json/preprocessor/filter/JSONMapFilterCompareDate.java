@@ -22,32 +22,33 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.json.preprocessor;
+package com.fortify.util.rest.json.preprocessor.filter;
+
+import java.util.Date;
 
 import com.fortify.util.rest.json.JSONMap;
 
 /**
- * This abstract implementation for {@link IJSONMapPreProcessor} allows for
- * filtering {@link JSONMap} instances. Subclasses must provide an implementation
- * for the {@link #isMatching(JSONMap)} method; this abstract base class allows
- * for configuring whether matched {@link JSONMap} instances should be included
- * or excluded from further processing.
+ * This {@link JSONMapFilterSpEL} implementation allows for filtering {@link JSONMap}
+ * instances by comparing the value for the configured JSON property path against a 
+ * given {@link Date}, using the configured {@link DateComparisonOperator}.
  * 
  * @author Ruud Senden
  *
  */
-public abstract class AbstractJSONMapFilter implements IJSONMapPreProcessor {
-	public enum MatchMode { INCLUDE, EXCLUDE }
+public class JSONMapFilterCompareDate extends JSONMapFilterSpEL {
+	public static enum DateComparisonOperator {
+		lt, gt, le, ge, eq, ne
+	}
 	
-	private final boolean includeMatching;
-	public AbstractJSONMapFilter(MatchMode matchMode) {
-		this.includeMatching = MatchMode.INCLUDE.equals(matchMode);
+	public JSONMapFilterCompareDate(MatchMode matchMode, String fieldPath, DateComparisonOperator operator, Date compareDate) {
+		super(matchMode, getDateExpression(fieldPath, operator, compareDate));
 	}
 
-	@Override
-	public boolean preProcess(JSONMap json) {
-		return includeMatching == isMatching(json);
+	private static String getDateExpression(String fieldPath, DateComparisonOperator operator, Date compareDate) {
+		String expression = "getPath('"+fieldPath+"', T(java.util.Date))?.getTime() "+operator.name()+" "+compareDate.getTime()+"L";
+		return expression;
 	}
 	
-	protected abstract boolean isMatching(JSONMap json);
+	
 }

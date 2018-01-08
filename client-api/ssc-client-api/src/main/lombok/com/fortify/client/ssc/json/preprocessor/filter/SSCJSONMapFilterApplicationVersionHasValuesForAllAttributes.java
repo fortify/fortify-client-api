@@ -1,6 +1,6 @@
 /*******************************************************************************
  * (c) Copyright 2017 EntIT Software LLC, a Micro Focus company
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,38 +22,44 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.json.preprocessor;
+package com.fortify.client.ssc.json.preprocessor.filter;
 
-import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
+import java.util.Arrays;
+import java.util.Collection;
 
+import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
+import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.SpringExpressionUtil;
+import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter;
+import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
 
 /**
- * This {@link AbstractJSONMapFilter} implementation evaluates the
- * configured SpEL expression against a given {@link JSONMap} instance,
- * and either includes or excludes (based on the configured {@link MatchMode})
- * this {@link JSONMap} instance from further processing based on the
- * expression evaluation result.
+ * Filter SSC application versions based on whether the SSC application version
+ * contains values for all configured attribute name(s).
  * 
  * @author Ruud Senden
  *
  */
-public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
-	private final Expression expression;
-	
-	public JSONMapFilterSpEL(MatchMode matchMode, Expression expression) {
+public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
+	private final Collection<String> attributeNames;
+
+	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,	Collection<String> attributeNames) {
 		super(matchMode);
-		this.expression = expression;
+		this.attributeNames = attributeNames;
 	}
-	
-	public JSONMapFilterSpEL(MatchMode matchMode, String expression) {
-		this(matchMode, new SpelExpressionParser().parseExpression(expression));
+
+	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode, String... attributeNames) {
+		this(matchMode, Arrays.asList(attributeNames));
 	}
 
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		return SpringExpressionUtil.evaluateExpression(json, expression, Boolean.class);
+		JSONMap attributeValuesByName = json.get("attributeValuesByName", JSONMap.class);
+		return attributeValuesByName.keySet().containsAll(attributeNames);
+	}
+
+	@Override @SSCCopyToConstructors
+	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
+		currentBuilder.onDemandAttributeValuesByName();
 	}
 }

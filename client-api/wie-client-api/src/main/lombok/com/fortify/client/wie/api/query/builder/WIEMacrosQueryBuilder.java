@@ -26,8 +26,8 @@ package com.fortify.client.wie.api.query.builder;
 
 import com.fortify.client.wie.api.query.WIEEntityQuery;
 import com.fortify.client.wie.connection.WIEAuthenticatingRestConnection;
-import com.fortify.util.rest.json.preprocessor.JSONMapFilterRegEx;
-import com.fortify.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMode;
+import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterRegEx;
+import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter.MatchMode;
 
 /**
  * This class allows for building an {@link WIEEntityQuery} instance that allows for

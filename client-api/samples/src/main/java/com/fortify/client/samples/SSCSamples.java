@@ -35,12 +35,12 @@ import com.fortify.client.ssc.api.SSCJobAPI;
 import com.fortify.client.ssc.api.SSCMetricsAPI;
 import com.fortify.client.ssc.api.SSCMetricsAPI.MetricType;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.client.ssc.json.preprocessor.SSCJSONMapFilterApplicationVersionHasAllCustomTags;
+import com.fortify.client.ssc.json.preprocessor.filter.SSCJSONMapFilterApplicationVersionHasAllCustomTags;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.preprocessor.AbstractJSONMapFilter.MatchMode;
-import com.fortify.util.rest.json.preprocessor.JSONMapFilterCompareDate;
-import com.fortify.util.rest.json.preprocessor.JSONMapFilterCompareDate.DateComparisonOperator;
+import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterCompareDate;
+import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter.MatchMode;
+import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterCompareDate.DateComparisonOperator;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 
 /**

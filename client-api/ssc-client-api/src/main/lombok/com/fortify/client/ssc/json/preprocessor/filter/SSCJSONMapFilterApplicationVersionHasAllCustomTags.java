@@ -22,35 +22,41 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.client.ssc.json.preprocessor;
+package com.fortify.client.ssc.json.preprocessor.filter;
 
+import java.util.Arrays;
+import java.util.List;
+
+import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
+import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.preprocessor.AbstractJSONMapFilter;
+import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter;
 import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
 
 /**
- * Filter SSC application versions based on the SSC bug tracker plugin id configured
- * for each application version.
+ * Filter SSC application versions based on whether the SSC application version contains
+ * the configured custom tag name(s).
  * 
  * @author Ruud Senden
  *
  */
-public class SSCJSONMapFilterApplicationVersionHasBugTrackerId extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder>{
-	private final String bugTrackerPluginId;
+public class SSCJSONMapFilterApplicationVersionHasAllCustomTags extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
+	private final List<String> customTagNames;
 	
-	public SSCJSONMapFilterApplicationVersionHasBugTrackerId(MatchMode matchMode, String bugTrackerPluginId) {
+	public SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode matchMode, String... customTagNames) {
 		super(matchMode);
-		this.bugTrackerPluginId = bugTrackerPluginId;
+		this.customTagNames = Arrays.asList(customTagNames);
 	}
 	
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		return bugTrackerPluginId.equals(json.getPath("bugTracker.bugTracker.id"));
+		List<String> avCustomTagNames = json.get("customTagsNamesOnly", JSONList.class).getValues("name", String.class);
+		return avCustomTagNames.containsAll(customTagNames);
 	}
-	
-	@Override
-	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder builder) {
-		builder.onDemandBugTracker();
+
+	@Override @SSCCopyToConstructors
+	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
+		currentBuilder.onDemandCustomTags("customTagsNamesOnly","name");
 	}
 }

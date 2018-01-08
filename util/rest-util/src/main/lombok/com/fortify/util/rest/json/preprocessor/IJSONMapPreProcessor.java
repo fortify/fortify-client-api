@@ -25,6 +25,8 @@
 package com.fortify.util.rest.json.preprocessor;
 
 import com.fortify.util.rest.json.JSONMap;
+import com.fortify.util.rest.json.preprocessor.enrich.AbstractJSONMapEnrich;
+import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter;
 import com.fortify.util.rest.json.processor.IJSONMapProcessor;
 
 /**

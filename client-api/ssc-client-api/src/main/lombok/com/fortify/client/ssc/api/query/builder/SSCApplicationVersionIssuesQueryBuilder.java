@@ -35,8 +35,8 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
-import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 import com.fortify.util.rest.query.IRequestInitializer;
 import com.fortify.util.spring.SpringExpressionUtil;
 

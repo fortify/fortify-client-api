@@ -27,8 +27,8 @@ package com.fortify.client.fod.api.query.builder;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.client.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
-import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithDeepLink;
-import com.fortify.util.rest.json.preprocessor.JSONMapEnrichWithOnDemandProperty;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 
 /**
  * This class allows for building an {@link FoDEntityQuery} instance that allows for
