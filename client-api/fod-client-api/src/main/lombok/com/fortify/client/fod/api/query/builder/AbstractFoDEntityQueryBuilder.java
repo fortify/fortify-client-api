@@ -166,7 +166,7 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 			StringBuffer sb = new StringBuffer();
 			appendParamFilterAndsMap(sb);
 			appendParamFilterAndsList(sb);
-			return new WebTargetQueryParamUpdater("filter", sb.toString());
+			return new WebTargetQueryParamUpdater("filters", sb.toString());
 		}
 
 		private void appendParamFilterAndsList(StringBuffer sb) {
