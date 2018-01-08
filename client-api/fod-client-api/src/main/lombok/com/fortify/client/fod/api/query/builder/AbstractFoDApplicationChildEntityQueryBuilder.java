@@ -35,7 +35,7 @@ import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractFoDApplicationChildEntityQueryBuilder<T> extends AbstractFoDEntityQueryBuilder<T> {
+public abstract class AbstractFoDApplicationChildEntityQueryBuilder<T extends AbstractFoDApplicationChildEntityQueryBuilder<T>> extends AbstractFoDEntityQueryBuilder<T> {
 
 	protected AbstractFoDApplicationChildEntityQueryBuilder(FoDAuthenticatingRestConnection conn, String applicationId, boolean pagingSupported) 
 	{

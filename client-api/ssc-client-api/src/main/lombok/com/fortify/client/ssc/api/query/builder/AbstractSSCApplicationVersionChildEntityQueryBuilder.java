@@ -35,7 +35,7 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractSSCApplicationVersionChildEntityQueryBuilder<T> extends AbstractSSCEntityQueryBuilder<T> {
+public abstract class AbstractSSCApplicationVersionChildEntityQueryBuilder<T extends AbstractSSCApplicationVersionChildEntityQueryBuilder<T>> extends AbstractSSCEntityQueryBuilder<T> {
 
 	protected AbstractSSCApplicationVersionChildEntityQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId, boolean pagingSupported) 
 	{

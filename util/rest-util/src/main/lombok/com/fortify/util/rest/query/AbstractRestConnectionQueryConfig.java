@@ -78,7 +78,7 @@ import lombok.Setter;
  * @param <T> Concrete type of this class
  */
 @Getter
-public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestConnection, T> 
+public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestConnection, T extends AbstractRestConnectionQueryConfig<ConnType, T>> 
 {
 	private final ConnType conn;
 	private final List<IWebTargetUpdaterBuilder> webTargetUpdaterBuilders = new ArrayList<>();

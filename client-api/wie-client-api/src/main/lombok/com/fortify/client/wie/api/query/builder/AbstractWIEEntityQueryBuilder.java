@@ -39,7 +39,7 @@ import com.fortify.util.rest.query.IRestConnectionQuery;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractWIEEntityQueryBuilder<T> extends AbstractRestConnectionQueryConfig<WIEAuthenticatingRestConnection, T> {
+public abstract class AbstractWIEEntityQueryBuilder<T extends AbstractWIEEntityQueryBuilder<T>> extends AbstractRestConnectionQueryConfig<WIEAuthenticatingRestConnection, T> {
 	
 	protected AbstractWIEEntityQueryBuilder(WIEAuthenticatingRestConnection conn, boolean pagingSupported) {
 		super(conn, pagingSupported);

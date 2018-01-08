@@ -58,7 +58,7 @@ import com.google.common.collect.ListMultimap;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractFoDEntityQueryBuilder<T> extends AbstractRestConnectionQueryConfig<FoDAuthenticatingRestConnection, T> {
+public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQueryBuilder<T>> extends AbstractRestConnectionQueryConfig<FoDAuthenticatingRestConnection, T> {
 	private FoDParamFilter paramFilter = add(new FoDParamFilter());
 	
 	/**

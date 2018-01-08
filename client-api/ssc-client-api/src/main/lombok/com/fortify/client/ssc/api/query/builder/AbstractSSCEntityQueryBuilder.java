@@ -54,7 +54,7 @@ import com.fortify.util.rest.webtarget.WebTargetQueryParamUpdater;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractSSCEntityQueryBuilder<T> extends AbstractRestConnectionQueryConfig<SSCAuthenticatingRestConnection, T> {
+public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQueryBuilder<T>> extends AbstractRestConnectionQueryConfig<SSCAuthenticatingRestConnection, T> {
 	private SSCParamQ paramQ = add(new SSCParamQ());
 	
 	/**
