@@ -36,15 +36,15 @@ import com.fortify.util.rest.json.JSONMap;
  */
 public abstract class AbstractSamples {
 	protected void print(JSONMap json) {
-		print(json.toIndentedString());
+		print(json==null?"<null>":json.toIndentedString());
 	}
 	
 	protected void print(JSONList json) {
-		print(json.toIndentedString());
+		print(json==null?"<null>":json.toIndentedString());
 	}
 	
 	protected void print(Object obj) {
-		System.out.println(obj);
+		System.out.println(obj==null?"<null>":obj);
 		System.out.flush();
 	}
 	

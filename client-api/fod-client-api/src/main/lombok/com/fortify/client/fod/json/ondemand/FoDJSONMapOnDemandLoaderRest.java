@@ -40,6 +40,6 @@ public class FoDJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
 	private static final long serialVersionUID = 1L;
 
 	public FoDJSONMapOnDemandLoaderRest(IRestConnection conn, String pathTemplateExpression) {
-		super(conn, true, pathTemplateExpression, "items");
+		super(conn, true, pathTemplateExpression, "containsKey('items')?items:#root");
 	}
 }

@@ -101,6 +101,33 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		}
 	}
 	
+	@Override
+	protected void parseUriUserInfo(String userInfo) {
+		if ( userInfo != null ) {
+			String user = null;
+			String password = null;
+			
+			String[] userInfoParts = userInfo.split(":", 2);
+			
+			if ( userInfoParts.length > 0 ) {
+				user = userInfoParts[0];
+			}
+			if ( userInfoParts.length > 1 ) {
+				password = userInfoParts[1];
+			}
+			
+			String[] userParts = user.split("\\\\", 2);
+			if ( userParts.length == 2 ) {
+				setTenant(userParts[0]);
+				setUserName(userParts[1]);
+				setPassword(password);
+			} else {
+				setClientId(user);
+				setClientSecret(password);
+			}
+		}
+	}
+	
 	private Form getAuthClientCredentials() {
 		Form form = new Form();
 		form.param("scope", getScope());
