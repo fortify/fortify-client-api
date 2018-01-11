@@ -28,17 +28,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.OrderComparator;
+import org.springframework.context.expression.MapAccessor;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.PropertyAccessor;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.stereotype.Component;
 
 import com.fortify.util.spring.expression.SimpleExpression;
 import com.fortify.util.spring.expression.TemplateExpression;
@@ -49,7 +45,6 @@ import com.fortify.util.spring.expression.TemplateExpression;
  * (template) expressions on input objects.
  */
 public class SpringExpressionUtil {
-	private static final Log LOG = LogFactory.getLog(SpringContextUtil.class);
 	private static final List<PropertyAccessor> PROPERTY_ACCESSORS = getPropertyAccessors();
 	private static final SpelExpressionParser SPEL_PARSER = new SpelExpressionParser();
 	private static final StandardEvaluationContext SPEL_CONTEXT = createStandardEvaluationContext();
@@ -61,27 +56,13 @@ public class SpringExpressionUtil {
 	}
 	
 	/**
-	 * Automatically load all PropertyAccessor implementations
-	 * (annotated with {@link Component}) from 
-	 * com.fortify.util.spring.propertyaccessor (sub-)packages. 
+	 * Add Spring's {@link MapAccessor} to the list of standard property accessors 
 	 * @return
 	 */
 	private static final List<PropertyAccessor> getPropertyAccessors() {
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext("com.fortify.util.spring.propertyaccessor");
-		try {
-			// Initialize list with discovered PropertyAccessors
-			List<PropertyAccessor> result = new ArrayList<PropertyAccessor>(ctx.getBeansOfType(PropertyAccessor.class).values());
-			// Add the standard PropertyAccessors
-			result.addAll(new StandardEvaluationContext().getPropertyAccessors());
-			
-			// Order the accessors
-			result.sort(new OrderComparator());
-			
-			LOG.info("[Process] Loaded PropertyAccessors: "+result);
-			return result;
-		} finally {
-			ctx.close();
-		}
+		List<PropertyAccessor> result = new ArrayList<PropertyAccessor>();
+		result.add(new MapAccessor());
+		return result;
 	}
 	
 	public static final StandardEvaluationContext createStandardEvaluationContext() {
