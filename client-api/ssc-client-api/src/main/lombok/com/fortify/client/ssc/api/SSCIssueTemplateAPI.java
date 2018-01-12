@@ -27,6 +27,7 @@ package com.fortify.client.ssc.api;
 import java.text.MessageFormat;
 
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionFilterSetsQueryBuilder;
+import com.fortify.client.ssc.api.query.builder.SSCIssueTemplatesQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -40,6 +41,14 @@ import com.fortify.util.rest.json.JSONMap;
 public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	public SSCIssueTemplateAPI(SSCAuthenticatingRestConnection conn) {
 		super(conn);
+	}
+	
+	public SSCIssueTemplatesQueryBuilder queryIssueTemplates() {
+		return new SSCIssueTemplatesQueryBuilder(conn());
+	}
+	
+	public JSONList getIssueTemplates(boolean useCache) {
+		return queryIssueTemplates().useCache(useCache).build().getAll();
 	}
 	
 	public SSCApplicationVersionFilterSetsQueryBuilder queryApplicationVersionFilterSets(String applicationVersionId) {

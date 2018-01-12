@@ -65,6 +65,10 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	public SSCApplicationVersionsQueryBuilder id(String id) {
 		return super.paramQAnd("id", id);
 	}
+	
+	public SSCApplicationVersionsQueryBuilder applicationId(String applicationId) {
+		return super.paramQAnd("project.id", applicationId);
+	}
 
 	public SSCApplicationVersionsQueryBuilder applicationName(String applicationName) {
 		return super.paramQAnd("project.name", applicationName);

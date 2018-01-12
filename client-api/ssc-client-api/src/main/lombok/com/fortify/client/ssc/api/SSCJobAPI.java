@@ -24,7 +24,10 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -50,10 +53,11 @@ public class SSCJobAPI extends AbstractSSCAPI {
 	}
 	
 	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {
+		Set<String> incompleteStates = new HashSet<>(Arrays.asList("RUNNING", "PREPARED", "WAITING_FOR_WORKER")); 
 		long startTime = new Date().getTime();
 		IRestConnectionQuery query = queryJobs().id(jobId).build();
 		JSONMap job = query.getUnique();
-		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && "RUNNING".equals(job.get("state", String.class)) ) {
+		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && incompleteStates.contains(job.get("state", String.class)) ) {
 			try {
 				Thread.sleep(1000L);
 			} catch ( InterruptedException ignore ) {}
