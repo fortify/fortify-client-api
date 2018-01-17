@@ -134,4 +134,15 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		JSONMap job = getJobForUpload(uploadResult, timeOutSeconds);
 		return getArtifactIdForUploadJob(job);
 	}
+	
+	public final String uploadArtifactAndWaitProcessingCompletionWithApproval(String applicationVersionId, File fprFile, String approvalMessage, int timeOutSeconds) {
+		long startTimeSeconds = new Date().getTime()/1000;
+		String artifactId = uploadArtifactAndWaitProcessingCompletion(applicationVersionId, fprFile, timeOutSeconds);
+		String artifactStatus = getArtifactById(artifactId, false, "status").get("status", String.class);
+		if ( "REQUIRE_AUTH".equals(artifactStatus) ) {
+			int approvalTimeOutSeconds = timeOutSeconds-(int)(new Date().getTime()/1000-startTimeSeconds);
+			approveArtifactAndWaitProcessingCompletion(artifactId, "Auto-approved by Jenkins", approvalTimeOutSeconds);
+		}
+		return artifactId;
+	}
 }
