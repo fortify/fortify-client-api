@@ -26,6 +26,10 @@ package com.fortify.client.ssc.api;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
@@ -97,9 +101,28 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 				Entity.entity(data, "application/json"), JSONMap.class);
 	}
 	
+	public final void approveArtifactAndWaitProcessingCompletion(String artifactId, String comment, int timeOutSeconds) {
+		approveArtifact(artifactId, comment);
+		waitForProcessingCompletion(artifactId, timeOutSeconds);
+	}
+	
+	public final void waitForProcessingCompletion(String artifactId, int timeOutSeconds) {
+		Set<String> incompleteStates = new HashSet<>(Arrays.asList("PROCESSING", "SCHED_PROCESSING")); 
+		long startTime = new Date().getTime();
+		JSONMap artifact = getArtifactById(artifactId, false, "status");
+		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && incompleteStates.contains(artifact.get("status", String.class)) ) {
+			try {
+				Thread.sleep(1000L);
+			} catch ( InterruptedException ignore ) {}
+			artifact = getArtifactById(artifactId, false, "status");
+		}
+	}
+
 	public final JSONMap getJobForUpload(JSONMap uploadResult, int secondsToWaitForCompletion) {
 		String jobId = uploadResult.get("id", String.class);
-		return conn().api(SSCJobAPI.class).waitForJobCompletion(jobId, secondsToWaitForCompletion);
+		SSCJobAPI jobApi = conn().api(SSCJobAPI.class);
+		jobApi.waitForJobCompletion(jobId, secondsToWaitForCompletion);
+		return jobApi.getJobById(jobId, true);
 	}
 	
 	public final String getArtifactIdForUploadJob(JSONMap job) {

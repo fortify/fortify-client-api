@@ -52,18 +52,20 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		return new SSCJobsQueryBuilder(conn());
 	}
 	
-	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {
+	public final JSONMap getJobById(String jobId, boolean useCache, String... fields) {
+		return queryJobs().id(jobId).useCache(useCache).paramFields(fields).build().getUnique();
+	}
+	
+	public void waitForJobCompletion(String jobId, int timeOutSeconds) {
 		Set<String> incompleteStates = new HashSet<>(Arrays.asList("RUNNING", "PREPARED", "WAITING_FOR_WORKER")); 
 		long startTime = new Date().getTime();
-		IRestConnectionQuery query = queryJobs().id(jobId).build();
-		JSONMap job = query.getUnique();
+		JSONMap job = getJobById(jobId, false, "state");
 		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && incompleteStates.contains(job.get("state", String.class)) ) {
 			try {
 				Thread.sleep(1000L);
 			} catch ( InterruptedException ignore ) {}
-			job = query.getUnique();
+			job = getJobById(jobId, false, "state");
 		}
-		return job;
 	}
 	
 	public JSONList waitForJobCreation(IRestConnectionQuery query, long timeOutSeconds) {
