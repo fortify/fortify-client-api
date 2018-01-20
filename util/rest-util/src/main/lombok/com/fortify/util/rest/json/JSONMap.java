@@ -292,4 +292,11 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 			return super.toString();
 		}
 	}
+
+	public boolean containsAllKeys(String... requiredProperties) {
+		for ( String requiredProperty : requiredProperties ) {
+			if ( !containsKey(requiredProperty) ) { return false; }
+		}
+		return true;
+	}
 }

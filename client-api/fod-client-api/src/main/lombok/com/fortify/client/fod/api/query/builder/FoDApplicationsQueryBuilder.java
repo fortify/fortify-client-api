@@ -43,7 +43,7 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 	public FoDApplicationsQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/applications");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Applications/${applicationId}"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Applications/${applicationId}", "applicationId"));
 	}
 	
 	@Override

@@ -41,7 +41,7 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	public FoDReleasesQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/releases");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Releases/${releaseId}"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Releases/${releaseId}", "releaseId"));
 	}
 	
 	@Override

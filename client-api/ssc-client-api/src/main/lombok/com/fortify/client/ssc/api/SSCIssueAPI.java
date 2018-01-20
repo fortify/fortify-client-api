@@ -74,6 +74,18 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	}
 	
 	/**
+	 * Validate the given issue search string.
+	 */
+	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/validateSearchString"})
+	public JSONMap validateIssueSearchString(String searchString) {
+		JSONMap request = new JSONMap();
+		request.put("stringToValidate", searchString);
+		return conn().executeRequest(HttpMethod.POST, 
+				conn().getBaseResource().path("/api/v1/validateSearchString"), 
+				Entity.entity(request, "application/json"), JSONMap.class).get("data", JSONMap.class);
+	}
+	
+	/**
 	 * This class describes the SSC issue search options, allowing to either 
 	 * include or exclude removed, hidden and suppressed issues.
 	 * @author Ruud Senden

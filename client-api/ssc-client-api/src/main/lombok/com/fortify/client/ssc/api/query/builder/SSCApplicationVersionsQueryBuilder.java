@@ -47,7 +47,7 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	public SSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v1/projectVersions");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl()+"/html/ssc/index.jsp#!/version/${id}/fix"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl()+"/html/ssc/index.jsp#!/version/${id}/fix", "id"));
 	}
 
 	public final SSCApplicationVersionsQueryBuilder paramFields(String... fields) {
