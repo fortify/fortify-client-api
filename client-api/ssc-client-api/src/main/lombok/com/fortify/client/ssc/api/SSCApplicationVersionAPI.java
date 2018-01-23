@@ -70,7 +70,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		return new CreateApplicationVersionBuilder(conn());
 	}
 	
-	// TODO Add support for defining application version team
+	// TODO Add support for defining application version team, copying state & other info from other version
 	public static final class CreateApplicationVersionBuilder {
 		private final SSCAuthenticatingRestConnection conn;
 		private String applicationName;

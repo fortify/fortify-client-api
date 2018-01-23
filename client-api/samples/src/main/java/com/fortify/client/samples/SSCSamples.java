@@ -158,7 +158,7 @@ public class SSCSamples extends AbstractSamples {
 	
 	public final void sample7WaitForJobCreation() throws Exception {
 		printHeader("Wait 60 seconds for artifact upload job creation");
-		printHeader("(please upload artifact to application version WebGoat 5.0)");
+		printHeader("(please upload artifact to any application version)");
 		IRestConnectionQuery query = conn.api(SSCJobAPI.class).queryJobs()
 				.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				.preProcessor(new JSONMapFilterCompareDate(MatchMode.INCLUDE, "finishTime", DateComparisonOperator.gt, new Date())).build();
