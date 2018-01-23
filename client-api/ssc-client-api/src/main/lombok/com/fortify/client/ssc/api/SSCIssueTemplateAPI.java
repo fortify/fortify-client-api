@@ -59,6 +59,14 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 		return queryApplicationVersionFilterSets(applicationVersionId).build().getAll();
 	}
 	
+	public String getIssueTemplateIdForName(String issueTemplateName) {
+		JSONList issueTemplates = getIssueTemplates(true);
+		if ( issueTemplates != null ) {
+			return issueTemplates.mapValue("name", issueTemplateName, "id", String.class);
+		}
+		return null;
+	}
+	
 	/**
 	 * @param guidOrTitle filter set GUID or title
 	 * @return filter set matching the given GUID or title, or null if not found

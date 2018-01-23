@@ -27,6 +27,9 @@ package com.fortify.client.ssc.api.query.builder;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.rest.json.JSONList;
+import com.fortify.util.rest.json.JSONMap;
+import com.fortify.util.rest.json.preprocessor.enrich.AbstractJSONMapEnrich;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -40,6 +43,18 @@ public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntity
 	public SSCAttributeDefinitionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v1/attributeDefinitions");
+		preProcessor(new AbstractJSONMapEnrich() {
+			
+			@Override
+			protected void enrich(JSONMap json) {
+				JSONList options = json.get("options", JSONList.class);
+				if ( options != null ) {
+					JSONMap optionsByNameAndGuid = options.toJSONMap("name", String.class, "#this", JSONMap.class);
+					optionsByNameAndGuid.putAll(options.toMap("guid", String.class, JSONMap.class));
+					json.put("optionsByNameAndGuid", optionsByNameAndGuid);
+				}
+			}
+		});
 	}
 
 	public final SSCAttributeDefinitionsQueryBuilder paramFields(String... fields) {
@@ -50,7 +65,7 @@ public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntity
 		return super.paramOrderBy(orderBy, direction);
 	}
 
-	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(String field, String value) {
+	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(String field, Object value) {
 		return super.paramQAnd(field, value);
 	}
 }

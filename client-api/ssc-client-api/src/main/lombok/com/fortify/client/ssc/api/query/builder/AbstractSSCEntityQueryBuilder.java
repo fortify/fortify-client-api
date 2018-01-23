@@ -128,7 +128,7 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param value
 	 * @return
 	 */
-	protected T paramQAnd(String field, String value) {
+	protected T paramQAnd(String field, Object value) {
 		paramQ.paramQAnd(field, value); return _this();
 	}
 	
@@ -140,9 +140,9 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 *
 	 */
 	private static class SSCParamQ implements IWebTargetUpdaterBuilder {
-		private final Map<String, String> paramQAnds = new HashMap<>();
+		private final Map<String, Object> paramQAnds = new HashMap<>();
 		
-		public final SSCParamQ paramQAnd(String field, String value) {
+		public final SSCParamQ paramQAnd(String field, Object value) {
 			paramQAnds.put(field, value);
 			return this;
 		}
@@ -152,8 +152,11 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 			String q = null;
 			if ( MapUtils.isNotEmpty(paramQAnds) ) {
 				StringBuffer sb = new StringBuffer();
-				for ( Map.Entry<String, String> entry : paramQAnds.entrySet() ) {
-					String qAppend = entry.getKey()+":\""+entry.getValue()+"\"";
+				for ( Map.Entry<String, Object> entry : paramQAnds.entrySet() ) {
+					Object value = entry.getValue();
+					String qAppend = value instanceof String 
+							? entry.getKey()+":\""+entry.getValue()+"\""
+							: entry.getKey()+":"+entry.getValue();
 					if ( sb.length() == 0 ) {
 						sb.append(qAppend);
 					} else {

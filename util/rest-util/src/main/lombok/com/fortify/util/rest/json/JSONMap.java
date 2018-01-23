@@ -92,6 +92,17 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	}
 	
 	/**
+	 * Copy only the given fields from the source map into this new instance
+	 */
+	public JSONMap(Map<? extends String, ? extends Object> source, String field, String... extraFields) {
+		super((extraFields==null?0:extraFields.length)+1);
+		put(field, source.get(field));
+		for ( String extraField : extraFields ) {
+			put(extraField, source.get(extraField));
+		}
+	}
+	
+	/**
 	 * @see LinkedHashMap#getOrDefault(Object, Object). This override
 	 * adds support for loading on-demand values.
 	 */
@@ -121,7 +132,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * @see #get(Object). This overloaded method adds support for 
 	 * converting the value to the given type.
 	 */
-	public <T> T get(String key, Class<T> type) {
+	public <T> T get(Object key, Class<T> type) {
 		return getConversionService().convert(get(key), type);
 	}
 	

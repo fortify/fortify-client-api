@@ -26,6 +26,7 @@ package com.fortify.client.samples;
 
 import java.io.File;
 import java.util.Date;
+import java.util.UUID;
 
 import com.fortify.client.ssc.api.SSCApplicationVersionAPI;
 import com.fortify.client.ssc.api.SSCArtifactAPI;
@@ -38,8 +39,8 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.preprocessor.filter.SSCJSONMapFilterApplicationVersionHasAllCustomTags;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterCompareDate;
 import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter.MatchMode;
+import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterCompareDate;
 import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterCompareDate.DateComparisonOperator;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 
@@ -51,18 +52,12 @@ import com.fortify.util.rest.query.IRestConnectionQuery;
  */
 public class SSCSamples extends AbstractSamples {
 	private final SSCAuthenticatingRestConnection conn;
-	private final JSONMap applicationVersion;
-	private final String applicationVersionId;
+	private JSONMap applicationVersion;
+	private String applicationVersionId;
 	
 	
 	public SSCSamples(String baseUrlWithCredentials) {
 		this.conn = SSCAuthenticatingRestConnection.builder().baseUrl(baseUrlWithCredentials).build();
-		this.applicationVersion = conn.api(SSCApplicationVersionAPI.class).getApplicationVersionByNameOrId("WebGoat:5.0", true);
-		if ( this.applicationVersion == null ) {
-			throw new IllegalStateException("Your SSC instance must have an application 'WebGoat' with version '5.0'");
-		}
-		this.applicationVersionId = this.applicationVersion.get("id", String.class);
-		
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -73,6 +68,7 @@ public class SSCSamples extends AbstractSamples {
 			throw new IllegalArgumentException("Path to FPR file must be provided as second parameter");
 		}
 		SSCSamples samples = new SSCSamples(args[0]);
+		samples.sample0CreateApplicationVersion();
 		samples.sample1QueryApplicationVersions();
 		JSONMap artifact = samples.sample2UploadAndQueryArtifacts(args[1]);
 		samples.sample3ApproveArtifact(artifact);
@@ -81,6 +77,15 @@ public class SSCSamples extends AbstractSamples {
 		samples.sample6QueryJobs();
 		samples.sample7WaitForJobCreation();
 		samples.sample8QueryMetrics();
+	}
+	
+	public final void sample0CreateApplicationVersion() throws Exception {
+		printHeader("Create application version");
+		SSCApplicationVersionAPI api = conn.api(SSCApplicationVersionAPI.class);
+		this.applicationVersionId = api.createApplicationVersion()
+			.applicationName("SSCSamples").versionName(UUID.randomUUID().toString())
+			.autoAddRequiredAttributes(true).issueTemplateName("Prioritized High Risk Issue Template").execute();
+		this.applicationVersion = api.getApplicationVersionById(applicationVersionId, false);
 	}
 	
 	public final void sample1QueryApplicationVersions() throws Exception {

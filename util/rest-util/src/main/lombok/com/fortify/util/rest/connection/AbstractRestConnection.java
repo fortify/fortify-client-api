@@ -387,12 +387,20 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T getSuccessfulResponse(Response response, Class<T> returnType, StatusType status) {
-		if ( returnType == null || status.getStatusCode() == Status.NO_CONTENT.getStatusCode() ) {
-			return null;
-		} else if ( returnType.isAssignableFrom(response.getClass()) ) {
+		if ( returnType.isAssignableFrom(response.getClass()) ) {
 			return (T)response;
 		} else {
-			return response.readEntity(returnType);
+			try {
+				if ( status.getStatusCode() == Status.NO_CONTENT.getStatusCode() ) {
+					return null;
+				} else if (returnType == null || returnType.isAssignableFrom(Void.class)) {
+					return null; // TODO do we need to read the entity if there is any?
+				} else {
+					return response.readEntity(returnType);
+				}
+			} finally {
+				response.close();
+			}
 		}
 	}
 	
