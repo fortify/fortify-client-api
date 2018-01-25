@@ -28,7 +28,7 @@
 	<parent>
 		<groupId>com.fortify.client.api</groupId>
 		<artifactId>client-api</artifactId>
-		<version>4.1-SNAPSHOT</version>
+		<version>4.1</version>
 	</parent>
 	<dependencies>
 		<dependency>
