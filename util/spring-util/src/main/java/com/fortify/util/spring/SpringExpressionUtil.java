@@ -34,6 +34,7 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.PropertyAccessor;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import com.fortify.util.spring.expression.SimpleExpression;
@@ -61,6 +62,7 @@ public class SpringExpressionUtil {
 	 */
 	private static final List<PropertyAccessor> getPropertyAccessors() {
 		List<PropertyAccessor> result = new ArrayList<PropertyAccessor>();
+		result.add(new ReflectivePropertyAccessor());
 		result.add(new MapAccessor());
 		return result;
 	}
