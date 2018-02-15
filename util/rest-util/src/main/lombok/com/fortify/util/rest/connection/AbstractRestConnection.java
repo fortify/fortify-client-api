@@ -387,7 +387,7 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T getSuccessfulResponse(Response response, Class<T> returnType, StatusType status) {
-		if ( returnType.isAssignableFrom(response.getClass()) ) {
+		if ( returnType!=null && returnType.isAssignableFrom(response.getClass()) ) {
 			return (T)response;
 		} else {
 			try {
