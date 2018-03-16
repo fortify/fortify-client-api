@@ -30,7 +30,7 @@
 	<parent>
 		<groupId>com.fortify.client.api</groupId>
 		<artifactId>client-api</artifactId>
-		<version>4.3-SNAPSHOT</version>
+		<version>4.3</version>
 	</parent>
 	<modules>
 		<module>analyze-api-usage-common</module>
