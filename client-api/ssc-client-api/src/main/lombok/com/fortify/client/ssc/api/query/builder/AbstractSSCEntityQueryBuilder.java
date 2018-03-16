@@ -120,6 +120,19 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	}
 	
 	/**
+	 * Add the 'q' query parameter to the request configuration.
+	 * This will take the given value literally, as opposed to
+	 * {@link #paramQAnd(String, Object)} that allows for building
+	 * a multi-part 'q' parameter.
+	 * 
+	 * @param q
+	 * @return
+	 */
+	protected T paramQ(String q) {
+		return queryParam("q", q);
+	}
+	
+	/**
 	 * Add the 'q' query parameter to the request configuration. If
 	 * already set, the new field and value will be 'and-ed' to the
 	 * current query parameter value.
