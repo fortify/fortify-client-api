@@ -134,8 +134,11 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		List<JSONMap> issues = new ArrayList<JSONMap>();
 		for ( Object vuln : vulns ) {
 			JSONMap issue = new JSONMap();
-			issue.put("id", SpringExpressionUtil.evaluateExpression(vuln, "id", Long.class));
-			issue.put("revision", SpringExpressionUtil.evaluateExpression(vuln, "revision", Long.class));
+			Long id = SpringExpressionUtil.evaluateExpression(vuln, "id", Long.class);
+			Long revision = SpringExpressionUtil.evaluateExpression(vuln, "revision", Long.class);
+			if ( revision == null ) { revision = 0L; }
+			issue.put("id", id);
+			issue.put("revision", revision);
 			issues.add(issue);
 		}
 		request.putPath("values.issues", issues);
