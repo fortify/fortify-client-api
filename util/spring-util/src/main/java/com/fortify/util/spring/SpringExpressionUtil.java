@@ -63,7 +63,7 @@ public class SpringExpressionUtil {
 	private static final List<PropertyAccessor> getPropertyAccessors() {
 		List<PropertyAccessor> result = new ArrayList<PropertyAccessor>();
 		result.add(new ReflectivePropertyAccessor());
-		result.add(new MapAccessor());
+		result.add(new MapAccessorIgnoreNonExistingProperties());
 		return result;
 	}
 	
