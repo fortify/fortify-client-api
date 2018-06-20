@@ -56,7 +56,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	
 	// TODO Can we propagate issueSearchOptions permissions from updateApplicationVersionIssueSearchOptions to this constructor,
 	//      instead of specifying this explicitly?
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/issues", "PUT=/api/v\\\\d+/projectVersions/\\\\d+/issueSearchOptions"})
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/issues", "PUT=/api/v\\d+/projectVersions/\\d+/issueSearchOptions"})
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
 		appendPath("issues");

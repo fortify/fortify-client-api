@@ -91,7 +91,7 @@ public class AnalyzeSSCAPIUsage {
 		Set<String> requiredActionsPermitted = new TreeSet<>();
 		System.out.println("\nMethods in custom code that require SSC permitted actions: ");
 		for (Map.Entry<String, Set<String>> entry : methodsToAnnotationValuesMap.entrySet()) {
-			if (!entry.getKey().startsWith("com/fortify/api/ssc")) {
+			if (!entry.getKey().startsWith("com/fortify/client/ssc")) {
 				System.out.println(entry.getKey()+": "+entry.getValue());
 				requiredActionsPermitted.addAll(entry.getValue());
 			}
