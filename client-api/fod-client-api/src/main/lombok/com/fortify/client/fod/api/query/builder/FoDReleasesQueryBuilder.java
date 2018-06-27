@@ -26,9 +26,7 @@ package com.fortify.client.fod.api.query.builder;
 
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.client.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
-import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 
 /**
  * This class allows for building an {@link FoDEntityQuery} instance that allows for
@@ -116,7 +114,6 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	}
 	
 	public FoDReleasesQueryBuilder onDemandApplication(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}")));
+		return onDemand(propertyName, "/api/v3/applications/${applicationId}");
 	}
 }

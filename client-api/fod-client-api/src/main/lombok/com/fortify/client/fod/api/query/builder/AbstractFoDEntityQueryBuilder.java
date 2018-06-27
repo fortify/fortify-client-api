@@ -34,6 +34,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.client.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
+import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
@@ -138,6 +140,11 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 */
 	protected T paramFilterAnd(String filter) {
 		paramFilter.paramFilterAnd(filter); return _this();
+	}
+	
+	@Override
+	protected IJSONMapOnDemandLoader createOnDemandLoader(String uri) {
+		return new FoDJSONMapOnDemandLoaderRest(getConn(), uri);
 	}
 	
 	/**

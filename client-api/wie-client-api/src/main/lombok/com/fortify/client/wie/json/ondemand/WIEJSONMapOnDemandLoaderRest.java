@@ -22,24 +22,26 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.client.fod.json.ondemand;
+package com.fortify.client.wie.json.ondemand;
 
 import com.fortify.util.rest.connection.IRestConnection;
 import com.fortify.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
 
 /**
  * This {@link JSONMapOnDemandLoaderRest} implementation allows for loading
- * on-demand data from FoD. Instances of this class can be configured with
- * a path template expression indicating the FoD REST endpoint to load the
+ * on-demand data from WIE. Instances of this class can be configured with
+ * a path template expression indicating the WIE REST endpoint to load the
  * data from.
+ * 
+ * NOTE: This functionality has not yet been tested!
  * 
  * @author Ruud Senden
  *
  */
-public class FoDJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
+public class WIEJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
 	private static final long serialVersionUID = 1L;
 
-	public FoDJSONMapOnDemandLoaderRest(IRestConnection conn, String uriTemplateExpression) {
-		super(conn, true, uriTemplateExpression, "containsKey('items')?items:#root");
+	public WIEJSONMapOnDemandLoaderRest(IRestConnection conn, String uriTemplateExpression) {
+		super(conn, true, uriTemplateExpression, "data");
 	}
 }

@@ -93,7 +93,7 @@ public class SSCSamples extends AbstractSamples {
 		SSCApplicationVersionAPI api = conn.api(SSCApplicationVersionAPI.class);
 		
 		printHeader("Query all versions, max 3 results");
-		JSONList results = api.queryApplicationVersions().applicationName("WebGoat").maxResults(3).paramFields("id").build().getAll();
+		JSONList results = api.queryApplicationVersions().maxResults(3).paramFields("id").build().getAll();
 		print(results);
 		print("count: "+results.size());
 		

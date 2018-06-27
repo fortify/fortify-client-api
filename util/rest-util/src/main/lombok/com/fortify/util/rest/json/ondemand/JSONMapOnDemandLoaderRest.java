@@ -41,18 +41,24 @@ import com.fortify.util.spring.SpringExpressionUtil;
  */
 public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWithConnection<IRestConnection> {
 	private static final long serialVersionUID = 1L;
-	private final String pathTemplateExpression;
+	private final String uriTemplateExpression;
 	private final String resultExpression;
+	private final String cacheName;
 	
-	public JSONMapOnDemandLoaderRest(IRestConnection conn, boolean storeValue, String pathTemplateExpression, String resultExpression) {
+	public JSONMapOnDemandLoaderRest(IRestConnection conn, boolean storeValue, String uriTemplateExpression, String resultExpression) {
+		this(conn, storeValue, uriTemplateExpression, resultExpression, null);
+	}
+	
+	public JSONMapOnDemandLoaderRest(IRestConnection conn, boolean storeValue, String uriTemplateExpression, String resultExpression, String cacheName) {
 		super(conn, storeValue);
-		this.pathTemplateExpression = pathTemplateExpression;
+		this.uriTemplateExpression = uriTemplateExpression;
 		this.resultExpression = resultExpression;
+		this.cacheName = cacheName;
 	}
 
 	@Override
 	public Object getOnDemand(String propertyName, JSONMap parent) {
-		return getResult(conn().executeRequest(HttpMethod.GET, getWebTarget(parent), JSONMap.class));
+		return getResult(conn().executeRequest(HttpMethod.GET, getWebTarget(parent), JSONMap.class, cacheName));
 	}
 
 	protected Object getResult(JSONMap restResult) {
@@ -64,8 +70,8 @@ public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWith
 	}
 
 	protected WebTarget getWebTarget(JSONMap parent) {
-		String path = SpringExpressionUtil.evaluateTemplateExpression(parent, pathTemplateExpression, String.class);
-		return conn().getBaseResource().path(path);
+		String uri = SpringExpressionUtil.evaluateTemplateExpression(parent, uriTemplateExpression, String.class);
+		return conn().getResource(uri);
 	}
 
 }

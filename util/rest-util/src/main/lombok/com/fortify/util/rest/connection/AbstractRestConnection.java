@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -256,15 +257,21 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	
 	@SuppressWarnings("unchecked")
 	public <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType, String cacheName) {
-		Cache<CacheKey, Object> cache = cacheManager.getUnchecked(cacheName);
-		CacheKey cacheKey = getCacheKey(httpMethod, webResource, returnType);
-		T result = (T)cache.getIfPresent(cacheKey);
-		if ( result == null ) {
-			log.trace("Cache miss: "+webResource.getUri());
+		T result;
+		if ( cacheName == null ) {
+			log.trace("No cache name specified, not using cache: "+webResource.getUri());
 			result = executeRequest(httpMethod, webResource, returnType);
-			cache.put(cacheKey, result);
 		} else {
-			log.trace("Cache hit: "+webResource.getUri());
+			Cache<CacheKey, Object> cache = cacheManager.getUnchecked(cacheName);
+			CacheKey cacheKey = getCacheKey(httpMethod, webResource, returnType);
+			result = (T)cache.getIfPresent(cacheKey);
+			if ( result == null ) {
+				log.trace("Cache miss: "+webResource.getUri());
+				result = executeRequest(httpMethod, webResource, returnType);
+				cache.put(cacheKey, result);
+			} else {
+				log.trace("Cache hit: "+webResource.getUri());
+			}
 		}
 		return result;
 	}
@@ -295,7 +302,7 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	}
 	
 	protected String getDefaultCacheSpec() {
-		return "maximumSize=1000,expireAfterWrite=60s";
+		return "maximumSize=1000,expireAfterWrite=15m";
 	}
 	
 	protected CacheKey getCacheKey(String httpMethod, WebTarget webResource, Class<?> returnType) {
@@ -444,20 +451,17 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	}
 	
 	/**
-	 * Get a {@link WebTarget} object for the given URL. Usually one should
-	 * call {@link #getBaseResource()} instead, to use the configured REST base
-	 * URL. The {@link #getResource(String)} method should usually only be used 
-	 * for executing requests on full URL's returned by previous REST requests.
+	 * Get a {@link WebTarget} object for the given uriString. If the given
+	 * uriString is an absolute URI, it will be used as-is. If the given 
+	 * uriString is relative, it will be appended to the configured REST
+	 * base URL. See {@link URI#resolve(String)} for more details. 
 	 * 
-	 * Subclasses can override this method to add additional information
-	 * to the {@link WebTarget}, for example request parameters that
-	 * need to be sent on every request.
-	 * 
-	 * @param url for which to get a {@link WebTarget} instance.
-	 * @return A {@link WebTarget} instance for the given URL.
+	 * @param uriString Absolute or relative URI for which to get a {@link WebTarget} instance.
+	 * @return A {@link WebTarget} instance for the given URI.
 	 */
-	public WebTarget getResource(String url) {
-		return getClient().target(url);
+	public final WebTarget getResource(String uriString) {
+		// TODO clean this up
+		return getClient().target(URI.create(baseUrl.toString()+"/").resolve(StringUtils.removeStart(uriString,"/")));
 	}
 
 	/**

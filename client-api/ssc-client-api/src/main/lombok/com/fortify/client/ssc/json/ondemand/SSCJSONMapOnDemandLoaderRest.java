@@ -24,37 +24,22 @@
  ******************************************************************************/
 package com.fortify.client.ssc.json.ondemand;
 
-import javax.ws.rs.client.WebTarget;
-
 import com.fortify.util.rest.connection.IRestConnection;
-import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
 
 /**
  * This {@link JSONMapOnDemandLoaderRest} implementation allows for loading
  * on-demand data from SSC. Instances of this class can be configured with
  * a path template expression indicating the SSC REST endpoint to load the
- * data from, and optionally a list of fields to be loaded (if supported by 
- * the REST endpoint).
+ * data from.
  * 
  * @author Ruud Senden
  *
  */
 public class SSCJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
 	private static final long serialVersionUID = 1L;
-	private final String[] fields;
 
-	public SSCJSONMapOnDemandLoaderRest(IRestConnection conn, String pathTemplateExpression, String... fields) {
-		super(conn, true, pathTemplateExpression, "data");
-		this.fields = fields;
-	}
-	
-	@Override
-	protected WebTarget getWebTarget(JSONMap parent) {
-		WebTarget result = super.getWebTarget(parent);
-		if ( fields!=null && fields.length > 0 ) {
-			result = result.queryParam("fields", String.join(",", fields));
-		}
-		return result;
+	public SSCJSONMapOnDemandLoaderRest(IRestConnection conn, String uriTemplateExpression) {
+		super(conn, true, uriTemplateExpression, "data");
 	}
 }

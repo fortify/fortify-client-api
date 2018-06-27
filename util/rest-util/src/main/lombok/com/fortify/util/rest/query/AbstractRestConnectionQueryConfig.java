@@ -31,7 +31,9 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.util.rest.connection.IRestConnection;
+import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.util.rest.webtarget.WebTargetPathUpdaterBuilder;
@@ -138,6 +140,17 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 		webTargetTemplateResolverBuilder.templateValue(name, value);
 		return _this();
 	}
+	
+	protected T onDemand(String propertyName, String uri) {
+		return onDemand(propertyName, uri, null);
+	}
+	
+	protected T onDemand(String propertyName, String uri, String cacheName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				createOnDemandLoader(uri)));
+	}
+	
+	protected abstract IJSONMapOnDemandLoader createOnDemandLoader(String uri);
 	
 	protected <B extends IWebTargetUpdaterBuilder> B add(B builder) {
 		webTargetUpdaterBuilders.add(builder);

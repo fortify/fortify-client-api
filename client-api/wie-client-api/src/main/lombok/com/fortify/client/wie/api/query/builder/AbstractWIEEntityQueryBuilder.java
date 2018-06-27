@@ -26,6 +26,8 @@ package com.fortify.client.wie.api.query.builder;
 
 import com.fortify.client.wie.api.query.WIEEntityQuery;
 import com.fortify.client.wie.connection.WIEAuthenticatingRestConnection;
+import com.fortify.client.wie.json.ondemand.WIEJSONMapOnDemandLoaderRest;
+import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 
@@ -47,5 +49,10 @@ public abstract class AbstractWIEEntityQueryBuilder<T extends AbstractWIEEntityQ
 	
 	public IRestConnectionQuery build() {
 		return new WIEEntityQuery(this);
+	}
+	
+	@Override
+	protected IJSONMapOnDemandLoader createOnDemandLoader(String uriString) {
+		return new WIEJSONMapOnDemandLoaderRest(getConn(), uriString);
 	}
 }

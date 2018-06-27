@@ -130,29 +130,27 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails(String propertyName, String... fields) {
+	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails(String propertyName) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(getConn(), fields)));
+				new SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(getConn())));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/comments"})
 	public SSCApplicationVersionIssuesQueryBuilder onDemandComments(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/comments")));
+		return onDemand(propertyName, "/api/v1/issues/${id}/comments");
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/auditHistory"})
 	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/issues/${id}/auditHistory")));
+		return onDemand(propertyName, "/api/v1/issues/${id}/auditHistory");
 	}
 	
 	private static final class SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames extends SSCJSONMapOnDemandLoaderRest {
 		private static final long serialVersionUID = 1L;
 		private final SSCAuthenticatingRestConnection conn;
 
-		public SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(SSCAuthenticatingRestConnection conn, String... fields) {
-			super(conn, "/api/v1/issueDetails/${id}", fields);
+		public SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(SSCAuthenticatingRestConnection conn) {
+			super(conn, "/api/v1/issueDetails/${id}");
 			this.conn = conn;
 		}
 		

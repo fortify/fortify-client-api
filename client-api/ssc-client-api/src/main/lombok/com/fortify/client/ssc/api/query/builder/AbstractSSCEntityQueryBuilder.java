@@ -27,11 +27,15 @@ package com.fortify.client.ssc.api.query.builder;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.core.UriBuilder;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
+import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryConfig;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
@@ -143,6 +147,19 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 */
 	protected T paramQAnd(String field, Object value) {
 		paramQ.paramQAnd(field, value); return _this();
+	}
+	
+	@Override
+	protected IJSONMapOnDemandLoader createOnDemandLoader(String uriString) {
+		return new SSCJSONMapOnDemandLoaderRest(getConn(), uriString);
+	}
+	
+	protected String appendOnDemandFields(String uriString, String... fields) {
+		String result = uriString;
+		if ( fields!=null && fields.length > 0 ) {
+			result = UriBuilder.fromUri(uriString).queryParam("fields", String.join(",", fields)).toTemplate();
+		}
+		return result;
 	}
 	
 	/**

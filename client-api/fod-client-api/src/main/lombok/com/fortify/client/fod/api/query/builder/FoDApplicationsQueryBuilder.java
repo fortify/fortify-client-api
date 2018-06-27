@@ -26,7 +26,6 @@ package com.fortify.client.fod.api.query.builder;
 
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.client.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoader;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
@@ -91,8 +90,7 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 	}
 	
 	public FoDApplicationsQueryBuilder onDemandReleases(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new FoDJSONMapOnDemandLoaderRest(getConn(), "/api/v3/applications/${applicationId}/releases")));
+		return onDemand(propertyName, "/api/v3/applications/${applicationId}/releases");
 	}
 	
 	private static class FoDApplicationAttributesMapOnDemandLoader extends AbstractJSONMapOnDemandLoader {

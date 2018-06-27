@@ -29,7 +29,6 @@ import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeAPI;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
@@ -134,9 +133,8 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/attributes"})
-	public SSCApplicationVersionsQueryBuilder onDemandAttributes(String propertyName, String... fields) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/attributes", fields)));
+	public SSCApplicationVersionsQueryBuilder onDemandAttributes(String propertyName) {
+		return onDemand(propertyName, "/api/v1/projectVersions/${id}/attributes");
 	}
 	
 	/**
@@ -152,50 +150,42 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/bugtracker"})
 	public SSCApplicationVersionsQueryBuilder onDemandBugTracker(String propertyName, String... fields) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/bugtracker", fields)));
+		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/bugtracker", fields));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/customTags"})
 	public SSCApplicationVersionsQueryBuilder onDemandCustomTags(String propertyName, String... fields) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/customTags", fields)));
+		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/customTags", fields));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/filterSets"})
 	public SSCApplicationVersionsQueryBuilder onDemandFilterSets(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/filterSets")));
+		return onDemand(propertyName, "/api/v1/projectVersions/${id}/filterSets");
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/issueSearchOptions"})
 	public SSCApplicationVersionsQueryBuilder onDemandIssueSearchOptions(String propertyName, String... fields) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/issueSearchOptions", fields)));
+		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/issueSearchOptions", fields));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/performanceIndicatorHistories"})
 	public SSCApplicationVersionsQueryBuilder onDemandPerformanceIndicatorHistories(String propertyName, String... fields) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/performanceIndicatorHistories", fields)));
+		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/performanceIndicatorHistories", fields));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/variableHistories"})
 	public SSCApplicationVersionsQueryBuilder onDemandVariableHistories(String propertyName, String... fields) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/variableHistories", fields)));
+		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/variableHistories", fields));
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/responsibilities"})
 	public SSCApplicationVersionsQueryBuilder onDemandResponsibilities(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/responsibilities")));
+		return onDemand(propertyName, "/api/v1/projectVersions/${id}/responsibilities");
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/resultProcessingRules"})
 	public SSCApplicationVersionsQueryBuilder onDemandResultProcessingRules(String propertyName, String... fields) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderRest(getConn(), "/api/v1/projectVersions/${id}/resultProcessingRules", fields)));
+		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/resultProcessingRules", fields));
 	}
 	
 	private static final class SSCJSONMapOnDemandLoaderAttributeValuesByName extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
