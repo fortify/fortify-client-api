@@ -141,11 +141,11 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 		return _this();
 	}
 	
-	protected T onDemand(String propertyName, String uri) {
+	public T onDemand(String propertyName, String uri) {
 		return onDemand(propertyName, uri, null);
 	}
 	
-	protected T onDemand(String propertyName, String uri, String cacheName) {
+	public T onDemand(String propertyName, String uri, String cacheName) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				createOnDemandLoader(uri)));
 	}
