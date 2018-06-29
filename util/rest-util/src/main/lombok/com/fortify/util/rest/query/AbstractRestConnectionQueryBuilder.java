@@ -51,7 +51,7 @@ import lombok.Setter;
  * for configuring the endpoint details like target path and any query parameters.</p>
  * 
  * <p>The common class structure looks as follows:
- * <ul><li>{@link AbstractRestConnectionQueryConfig}
+ * <ul><li>{@link AbstractRestConnectionQueryBuilder}
  *     <ul><li>{@link AbstractRestConnectionWithCacheQueryConfig}
  *         <ul><li>AbstractMySystemQueryBuilder<br/>
  *                 Specifies connection type and adds method 
@@ -80,7 +80,7 @@ import lombok.Setter;
  * @param <T> Concrete type of this class
  */
 @Getter
-public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestConnection, T extends AbstractRestConnectionQueryConfig<ConnType, T>> 
+public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestConnection, T extends AbstractRestConnectionQueryBuilder<ConnType, T>> 
 {
 	private final ConnType conn;
 	private final List<IWebTargetUpdaterBuilder> webTargetUpdaterBuilders = new ArrayList<>();
@@ -97,7 +97,7 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 	@Setter(AccessLevel.PROTECTED) private IRequestInitializer requestInitializer = null;
 	@Setter(AccessLevel.PROTECTED) private boolean encodeSlashInPath = false;
 	
-	protected AbstractRestConnectionQueryConfig(ConnType conn, boolean pagingSupported) {
+	protected AbstractRestConnectionQueryBuilder(ConnType conn, boolean pagingSupported) {
 		this.conn = conn;
 		this.pagingSupported = pagingSupported;
 	}
@@ -167,4 +167,6 @@ public abstract class AbstractRestConnectionQueryConfig<ConnType extends IRestCo
 		result.add(webTargetTemplateResolverBuilder.build());
 		return result;
 	}
+
+	public abstract IRestConnectionQuery build();
 }

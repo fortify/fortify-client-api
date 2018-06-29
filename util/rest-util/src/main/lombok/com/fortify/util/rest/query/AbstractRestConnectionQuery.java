@@ -47,7 +47,7 @@ import com.fortify.util.rest.webtarget.IWebTargetUpdater;
  * {@link JSONList} instance from the REST response ({@link #getResponseTypeClass()} and 
  * {@link #getJSONListFromResponse(Object)}.</p>
  * 
- * <p>This class is configured through a {@link AbstractRestConnectionQueryConfig} instance, which allows for
+ * <p>This class is configured through a {@link AbstractRestConnectionQueryBuilder} instance, which allows for
  * configuring the various details for building the actual REST requests and processing responses. This
  * includes {@link IWebTargetUpdater} instances for generating the actual REST request, and {@link IJSONMapPreProcessor}
  * instances for pre-processing each individual {@link JSONMap} instance returned by the REST request.</p>
@@ -61,7 +61,7 @@ import com.fortify.util.rest.webtarget.IWebTargetUpdater;
  *     </li></ul>
  * </li></ul>
  * Instances of MySystemQuery are not created directly by API consumers, but rather through build()
- * methods on concrete {@link AbstractRestConnectionQueryConfig} implementations.</p> 
+ * methods on concrete {@link AbstractRestConnectionQueryBuilder} implementations.</p> 
  * 
  * @author Ruud Senden
  */
@@ -76,7 +76,7 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	private final String httpMethod;
 	private final IRequestInitializer requestInitializer;
 	
-	protected AbstractRestConnectionQuery(AbstractRestConnectionQueryConfig<?, ?> config) {
+	protected AbstractRestConnectionQuery(AbstractRestConnectionQueryBuilder<?, ?> config) {
 		this.conn = config.getConn();
 		this.webTargetUpdaters = Collections.unmodifiableList(config.getWebTargetUpdaters());
 		this.preProcessors =  Collections.unmodifiableList(config.getPreProcessors());

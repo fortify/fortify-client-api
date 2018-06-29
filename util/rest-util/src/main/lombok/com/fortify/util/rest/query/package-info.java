@@ -31,7 +31,7 @@
  *    query instances directly, but rather through builders (see below).</p>
  *    
  * <p>The main API for constructing queries is provided through concrete implementations
- *    of the {@link com.fortify.util.rest.query.AbstractRestConnectionQueryConfig} class.
+ *    of the {@link com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder} class.
  *    Based on the builder pattern, these concrete implementations would allow for 
  *    configuring query criteria, and then building a corresponding 
  *    {@link com.fortify.util.rest.query.IRestConnectionQuery} implementation through

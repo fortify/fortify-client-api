@@ -36,7 +36,7 @@ import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.client.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
-import com.fortify.util.rest.query.AbstractRestConnectionQueryConfig;
+import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.util.rest.webtarget.IWebTargetUpdaterBuilder;
@@ -60,7 +60,7 @@ import com.google.common.collect.ListMultimap;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQueryBuilder<T>> extends AbstractRestConnectionQueryConfig<FoDAuthenticatingRestConnection, T> {
+public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQueryBuilder<T>> extends AbstractRestConnectionQueryBuilder<FoDAuthenticatingRestConnection, T> {
 	private FoDParamFilter paramFilter = add(new FoDParamFilter());
 	
 	/**
@@ -78,6 +78,7 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * 
 	 * @return
 	 */
+	@Override
 	public IRestConnectionQuery build() {
 		return new FoDEntityQuery(this);
 	}

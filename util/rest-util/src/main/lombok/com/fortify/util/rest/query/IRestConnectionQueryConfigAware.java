@@ -28,7 +28,7 @@ import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
 
 /**
  * This interface can be implemented by {@link IJSONMapPreProcessor} implementations
- * to get the current {@link AbstractRestConnectionQueryConfig} instance injected,
+ * to get the current {@link AbstractRestConnectionQueryBuilder} instance injected,
  * allowing to query or update query configuration properties.
  * 
  * @author Ruud Senden

@@ -36,7 +36,7 @@ import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
-import com.fortify.util.rest.query.AbstractRestConnectionQueryConfig;
+import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.util.rest.webtarget.IWebTargetUpdaterBuilder;
@@ -58,7 +58,7 @@ import com.fortify.util.rest.webtarget.WebTargetQueryParamUpdater;
  *
  * @param <T> Concrete builder type
  */
-public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQueryBuilder<T>> extends AbstractRestConnectionQueryConfig<SSCAuthenticatingRestConnection, T> {
+public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQueryBuilder<T>> extends AbstractRestConnectionQueryBuilder<SSCAuthenticatingRestConnection, T> {
 	private SSCParamQ paramQ = add(new SSCParamQ());
 	
 	/**
@@ -76,6 +76,7 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * 
 	 * @return
 	 */
+	@Override
 	public IRestConnectionQuery build() {
 		return new SSCEntityQuery(this);
 	}

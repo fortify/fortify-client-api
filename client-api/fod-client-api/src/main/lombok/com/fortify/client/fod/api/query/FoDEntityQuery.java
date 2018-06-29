@@ -32,7 +32,7 @@ import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.query.AbstractRestConnectionQuery;
-import com.fortify.util.rest.query.AbstractRestConnectionQueryConfig;
+import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.rest.query.PagingData;
 
 /**
@@ -44,7 +44,7 @@ import com.fortify.util.rest.query.PagingData;
  * @author Ruud Senden
  */
 public class FoDEntityQuery extends AbstractRestConnectionQuery<JSONMap> {
-	public FoDEntityQuery(AbstractRestConnectionQueryConfig<FoDAuthenticatingRestConnection,?> config) {
+	public FoDEntityQuery(AbstractRestConnectionQueryBuilder<FoDAuthenticatingRestConnection,?> config) {
 		super(config);
 	}
 
