@@ -73,7 +73,7 @@ public final class SpringContextUtil {
 				Class<? extends PropertyEditor> propertyEditorClass = entry.getValue().getClass();
 				result.put(targetClass, propertyEditorClass);
 			}
-			LOG.info("[Process] Loaded PropertyEditors for classes: "+result);
+			LOG.debug("[Process] Loaded PropertyEditors for classes: "+result);
 			return result;
 		} finally {
 			ctx.close();
@@ -137,7 +137,7 @@ public final class SpringContextUtil {
 				LOG.info("[Process] Resource "+resource.getFilename()+" does not exist; no bean definitions will be added");
 			}
 		} else {
-			LOG.info("[Process] Loading bean definitions from resource "+resource.getFilename());
+			LOG.debug("[Process] Loading bean definitions from resource "+resource.getFilename());
 			reader.loadBeanDefinitions(resource);
 		}
 	}
