@@ -29,10 +29,12 @@ import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeAPI;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.client.ssc.json.preprocessor.filter.SSCJSONMapFilterApplicationVersionNamesOrIds;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
+import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter.MatchMode;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -90,6 +92,10 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	
 	public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId) {
 		return nameOrId(applicationVersionNameOrId, ":");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder namesOrIds(String applicationVersionNamesOrIds) {
+		return preProcessor(new SSCJSONMapFilterApplicationVersionNamesOrIds(MatchMode.INCLUDE, applicationVersionNamesOrIds));
 	}
 	
 	public SSCApplicationVersionsQueryBuilder onDemandAttributes() {

@@ -24,9 +24,15 @@
  ******************************************************************************/
 package com.fortify.client.fod.api.query.builder;
 
+import com.fortify.client.fod.api.FoDApplicationAPI;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.client.fod.json.preprocessor.filter.FoDJSONMapFilterApplicationReleaseNamesOrIds;
+import com.fortify.util.rest.json.JSONMap;
+import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
+import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter.MatchMode;
 
 /**
  * This class allows for building an {@link FoDEntityQuery} instance that allows for
@@ -97,6 +103,10 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		return nameOrId(applicationAndReleaseNameOrId, ":");
 	}
 	
+	public FoDReleasesQueryBuilder namesOrIds(String releaseNamesOrIds) {
+		return preProcessor(new FoDJSONMapFilterApplicationReleaseNamesOrIds(MatchMode.INCLUDE, releaseNamesOrIds));
+	}
+	
 	public FoDReleasesQueryBuilder rating(int rating) {
 		return super.paramFilterAnd("rating", rating+"");
 	}
@@ -115,5 +125,29 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	
 	public FoDReleasesQueryBuilder onDemandApplication(String propertyName) {
 		return onDemand(propertyName, "/api/v3/applications/${applicationId}");
+	}
+	
+	public FoDReleasesQueryBuilder onDemandApplicationWithAttributesMap() {
+		return onDemandApplication("applicationWithAttributesMap");
+	}
+	
+	public FoDReleasesQueryBuilder onDemandApplicationWithAttributesMap(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new FoDApplicationWithAttributesMapOnDemandLoader(getConn())));
+	}
+	
+	private static class FoDApplicationWithAttributesMapOnDemandLoader extends AbstractJSONMapOnDemandLoaderWithConnection<FoDAuthenticatingRestConnection> {
+		private static final long serialVersionUID = 1L;
+		
+		public FoDApplicationWithAttributesMapOnDemandLoader(FoDAuthenticatingRestConnection conn) {
+			super(conn, true);
+		}
+		
+		@Override
+		public Object getOnDemand(String propertyName, JSONMap parent) {
+			return conn().api(FoDApplicationAPI.class).queryApplications()
+				.applicationId(parent.get("releaseId", String.class))
+				.onDemandAttributesMap().build().getUnique();
+		}
 	}
 }
