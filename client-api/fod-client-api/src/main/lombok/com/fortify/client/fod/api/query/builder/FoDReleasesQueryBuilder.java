@@ -128,7 +128,7 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	}
 	
 	public FoDReleasesQueryBuilder onDemandApplicationWithAttributesMap() {
-		return onDemandApplication("applicationWithAttributesMap");
+		return onDemandApplicationWithAttributesMap("applicationWithAttributesMap");
 	}
 	
 	public FoDReleasesQueryBuilder onDemandApplicationWithAttributesMap(String propertyName) {
