@@ -32,7 +32,6 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
@@ -476,6 +475,14 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 			client = createClient();
 		}
 		return client;
+	}
+	
+	public String getBaseUrlStringWithoutTrailingSlash() {
+		return StringUtils.removeEnd(getBaseUrl().toASCIIString(), "/");
+	}
+	
+	public String getBaseUrlStringWithTrailingSlash() {
+		return getBaseUrlStringWithoutTrailingSlash()+"/";
 	}
 
 	/**
