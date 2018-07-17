@@ -60,8 +60,8 @@ public class FoDJSONMapFilterApplicationReleaseNamesOrIds extends AbstractJSONMa
 			if ( appVersionElements.length == 1 ) {
 				result |= appVersionElements[0].equals(json.get("releaseId", String.class));
 			} else if ( appVersionElements.length == 2 ) {
-				result |= appVersionElements[0].equals(json.getPath("releaseName", String.class)) 
-						&& appVersionElements[1].equals(json.get("applicationName", String.class));
+				result |= appVersionElements[0].equals(json.get("applicationName", String.class)) 
+						&& appVersionElements[1].equals(json.getPath("releaseName", String.class));
 			}
 			if ( result == true ) break;
 		}
