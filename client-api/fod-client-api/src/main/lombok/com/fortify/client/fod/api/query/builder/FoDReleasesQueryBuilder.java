@@ -27,12 +27,10 @@ package com.fortify.client.fod.api.query.builder;
 import com.fortify.client.fod.api.FoDApplicationAPI;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.client.fod.json.preprocessor.filter.FoDJSONMapFilterApplicationReleaseNamesOrIds;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
-import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter.MatchMode;
 
 /**
  * This class allows for building an {@link FoDEntityQuery} instance that allows for
@@ -101,10 +99,6 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	
 	public FoDReleasesQueryBuilder nameOrId(String applicationAndReleaseNameOrId) {
 		return nameOrId(applicationAndReleaseNameOrId, ":");
-	}
-	
-	public FoDReleasesQueryBuilder namesOrIds(String releaseNamesOrIds) {
-		return preProcessor(new FoDJSONMapFilterApplicationReleaseNamesOrIds(MatchMode.INCLUDE, releaseNamesOrIds));
 	}
 	
 	public FoDReleasesQueryBuilder rating(int rating) {
