@@ -103,8 +103,8 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	}
 	
 	/**
-	 * @see LinkedHashMap#getOrDefault(Object, Object). This override
-	 * adds support for loading on-demand values.
+	 * @see LinkedHashMap#getOrDefault(Object, Object)
+	 * This override adds support for loading on-demand values.
 	 */
 	@Override
 	public Object getOrDefault(Object key, Object defaultValue) {
