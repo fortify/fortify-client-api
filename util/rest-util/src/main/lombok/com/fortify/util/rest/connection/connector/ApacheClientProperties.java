@@ -57,115 +57,123 @@ import org.glassfish.jersey.internal.util.PropertiesHelper;
 public final class ApacheClientProperties {
 
     /**
-     * The credential provider that should be used to retrieve
+     * <p>The credential provider that should be used to retrieve
      * credentials from a user. Credentials needed for proxy authentication
-     * are stored here as well.
-     * <p/>
-     * The value MUST be an instance of {@link org.apache.http.client.CredentialsProvider}.
-     * <p/>
-     * If the property is absent a default provider will be used.
-     * <p/>
-     * The name of the configuration property is <tt>{@value}</tt>.
+     * are stored here as well.</p>
+     * 
+     * <p>The value MUST be an instance of {@link org.apache.http.client.CredentialsProvider}.</p>
+     * 
+     * <p>If the property is absent a default provider will be used.</p>
+     * 
+     * <p>The name of the configuration property is <tt>{@value}</tt>.</p>
      */
     public static final String CREDENTIALS_PROVIDER = "jersey.config.apache.client.credentialsProvider";
 
     /**
-     * A value of {@code false} indicates the client should handle cookies
+     * <p>A value of {@code false} indicates the client should handle cookies
      * automatically using HttpClient's default cookie policy. A value
      * of {@code true} will cause the client to ignore all cookies.
-     * <p/>
+     * </p><p>
      * The value MUST be an instance of {@link java.lang.Boolean}.
-     * <p/>
+     * </p><p>
      * The default value is {@code false}.
-     * <p/>
+     * </p><p>
      * The name of the configuration property is <tt>{@value}</tt>.
+     * </p>
+     * 
      */
     public static final String DISABLE_COOKIES = "jersey.config.apache.client.handleCookies";
 
     /**
-     * A value of {@code true} indicates that a client should send an
+     * <p>A value of {@code true} indicates that a client should send an
      * authentication request even before the server gives a 401
      * response.
-     * <p>
+     * </p><p>
      * This property may only be set prior to constructing Apache connector using {@link ApacheConnectorProvider}.
-     * <p/>
+     * </p><p>
      * The value MUST be an instance of {@link java.lang.Boolean}.
-     * <p/>
+     * </p><p>
      * The default value is {@code false}.
-     * <p/>
+     * </p><p>
      * The name of the configuration property is <tt>{@value}</tt>.
+     * </p>
      */
     public static final String PREEMPTIVE_BASIC_AUTHENTICATION = "jersey.config.apache.client.preemptiveBasicAuthentication";
 
     /**
-     * Connection Manager which will be used to create {@link org.apache.http.client.HttpClient}.
-     * <p/>
+     * <p>Connection Manager which will be used to create {@link org.apache.http.client.HttpClient}.
+     * </p><p>
      * The value MUST be an instance of {@link org.apache.http.conn.HttpClientConnectionManager}.
-     * <p/>
+     * </p><p>
      * If the property is absent a default Connection Manager will be used
      * ({@link org.apache.http.impl.conn.BasicHttpClientConnectionManager}).
      * If you want to use this client in multi-threaded environment, be sure you override default value with
      * {@link org.apache.http.impl.conn.PoolingHttpClientConnectionManager} instance.
-     * <p/>
+     * </p><p>
      * The name of the configuration property is <tt>{@value}</tt>.
+     * </p>
      */
     public static final String CONNECTION_MANAGER = "jersey.config.apache.client.connectionManager";
 
     /**
-     * A value of {@code true} indicates that configured connection manager should be shared
+     * <p>A value of {@code true} indicates that configured connection manager should be shared
      * among multiple Jersey {@link org.glassfish.jersey.client.ClientRuntime} instances. It means that closing
      * a particular {@link org.glassfish.jersey.client.ClientRuntime} instance does not shut down the underlying
      * connection manager automatically. In such case, the connection manager life-cycle
      * should be fully managed by the application code. To release all allocated resources,
      * caller code should especially ensure {@link org.apache.http.conn.HttpClientConnectionManager#shutdown()} gets
      * invoked eventually.
-     * <p>
+     * </p><p>
      * This property may only be set prior to constructing Apache connector using {@link ApacheConnectorProvider}.
-     * <p/>
+     * </p><p>
      * The value MUST be an instance of {@link java.lang.Boolean}.
-     * <p/>
+     * </p><p>
      * The default value is {@code false}.
-     * <p/>
+     * </p><p>
      * The name of the configuration property is <tt>{@value}</tt>.
+     * </p>
      *
      * @since 2.18
      */
     public static final String CONNECTION_MANAGER_SHARED = "jersey.config.apache.client.connectionManagerShared";
 
     /**
-     * Request configuration for the {@link org.apache.http.client.HttpClient}.
+     * <p>Request configuration for the {@link org.apache.http.client.HttpClient}.
      * Http parameters which will be used to create {@link org.apache.http.client.HttpClient}.
-     * <p/>
+     * </p><p>
      * The value MUST be an instance of {@link org.apache.http.client.config.RequestConfig}.
-     * <p/>
+     * </p><p>
      * If the property is absent default request configuration will be used.
-     * <p/>
+     * </p><p>
      * The name of the configuration property is <tt>{@value}</tt>.
+     * </p>
      *
      * @since 2.5
      */
     public static final String REQUEST_CONFIG = "jersey.config.apache.client.requestConfig";
 
     /**
-     * HttpRequestRetryHandler which will be used to create {@link org.apache.http.client.HttpClient}.
-     * <p/>
+     * <p>HttpRequestRetryHandler which will be used to create {@link org.apache.http.client.HttpClient}.
+     * </p><p>
      * The value MUST be an instance of {@link org.apache.http.client.HttpRequestRetryHandler}.
-     * <p/>
+     * </p><p>
      * If the property is absent a default retry handler will be used
      * ({@link org.apache.http.impl.client.DefaultHttpRequestRetryHandler}).
-     * <p/>
+     * </p><p>
      * The name of the configuration property is <tt>{@value}</tt>.
+     * </p>
      */
     public static final String RETRY_HANDLER = "jersey.config.apache.client.retryHandler";
     
     /**
-     * HttpRequestServiceUnavailableRetryStrategy which will be used to create {@link org.apache.http.client.HttpClient}.
-     * <p/>
+     * <p>HttpRequestServiceUnavailableRetryStrategy which will be used to create {@link org.apache.http.client.HttpClient}.
+     * </p><p>
      * The value MUST be an instance of {@link ServiceUnavailableRetryStrategy}.
-     * <p/>
+     * </p><p>
      * If the property is absent no ServiceUnavailableRetryStrategy will be used.
-     * <p/>
+     * </p><p>
      * The name of the configuration property is <tt>{@value}</tt>.
+     * </p>
      */
     public static final String SERVICE_UNAVAILABLE_RETRY_STRATEGY = "jersey.config.apache.client.serviceUnavailableRetryStrategy";
 

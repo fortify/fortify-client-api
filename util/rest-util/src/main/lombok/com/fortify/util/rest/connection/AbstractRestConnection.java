@@ -106,19 +106,19 @@ import lombok.extern.apachecommons.CommonsLog;
  * <p>This base class allows for caching REST results by calling the {@link #executeRequest(String, WebTarget, Class, String)}
  * method, specifying the cache name to use as the last method parameter. Caches can be configured 
  * through a properties file named [ConnectionClassName]Cache.properties. This properties file can 
- * contain the following entries:
+ * contain the following entries:</p>
  *  <ul>
- *   <li>cacheManager:[cacheSpec]<br/>
+ *   <li>cacheManager:[cacheSpec]<br>
  *       Cache specification for the connection-specific cache manager. You can use this
  *       for example to limit the total number of caches, or to clean up complete caches
  *       based on a time-out. By default, caches are kept indefinitely.</li>
- *   <li>default:[cacheSpec]<br/>
+ *   <li>default:[cacheSpec]<br>
  *       Default cache specification for individual caches. If not specified, the default
  *       specification will be 'maximumSize=1000,expireAfterWrite=60s'.</li>
- *   <li>[cacheName]:[cacheSpec]<br/>
+ *   <li>[cacheName]:[cacheSpec]<br>
  *       Cache specification for individual caches.</li>
  *  </ul>
- *  The format for the cache specification is described here:
+ *  <p>The format for the cache specification is described here:
  *  <a href="https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html">https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html</a>
  *  </p>
  * 

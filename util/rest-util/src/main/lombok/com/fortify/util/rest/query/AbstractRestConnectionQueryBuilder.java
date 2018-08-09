@@ -50,18 +50,16 @@ import lombok.Setter;
  * you would have a corresponding concrete implementation of this class, that allows
  * for configuring the endpoint details like target path and any query parameters.</p>
  * 
- * <p>The common class structure looks as follows:
+ * <p>The common class structure looks as follows:</p>
  * <ul><li>{@link AbstractRestConnectionQueryBuilder}
- *     <ul><li>{@link AbstractRestConnectionWithCacheQueryConfig}
- *         <ul><li>AbstractMySystemQueryBuilder<br/>
- *                 Specifies connection type and adds method 
- *                 <code>public MySystemRestConnectionQuery build() {return new MySystemRestConnectionQuery(this);}</code>
- *             <ul><li>MySystemEndpoint1QueryBuilder</li>
- *                 <li>MySystemEndpoint2QueryBuilder</li>
- *             </ul>
- *         </li></ul>
+ *     <ul><li>AbstractMySystemQueryBuilder<br>
+ *             Specifies connection type and adds method 
+ *             <code>public MySystemRestConnectionQuery build() {return new MySystemRestConnectionQuery(this);}</code>
+ *         <ul><li>MySystemEndpoint1QueryBuilder</li>
+ *             <li>MySystemEndpoint2QueryBuilder</li>
+ *         </ul>
  *     </li></ul>
- * </li></ul></p>
+ * </li></ul>
  * 
  * <p>This allows clients of your API to execute queries like this:
  * <code>new MySystemEndpoint1QueryBuilder(conn, requiredProperty1, ...).criteria1(value).criteria2(value).build().getAll()</code>

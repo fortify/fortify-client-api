@@ -112,8 +112,8 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	}
 
 	/**
-	 * @see LinkedHashMap#get(Object). This override
-	 * adds support for loading on-demand values.
+	 * @see LinkedHashMap#get(Object)
+	 * This override adds support for loading on-demand values.
 	 */
 	@Override
 	public Object get(Object key) {
@@ -121,16 +121,16 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	}
 	
 	/**
-	 * @see #getOrDefault(Object, Object). This overloaded method
-	 * adds support for converting the value to the given type.
+	 * @see #getOrDefault(Object, Object)
+	 * This overloaded method adds support for converting the value to the given type.
 	 */
 	public <T> T getOrDefault(Object key, T defaultValue, Class<T> type) {
 		return getConversionService().convert(getOrDefault(key, defaultValue), type);
 	}
 
 	/**
-	 * @see #get(Object). This overloaded method adds support for 
-	 * converting the value to the given type.
+	 * @see #get(Object)
+	 * This overloaded method adds support for converting the value to the given type.
 	 */
 	public <T> T get(Object key, Class<T> type) {
 		return getConversionService().convert(get(key), type);

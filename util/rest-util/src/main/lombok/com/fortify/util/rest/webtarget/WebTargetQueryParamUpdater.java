@@ -64,8 +64,7 @@ public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	 * instances. For any parameter, if no values are given, or only a single 
 	 * blank value, then the query parameter will not be added.
 	 * 
-	 * @param name
-	 * @param values
+	 * @param queryParams
 	 */
 	public WebTargetQueryParamUpdater(Map<String, String[]> queryParams) {
 		this.queryParams = ImmutableMap.copyOf(queryParams);

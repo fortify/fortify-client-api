@@ -39,10 +39,10 @@
  *    
  * <p>As an example, suppose we have a system named 'MySystem', which provides query endpoints
  *    for books and cards. Usually you would develop a MySystemRestConnectionQuery class that
- *    extends from {@link com.fortify.util.rest.query.AbstractRestConnectionWithCacheQuery},
+ *    extends from {@link com.fortify.util.rest.query.AbstractRestConnectionQuery},
  *    and implements the various methods for handling paging and REST responses. You would also have
  *    an AbstractMySystemQueryBuilder class that extends from 
- *    {@link com.fortify.util.rest.query.AbstractRestConnectionWithCacheQueryConfig},
+ *    {@link com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder},
  *    specifies the connection type, and adds a 
  *    <code>public MySystemRestConnectionQuery build() {return new MySystemRestConnectionQuery(this);}</code>
  *    method. This class is then used as a base class for MySystemBooksQueryBuilder and MySystemCardsQueryBuilder.

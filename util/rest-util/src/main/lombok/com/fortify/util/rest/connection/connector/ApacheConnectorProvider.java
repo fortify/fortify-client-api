@@ -51,10 +51,10 @@ import org.glassfish.jersey.client.spi.Connector;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
 
 /**
- * Connector provider for Jersey {@link Connector connectors} that utilize
+ * <p>Connector provider for Jersey {@link Connector connectors} that utilize
  * Apache HTTP Client to send and receive HTTP request and responses.
- * <p>
- * The following connector configuration properties are supported:
+ * </p><p>
+ * The following connector configuration properties are supported:</p>
  * <ul>
  * <li>{@link ApacheClientProperties#CONNECTION_MANAGER}</li>
  * <li>{@link ApacheClientProperties#REQUEST_CONFIG}</li>
@@ -68,7 +68,7 @@ import org.glassfish.jersey.client.spi.ConnectorProvider;
  * <li>{@link ApacheClientProperties#PREEMPTIVE_BASIC_AUTHENTICATION}</li>
  * <li>{@link ApacheClientProperties#RETRY_HANDLER}</li>
  * </ul>
- * </p>
+ * 
  * <p>
  * Connector instances created via this connector provider use
  * {@link org.glassfish.jersey.client.RequestEntityProcessing#CHUNKED chunked encoding} as a default setting.
@@ -96,10 +96,10 @@ import org.glassfish.jersey.client.spi.ConnectorProvider;
  * If a response entity is obtained that is an instance of {@link java.io.Closeable}
  * then the instance MUST be closed after processing the entity to release
  * connection-based resources.
- * <p/>
+ * </p>
  * <p>
  * The following methods are currently supported: HEAD, GET, POST, PUT, DELETE, OPTIONS, PATCH and TRACE.
- * <p/>
+ * </p>
  *
  * @author Pavel Bucek (pavel.bucek at oracle.com)
  * @author Arul Dhesiaseelan (aruld at acm.org)

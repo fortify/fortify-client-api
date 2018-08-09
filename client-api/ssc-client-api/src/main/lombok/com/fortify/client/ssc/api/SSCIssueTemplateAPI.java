@@ -68,7 +68,8 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	}
 	
 	/**
-	 * @param guidOrTitle filter set GUID or title
+	 * @param applicationVersionId Application version id
+	 * @param filterSetGuidOrTitle filter set GUID or title
 	 * @return filter set matching the given GUID or title, or null if not found
 	 */
 	public final JSONMap findFilterSetByGuidOrTitle(String applicationVersionId, String filterSetGuidOrTitle) {

@@ -35,7 +35,8 @@ import lombok.Getter;
  * 
  * @author Ruud Senden
  *
- * @param <C>
+ * @param <ConnType> Concrete connection type, implementing {@link IRestConnection}
+ * @param <BuilderType> Concrete connection builder type, extending from {@link AbstractRestConnectionConfig} and implementing {@link IRestConnectionBuilder}
  */
 public abstract class AbstractRestConnectionRetriever<ConnType extends IRestConnection, BuilderType extends AbstractRestConnectionConfig<?> & IRestConnectionBuilder<ConnType>> implements IRestConnectionRetriever<ConnType> {
 	private ConnType connection;

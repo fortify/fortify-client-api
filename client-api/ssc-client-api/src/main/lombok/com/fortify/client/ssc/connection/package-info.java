@@ -38,7 +38,6 @@
  * <p>Once you have acquired an {@link com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection} instance,
  *    this instance provides low-level access to any SSC REST API endpoint, using the various executeRequest()
  *    methods. More high-level functionality is available through the
- *    {@link com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection#api()} method; see
- *    {@link com.fortify.client.ssc.api.SSCAPI} for more details.</p>
+ *    {@link com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection#api(Class)} method.</p>
  */
 package com.fortify.client.ssc.connection;

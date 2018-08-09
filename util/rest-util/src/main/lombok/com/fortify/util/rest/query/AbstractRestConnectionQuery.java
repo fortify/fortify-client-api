@@ -52,17 +52,6 @@ import com.fortify.util.rest.webtarget.IWebTargetUpdater;
  * includes {@link IWebTargetUpdater} instances for generating the actual REST request, and {@link IJSONMapPreProcessor}
  * instances for pre-processing each individual {@link JSONMap} instance returned by the REST request.</p>
  * 
- * <p>Query implementations usually should not extends this class directly, but rather extend
- * {@link AbstractRestConnectionWithCacheQuery} to add optional support for caching. The common 
- * class structure looks as follows:
- * <ul><li>{@link AbstractRestConnectionQuery}
- *     <ul><li>{@link AbstractRestConnectionWithCacheQuery}
- *         <ul><li>MySystemQuery</li></ul>
- *     </li></ul>
- * </li></ul>
- * Instances of MySystemQuery are not created directly by API consumers, but rather through build()
- * methods on concrete {@link AbstractRestConnectionQueryBuilder} implementations.</p> 
- * 
  * @author Ruud Senden
  */
 public abstract class AbstractRestConnectionQuery<ResponseType> implements IRestConnectionQuery {

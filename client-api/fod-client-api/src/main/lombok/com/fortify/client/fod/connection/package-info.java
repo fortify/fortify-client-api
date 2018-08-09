@@ -38,7 +38,6 @@
  * <p>Once you have acquired an {@link com.fortify.client.fod.connection.FoDAuthenticatingRestConnection} instance,
  *    this instance provides low-level access to any FoD REST API endpoint, using the various executeRequest()
  *    methods. More high-level functionality is available through the
- *    {@link com.fortify.client.fod.connection.FoDAuthenticatingRestConnection#api()} method; see
- *    {@link com.fortify.client.fod.api.FoDAPI} for more details.</p>
+ *    {@link com.fortify.client.fod.connection.FoDAuthenticatingRestConnection#api(Class)} method.</p>
  */
 package com.fortify.client.fod.connection;
