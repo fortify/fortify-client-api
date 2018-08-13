@@ -28,7 +28,7 @@
 	<parent>
 		<groupId>com.fortify.client.api.utilities</groupId>
 		<artifactId>client-api-utilities</artifactId>
-		<version>4.7</version>
+		<version>4.8-SNAPSHOT</version>
 	</parent>
 	<organization>
 		<name>Micro Focus Fortify</name>
