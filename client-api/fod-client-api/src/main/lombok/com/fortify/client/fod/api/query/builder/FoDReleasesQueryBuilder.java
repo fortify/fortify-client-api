@@ -140,7 +140,7 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		@Override
 		public Object getOnDemand(String propertyName, JSONMap parent) {
 			return conn().api(FoDApplicationAPI.class).queryApplications()
-				.applicationId(parent.get("releaseId", String.class))
+				.applicationId(parent.get("applicationId", String.class))
 				.onDemandAttributesMap().build().getUnique();
 		}
 	}
