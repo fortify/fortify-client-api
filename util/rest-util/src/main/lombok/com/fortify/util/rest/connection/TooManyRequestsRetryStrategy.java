@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.util.rest.connection;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.protocol.HttpContext;
@@ -41,6 +43,7 @@ import org.apache.http.protocol.HttpContext;
  * 
  */
 public final class TooManyRequestsRetryStrategy implements ServiceUnavailableRetryStrategy {
+	private static final Log LOG = LogFactory.getLog(TooManyRequestsRetryStrategy.class);
 	private String retryAfterHeaderName = "X-Retry-After";
 	private ThreadLocal<Integer> interval = null;
 	
@@ -52,6 +55,7 @@ public final class TooManyRequestsRetryStrategy implements ServiceUnavailableRet
 	public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
 		// TODO Temporary executionCount work-around for FoD issues; should check executionCount<2 
 		if ( executionCount < 5 && response.getStatusLine().getStatusCode()==429 ) {
+			LOG.info("[Process] Retrying request due to HTTP status code 429");
 			interval = new ThreadLocal<Integer>();
 			interval.set(Integer.parseInt(response.getFirstHeader(retryAfterHeaderName).getValue()));
 			return true;
