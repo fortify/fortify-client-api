@@ -55,6 +55,6 @@ public class FoDBasicRestConnection extends AbstractRestConnection {
 	
 	@Override
 	protected ServiceUnavailableRetryStrategy getServiceUnavailableRetryStrategy() {
-		return new TooManyRequestsRetryStrategy("X-Rate-Limit-Reset");
+		return new TooManyRequestsRetryStrategy().retryAfterHeaderName("X-Rate-Limit-Reset").logPrefix("[FoD]");
 	}
 }

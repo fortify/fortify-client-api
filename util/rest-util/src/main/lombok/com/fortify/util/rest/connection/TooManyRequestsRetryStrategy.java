@@ -45,31 +45,40 @@ import org.apache.http.protocol.HttpContext;
 public final class TooManyRequestsRetryStrategy implements ServiceUnavailableRetryStrategy {
 	private static final Log LOG = LogFactory.getLog(TooManyRequestsRetryStrategy.class);
 	private String retryAfterHeaderName = "X-Retry-After";
-	private ThreadLocal<Integer> interval = null;
+	private String logPrefix = "";
+	private ThreadLocal<Long> interval = null;
 	
 	public TooManyRequestsRetryStrategy() {}
-	public TooManyRequestsRetryStrategy(String retryAfterHeaderName) {
+	
+	public TooManyRequestsRetryStrategy retryAfterHeaderName(String retryAfterHeaderName) {
 		this.retryAfterHeaderName = retryAfterHeaderName;
+		return this;
+	}
+	
+	public TooManyRequestsRetryStrategy logPrefix(String logPrefix) {
+		this.logPrefix = logPrefix+" ";
+		return this;
 	}
 
 	public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
 		// TODO Temporary executionCount work-around for FoD issues; should check executionCount<2 
 		if ( executionCount < 5 && response.getStatusLine().getStatusCode()==429 ) {
-			LOG.info("[Process] Retrying request due to HTTP status code 429");
-			interval = new ThreadLocal<Integer>();
-			interval.set(Integer.parseInt(response.getFirstHeader(retryAfterHeaderName).getValue()));
+			int retrySeconds = Integer.parseInt(response.getFirstHeader(retryAfterHeaderName).getValue());
+			// TODO Temporary work-around for FoD returning negative numbers
+			if ( retrySeconds < 0 ) {
+				retrySeconds = 1;
+			}
+			LOG.info(logPrefix+"Rate-limited request will be retried after "+retrySeconds+" seconds");
+			interval = new ThreadLocal<Long>();
+			interval.set((long)retrySeconds*1000);
 			return true;
 		}
 		return false;
 	}
 
 	public long getRetryInterval() {
-		long result = interval==null ? -1 : (interval.get()*1000);
+		long result = interval==null ? -1 : interval.get();
 		interval = null;
-		// TODO Temporary work-around for FoD returning negative numbers
-		if ( result < 0 ) {
-			result = -result;
-		}
 		return result;
 	}
 }
