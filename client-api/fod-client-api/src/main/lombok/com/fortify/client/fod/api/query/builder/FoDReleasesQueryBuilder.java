@@ -118,22 +118,14 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	}
 	
 	public FoDReleasesQueryBuilder onDemandApplication(String propertyName) {
-		return onDemand(propertyName, "/api/v3/applications/${applicationId}");
-	}
-	
-	public FoDReleasesQueryBuilder onDemandApplicationWithAttributesMap() {
-		return onDemandApplicationWithAttributesMap("applicationWithAttributesMap");
-	}
-	
-	public FoDReleasesQueryBuilder onDemandApplicationWithAttributesMap(String propertyName) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new FoDApplicationWithAttributesMapOnDemandLoader(getConn())));
+				new FoDApplicationOnDemandLoader(getConn())));
 	}
 	
-	private static class FoDApplicationWithAttributesMapOnDemandLoader extends AbstractJSONMapOnDemandLoaderWithConnection<FoDAuthenticatingRestConnection> {
+	private static class FoDApplicationOnDemandLoader extends AbstractJSONMapOnDemandLoaderWithConnection<FoDAuthenticatingRestConnection> {
 		private static final long serialVersionUID = 1L;
 		
-		public FoDApplicationWithAttributesMapOnDemandLoader(FoDAuthenticatingRestConnection conn) {
+		public FoDApplicationOnDemandLoader(FoDAuthenticatingRestConnection conn) {
 			super(conn, true);
 		}
 		
@@ -141,7 +133,9 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		public Object getOnDemand(String propertyName, JSONMap parent) {
 			return conn().api(FoDApplicationAPI.class).queryApplications()
 				.applicationId(parent.get("applicationId", String.class))
-				.onDemandAttributesMap().build().getUnique();
+				.onDemandAttributesMap()
+				.onDemandBugTracker()
+				.build().getUnique();
 		}
 	}
 }

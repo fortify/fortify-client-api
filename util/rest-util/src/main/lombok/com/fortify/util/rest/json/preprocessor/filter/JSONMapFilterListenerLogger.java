@@ -153,6 +153,10 @@ public class JSONMapFilterListenerLogger implements IJSONMapFilterListener {
 			return isIncluded()==isIncludeMatching() ? "does" : "doesn't";
 		}
 		
+		public String getTextObjectIsOrIsnt() {
+			return isIncluded()==isIncludeMatching() ? "is" : "isn't";
+		}
+		
 		public boolean isIncludeMatching() {
 			return filter.isIncludeMatching();
 		}

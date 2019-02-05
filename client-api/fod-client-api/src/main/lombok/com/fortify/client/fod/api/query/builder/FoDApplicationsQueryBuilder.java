@@ -85,6 +85,14 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, new FoDApplicationAttributesMapOnDemandLoader()));
 	}
 	
+	public FoDApplicationsQueryBuilder onDemandBugTracker() {
+		return onDemandBugTracker("bugTracker");
+	}
+	
+	public FoDApplicationsQueryBuilder onDemandBugTracker(String propertyName) {
+		return onDemand(propertyName, "/api/v3/applications/${applicationId}/bug-tracker");
+	}
+	
 	public FoDApplicationsQueryBuilder onDemandReleases() {
 		return onDemandReleases("releases");
 	}
