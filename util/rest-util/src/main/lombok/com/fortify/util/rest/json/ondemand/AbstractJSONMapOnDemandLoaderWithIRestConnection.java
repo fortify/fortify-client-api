@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2017 EntIT Software LLC, a Micro Focus company
+ * (c) Copyright 2017 EntIT Software LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -24,38 +24,18 @@
  ******************************************************************************/
 package com.fortify.util.rest.json.ondemand;
 
-import com.fortify.util.rest.connection.Connections;
 import com.fortify.util.rest.connection.IRestConnection;
-import com.fortify.util.rest.json.JSONMap;
 
-/**
- * This {@link AbstractJSONMapOnDemandLoader} extension allows for storing
- * and retrieving a reference to the current {@link IRestConnection} implementation
- * that was used to create this {@link IJSONMapOnDemandLoader} instance.
- * 
- * @author Ruud Senden
- *
- * @param <C>
- */
-public abstract class AbstractJSONMapOnDemandLoaderWithConnection<C extends IRestConnection> extends AbstractJSONMapOnDemandLoader {
+public abstract class AbstractJSONMapOnDemandLoaderWithIRestConnection extends AbstractJSONMapOnDemandLoaderWithConnection<IRestConnection> {
 	private static final long serialVersionUID = 1L;
-	private final String connectionId;
-	
-	public AbstractJSONMapOnDemandLoaderWithConnection(C conn, boolean storeValue) {
-		super(storeValue);
-		this.connectionId = conn.getConnectionId();
-	}
-	
-	@Override
-	public final Object getOnDemand(String propertyName, JSONMap parent) {
-		return getOnDemand(getConnection(), propertyName, parent);
-	}
-	
-	protected abstract Object getOnDemand(C connection, String propertyName, JSONMap parent);
 
-	protected C getConnection() {
-		return Connections.get(connectionId, getConnectionClazz());
+	public AbstractJSONMapOnDemandLoaderWithIRestConnection(IRestConnection conn, boolean storeValue) {
+		super(conn, storeValue);
 	}
-	
-	protected abstract Class<C> getConnectionClazz();
+
+	@Override
+	protected Class<IRestConnection> getConnectionClazz() {
+		return IRestConnection.class;
+	}
+
 }

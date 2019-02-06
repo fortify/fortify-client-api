@@ -196,8 +196,13 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 		}
 		
 		@Override @SSCCopyToConstructors
-		public Object getOnDemand(String propertyName, JSONMap parent) {
-			return conn().api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class));
+		public Object getOnDemand(SSCAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
+			return conn.api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class));
+		}
+		
+		@Override
+		protected Class<SSCAuthenticatingRestConnection> getConnectionClazz() {
+			return SSCAuthenticatingRestConnection.class;
 		}
 		
 	}

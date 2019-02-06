@@ -34,6 +34,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.glassfish.jersey.client.ClientProperties;
 
+import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.google.common.base.Splitter;
 
 import lombok.Data;
@@ -52,7 +53,7 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	private URI baseUrl;
 	private ProxyConfig proxy = new ProxyConfig();
 	private Map<String, Object> connectionProperties;
-	private String connectionId = null;
+	private String connectionId = UUID.randomUUID().toString();
 	
 	public T baseUrl(String baseUrl) {
 		setBaseUrl(baseUrl);
@@ -75,52 +76,28 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	}
 	
 	/**
-	 * @see #setMultiJVMSerializationId(String)
+	 * @see #setConnectionId(String)
 	 * @param connectionId
 	 * @return
 	 */
-	public T enableSerializationMultiJVM(String connectionId) {
-		setMultiJVMSerializationId(connectionId);
-		return getThis();
-	}
-	
-	/**
-	 * @see #setSingleJVMSerializationSupported(boolean)
-	 * @return
-	 */
-	public T enableSerializationSingleJVM() {
-		setSingleJVMSerializationSupported(true);
-		return getThis();
-	}
-	
-	/**
-	 * Enable support for serializing and de-serializing the connection instance
-	 * across multiple JVM's. For each JVM, the same connection id must be used,
-	 * and the connection instance must be initialized before de-serializing any
-	 * objects that reference this connection instance.
-	 *  
-	 * @param connectionId
-	 */
-	public void setMultiJVMSerializationId(String connectionId) {
+	public T connectionId(String connectionId) {
 		setConnectionId(connectionId);
+		return getThis();
 	}
 	
 	/**
-	 * Enable support for serializing and de-serializing the connection instance
-	 * within a single JVM. This simply generates a random and unique connection id.
-	 *  
-	 * @param supported
+	 * <p>By default, every connection is assigned a random id, which can be used to
+	 * look up an existing connection from {@link Connections}. For example, 
+	 * {@link AbstractJSONMapOnDemandLoaderWithConnection} stores the connection
+	 * id instead of the connection instance itself, to allow for serialization.</p>
+	 * 
+	 * <p>Explicitly setting a connection id may be necessary if the same connection
+	 * id needs to be available across multiple JVM invocations, for example if you need
+	 * to de-serialize an {@link AbstractJSONMapOnDemandLoaderWithConnection} instance
+	 * that was serialized by another JVM invocation.</p>
+	 * 
+	 * @param connectionId
 	 */
-	public void setSingleJVMSerializationSupported(boolean supported) {
-		if ( supported == true ) {
-			if ( StringUtils.isBlank(getConnectionId()) ) {
-				setConnectionId(UUID.randomUUID().toString());
-			}
-		} else {
-			this.connectionId = null;
-		}
-	}
-	
 	protected void setConnectionId(String connectionId) {
 		if ( StringUtils.isBlank(connectionId) ) {
 			throw new IllegalArgumentException("Connection id cannot be blank");

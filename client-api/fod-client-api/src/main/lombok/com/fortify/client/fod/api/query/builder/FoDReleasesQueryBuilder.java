@@ -130,12 +130,17 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		}
 		
 		@Override
-		public Object getOnDemand(String propertyName, JSONMap parent) {
-			return conn().api(FoDApplicationAPI.class).queryApplications()
+		public Object getOnDemand(FoDAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
+			return conn.api(FoDApplicationAPI.class).queryApplications()
 				.applicationId(parent.get("applicationId", String.class))
 				.onDemandAttributesMap()
 				.onDemandBugTracker()
 				.build().getUnique();
+		}
+		
+		@Override
+		protected Class<FoDAuthenticatingRestConnection> getConnectionClazz() {
+			return FoDAuthenticatingRestConnection.class;
 		}
 	}
 }

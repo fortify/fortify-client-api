@@ -1,6 +1,6 @@
 /*******************************************************************************
- * (c) Copyright 2017 EntIT Software LLC, a Micro Focus company
- * 
+ * (c) Copyright 2017 EntIT Software LLC
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -24,26 +24,32 @@
  ******************************************************************************/
 package com.fortify.util.rest.connection;
 
-import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
+public class Connections {
+	private static final Map<String, IRestConnection> CONNECTIONS = new HashMap<>();
 
-/**
- * Interface providing low-level methods for building and executing REST requests.
- * 
- * @author Ruud Senden
- *
- */
-public interface IRestConnection {
-	public abstract <T> T executeRequest(String httpMethod, Builder builder, Entity<?> entity, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType, String cacheName);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType);
-	public abstract URI getBaseUrl();
-	public abstract WebTarget getBaseResource();
-	public abstract WebTarget getResource(String url);
-	public abstract String getConnectionId();
-	public abstract void close();
+	private Connections() {}
+	
+	public static final void register(IRestConnection conn) {
+		CONNECTIONS.put(conn.getConnectionId(), conn);
+	}
+	
+	public static final void unRegister(IRestConnection conn) {
+		CONNECTIONS.remove(conn.getConnectionId());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static final <C extends IRestConnection> C getOrNull(String connectionId, Class<C> clazz) {
+		return (C)CONNECTIONS.get(connectionId);
+	}
+	
+	public static final <C extends IRestConnection> C get(String connectionId, Class<C> clazz) {
+		C result = getOrNull(connectionId, clazz);
+		if ( result == null ) {
+			throw new RuntimeException("Connection with id '"+connectionId+"' not available");
+		}
+		return result;
+	}
 }

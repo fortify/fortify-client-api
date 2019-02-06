@@ -39,7 +39,7 @@ import com.fortify.util.spring.SpringExpressionUtil;
  * @author Ruud Senden
  *
  */
-public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWithConnection<IRestConnection> {
+public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWithIRestConnection {
 	private static final long serialVersionUID = 1L;
 	private final String uriTemplateExpression;
 	private final String resultExpression;
@@ -57,8 +57,8 @@ public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWith
 	}
 
 	@Override
-	public Object getOnDemand(String propertyName, JSONMap parent) {
-		return getResult(conn().executeRequest(HttpMethod.GET, getWebTarget(parent), JSONMap.class, cacheName));
+	public Object getOnDemand(IRestConnection conn, String propertyName, JSONMap parent) {
+		return getResult(conn.executeRequest(HttpMethod.GET, getWebTarget(conn, parent), JSONMap.class, cacheName));
 	}
 
 	protected Object getResult(JSONMap restResult) {
@@ -69,9 +69,9 @@ public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWith
 		}
 	}
 
-	protected WebTarget getWebTarget(JSONMap parent) {
+	protected WebTarget getWebTarget(IRestConnection conn, JSONMap parent) {
 		String uri = SpringExpressionUtil.evaluateTemplateExpression(parent, uriTemplateExpression, String.class);
-		return conn().getResource(uri);
+		return conn.getResource(uri);
 	}
 
 }

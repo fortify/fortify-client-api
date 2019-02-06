@@ -26,9 +26,6 @@ package com.fortify.util.rest.connection;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.NotSerializableException;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -88,7 +85,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.MapMaker;
 
 import lombok.Data;
 import lombok.Getter;
@@ -135,10 +131,8 @@ import lombok.extern.apachecommons.CommonsLog;
  */
 @CommonsLog
 @ToString
-public abstract class AbstractRestConnection implements IRestConnection, Serializable {
+public abstract class AbstractRestConnection implements IRestConnection {
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
-	// TODO Should this be a regular map or map with weak values?
-	private static final Map<String, IRestConnection> INSTANCES = new MapMaker().weakValues().makeMap();
 	
 	private Properties cacheProperties; 
 	private LoadingCache<String, Cache<CacheKey, Object>> cacheManager;
@@ -147,7 +141,7 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	@Getter private final URI baseUrl;
 	private final ProxyConfig proxy;
 	private final Map<String, Object> connectionProperties;
-	private final String connectionId;
+	@Getter private final String connectionId;
 	private final CredentialsProvider credentialsProvider;
 	private Client client;
 	
@@ -156,11 +150,9 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 		this.baseUrl = config.getBaseUrl();
 		this.proxy = config.getProxy();
 		this.connectionProperties = config.getConnectionProperties();
-		this.connectionId = StringUtils.isBlank(config.getConnectionId()) ? null : (this.getClass().getName()+config.getConnectionId());
+		this.connectionId = this.getClass().getName()+config.getConnectionId();
 		this.credentialsProvider = createCredentialsProvider(config);
-		if ( this.connectionId != null ) {
-			INSTANCES.put(this.connectionId, this);
-		}
+		Connections.register(this);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -477,6 +469,17 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 		return client;
 	}
 	
+	/**
+	 * This method should be called once the connection is no longer needed,
+	 * to perform various clean-up activities.
+	 */
+	public void close() {
+		Connections.unRegister(this);
+		getClient().close();
+		cacheManager.invalidateAll();
+		apis.clear();
+	}
+	
 	public String getBaseUrlStringWithoutTrailingSlash() {
 		return StringUtils.removeEnd(getBaseUrl().toASCIIString(), "/");
 	}
@@ -665,40 +668,4 @@ public abstract class AbstractRestConnection implements IRestConnection, Seriali
 	        return true;
 	    }
 	}
-	
-	/**
-	 * Serialize the connection id using {@link SerializedConnection}
-	 * @return
-	 * @throws ObjectStreamException
-	 */
-	protected Object writeReplace() throws ObjectStreamException {
-		return new SerializedConnection(this);
-	}
-	
-	/**
-	 * This class stores the connection id for serialization, and retrieves 
-	 * the connection instance from the instances cache upon de-serialization.
-	 *  
-	 * @author Ruud Senden
-	 *
-	 */
-	private static final class SerializedConnection implements Serializable {
-		private static final long serialVersionUID = 1L;
-		private String connectionId;
-		public SerializedConnection(AbstractRestConnection conn) throws NotSerializableException {
-			if ( StringUtils.isBlank(conn.connectionId) ) {
-				throw new NotSerializableException(conn.getClass().getName());
-			}
-			this.connectionId = conn.connectionId;
-		}
-		
-		private Object readResolve() throws ObjectStreamException {
-			IRestConnection result = INSTANCES.get(connectionId);
-			if ( result==null ) {
-				throw new IllegalStateException("Connection id "+connectionId+" not found");
-			}
-			return result;
-		}
-	}
-	
 }
