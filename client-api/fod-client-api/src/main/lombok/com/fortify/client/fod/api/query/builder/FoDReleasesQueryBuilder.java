@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.fod.api.query.builder;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fortify.client.fod.api.FoDApplicationAPI;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
@@ -72,6 +74,26 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	
 	public FoDReleasesQueryBuilder releaseName(String releaseName) {
 		return super.paramFilterAnd("releaseName", releaseName);
+	}
+	
+	public FoDReleasesQueryBuilder applicationAndOrReleaseName(String applicationAndOrReleaseName) {
+		return applicationAndOrReleaseName(applicationAndOrReleaseName, ":");
+	}
+	
+	public FoDReleasesQueryBuilder applicationAndOrReleaseName(String applicationAndOrReleaseName, String separator) {
+		if ( StringUtils.isBlank(applicationAndOrReleaseName) ) {
+			throw new IllegalArgumentException("Application and/or release name must be specified");
+		}
+		String[] elts = applicationAndOrReleaseName.split(separator);
+		if ( elts.length == 1 && StringUtils.isNotBlank(elts[0]) || elts.length == 2 && StringUtils.isBlank(elts[1]) ) {
+			return applicationName(elts[0]);
+		} else if ( elts.length == 2 && StringUtils.isBlank(elts[0]) ) {
+			return releaseName(elts[1]);
+		} else if ( elts.length == 2 ) {
+			return applicationName(elts[0]).releaseName(elts[1]);
+		} else {
+			throw new IllegalArgumentException("Applications or releases containing a '"+separator+"' are unsupported");
+		}
 	}
 	
 	public FoDReleasesQueryBuilder applicationAndReleaseName(String applicationName, String releaseName) {

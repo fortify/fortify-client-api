@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeAPI;
@@ -75,6 +77,26 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 
 	public SSCApplicationVersionsQueryBuilder versionName(String versionName) {
 		return super.paramQAnd("name", versionName);
+	}
+	
+	public SSCApplicationVersionsQueryBuilder applicationAndOrVersionName(String applicationAndOrVersionName) {
+		return applicationAndOrVersionName(applicationAndOrVersionName, ":");
+	}
+	
+	public SSCApplicationVersionsQueryBuilder applicationAndOrVersionName(String applicationAndOrVersionName, String separator) {
+		if ( StringUtils.isBlank(applicationAndOrVersionName) ) {
+			throw new IllegalArgumentException("Application and/or version name must be specified");
+		}
+		String[] elts = applicationAndOrVersionName.split(separator);
+		if ( elts.length == 1 && StringUtils.isNotBlank(elts[0]) || elts.length == 2 && StringUtils.isBlank(elts[1]) ) {
+			return applicationName(elts[0]);
+		} else if ( elts.length == 2 && StringUtils.isBlank(elts[0]) ) {
+			return versionName(elts[1]);
+		} else if ( elts.length == 2 ) {
+			return applicationName(elts[0]).versionName(elts[1]);
+		} else {
+			throw new IllegalArgumentException("Applications or versions containing a '"+separator+"' are unsupported");
+		}
 	}
 	
 	public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId, String separator) {
