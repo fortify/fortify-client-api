@@ -50,7 +50,11 @@
 	</developers>
 	<inceptionYear>2016</inceptionYear>
 	<dependencies>
-	<dependency>
+		<dependency>
+			<groupId>com.fortify.client.api.util</groupId>
+			<artifactId>log-util</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.fortify.client.api.util</groupId>
 			<artifactId>spring-util</artifactId>
 		</dependency>
