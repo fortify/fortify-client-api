@@ -25,6 +25,7 @@
 package com.fortify.client.fod.connection;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
@@ -35,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fortify.util.log4j.LogMaskingConverter;
 
 /**
  * This class is used to generate FoD tokens for accessing the
@@ -45,6 +47,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public final class FoDTokenFactory {
 	static final Log LOG = LogFactory.getLog(FoDTokenFactory.class);
+	private static final Pattern EXPR_TOKEN = Pattern.compile("\"access_token\":\"[^\"]+\"");
+	private static final String EXPR_TOKEN_REPLACE = "\"access_token\":\"[hidden]\"";
+	private static final Pattern EXPR_PASSWORD = Pattern.compile("password=[^\\s&]+");
+	private static final String EXPR_PASSWORD_REPLACE = "password=[hidden]";
+	
 	private final FoDBasicRestConnection basicConn;
 	private final Form auth;
 	private FoDTokenFactory.TokenData tokenData = null;
@@ -56,8 +63,11 @@ public final class FoDTokenFactory {
 
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {
-			//Map test = conn.executeRequest(HttpMethod.POST, conn.getBaseResource().path("/oauth/token"), Entity.entity(auth, "application/x-www-form-urlencoded"), Map.class);
+			LogMaskingConverter.mask(EXPR_TOKEN, EXPR_TOKEN_REPLACE);
+			LogMaskingConverter.mask(EXPR_PASSWORD, EXPR_PASSWORD_REPLACE);
 			tokenData = basicConn.executeRequest(HttpMethod.POST, basicConn.getBaseResource().path("/oauth/token"), Entity.entity(auth, "application/x-www-form-urlencoded"), FoDTokenFactory.TokenData.class);
+			LogMaskingConverter.removeMask(EXPR_PASSWORD);
+			LogMaskingConverter.removeMask(EXPR_TOKEN);
 			LOG.info("[FoD] Obtained access token, expiring at "+new Date(tokenData.getExpiresAt()).toString());
 		}
 		return tokenData.getAccessToken();

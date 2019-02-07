@@ -42,6 +42,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.HttpMethod;
@@ -77,6 +78,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fortify.util.log4j.LogMaskingConverter;
 import com.fortify.util.rest.connection.connector.ApacheClientProperties;
 import com.fortify.util.rest.connection.connector.ApacheConnectorProvider;
 import com.fortify.util.rest.json.JSONList;
@@ -132,6 +134,8 @@ import lombok.extern.apachecommons.CommonsLog;
 @CommonsLog
 @ToString
 public abstract class AbstractRestConnection implements IRestConnection {
+	private static final Pattern EXPR_AUTH_HEADER = Pattern.compile("Authorization: .*");
+	private static final String EXPR_AUTH_HEADER_REPLACE = "Authorization: [hidden]";
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
 	
 	private Properties cacheProperties; 
@@ -144,6 +148,10 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	@Getter private final String connectionId;
 	private final CredentialsProvider credentialsProvider;
 	private Client client;
+	
+	static {
+		LogMaskingConverter.mask(EXPR_AUTH_HEADER, EXPR_AUTH_HEADER_REPLACE);
+	}
 	
 	protected AbstractRestConnection(AbstractRestConnectionConfig<?> config) {
 		initCache();
