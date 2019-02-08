@@ -24,8 +24,11 @@
  ******************************************************************************/
 package com.fortify.util.log4j;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -34,11 +37,12 @@ import org.apache.logging.log4j.core.pattern.ConverterKeys;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 
+// TODO Check/update for thread safety (use concurrent map?)
 @Plugin(name = LogMaskingConverter.NAME, category = PatternConverter.CATEGORY)
 @ConverterKeys(LogMaskingConverter.NAME)
 public final class LogMaskingConverter extends LogEventPatternConverter {
 	public static final String NAME = "mm";
-	private static final Map<Pattern, String> MASKS = new HashMap<>();
+	private static final Map<UUID, IMasker> MASKS = new HashMap<>();
 
 	public LogMaskingConverter(String[] options) {
 		super(NAME, NAME);
@@ -48,29 +52,101 @@ public final class LogMaskingConverter extends LogEventPatternConverter {
 		return new LogMaskingConverter(options);
 	}
 	
-	public static final void mask(String pattern, String replacement) {
-		mask(Pattern.compile(pattern), replacement);
+	public static final PatternGroupMasker maskByPatternGroups() {
+		return new PatternGroupMasker();
 	}
 	
-	public static final void mask(Pattern pattern, String replacement) {
-		MASKS.put(pattern, replacement);
+
+	public static final UUID add(IMasker masker) {
+		UUID uuid = UUID.randomUUID();
+		MASKS.put(uuid, masker);
+		return uuid;
 	}
 	
-	public static final void mask(Map<Pattern, String> masks) {
-		MASKS.putAll(masks);
+	public static final void remove(UUID uuid) {
+		MASKS.remove(uuid);
 	}
 
 	@Override
 	public final void format(LogEvent event, StringBuilder outputMessage) {
 		String message = event.getMessage().getFormattedMessage();
-		for ( Map.Entry<Pattern, String> entry : MASKS.entrySet() ) {
-			message = entry.getKey().matcher(message).replaceAll(entry.getValue());
+		for (IMasker masker : MASKS.values()) {
+			message = masker.mask(message);
 		}
 		outputMessage.append(message);
 	}
-
-	public static void removeMask(Pattern pattern) {
-		MASKS.remove(pattern);
+	
+	public static interface IMasker {
+		public abstract String mask(String input);
+	}
+	
+	public static abstract class AbstractMasker implements IMasker {
+		public UUID add() {
+			return LogMaskingConverter.add(this);
+		}
 		
+		public void on(Runnable r) {
+			UUID uuid = add();
+			try {
+				r.run();
+			} finally {
+				LogMaskingConverter.remove(uuid);
+			}
+		}
+		
+		/*
+		public <R> R on(Callable<R> c) throws Exception {
+			UUID uuid = add();
+			try {
+				return c.call();
+			} finally {
+				LogMaskingConverter.remove(uuid);
+			}
+		}
+		*/
+	}
+	
+	// TODO Replace duplicate expressions only once, across multiple instances of this class (but only for single invocation);
+	//      we need some place to maintain state per invocation of LogMaskingConverter.format()
+	public static final class PatternGroupMasker extends AbstractMasker {
+		private Pattern[] patterns = null;
+		private String replacement = "[hidden]";
+		
+		public PatternGroupMasker patterns(String... regexes) {
+			patterns(Arrays.stream(regexes).map(regex -> Pattern.compile(regex)).toArray(Pattern[]::new));
+			return this;
+		}
+		public PatternGroupMasker patterns(Pattern... patterns) {
+			this.patterns = patterns;
+			return this;
+		}
+		public PatternGroupMasker replacement(String replacement) {
+			this.replacement = replacement;
+			return this;
+		}
+		
+		@Override
+		public String mask(String input) {
+			for ( Pattern pattern : patterns ) {
+				input = replace(input, pattern, replacement);
+			}
+			return input;
+		}
+		
+		// Based on https://stackoverflow.com/a/53428097
+		private static final String replace(String input, Pattern pattern, String replacement) {
+			Matcher m = pattern.matcher(input);
+			StringBuffer sb = new StringBuffer();
+			while (m.find()) {
+				Matcher m2 = pattern.matcher(m.group(0));
+				if (m2.find()) {
+					StringBuilder stringBuilder = new StringBuilder(m2.group(0));
+					String result = stringBuilder.replace(m2.start(1), m2.end(1), replacement).toString();
+					m.appendReplacement(sb, result);
+				}
+			}
+			m.appendTail(sb);
+			return sb.toString();
+		}
 	}
 }

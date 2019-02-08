@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -134,8 +135,7 @@ import lombok.extern.apachecommons.CommonsLog;
 @CommonsLog
 @ToString
 public abstract class AbstractRestConnection implements IRestConnection {
-	private static final Pattern EXPR_AUTH_HEADER = Pattern.compile("Authorization: .*");
-	private static final String EXPR_AUTH_HEADER_REPLACE = "Authorization: [hidden]";
+	private static final Pattern EXPR_AUTH_HEADER = Pattern.compile("Authorization: (.*)", Pattern.CASE_INSENSITIVE);
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
 	
 	private Properties cacheProperties; 
@@ -148,10 +148,6 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	@Getter private final String connectionId;
 	private final CredentialsProvider credentialsProvider;
 	private Client client;
-	
-	static {
-		LogMaskingConverter.mask(EXPR_AUTH_HEADER, EXPR_AUTH_HEADER_REPLACE);
-	}
 	
 	protected AbstractRestConnection(AbstractRestConnectionConfig<?> config) {
 		initCache();
@@ -228,7 +224,9 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 */
 	public <T> T executeRequest(String httpMethod, Builder builder, Entity<?> entity, Class<T> returnType) {
 		Response response = null;
+		UUID uuidAuthHeader = null;
 		try {
+			uuidAuthHeader = LogMaskingConverter.maskByPatternGroups().patterns(EXPR_AUTH_HEADER).add();
 			initializeConnection(httpMethod);
 			builder = updateBuilder(builder);
 			response = builder.build(httpMethod, entity).invoke();
@@ -236,6 +234,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		} catch ( ClientErrorException e ) {
 			throw new RuntimeException("Error accessing remote system:\n"+e.getMessage(), e);
 		} finally {
+			LogMaskingConverter.remove(uuidAuthHeader);
 			if ( response != null && (returnType==null || !Response.class.isAssignableFrom(returnType)) ) { response.close(); }
 		}
 	}

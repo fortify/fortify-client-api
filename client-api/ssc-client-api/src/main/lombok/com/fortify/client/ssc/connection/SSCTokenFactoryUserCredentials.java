@@ -49,8 +49,7 @@ import lombok.extern.apachecommons.CommonsLog;
  */
 @CommonsLog
 public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
-	private final Pattern EXPR_TOKEN = Pattern.compile("\"token\":\"[^\"]+\"");
-	private final String EXPR_TOKEN_REPLACE = "\"token\":\"[hidden]\"";
+	private final Pattern EXPR_TOKEN = Pattern.compile("\"token\":\"([^\"]+)\"");
 	private final SSCBasicRestConnection conn;
 	private final String userName;
 	private final String password;
@@ -64,9 +63,9 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {
 			String authHeaderValue = "Basic "+Base64.encodeBase64String((userName+":"+password).getBytes());
-			LogMaskingConverter.mask(EXPR_TOKEN, EXPR_TOKEN_REPLACE);
-			tokenData = getTokenData(conn.executeRequest(HttpMethod.POST, conn.getBaseResource().path("/api/v1/auth/obtain_token").request().header("Authorization", authHeaderValue), null, JSONMap.class));
-			LogMaskingConverter.removeMask(EXPR_TOKEN);
+			LogMaskingConverter.maskByPatternGroups().patterns(EXPR_TOKEN).on(() ->
+				tokenData = getTokenData(conn.executeRequest(HttpMethod.POST, conn.getBaseResource().path("/api/v1/auth/obtain_token").request().header("Authorization", authHeaderValue), null, JSONMap.class))
+			);
 			log.info("[SSC] Obtained access token, expiring at "+tokenData.getTerminalDate().toString());
 		}
 		return tokenData.getToken();

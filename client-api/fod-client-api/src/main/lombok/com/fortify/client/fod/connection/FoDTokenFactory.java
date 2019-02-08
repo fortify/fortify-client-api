@@ -47,10 +47,8 @@ import com.fortify.util.log4j.LogMaskingConverter;
  */
 public final class FoDTokenFactory {
 	static final Log LOG = LogFactory.getLog(FoDTokenFactory.class);
-	private static final Pattern EXPR_TOKEN = Pattern.compile("\"access_token\":\"[^\"]+\"");
-	private static final String EXPR_TOKEN_REPLACE = "\"access_token\":\"[hidden]\"";
-	private static final Pattern EXPR_PASSWORD = Pattern.compile("password=[^\\s&]+");
-	private static final String EXPR_PASSWORD_REPLACE = "password=[hidden]";
+	private static final Pattern EXPR_TOKEN = Pattern.compile("\"access_token\":\"([^\"]+)\"");
+	private static final Pattern EXPR_PASSWORD = Pattern.compile("password=([^\\s&]+)");
 	
 	private final FoDBasicRestConnection basicConn;
 	private final Form auth;
@@ -63,11 +61,9 @@ public final class FoDTokenFactory {
 
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {
-			LogMaskingConverter.mask(EXPR_TOKEN, EXPR_TOKEN_REPLACE);
-			LogMaskingConverter.mask(EXPR_PASSWORD, EXPR_PASSWORD_REPLACE);
-			tokenData = basicConn.executeRequest(HttpMethod.POST, basicConn.getBaseResource().path("/oauth/token"), Entity.entity(auth, "application/x-www-form-urlencoded"), FoDTokenFactory.TokenData.class);
-			LogMaskingConverter.removeMask(EXPR_PASSWORD);
-			LogMaskingConverter.removeMask(EXPR_TOKEN);
+			LogMaskingConverter.maskByPatternGroups().patterns(EXPR_TOKEN, EXPR_PASSWORD).on(() ->
+				tokenData = basicConn.executeRequest(HttpMethod.POST, basicConn.getBaseResource().path("/oauth/token"), Entity.entity(auth, "application/x-www-form-urlencoded"), FoDTokenFactory.TokenData.class)
+			);
 			LOG.info("[FoD] Obtained access token, expiring at "+new Date(tokenData.getExpiresAt()).toString());
 		}
 		return tokenData.getAccessToken();
