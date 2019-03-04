@@ -414,7 +414,7 @@
 								<include>**/*</include>
 							</includes>
 							<repositoryName>FortifyMavenRepo</repositoryName>      <!-- github repo name -->
-							<repositoryOwner>rsenden</repositoryOwner>    <!-- github username -->
+							<repositoryOwner>fortify-ps</repositoryOwner>    <!-- github username -->
 							<oauth2Token>${GITHUB_OAUTH_TOKEN}</oauth2Token>
 						</configuration>
 						<executions>
