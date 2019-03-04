@@ -52,7 +52,7 @@
 		</developer>
 	</developers>
 	<scm>
-		<developerConnection>scm:git:https://github.com/rsenden/fortify-client-api-master</developerConnection>
+		<developerConnection>scm:git:https://github.com/fortify-ps/fortify-client-api</developerConnection>
 		<tag>master</tag>
 	</scm>
 	<inceptionYear>2016</inceptionYear>
