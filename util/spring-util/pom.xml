@@ -28,7 +28,7 @@
 	<parent>
 		<groupId>com.fortify.client.api.util</groupId>
 		<artifactId>util-master</artifactId>
-		<version>4.9-SNAPSHOT</version>
+		<version>4.9</version>
 	</parent>
 	<description>This module defines various utility classes for working with Spring.</description>
 	<organization>
