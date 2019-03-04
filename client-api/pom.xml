@@ -29,7 +29,7 @@
 	<parent>
 		<groupId>com.fortify.client.api</groupId>
 		<artifactId>client-api-master</artifactId>
-		<version>4.8</version>
+		<version>4.9-SNAPSHOT</version>
 	</parent>
 	<modules>
 		<module>fod-client-api</module>
