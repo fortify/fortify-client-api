@@ -28,7 +28,7 @@
 	<parent>
 		<groupId>com.fortify.client.api</groupId>
 		<artifactId>client-api-root</artifactId>
-		<version>5.0</version>
+		<version>5.1-SNAPSHOT</version>
 	</parent>
 	<description>This module defines various utility classes for working with the Spring framework.</description>
 	<organization>
