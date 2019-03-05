@@ -24,12 +24,13 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>ssc-client-api</artifactId>
+	<artifactId>common-spring</artifactId>
 	<parent>
 		<groupId>com.fortify.client.api</groupId>
-		<artifactId>client-api</artifactId>
-		<version>4.10-SNAPSHOT</version>
+		<artifactId>client-api-root</artifactId>
+		<version>5.0-SNAPSHOT</version>
 	</parent>
+	<description>This module defines various utility classes for working with the Spring framework.</description>
 	<organization>
 		<name>Micro Focus Fortify</name>
 		<url>https://software.microfocus.com/en-us/software/application-security</url>
@@ -51,36 +52,24 @@
 	<inceptionYear>2016</inceptionYear>
 	<dependencies>
 		<dependency>
-			<groupId>com.fortify.client.api.util</groupId>
-			<artifactId>log-util</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.fortify.client.api.util</groupId>
-			<artifactId>spring-util</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.fortify.client.api.util</groupId>
-			<artifactId>rest-util</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-multipart</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -91,6 +80,4 @@
 			<artifactId>lombok</artifactId>
 		</dependency>
 	</dependencies>
-
-	<description>This module contains various utility classes for working with Fortify SSC.</description>
 </project>

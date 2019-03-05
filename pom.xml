@@ -25,14 +25,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fortify.client.api</groupId>
-	<artifactId>client-api-master</artifactId>
-	<version>4.10-SNAPSHOT</version>
+	<artifactId>client-api-root</artifactId>
+	<version>5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>util</module>
-		<module>client-api</module>
+		<module>common-log</module>
+		<module>common-spring</module>
+		<module>common-rest</module>
+		<module>client-api-fod</module>
+		<module>client-api-ssc</module>
+		<module>client-api-webinspect</module>
+		<module>client-api-wie</module>
 	</modules>
-	<description>This module is the parent module for client API's, samples and utilities for various Fortify products.</description>
+	<description>This is the parent module for Fortify client API's.</description>
 	<organization>
 		<name>Micro Focus Fortify</name>
 		<url>https://software.microfocus.com/en-us/software/application-security</url>
@@ -64,44 +69,44 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.fortify.client.api.util</groupId>
-				<artifactId>log-util</artifactId>
-				<version>${project.version}</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.fortify.client.api.util</groupId>
-				<artifactId>spring-util</artifactId>
-				<version>${project.version}</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.fortify.client.api.util</groupId>
-				<artifactId>rest-util</artifactId>
+				<groupId>com.fortify.client.api</groupId>
+				<artifactId>common-log</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.client.api</groupId>
-				<artifactId>fod-client-api</artifactId>
+				<artifactId>common-spring</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.client.api</groupId>
-				<artifactId>ssc-client-api</artifactId>
+				<artifactId>common-rest</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.client.api</groupId>
-				<artifactId>webinspect-client-api</artifactId>
+				<artifactId>client-api-fod</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.fortify.client.api</groupId>
-				<artifactId>wie-client-api</artifactId>
+				<artifactId>client-api-ssc</artifactId>
+				<version>${project.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fortify.client.api</groupId>
+				<artifactId>client-api-webinspect</artifactId>
+				<version>${project.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.fortify.client.api</groupId>
+				<artifactId>client-api-wie</artifactId>
 				<version>${project.version}</version>
 				<scope>compile</scope>
 			</dependency>

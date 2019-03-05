@@ -24,35 +24,12 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<packaging>pom</packaging>
-	<groupId>com.fortify.client.api.utilities</groupId>
-	<artifactId>client-api-utilities</artifactId>
+	<artifactId>common-log</artifactId>
 	<parent>
 		<groupId>com.fortify.client.api</groupId>
-		<artifactId>client-api</artifactId>
-		<version>4.10-SNAPSHOT</version>
+		<artifactId>client-api-root</artifactId>
+		<version>5.0-SNAPSHOT</version>
 	</parent>
-	<modules>
-		<module>analyze-api-usage-common</module>
-		<module>analyze-ssc-api-usage</module>
-	</modules>
-	<dependencyManagement>
-		<dependencies>
-		<dependency>
-			<groupId>com.fortify.client.api.utilities</groupId>
-			<artifactId>analyze-api-usage-common</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>5.0.3</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
-	</dependencyManagement>
-	<description>This module is the parent module for various command-line client utilities.</description>
 	<organization>
 		<name>Micro Focus Fortify</name>
 		<url>https://software.microfocus.com/en-us/software/application-security</url>
@@ -71,5 +48,23 @@
 			<organization>Micro Focus Fortify</organization>
 		</developer>
 	</developers>
-	<inceptionYear>2017</inceptionYear>
+	<inceptionYear>2018</inceptionYear>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-jul</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-jcl</artifactId>
+		</dependency>
+	</dependencies>
 </project>

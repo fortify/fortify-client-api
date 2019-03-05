@@ -24,22 +24,12 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>client-api</artifactId>
-	<packaging>pom</packaging>
+	<artifactId>client-api-webinspect</artifactId>
 	<parent>
 		<groupId>com.fortify.client.api</groupId>
-		<artifactId>client-api-master</artifactId>
-		<version>4.10-SNAPSHOT</version>
+		<artifactId>client-api-root</artifactId>
+		<version>5.0-SNAPSHOT</version>
 	</parent>
-	<modules>
-		<module>fod-client-api</module>
-		<module>ssc-client-api</module>
-		<module>webinspect-client-api</module>
-		<module>wie-client-api</module>
-		<module>samples</module>
-		<module>utilities</module>
-	</modules>
-	<description>This module is the parent module for the various client api's.</description>
 	<organization>
 		<name>Micro Focus Fortify</name>
 		<url>https://software.microfocus.com/en-us/software/application-security</url>
@@ -59,4 +49,24 @@
 		</developer>
 	</developers>
 	<inceptionYear>2016</inceptionYear>
+	<dependencies>
+		<dependency>
+			<groupId>com.fortify.client.api</groupId>
+			<artifactId>common-rest</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
+
+	<description>This module contains various utility classes for working with Fortify WebInspect.</description>
 </project>
