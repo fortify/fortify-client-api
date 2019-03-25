@@ -60,7 +60,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
 		appendPath("issues");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrl()+"/html/ssc/index.jsp#!/version/${projectVersionId}/fix/${id}/", "projectVersionId", "id"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrlStringWithoutTrailingSlash()+"/html/ssc/index.jsp#!/version/${projectVersionId}/fix/${id}/", "projectVersionId", "id"));
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
 			public void initRequest() {
