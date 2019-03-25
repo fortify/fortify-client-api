@@ -171,6 +171,12 @@
 				<groupId>org.glassfish.jersey.inject</groupId>
 				<artifactId>jersey-hk2</artifactId>
 				<version>2.28</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.glassfish.hk2.external</groupId>
+						<artifactId>aopalliance-repackaged</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<dependency>
