@@ -147,18 +147,17 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	
 	private static final class SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames extends SSCJSONMapOnDemandLoaderRest {
 		private static final long serialVersionUID = 1L;
-		private final SSCAuthenticatingRestConnection conn;
 
 		public SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(SSCAuthenticatingRestConnection conn) {
 			super(conn, "/api/v1/issueDetails/${id}");
-			this.conn = conn;
 		}
 		
 		@Override
 		protected Object getResult(JSONMap restResult) {
 			List<JSONMap> customTags = SpringExpressionUtil.evaluateExpression(restResult, "data.customTagValues", JSONList.class).asValueType(JSONMap.class);
 			for ( JSONMap customTag : customTags ) {
-				customTag.put("customTagName", conn.api(SSCCustomTagAPI.class).getCustomTagName(customTag.get("customTagGuid", String.class), true));
+				// TODO Can we avoid SSCAuthenticatingRestConnection cast?
+				customTag.put("customTagName", ((SSCAuthenticatingRestConnection)getConnection()).api(SSCCustomTagAPI.class).getCustomTagName(customTag.get("customTagGuid", String.class), true));
 			}
 			return super.getResult(restResult);
 		}		
