@@ -107,7 +107,7 @@ public final class SpringContextUtil {
 	 * @param resourceNames
 	 */
 	public static final void addConfigurationFromXmlResources(BeanDefinitionRegistry context, boolean errorOnMissingResource, String... resourceNames) {
-		ResourceLoader resourceLoader = new DefaultResourceLoader(); 
+		ResourceLoader resourceLoader = new DefaultResourceLoader(SpringContextUtil.class.getClassLoader());
 		for ( String resourceName : resourceNames ) {
 			Resource resource = resourceLoader.getResource(resourceName);
 			addConfigurationFromXmlResource(context, resource, errorOnMissingResource);
