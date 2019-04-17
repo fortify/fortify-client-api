@@ -31,7 +31,7 @@ import javax.ws.rs.HttpMethod;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.fortify.util.log4j.LogMaskingConverter;
+import com.fortify.util.log4j.LogMaskingHelper;
 import com.fortify.util.rest.json.JSONMap;
 
 import lombok.Data;
@@ -63,7 +63,7 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {
 			String authHeaderValue = "Basic "+Base64.encodeBase64String((userName+":"+password).getBytes());
-			LogMaskingConverter.maskByPatternGroups().patterns(EXPR_TOKEN).on(() ->
+			LogMaskingHelper.maskByPatternGroups().patterns(EXPR_TOKEN).on(() ->
 				tokenData = getTokenData(conn.executeRequest(HttpMethod.POST, conn.getBaseResource().path("/api/v1/auth/obtain_token").request().header("Authorization", authHeaderValue), null, JSONMap.class))
 			);
 			log.info("[SSC] Obtained access token, expiring at "+tokenData.getTerminalDate().toString());

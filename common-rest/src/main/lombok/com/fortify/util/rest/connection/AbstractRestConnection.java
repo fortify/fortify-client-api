@@ -79,7 +79,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import com.fortify.util.log4j.LogMaskingConverter;
+import com.fortify.util.log4j.LogMaskingHelper;
 import com.fortify.util.rest.connection.connector.ApacheClientProperties;
 import com.fortify.util.rest.connection.connector.ApacheConnectorProvider;
 import com.fortify.util.rest.json.JSONList;
@@ -226,7 +226,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		Response response = null;
 		UUID uuidAuthHeader = null;
 		try {
-			uuidAuthHeader = LogMaskingConverter.maskByPatternGroups().patterns(EXPR_AUTH_HEADER).add();
+			uuidAuthHeader = LogMaskingHelper.maskByPatternGroups().patterns(EXPR_AUTH_HEADER).add();
 			initializeConnection(httpMethod);
 			builder = updateBuilder(builder);
 			response = builder.build(httpMethod, entity).invoke();
@@ -234,7 +234,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		} catch ( ClientErrorException e ) {
 			throw new RuntimeException("Error accessing remote system:\n"+e.getMessage(), e);
 		} finally {
-			LogMaskingConverter.remove(uuidAuthHeader);
+			LogMaskingHelper.remove(uuidAuthHeader);
 			if ( response != null && (returnType==null || !Response.class.isAssignableFrom(returnType)) ) { response.close(); }
 		}
 	}

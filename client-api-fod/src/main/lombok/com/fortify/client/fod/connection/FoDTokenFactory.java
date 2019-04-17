@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fortify.util.log4j.LogMaskingConverter;
+import com.fortify.util.log4j.LogMaskingHelper;
 
 /**
  * This class is used to generate FoD tokens for accessing the
@@ -61,7 +61,7 @@ public final class FoDTokenFactory {
 
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {
-			LogMaskingConverter.maskByPatternGroups().patterns(EXPR_TOKEN, EXPR_PASSWORD).on(() ->
+			LogMaskingHelper.maskByPatternGroups().patterns(EXPR_TOKEN, EXPR_PASSWORD).on(() ->
 				tokenData = basicConn.executeRequest(HttpMethod.POST, basicConn.getBaseResource().path("/oauth/token"), Entity.entity(auth, "application/x-www-form-urlencoded"), FoDTokenFactory.TokenData.class)
 			);
 			LOG.info("[FoD] Obtained access token, expiring at "+new Date(tokenData.getExpiresAt()).toString());

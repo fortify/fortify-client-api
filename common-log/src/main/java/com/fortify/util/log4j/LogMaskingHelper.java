@@ -32,25 +32,40 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
-import org.apache.logging.log4j.core.pattern.ConverterKeys;
-import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
-import org.apache.logging.log4j.core.pattern.PatternConverter;
 
 // TODO Check/update for thread safety (use concurrent map?)
-@Plugin(name = LogMaskingConverter.NAME, category = PatternConverter.CATEGORY)
-@ConverterKeys(LogMaskingConverter.NAME)
-public final class LogMaskingConverter extends LogEventPatternConverter {
+/**
+ * Applications that want to enable log masking must provide an actual 
+ * Log4J plugin class that extends from this class, as follows:
+ * 
+ * <pre><code>
+
+@Plugin(name = LogMaskingHelper.NAME, category = LogMaskingHelper.CATEGORY)
+@ConverterKeys(LogMaskingHelper.NAME)
+public final class LogMaskingConverterPlugin extends LogEventPatternConverter {
+	public LogMaskingConverterPlugin(String[] options) {
+		super(LogMaskingHelper.NAME, LogMaskingHelper.NAME);
+	}
+
+	public static final LogMaskingConverterPlugin newInstance(final String[] options) {
+		return new LogMaskingConverterPlugin(options);
+	}
+	
+	@Override
+	public void format(LogEvent event, StringBuilder outputMessage) {
+		LogMaskingHelper.format(event, outputMessage);
+	}
+}
+
+
+ * </pre></code>
+ * 
+ * @author Ruud Senden
+ *
+ */
+public class LogMaskingHelper {
 	public static final String NAME = "mm";
 	private static final Map<UUID, IMasker> MASKS = new HashMap<>();
-
-	public LogMaskingConverter(String[] options) {
-		super(NAME, NAME);
-	}
-
-	public static final LogMaskingConverter newInstance(final String[] options) {
-		return new LogMaskingConverter(options);
-	}
 	
 	public static final PatternGroupMasker maskByPatternGroups() {
 		return new PatternGroupMasker();
@@ -67,8 +82,7 @@ public final class LogMaskingConverter extends LogEventPatternConverter {
 		MASKS.remove(uuid);
 	}
 
-	@Override
-	public final void format(LogEvent event, StringBuilder outputMessage) {
+	public static final void format(LogEvent event, StringBuilder outputMessage) {
 		String message = event.getMessage().getFormattedMessage();
 		for (IMasker masker : MASKS.values()) {
 			message = masker.mask(message);
@@ -82,7 +96,7 @@ public final class LogMaskingConverter extends LogEventPatternConverter {
 	
 	public static abstract class AbstractMasker implements IMasker {
 		public UUID add() {
-			return LogMaskingConverter.add(this);
+			return LogMaskingHelper.add(this);
 		}
 		
 		public void on(Runnable r) {
@@ -90,7 +104,7 @@ public final class LogMaskingConverter extends LogEventPatternConverter {
 			try {
 				r.run();
 			} finally {
-				LogMaskingConverter.remove(uuid);
+				LogMaskingHelper.remove(uuid);
 			}
 		}
 		
