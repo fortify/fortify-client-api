@@ -37,6 +37,7 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -100,20 +101,16 @@ public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
 	}
 	
 	public final long downloadFile(WebTarget baseTarget, FileTokenType type, Path target) {
-		InputStream is = conn().executeRequest(HttpMethod.POST, 
+		Response response = conn().executeRequest(HttpMethod.GET, 
 				baseTarget
 				.queryParam("mat", getFileToken(FileTokenType.DOWNLOAD))
-				.request("*/*"), InputStream.class);
+				.request("*/*"), Response.class);
 		try {
-			return Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+			return Files.copy(response.readEntity(InputStream.class), target, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new RuntimeException("Error downloading file", e);
 		} finally {
-			try {
-				is.close();
-			} catch ( IOException ioe ) {
-				log.warn("Error closing response stream, subsequent requests may fail", ioe);
-			}
+			response.close();
 		}
 	}
 	
