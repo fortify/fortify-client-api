@@ -54,15 +54,12 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.spring.SpringExpressionUtil;
 
-import lombok.extern.apachecommons.CommonsLog;
-
 /**
  * This class is used to access SSC functionality related to up- and downloading files.
  * 
  * @author Ruud Senden
  *
  */
-@CommonsLog
 public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
 	/**
 	 * Enumeration for SSC file token types, to be used for {@link #getFileToken(FileTokenType)}
