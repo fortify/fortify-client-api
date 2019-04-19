@@ -95,7 +95,6 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 			.build();
 		if ( invokeAuditAssistant(applicationVersionId) ) {
 			JSONList jobs = jobApi.waitForJobCreation(jobQuery, timeOutSeconds);
-			System.out.println(jobs);
 			if ( CollectionUtils.isNotEmpty(jobs) ) {
 				result = ""+jobs.asValueType(JSONMap.class).get(0).getPath("jobData.PARAM_ARTIFACT_ID", Integer.class);
 			}
