@@ -139,7 +139,7 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	}
 	
 	public SSCApplicationVersionsQueryBuilder onDemandPerformanceIndicatorHistories() {
-		return onDemandPerformanceIndicatorHistories("performanceHistories");
+		return onDemandPerformanceIndicatorHistories("performanceIndicatorHistories");
 	}
 	
 	public SSCApplicationVersionsQueryBuilder onDemandVariableHistories() {
