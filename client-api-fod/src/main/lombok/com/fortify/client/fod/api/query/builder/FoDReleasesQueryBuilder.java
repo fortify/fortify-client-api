@@ -42,15 +42,16 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandP
  *
  */
 public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDReleasesQueryBuilder> {
+	private static final String[] DEEPLINK_FIELDS = {"releaseId"};
 	public FoDReleasesQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/releases");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Releases/${releaseId}", "releaseId"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Releases/${releaseId}", DEEPLINK_FIELDS));
 	}
 	
 	@Override
 	public FoDReleasesQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
+		return super.paramFields(replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 	
 	@Override

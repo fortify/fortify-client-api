@@ -44,15 +44,16 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandP
  * 
  */
 public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCApplicationVersionsQueryBuilder> {
+	private static final String[] DEEPLINK_FIELDS = {"id"};
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public SSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v1/projectVersions");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrlStringWithoutTrailingSlash()+"/html/ssc/index.jsp#!/version/${id}/fix", "id"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrlStringWithoutTrailingSlash()+"/html/ssc/index.jsp#!/version/${id}/fix", DEEPLINK_FIELDS));
 	}
 
 	public final SSCApplicationVersionsQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
+		return super.paramFields(replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 
 	public final SSCApplicationVersionsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {

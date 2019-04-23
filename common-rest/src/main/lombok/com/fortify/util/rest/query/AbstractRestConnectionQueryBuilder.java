@@ -25,6 +25,7 @@
 package com.fortify.util.rest.query;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.HttpMethod;
@@ -164,6 +165,26 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 		}
 		result.add(webTargetTemplateResolverBuilder.build());
 		return result;
+	}
+	
+	/** 
+	 * Utility method for replacing a specific field in the given fields array
+	 * @param fieldToReplace
+	 * @param replacements
+	 * @param fields
+	 * @return
+	 */
+	protected String[] replaceField(String fieldToReplace, String[] replacements, String... fields) {
+		if ( fields==null ) { return null; }
+		List<String> resultList = new ArrayList<>(fields.length+1);
+		for ( String field : fields ) {
+			if ( field.equals(fieldToReplace) ) {
+				Collections.addAll(resultList, replacements);
+			} else {
+				resultList.add(field);
+			}
+		}
+		return resultList.toArray(new String[] {});
 	}
 
 	public abstract IRestConnectionQuery build();

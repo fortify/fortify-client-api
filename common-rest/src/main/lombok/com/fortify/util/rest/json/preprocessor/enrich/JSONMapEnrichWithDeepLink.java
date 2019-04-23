@@ -39,6 +39,7 @@ import com.fortify.util.spring.expression.TemplateExpression;
  *
  */
 public class JSONMapEnrichWithDeepLink extends AbstractJSONMapEnrich {
+	public static final String DEEPLINK_FIELD = "deepLink";
 	private final TemplateExpression deepLinkExpression;
 	private final String[] requiredProperties;
 	
@@ -53,7 +54,7 @@ public class JSONMapEnrichWithDeepLink extends AbstractJSONMapEnrich {
 	@Override
 	protected final void enrich(JSONMap json) {
 		if ( json.containsAllKeys(requiredProperties) ) {
-			json.put("deepLink", SpringExpressionUtil.evaluateExpression(json, deepLinkExpression, String.class));
+			json.put(DEEPLINK_FIELD, SpringExpressionUtil.evaluateExpression(json, deepLinkExpression, String.class));
 		}
 	}
 }

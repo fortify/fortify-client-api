@@ -36,15 +36,16 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
  *
  */
 public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChildEntityQueryBuilder<FoDReleaseVulnerabilitiesQueryBuilder> {
+	private static final String[] DEEPLINK_FIELDS = {"vulnId"};
 	public FoDReleaseVulnerabilitiesQueryBuilder(FoDAuthenticatingRestConnection conn, String releaseId) {
 		super(conn, releaseId, true);
 		appendPath("vulnerabilities");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Issues/${vulnId}", "vulnId"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Issues/${vulnId}", DEEPLINK_FIELDS));
 	}
 	
 	@Override
 	public FoDReleaseVulnerabilitiesQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
+		return super.paramFields(replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 	
 	@Override

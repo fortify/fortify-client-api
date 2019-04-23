@@ -48,6 +48,7 @@ import com.fortify.util.spring.SpringExpressionUtil;
  *
  */
 public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionIssuesQueryBuilder> {
+	private static final String[] DEEPLINK_FIELDS = {"projectVersionId", "id"};
 	public static enum QueryMode {
 		adv, issues
 	}
@@ -60,7 +61,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
 		appendPath("issues");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrlStringWithoutTrailingSlash()+"/html/ssc/index.jsp#!/version/${projectVersionId}/fix/${id}/", "projectVersionId", "id"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrlStringWithoutTrailingSlash()+"/html/ssc/index.jsp#!/version/${projectVersionId}/fix/${id}/", DEEPLINK_FIELDS));
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
 			public void initRequest() {
@@ -70,7 +71,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	}
 
 	public final SSCApplicationVersionIssuesQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
+		return super.paramFields(replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 
 	public final SSCApplicationVersionIssuesQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {

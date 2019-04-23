@@ -39,15 +39,16 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandP
  *
  */
 public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDApplicationsQueryBuilder> {
+	private static final String[] DEEPLINK_FIELDS = {"applicationId"};
 	public FoDApplicationsQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/applications");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Applications/${applicationId}", "applicationId"));
+		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Applications/${applicationId}", DEEPLINK_FIELDS));
 	}
 	
 	@Override
 	public FoDApplicationsQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
+		return super.paramFields(replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 	
 	@Override
