@@ -54,6 +54,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	}
 	
 	private final IssueSearchOptions issueSearchOptions = new IssueSearchOptions();
+	private boolean updateIssueSearchOptions = true;
 	
 	// TODO Can we propagate issueSearchOptions permissions from updateApplicationVersionIssueSearchOptions to this constructor,
 	//      instead of specifying this explicitly?
@@ -65,7 +66,9 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
 			public void initRequest() {
-				conn.api(SSCIssueAPI.class).updateApplicationVersionIssueSearchOptions(applicationVersionId, issueSearchOptions);
+				if ( updateIssueSearchOptions ) {
+					conn.api(SSCIssueAPI.class).updateApplicationVersionIssueSearchOptions(applicationVersionId, issueSearchOptions);
+				}
 			}
 		});
 	}
@@ -116,6 +119,10 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	
 	public SSCApplicationVersionIssuesQueryBuilder includeSuppressed(boolean includeSuppressed) {
 		issueSearchOptions.setIncludeSuppressed(includeSuppressed); return _this();
+	}
+	
+	public SSCApplicationVersionIssuesQueryBuilder updateIssueSearchOptions(boolean updateIssueSearchOptions) {
+		this.updateIssueSearchOptions = updateIssueSearchOptions; return _this();
 	}
 	
 	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails() {
