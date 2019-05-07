@@ -53,7 +53,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		adv, issues
 	}
 	
-	private final IssueSearchOptions issueSearchOptions = new IssueSearchOptions();
+	private IssueSearchOptions issueSearchOptions = null;
 	private boolean updateIssueSearchOptions = true;
 	
 	// TODO Can we propagate issueSearchOptions permissions from updateApplicationVersionIssueSearchOptions to this constructor,
@@ -66,7 +66,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
 			public void initRequest() {
-				if ( updateIssueSearchOptions ) {
+				if ( updateIssueSearchOptions && issueSearchOptions != null ) {
 					conn.api(SSCIssueAPI.class).updateApplicationVersionIssueSearchOptions(applicationVersionId, issueSearchOptions);
 				}
 			}
@@ -109,18 +109,41 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		return super.queryParam("qm", queryMode.name());
 	}
 	
-	public SSCApplicationVersionIssuesQueryBuilder includeHidden(boolean includeHidden) {
-		issueSearchOptions.setIncludeHidden(includeHidden); return _this();
+	public SSCApplicationVersionIssuesQueryBuilder paramShowHidden(boolean showHidden) {
+		return super.queryParam("showhidden", ""+showHidden);
 	}
 		
+	public SSCApplicationVersionIssuesQueryBuilder paramShowRemoved(boolean showRemoved) {
+		return super.queryParam("showremoved", ""+showRemoved);
+	}
+	
+	public SSCApplicationVersionIssuesQueryBuilder paramShowSuppressed(boolean showSuppressed) {
+		return super.queryParam("showsuppressed", ""+showSuppressed);
+	}
+	
+	@Deprecated /** For recent SSC versions, use #paramShowHidden */
+	public SSCApplicationVersionIssuesQueryBuilder includeHidden(boolean includeHidden) {
+		getIssueSearchOptions().setIncludeHidden(includeHidden); return _this();
+	}
+	
+	@Deprecated /** For recent SSC versions, use #paramShowRemoved */
 	public SSCApplicationVersionIssuesQueryBuilder includeRemoved(boolean includeRemoved) {
-		issueSearchOptions.setIncludeRemoved(includeRemoved); return _this();
+		getIssueSearchOptions().setIncludeRemoved(includeRemoved); return _this();
 	}
 	
+	@Deprecated /** For recent SSC versions, use #paramShowSuppressed */
 	public SSCApplicationVersionIssuesQueryBuilder includeSuppressed(boolean includeSuppressed) {
-		issueSearchOptions.setIncludeSuppressed(includeSuppressed); return _this();
+		getIssueSearchOptions().setIncludeSuppressed(includeSuppressed); return _this();
 	}
 	
+	private IssueSearchOptions getIssueSearchOptions() {
+		if ( issueSearchOptions==null ) {
+			issueSearchOptions = new IssueSearchOptions();
+		}
+		return issueSearchOptions;
+	}
+	
+	@Deprecated
 	public SSCApplicationVersionIssuesQueryBuilder updateIssueSearchOptions(boolean updateIssueSearchOptions) {
 		this.updateIssueSearchOptions = updateIssueSearchOptions; return _this();
 	}
