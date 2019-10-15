@@ -26,6 +26,8 @@ package com.fortify.client.ssc.api.query.builder;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCCustomTagAPI;
 import com.fortify.client.ssc.api.SSCIssueAPI;
@@ -38,6 +40,7 @@ import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 import com.fortify.util.rest.query.IRequestInitializer;
+import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.spring.SpringExpressionUtil;
 
 /**
@@ -48,13 +51,14 @@ import com.fortify.util.spring.SpringExpressionUtil;
  *
  */
 public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionIssuesQueryBuilder> {
-	private static final String[] DEEPLINK_FIELDS = {"projectVersionId", "id"};
+	private static final String[] DEEPLINK_FIELDS = {"projectVersionId", "id", "engineType", "issueInstanceId"};
 	public static enum QueryMode {
 		adv, issues
 	}
 	
 	private IssueSearchOptions issueSearchOptions = null;
 	private boolean updateIssueSearchOptions = true;
+	private String filterSetId = null;
 	
 	// TODO Can we propagate issueSearchOptions permissions from updateApplicationVersionIssueSearchOptions to this constructor,
 	//      instead of specifying this explicitly?
@@ -62,7 +66,6 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
 		appendPath("issues");
-		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrlStringWithoutTrailingSlash()+"/html/ssc/index.jsp#!/version/${projectVersionId}/fix/${id}/", DEEPLINK_FIELDS));
 		setRequestInitializer(new IRequestInitializer() {
 			@Override
 			public void initRequest() {
@@ -71,6 +74,17 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 				}
 			}
 		});
+	}
+	
+	@Override
+	public IRestConnectionQuery build() {
+		String deepLinkExpression = getConn().getBaseUrlStringWithoutTrailingSlash()
+				+"/html/ssc/version/${projectVersionId}/fix/${id}/?engineType=${engineType}&issue=${issueInstanceId}";
+		if ( StringUtils.isNotBlank(filterSetId) ) {
+			deepLinkExpression += "&filterSet="+filterSetId;
+		}
+		preProcessor(new JSONMapEnrichWithDeepLink(deepLinkExpression, DEEPLINK_FIELDS));
+		return super.build();
 	}
 
 	public final SSCApplicationVersionIssuesQueryBuilder paramFields(String... fields) {
@@ -98,6 +112,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramFilterSet(String filterSetId) {
+		this.filterSetId = filterSetId; // Used for building deep link pre-processor
 		return super.queryParam("filterset", filterSetId);
 	}
 	
