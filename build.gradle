@@ -13,31 +13,8 @@ allprojects {
 	group = 'com.fortify.client.api'
 	version = '5.4-SNAPSHOT' // TODO Get from git branchtag
 	
-	apply plugin: 'java-library'
-	apply plugin: 'maven-publish'
 	
-	repositories {
-	    mavenCentral()
-	}
-	
-	test {
-	    useJUnitPlatform()
-	}
-	
-	task sourcesJar(type: Jar) {
-	    from sourceSets.main.allJava
-	    archiveClassifier = 'sources'
-	}
-	
-	task myjavadoc(type: Javadoc) {
-	    failOnError = false
-	}
-	
-	task javadocJar(type: Jar) {
-	    from myjavadoc
-	    archiveClassifier = 'javadoc'
-	}
-	
+	/*
 	publishing {
 	    publications {
 	        mavenJava(MavenPublication) {
@@ -71,14 +48,38 @@ allprojects {
 	        mavenLocal()
 	    }
 	}
+	*/
 }
 
 subprojects {
+	apply plugin: 'java-library'
+	apply plugin: 'maven-publish'
+	apply plugin: 'io.spring.dependency-management'
+	
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
 	
-	apply plugin: 'io.spring.dependency-management'
+	repositories {
+	    mavenCentral()
+	}
 	
+	test {
+	    useJUnitPlatform()
+	}
+	
+	task sourcesJar(type: Jar) {
+	    from sourceSets.main.allJava
+	    archiveClassifier = 'sources'
+	}
+	
+	task myjavadoc(type: Javadoc) {
+	    failOnError = false
+	}
+	
+	task javadocJar(type: Jar) {
+	    from myjavadoc
+	    archiveClassifier = 'javadoc'
+	}
 	
 	dependencyManagement {
 		//imports {
@@ -142,6 +143,18 @@ subprojects {
 	}
 }
 
+configure(subprojects.findAll {new File(it.projectDir, "src/main/lombok").exists()}) {
+	apply plugin: 'io.freefair.lombok'
+
+	// TODO For a single-module project we don't have to modify source sets, why do we need this?
+	sourceSets {
+	    main {
+	        java {
+	            srcDir 'src/main/lombok'
+	        }
+	    }
+	}
+}
 
 
 /*

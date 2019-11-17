@@ -1,5 +1,3 @@
-apply plugin: 'io.freefair.lombok'
-
 description = 'Functionality for invoking Fortify on Demand (FoD) REST endpoints'
 
 dependencies {

@@ -1,5 +1,3 @@
-apply plugin: 'io.freefair.lombok'
-
 description = 'Common functionality for implementing REST API clients'
 
 dependencies {
