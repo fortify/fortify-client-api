@@ -12,12 +12,12 @@ description = 'Utility classes for working with the REST API interfaces provided
 subprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'maven-publish'
-	apply plugin: 'io.spring.dependency-management'
 	
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
 	
 	repositories {
+		mavenLocal()
 	    mavenCentral()
 	}
 	
@@ -48,7 +48,34 @@ subprojects {
 	        }
 	    }
 	}
+}
+
+configure(subprojects.findAll {new File(it.projectDir, "src/main/lombok").exists()}) {
+	apply plugin: 'io.freefair.lombok'
+
+	// TODO For a single-module project we don't have to modify source sets, why do we need this?
+	sourceSets {
+	    main {
+	        java {
+	            srcDir 'src/main/lombok'
+	        }
+	    }
+	}
 	
+	myjavadoc {
+		source = delombok
+	}
+}
+
+allprojects {
+	group = 'com.fortify.client.api'
+	version = '5.4-SNAPSHOT' // TODO Get from git branchtag
+	
+	// TODO Instead of defining dependency management in every project,
+	//      can we just define this in the root project and reference from
+	//      child modules? That would result in cleaner pom.xml files after
+	//      publishing.
+	apply plugin: 'io.spring.dependency-management'
 	dependencyManagement {
 		//imports {
 			// Use in API clients: mavenBom("com.fortify.client.api:fortify-client-api:5.4-SNAPSHOT")
@@ -109,33 +136,12 @@ subprojects {
 			dependency 'com.google.guava:guava:27.1-jre'
 		}
 	}
-}
-
-configure(subprojects.findAll {new File(it.projectDir, "src/main/lombok").exists()}) {
-	apply plugin: 'io.freefair.lombok'
-
-	// TODO For a single-module project we don't have to modify source sets, why do we need this?
-	sourceSets {
-	    main {
-	        java {
-	            srcDir 'src/main/lombok'
-	        }
-	    }
-	}
-	
-	myjavadoc {
-		source = delombok
-	}
-}
-
-allprojects {
-	group = 'com.fortify.client.api'
-	version = '5.4-SNAPSHOT' // TODO Get from git branchtag
 	
 	publishing {
 	    publications {
 	        mavenJava(MavenPublication) {
 	            pom {
+	            	version = "${project.version}"
 	                name = "${project.name}"
 	                description = "${project.description}"
 	                url = 'https://github.com/fortify-ps/fortify-client-api'
