@@ -3,3 +3,6 @@
 .classpath
 .springBeans
 target/
+build/
+.gradle
+lombok.config

@@ -1,0 +1,8 @@
+rootProject.name = 'fortify-client-api'
+include 'common-log'
+include 'common-spring'
+include 'common-rest'
+include 'client-api-fod'
+include 'client-api-ssc'
+include 'client-api-webinspect'
+include 'client-api-wie'

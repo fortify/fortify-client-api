@@ -1,0 +1,8 @@
+apply plugin: 'io.freefair.lombok'
+
+description = 'Functionality for invoking Fortify WebInspect Enterprise (WIE) REST endpoints'
+
+dependencies {
+	compile project(':common-rest')
+	compile 'commons-codec:commons-codec'
+}

@@ -1,0 +1,10 @@
+To-do's for converting these projects from Maven to Gradle builds:
+
+- Verify & fix published pom.xml files (dependencyManagement, dependencies)
+- Dynamically determine project version number:
+  - If tagged version: Use tag name
+  - If branch x.y-SNAPSHOT: Use branch name
+  - If other: Use git describe?
+- Publish snapshots to JFrog Artifactory
+- Publish releases to JFrog Bintray
+- Update .travis.yml to build and publish using Gradle

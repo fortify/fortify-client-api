@@ -1,0 +1,181 @@
+plugins {
+    id 'maven-publish'
+    id 'base'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'io.freefair.lombok' version '4.1.2'
+    //id "com.jfrog.bintray" version "1.8.4"
+    //id "com.jfrog.artifactory" version "4.10.0"
+}
+
+description = 'Utility classes for working with the REST API interfaces provided by the various Fortify products'
+
+allprojects {
+	group = 'com.fortify.client.api'
+	version = '5.4-SNAPSHOT' // TODO Get from git branchtag
+	
+	apply plugin: 'java-library'
+	apply plugin: 'maven-publish'
+	
+	repositories {
+	    mavenCentral()
+	}
+	
+	test {
+	    useJUnitPlatform()
+	}
+	
+	task sourcesJar(type: Jar) {
+	    from sourceSets.main.allJava
+	    archiveClassifier = 'sources'
+	}
+	
+	task myjavadoc(type: Javadoc) {
+	    failOnError = false
+	}
+	
+	task javadocJar(type: Jar) {
+	    from myjavadoc
+	    archiveClassifier = 'javadoc'
+	}
+	
+	publishing {
+	    publications {
+	        mavenJava(MavenPublication) {
+	            from components.java
+	            artifact sourcesJar
+	            artifact javadocJar
+	            pom {
+	                name = "${project.name}"
+	                description = "${project.description}"
+	                url = 'https://github.com/fortify-ps/fortify-client-api'
+	                licenses {
+	                    license {
+	                        name = 'MIT License'
+	                        url = 'https://opensource.org/licenses/MIT'
+	                    }
+	                }
+	                developers {
+	                    developer {
+	                        id = 'rsenden'
+	                        name = 'Ruud Senden'
+	                        email = 'ruud.senden@microfocus.com'
+	                    }
+	                }
+	                scm {
+	                    developerConnection = 'scm:git:https://github.com/fortify-ps/fortify-client-api.git'
+	                }
+	            }
+	        }
+	    }
+	    repositories {
+	        mavenLocal()
+	    }
+	}
+}
+
+subprojects {
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+	
+	apply plugin: 'io.spring.dependency-management'
+	
+	
+	dependencyManagement {
+		//imports {
+			// Use in API clients: mavenBom("com.fortify.client.api:fortify-client-api:5.4-SNAPSHOT")
+		//}
+		dependencies {
+			// Do we need this to generate Maven BOM?
+			dependencySet(group:'com.fortify.client.api', version: "${project.version}") {
+				entry 'common-log'
+				entry 'common-spring'
+				entry 'common-rest'
+				entry 'client-api-fod'
+				entry 'client-api-ssc'
+				entry 'client-api-webinspect'
+				entry 'client-api-wie'
+			}
+			
+			dependencySet(group:'org.springframework', version: '4.3.22.RELEASE') {
+				entry 'spring-beans'
+				entry 'spring-core'
+				entry 'spring-expression'
+				entry('spring-context') {
+					exclude 'aopalliance:aopalliance'
+				}
+			}
+			
+			dependencySet(group:'org.apache.logging.log4j', version: '2.11.2') {
+				entry 'log4j-api'
+				entry 'log4j-core'
+				entry 'log4j-jul'
+				entry 'log4j-jcl'
+			}
+			
+			dependencySet(group:'org.glassfish.jersey.core', version: '2.28') {
+				entry 'jersey-common'
+				entry 'jersey-client'
+			}
+			// TODO Can we bundle these in dependency set?
+			dependency 'org.glassfish.jersey.media:jersey-media-multipart:2.28'
+			dependency 'org.glassfish.jersey.connectors:jersey-apache-connector:2.28'
+			dependency('org.glassfish.jersey.inject:jersey-hk2:2.28') {
+				exclude 'org.glassfish.hk2.external:aopalliance-repackaged'
+			}
+			dependency 'org.apache.httpcomponents:httpcore:4.4.11'
+			dependency 'org.apache.httpcomponents:httpclient:4.5.7'
+			dependency 'jakarta.ws.rs:jakarta.ws.rs-api:2.1.5'
+			
+			dependencySet(group:'com.fasterxml.jackson.core', version: '2.9.10') {
+				entry 'jackson-core'
+				entry 'jackson-annotations'
+				entry 'jackson-databind'
+			}
+			dependency 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.10'
+			dependency 'commons-lang:commons-lang:2.6'
+			dependency 'commons-beanutils:commons-beanutils:1.9.3'
+			dependency 'commons-codec:commons-codec:1.12'
+			dependency 'commons-collections:commons-collections:3.2.2'
+			dependency 'commons-logging:commons-logging:1.2'
+			dependency 'com.google.guava:guava:27.1-jre'
+		}
+	}
+}
+
+
+
+/*
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['mavenJava']
+    publish = true
+    pkg {
+        repo = 'maven'
+        name = 'fortify-client-api'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/fortify-ps/fortify-client-api.git'
+        userOrg = 'fortify-ps'
+    }
+}
+
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = System.getProperty('bintray.user')
+            password = System.getProperty('bintray.key')
+        }
+        defaults {
+            publications('mavenJava')
+            publishArtifacts = true
+            publishPom = true
+        }
+    }
+    resolve {
+        repoKey = 'jcenter'
+    }
+    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
+}
+*/

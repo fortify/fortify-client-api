@@ -1,0 +1,7 @@
+apply plugin: 'io.freefair.lombok'
+
+description = 'Functionality for invoking Fortify WebInspect REST endpoints'
+
+dependencies {
+	compile project(':common-rest')
+}

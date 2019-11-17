@@ -1,0 +1,31 @@
+apply plugin: 'io.freefair.lombok'
+
+description = 'Common functionality for implementing REST API clients'
+
+dependencies {
+	compile project(':common-log')
+	compile project(':common-spring')
+		
+	compile 'org.glassfish.jersey.core:jersey-common'
+	compile 'org.glassfish.jersey.core:jersey-client'
+	compile 'org.glassfish.jersey.media:jersey-media-multipart'
+	compile 'org.glassfish.jersey.connectors:jersey-apache-connector'
+	compile 'org.glassfish.jersey.inject:jersey-hk2'
+		
+	compile 'org.apache.httpcomponents:httpcore'
+	compile 'org.apache.httpcomponents:httpclient'
+		
+	compile 'jakarta.ws.rs:jakarta.ws.rs-api'
+		
+	compile 'com.fasterxml.jackson.core:jackson-core'
+	compile 'com.fasterxml.jackson.core:jackson-databind'
+	compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider'
+		
+	compile 'org.springframework:spring-core'
+	compile 'org.springframework:spring-expression'
+	compile 'commons-collections:commons-collections'
+	compile 'commons-lang:commons-lang'
+	compile 'commons-logging:commons-logging'
+	compile 'com.google.guava:guava'
+
+}
