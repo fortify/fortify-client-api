@@ -9,48 +9,6 @@ plugins {
 
 description = 'Utility classes for working with the REST API interfaces provided by the various Fortify products'
 
-allprojects {
-	group = 'com.fortify.client.api'
-	version = '5.4-SNAPSHOT' // TODO Get from git branchtag
-	
-	
-	/*
-	publishing {
-	    publications {
-	        mavenJava(MavenPublication) {
-	            from components.java
-	            artifact sourcesJar
-	            artifact javadocJar
-	            pom {
-	                name = "${project.name}"
-	                description = "${project.description}"
-	                url = 'https://github.com/fortify-ps/fortify-client-api'
-	                licenses {
-	                    license {
-	                        name = 'MIT License'
-	                        url = 'https://opensource.org/licenses/MIT'
-	                    }
-	                }
-	                developers {
-	                    developer {
-	                        id = 'rsenden'
-	                        name = 'Ruud Senden'
-	                        email = 'ruud.senden@microfocus.com'
-	                    }
-	                }
-	                scm {
-	                    developerConnection = 'scm:git:https://github.com/fortify-ps/fortify-client-api.git'
-	                }
-	            }
-	        }
-	    }
-	    repositories {
-	        mavenLocal()
-	    }
-	}
-	*/
-}
-
 subprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'maven-publish'
@@ -79,6 +37,16 @@ subprojects {
 	task javadocJar(type: Jar) {
 	    from myjavadoc
 	    archiveClassifier = 'javadoc'
+	}
+	
+	publishing {
+	    publications {
+	        mavenJava(MavenPublication) {
+	            from components.java
+	            artifact sourcesJar
+	            artifact javadocJar
+	        }
+	    }
 	}
 	
 	dependencyManagement {
@@ -154,8 +122,47 @@ configure(subprojects.findAll {new File(it.projectDir, "src/main/lombok").exists
 	        }
 	    }
 	}
+	
+	myjavadoc {
+		source = delombok
+	}
 }
 
+allprojects {
+	group = 'com.fortify.client.api'
+	version = '5.4-SNAPSHOT' // TODO Get from git branchtag
+	
+	publishing {
+	    publications {
+	        mavenJava(MavenPublication) {
+	            pom {
+	                name = "${project.name}"
+	                description = "${project.description}"
+	                url = 'https://github.com/fortify-ps/fortify-client-api'
+	                licenses {
+	                    license {
+	                        name = 'MIT License'
+	                        url = 'https://opensource.org/licenses/MIT'
+	                    }
+	                }
+	                developers {
+	                    developer {
+	                        id = 'rsenden'
+	                        name = 'Ruud Senden'
+	                        email = 'ruud.senden@microfocus.com'
+	                    }
+	                }
+	                scm {
+	                    developerConnection = 'scm:git:https://github.com/fortify-ps/fortify-client-api.git'
+	                }
+	            }
+	        }
+	    }
+	    repositories {
+	        mavenLocal()
+	    }
+	}
+}
 
 /*
 bintray {
