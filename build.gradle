@@ -1,10 +1,10 @@
 plugins {
     id 'maven-publish'
     id 'base'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-    id 'io.freefair.lombok' version '4.1.2'
-    //id "com.jfrog.bintray" version "1.8.4"
-    //id "com.jfrog.artifactory" version "4.10.0"
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE' apply false
+    id 'io.freefair.lombok' version '4.1.2' apply false
+    id 'com.jfrog.bintray' version "1.8.4" apply false
+    id 'com.jfrog.artifactory' version "4.10.0" apply false
 }
 
 description = 'Utility classes for working with the REST API interfaces provided by the various Fortify products'
@@ -17,7 +17,6 @@ subprojects {
 	targetCompatibility = JavaVersion.VERSION_1_8
 	
 	repositories {
-		mavenLocal()
 	    mavenCentral()
 	}
 	
@@ -69,13 +68,18 @@ configure(subprojects.findAll {new File(it.projectDir, "src/main/lombok").exists
 
 allprojects {
 	group = 'com.fortify.client.api'
-	version = '5.4-SNAPSHOT' // TODO Get from git branchtag
+	version = '5.4' // TODO Get from git branchtag
+	
+	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'maven-publish'
+	apply plugin: 'com.jfrog.bintray'
 	
 	// TODO Instead of defining dependency management in every project,
 	//      can we just define this in the root project and reference from
 	//      child modules? That would result in cleaner pom.xml files after
-	//      publishing.
-	apply plugin: 'io.spring.dependency-management'
+	//      publishing. However as Gradle hierarchy is one-way (no parent 
+	//      reference), we would probably need to generate pom.xml sections
+	//      manually.
 	dependencyManagement {
 		//imports {
 			// Use in API clients: mavenBom("com.fortify.client.api:fortify-client-api:5.4-SNAPSHOT")
@@ -141,9 +145,11 @@ allprojects {
 	    publications {
 	        mavenJava(MavenPublication) {
 	            pom {
-	            	version = "${project.version}"
-	                name = "${project.name}"
-	                description = "${project.description}"
+	            	version = project.version
+	                name = project.name
+	                afterEvaluate {
+	                	description = project.description
+	                }
 	                url = 'https://github.com/fortify-ps/fortify-client-api'
 	                licenses {
 	                    license {
@@ -168,40 +174,39 @@ allprojects {
 	        mavenLocal()
 	    }
 	}
+	
+	bintray {
+	    user = System.getenv('BINTRAY_USER')
+	    key = System.getenv('BINTRAY_KEY')
+	    publications = ['mavenJava']
+	    publish = true
+	    pkg {
+	        repo = 'maven'
+	        name = 'fortify-client-api'
+	        licenses = ['MIT']
+	        vcsUrl = 'https://github.com/fortify-ps/fortify-client-api.git'
+	        userOrg = 'fortify-ps'
+	    }
+	}
+	/*
+	artifactory {
+	    contextUrl = 'http://oss.jfrog.org'
+	    publish {
+	        repository {
+	            repoKey = 'oss-snapshot-local'
+	            username = System.getProperty('bintray.user')
+	            password = System.getProperty('bintray.key')
+	        }
+	        defaults {
+	            publications('mavenJava')
+	            publishArtifacts = true
+	            publishPom = true
+	        }
+	    }
+	    resolve {
+	        repoKey = 'jcenter'
+	    }
+	    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
+	}
+	*/
 }
-
-/*
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['mavenJava']
-    publish = true
-    pkg {
-        repo = 'maven'
-        name = 'fortify-client-api'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/fortify-ps/fortify-client-api.git'
-        userOrg = 'fortify-ps'
-    }
-}
-
-artifactory {
-    contextUrl = 'http://oss.jfrog.org'
-    publish {
-        repository {
-            repoKey = 'oss-snapshot-local'
-            username = System.getProperty('bintray.user')
-            password = System.getProperty('bintray.key')
-        }
-        defaults {
-            publications('mavenJava')
-            publishArtifacts = true
-            publishPom = true
-        }
-    }
-    resolve {
-        repoKey = 'jcenter'
-    }
-    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
-}
-*/
