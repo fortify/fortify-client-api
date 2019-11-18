@@ -21,6 +21,9 @@ def getProjectVersion() {
 	if ( !isClean ) {
 		gitDescribe += '-localchanges'
 	}
+	println branchName
+	println gitDescribe
+	println isClean
 	if ( gitDescribe !=~ /^(\d+.)+\d+$/ && branchName ==~ /^(\d+.)+\d+-SNAPSHOT$/ ) {
 		return branchName
 	} else {
