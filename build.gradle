@@ -16,7 +16,7 @@ description = 'Utility classes for working with the REST API interfaces provided
 
 def getProjectVersion() {
 	def branchName = grgit.branch.current().name
-	def gitDescribe = grgit.describe()
+	def gitDescribe = grgit.describe(tags: true)
 	if ( gitDescribe !=~ /^(\d+.)+\d+$/ && branchName ==~ /^(\d+.)+\d+-SNAPSHOT$/ ) {
 		return branchName
 	} else {
