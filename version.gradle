@@ -75,17 +75,16 @@ task startSnapshotBranch {
 		}
 		def nextVersion = findProperty("nextVersion")
 		if ( nextVersion == null ) {
-			def prevVersion = null;
 			try {
 				// GrGit doesn't support abbrev option, so we execute git directly
-				prevVersion = 'git describe --abbrev=0'.execute().text.trim()
+				def prevVersion = 'git describe --abbrev=0'.execute().text.trim()
 				println 'Previous version: '+prevVersion
 				if ( prevVersion!='' ) {
 					def prevMinorVersion = prevVersion =~ /^(\d+)\.(\d+)\..*/;
 					println 'Previous minor version: '+prevMinorVersion
 					nextVersion = prevVersion.replaceFirst(/^(\d+)\.[\d]+\.(.*)$/, '$1.'+prevMinorVersion+1+'$2')
 				}
-			}
+			} catch (Throwable ignore) {}
 			ant.input(message: 'Next version (default: '+nextVersion+'): ', addproperty: 'nextVersion', default: nextVersion)
 			nextVersion = ant.nextVersion
 		}
