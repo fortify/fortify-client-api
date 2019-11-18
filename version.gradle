@@ -66,3 +66,17 @@ task undoReleaseBranch {
 		println 'WARN: If this version was published to bintray, it must be manually removed'
 	}
 }
+
+task startSnapshotBranch {
+	doLast {
+		def branchName = grgit.branch.current().name
+		if ( branchName != 'master' ) {
+			throw new GradleException('ERROR: Must be on master branch to start new snapshot branch')
+		}
+		// TODO Provide default next version
+		// TODO Skip question if provided as input property
+		
+		ant.input(message: 'Next version: ', addproperty: 'nextVersion')
+		grgit.checkout(branch: nextVersion+'-SNAPSHOT', createBranch: true)
+	}
+}
