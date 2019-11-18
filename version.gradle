@@ -77,6 +77,6 @@ task startSnapshotBranch {
 		// TODO Skip question if provided as input property
 		
 		ant.input(message: 'Next version: ', addproperty: 'nextVersion')
-		grgit.checkout(branch: nextVersion+'-SNAPSHOT', createBranch: true)
+		grgit.checkout(branch: ant.nextVersion+'-SNAPSHOT', createBranch: true)
 	}
 }
