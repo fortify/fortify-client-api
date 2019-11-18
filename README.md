@@ -114,7 +114,7 @@ and tags; the project source code does not define any version numbers.
 
 ### Gradle commands
 
-* Publish artifacts to local Mavn repository to make them available for dependent projects:
+* Publish artifacts to local Maven repository to make them available for dependent projects:
     * `gradle publish`
 * Show current project version: 
     * `gradle printProjectVersion`
