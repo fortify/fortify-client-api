@@ -170,10 +170,9 @@ allprojects {
 	            }
 	        }
 	    }
-	    repositories {
-	        mavenLocal()
-	    }
 	}
+	// Publish to Maven local repository when publish task is executed
+	publish.finalizedBy publishToMavenLocal
 	
 	bintray {
 	    user = System.getenv('BINTRAY_USER')
