@@ -35,30 +35,34 @@ task printProjectVersion {
 }
 
 task releaseBranch {
-	def branchName = grgit.branch.current().name
-	checkClean()
-	if ( !(branchName ==~ /^(\d+.)+\d+-SNAPSHOT$/) ) {
-		throw new GradleException('ERROR: Branch name does not match pattern /^(\\d+.)+\\d+-SNAPSHOT$/')
+	doLast {
+		def branchName = grgit.branch.current().name
+		checkClean()
+		if ( !(branchName ==~ /^(\d+.)+\d+-SNAPSHOT$/) ) {
+			throw new GradleException('ERROR: Branch name does not match pattern /^(\\d+.)+\\d+-SNAPSHOT$/')
+		}
+		def tagName = branchName - '-SNAPSHOT'
+		println 'Check out master branch'
+		grgit.checkout(branch: 'master')
+		println 'Merge changes from '+branchName
+		grgit.merge(head: branchName, message: 'Merge changes from '+branchName)
+		println 'Tag as '+tagName
+		grgit.tag.add(name: tagName)
 	}
-	def tagName = branchName - '-SNAPSHOT'
-	println 'Check out master branch'
-	grgit.checkout(branch: 'master')
-	println 'Merge changes from '+branchName
-	grgit.merge(head: branchName, message: 'Merge changes from '+branchName)
-	println 'Tag as '+tagName
-	grgit.tag.add(name: tagName)
 }
 
 task undoReleaseBranch {
-	checkClean()
-	def tagName = getProjectVersion()
-	if ( !(tagName ==~ /^(\d+.)+\d+$/) ) {
-		throw new GradleException('ERROR: Not currently on a released version')
+	doLast {
+		checkClean()
+		def tagName = getProjectVersion()
+		if ( !(tagName ==~ /^(\d+.)+\d+$/) ) {
+			throw new GradleException('ERROR: Not currently on a released version')
+		}
+		def branchName = tagName+'-SNAPSHOT'
+		println 'Removing tag '+tagName
+		grgit.tag.remove(names: [tagName])
+		println 'Checking out '+branchName
+		grgit.checkout(branch: branchName)
+		println 'WARN: If this version was published to bintray, it must be manually removed'
 	}
-	def branchName = tagName+'-SNAPSHOT'
-	println 'Removing tag '+tagName
-	grgit.tag.remove(names: [tagName])
-	println 'Checking out '+branchName
-	grgit.checkout(branch: branchName)
-	println 'WARN: If this version was published to bintray, it must be manually removed'
 }
