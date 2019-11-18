@@ -24,7 +24,7 @@ jobs:
     - stage: build
       script: /bin/sh ./gradlew build
     - stage: snapshotBranch
-      script: /bin/sh ./gradlew publish artifactoryPublish -x test -Dsnapshot=true -Dbintray.user=$BINTRAY_USER -Dbintray.key=$BINTRAY_KEY -Dbuild.number=$TRAVIS_BUILD_NUMBER
+      script: /bin/sh ./gradlew publish artifactoryPublish -x test -Dsnapshot=true -Dbuild.number=$TRAVIS_BUILD_NUMBER
     - stage: releaseTag
-      script: /bin/sh ./gradlew publish bintrayUpload -x test -Dbintray.user=$BINTRAY_USER -Dbintray.key=$BINTRAY_KEY -Dbuild.number=$TRAVIS_BUILD_NUMBER
+      script: /bin/sh ./gradlew publish bintrayUpload -x test -Dbuild.number=$TRAVIS_BUILD_NUMBER
       
