@@ -102,4 +102,5 @@ task startSnapshotBranch {
 		grgit.checkout(branch: nextVersion+'-SNAPSHOT', createBranch: true)
 	}
 	
+	
 }
