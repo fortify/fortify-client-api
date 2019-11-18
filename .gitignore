@@ -4,5 +4,6 @@
 .springBeans
 target/
 build/
+bin/
 .gradle
 lombok.config
