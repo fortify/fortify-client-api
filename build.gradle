@@ -8,39 +8,13 @@ plugins {
     id 'org.ajoberstar.grgit' version "4.0.0"
 }
 
+apply from: "$rootDir/version.gradle"
+
 repositories {
     jcenter()
 }
 
 description = 'Utility classes for working with the REST API interfaces provided by the various Fortify products'
-
-def getProjectVersion() {
-	def branchName = grgit.branch.current().name
-	def gitDescribe = grgit.describe(tags: true, always: true)
-	def isClean = grgit.status().isClean()
-	if ( !isClean ) {
-		gitDescribe += '-localchanges'
-	}
-	println branchName
-	println gitDescribe
-	println isClean
-	if ( !(gitDescribe ==~ /^(\d+.)+\d+$/) && branchName ==~ /^(\d+.)+\d+-SNAPSHOT$/ ) {
-		return branchName
-	} else {
-		return gitDescribe
-	}
-}
-
-task printProjectVersion {
-    // any code that goes here is part of configuring the task
-    // this code will always get run, even if the task is not executed
-    doLast { // add a task action
-        // any code that goes here is part of executing the task
-        // this code will only get run if and when the task gets executed
-        println project.version
-    }
-}
-
 
 subprojects {
 	apply plugin: 'java-library'
