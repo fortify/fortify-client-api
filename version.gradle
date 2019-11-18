@@ -25,3 +25,15 @@ task printProjectVersion {
         println project.version
     }
 }
+
+task releaseBranch {
+	def branchName = grgit.branch.current().name
+	def isClean = grgit.status().isClean()
+	if ( !isClean ) {
+		throw new GradleException('ERROR: Working copy has uncommitted changes')
+	}
+	if ( !(branchName ==~ /^(\d+.)+\d+-SNAPSHOT$/) ) {
+		throw new GradleException('ERROR: Branch name does not match pattern /^(\\d+.)+\\d+-SNAPSHOT$/')
+	}
+	println 'Release Branch'
+}
