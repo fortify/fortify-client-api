@@ -34,7 +34,7 @@ task printProjectVersion {
     }
 }
 
-task releaseBranch {
+task releaseSnapshot {
 	doLast {
 		def branchName = grgit.branch.current().name
 		checkClean()
@@ -51,7 +51,7 @@ task releaseBranch {
 	}
 }
 
-task undoReleaseBranch {
+task undoReleaseSnapshot {
 	doLast {
 		checkClean()
 		def tagName = getProjectVersion()
@@ -73,10 +73,22 @@ task startSnapshotBranch {
 		if ( branchName != 'master' ) {
 			throw new GradleException('ERROR: Must be on master branch to start new snapshot branch')
 		}
-		// TODO Provide default next version
-		// TODO Skip question if provided as input property
-		
-		ant.input(message: 'Next version: ', addproperty: 'nextVersion')
-		grgit.checkout(branch: ant.nextVersion+'-SNAPSHOT', createBranch: true)
+		def nextVersion = findProperty("nextVersion")
+		if ( nextVersion == null ) {
+			def prevVersion = null;
+			try {
+				// GrGit doesn't support abbrev option, so we execute git directly
+				prevVersion = 'git describe --abbrev=0'.execute().text.trim()
+				println 'Previous version: '+prevVersion
+				if ( prevVersion!='' ) {
+					def prevMinorVersion = prevVersion =~ /^(\d+)\.(\d+)\..*/;
+					println 'Previous minor version: '+prevMinorVersion
+					nextVersion = prevVersion.replaceFirst(/^(\d+)\.[\d]+\.(.*)$/, '$1.'+prevMinorVersion+1+'$2')
+				}
+			}
+			ant.input(message: 'Next version (default: '+nextVersion+'): ', addproperty: 'nextVersion', default: nextVersion)
+			nextVersion = ant.nextVersion
+		}
+		grgit.checkout(branch: nextVersion+'-SNAPSHOT', createBranch: true)
 	}
 }
