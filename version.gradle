@@ -68,6 +68,7 @@ task undoReleaseSnapshot {
 }
 
 task startSnapshotBranch {
+	// TODO Clean up / simplify this task
 	doLast {
 		def branchName = grgit.branch.current().name
 		if ( branchName != 'master' ) {
@@ -80,14 +81,26 @@ task startSnapshotBranch {
 				def prevVersion = 'git describe --abbrev=0'.execute().text.trim()
 				println 'Previous version: '+prevVersion
 				if ( prevVersion!='' ) {
-					def prevMinorVersion = prevVersion =~ /^(\d+)\.(\d+)\..*/;
-					println 'Previous minor version: '+prevMinorVersion
-					nextVersion = prevVersion.replaceFirst(/^(\d+)\.[\d]+\.(.*)$/, '$1.'+prevMinorVersion+1+'$2')
+					def matcher = prevVersion =~ /^\d+\.(\d+)(\..+)*$/;
+					def prevMinorVersion = matcher[0][1]
+					def nextMinorVersion = (prevMinorVersion as int)+1
+					nextVersion = prevVersion.replaceFirst(/^(\d+)\.\d+(\.\d+)*$/, '$1.'+nextMinorVersion+'$2')
 				}
-			} catch (Throwable ignore) {}
-			ant.input(message: 'Next version (default: '+nextVersion+'): ', addproperty: 'nextVersion', default: nextVersion)
+			} catch (Throwable e) {
+				println 'INFO: Could not determine default next version due to '+e.getMessage() 
+			}
+			
+			ant.input(message: 'Next version (default: '+nextVersion+'): ', addproperty: 'nextVersion', defaultValue: nextVersion)
 			nextVersion = ant.nextVersion
+		}
+		if ( nextVersion==null || nextVersion=='' || nextVersion=='null' ) {
+			throw new GradleException('ERROR: Next version must be provided')
+		}
+		if ( !(nextVersion ==~ /^(\d+.)+\d+$/) ) {
+			throw new GradleException('ERROR: Next version must match /^(\\d+.)+\\d+$/')
 		}
 		grgit.checkout(branch: nextVersion+'-SNAPSHOT', createBranch: true)
 	}
+	
+	
 }
