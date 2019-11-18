@@ -2,19 +2,6 @@ To-do's for converting these projects from Maven to Gradle builds:
 
 - Change artifactId for root project to old name (client-api-root)?
 - Verify & fix published pom.xml files (dependencyManagement, dependencies)
-- Dynamically determine project version number:
-  - If tagged version: Use tag name
-  - If branch x.y-SNAPSHOT: Use branch name
-  - If other: Use git describe?
-- Task to release:
-  - check if snapshot branch
-  - merge with master
-  - tag master
-  - delete snapshot branch
-  - ask for new snapshot branch version number (provide default)
-  - create new snapshot branch
-  - checkout new snapshot branch
 - Publish snapshots to JFrog Artifactory
 - Test updated .travis.yml
-- Delete pom.xml files
 - Disable lombok.config? (any consequences?)
