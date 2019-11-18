@@ -35,5 +35,11 @@ task releaseBranch {
 	if ( !(branchName ==~ /^(\d+.)+\d+-SNAPSHOT$/) ) {
 		throw new GradleException('ERROR: Branch name does not match pattern /^(\\d+.)+\\d+-SNAPSHOT$/')
 	}
-	println 'Release Branch'
+	def tagName = branchName - '-SNAPSHOT'
+	println 'Check out master branch'
+	grgit.checkout(branch: 'master')
+	println 'Merge changes from '+branchName
+	grgit.merge(head: branchName, message: 'Merge changes from '+branchName)
+	println 'Tag as '+tagName
+	grgit.tag.add(name: tagName)
 }
