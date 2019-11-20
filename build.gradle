@@ -80,8 +80,9 @@ allprojects {
 	apply plugin: 'maven-publish'
 	apply plugin: 'com.jfrog.bintray'
 	apply plugin: 'com.jfrog.artifactory'
-	
-	version = getProjectVersion() 
+
+	// TODO Move this logic to getProjectVersion()
+	version = project.findProperty('overrideVersion') ?: getProjectVersion()
 	
 	// TODO Instead of defining dependency management in every project,
 	//      can we just define this in the root project and reference from
