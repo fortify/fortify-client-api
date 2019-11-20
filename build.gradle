@@ -122,19 +122,19 @@ allprojects {
 				entry 'log4j-jcl'
 			}
 			
-			dependencySet(group:'org.glassfish.jersey.core', version: '2.28') {
+			dependencySet(group:'org.glassfish.jersey.core', version: '2.29.1') {
 				entry 'jersey-common'
 				entry 'jersey-client'
 			}
 			// TODO Can we bundle these in dependency set?
-			dependency 'org.glassfish.jersey.media:jersey-media-multipart:2.28'
-			dependency 'org.glassfish.jersey.connectors:jersey-apache-connector:2.28'
-			dependency('org.glassfish.jersey.inject:jersey-hk2:2.28') {
+			dependency 'org.glassfish.jersey.media:jersey-media-multipart:2.29.1'
+			dependency 'org.glassfish.jersey.connectors:jersey-apache-connector:2.29.1'
+			dependency('org.glassfish.jersey.inject:jersey-hk2:2.29.1') {
 				exclude 'org.glassfish.hk2.external:aopalliance-repackaged'
 			}
-			dependency 'org.apache.httpcomponents:httpcore:4.4.11'
-			dependency 'org.apache.httpcomponents:httpclient:4.5.7'
-			dependency 'jakarta.ws.rs:jakarta.ws.rs-api:2.1.5'
+			dependency 'org.apache.httpcomponents:httpcore:4.4.12'
+			dependency 'org.apache.httpcomponents:httpclient:4.5.10'
+			dependency 'jakarta.ws.rs:jakarta.ws.rs-api:2.1.6'
 			
 			dependencySet(group:'com.fasterxml.jackson.core', version: '2.10.1') {
 				entry 'jackson-core'

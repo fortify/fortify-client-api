@@ -68,6 +68,10 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.glassfish.jersey.apache.connector.ApacheClientProperties;
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.apache.connector.ApacheHttpClientBuilderConfigurator;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.ClientResponse;
@@ -80,8 +84,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.fortify.util.log4j.LogMaskingHelper;
-import com.fortify.util.rest.connection.connector.ApacheClientProperties;
-import com.fortify.util.rest.connection.connector.ApacheConnectorProvider;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.google.common.cache.Cache;
@@ -530,7 +532,6 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		}
 		clientConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
 		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, credentialsProvider);
-		clientConfig.property(ApacheClientProperties.SERVICE_UNAVAILABLE_RETRY_STRATEGY, getServiceUnavailableRetryStrategy());
 		clientConfig.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
 		if ( connectionProperties != null ) {
 			for ( Map.Entry<String,Object> property : connectionProperties.entrySet() ) {
@@ -538,10 +539,24 @@ public abstract class AbstractRestConnection implements IRestConnection {
 			}
 		}
 		clientConfig.connectorProvider(new ApacheConnectorProvider());
+		clientConfig.register(new HttpClientBuilderConfigurator());
 		clientConfig.register(JacksonFeature.class);
 		clientConfig.register(MultiPartFeature.class);
 		clientConfig.register(new LoggingFeature(Logger.getLogger(LoggingFeature.DEFAULT_LOGGER_NAME), Level.FINE, LoggingFeature.Verbosity.PAYLOAD_ANY, 10000));
 		return clientConfig;
+	}
+	
+	/**
+	 * This {@link ApacheHttpClientBuilderConfigurator} implementation simply calls
+	 * {@link AbstractRestConnection#updateHttpClientBuilder(HttpClientBuilder) to
+	 * update the given {@link HttpClientBuilder}.
+	 */
+	private final class HttpClientBuilderConfigurator implements ApacheHttpClientBuilderConfigurator {
+		@Override
+		public HttpClientBuilder configure(HttpClientBuilder httpClientBuilder) {
+			updateHttpClientBuilder(httpClientBuilder);
+			return httpClientBuilder;
+		}
 	}
 	
 	/**
@@ -647,6 +662,16 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		}
 	}
 	
+	/** 
+	 * This method sets additional {@link HttpClientBuilder} properties.
+	 * Subclasses may override this method, but should call 
+	 * super.{@link #updateBuilder(Builder)} 
+	 * @param httpClientBuilder
+	 */
+	protected void updateHttpClientBuilder(HttpClientBuilder httpClientBuilder) {
+		httpClientBuilder.setServiceUnavailableRetryStrategy(getServiceUnavailableRetryStrategy());
+	}
+
 	@Data
 	protected static class CacheKey {
 		private final String httpMethod;
