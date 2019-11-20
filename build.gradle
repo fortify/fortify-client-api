@@ -79,6 +79,7 @@ allprojects {
 	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'maven-publish'
 	apply plugin: 'com.jfrog.bintray'
+	apply plugin: 'com.jfrog.artifactory'
 	
 	version = getProjectVersion() 
 	
@@ -195,7 +196,7 @@ allprojects {
 	        userOrg = 'fortify-ps'
 	    }
 	}
-	/*
+	
 	artifactory {
 	    contextUrl = 'http://oss.jfrog.org'
 	    publish {
@@ -215,5 +216,4 @@ allprojects {
 	    }
 	    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
 	}
-	*/
 }
