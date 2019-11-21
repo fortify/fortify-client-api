@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.fod.api.query.builder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,6 +62,7 @@ import com.google.common.collect.ListMultimap;
  * @param <T> Concrete builder type
  */
 public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQueryBuilder<T>> extends AbstractRestConnectionQueryBuilder<FoDAuthenticatingRestConnection, T> {
+	protected static final SimpleDateFormat FOD_DATE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
 	private FoDParamFilter paramFilter = add(new FoDParamFilter());
 	
 	/**
