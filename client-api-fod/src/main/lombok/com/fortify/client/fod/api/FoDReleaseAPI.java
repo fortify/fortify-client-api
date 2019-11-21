@@ -24,6 +24,11 @@
  ******************************************************************************/
 package com.fortify.client.fod.api;
 
+import java.nio.file.CopyOption;
+import java.nio.file.Path;
+
+import javax.ws.rs.HttpMethod;
+
 import com.fortify.client.fod.api.query.builder.FoDReleasesQueryBuilder;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
@@ -57,5 +62,23 @@ public class FoDReleaseAPI extends AbstractFoDAPI {
 	
 	public JSONMap getReleaseByNameOrId(String nameOrId, boolean useCache) {
 		return queryReleases().nameOrId(nameOrId).useCache(useCache).build().getUnique();
+	}
+	
+	/**
+	 * Download the FPR file for the given scan type from the given release id
+	 * to the given output {@link Path}, using the given copy options.
+	 * 
+	 * @param releaseId
+	 * @param scanType Any scan type supported by FoD for which an FPR can be downloaded 
+	 * @param outputPath
+	 * @param copyOptions
+	 */
+	public void saveFPR(String releaseId, String scanType, Path outputPath, CopyOption... copyOptions) {
+		conn().executeRequestAndSaveResponse(HttpMethod.GET, 
+				conn().getBaseResource()
+					.path("/api/v3/releases/{releaseId}/fpr")
+					.queryParam("scanType", scanType)
+					.resolveTemplate("releaseId", releaseId), 
+				outputPath, copyOptions);
 	}
 }
