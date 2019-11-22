@@ -31,6 +31,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
+import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsOfAuthEntityQueryBuilder;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
@@ -48,6 +49,16 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	
 	public SSCApplicationVersionsQueryBuilder queryApplicationVersions() {
 		return new SSCApplicationVersionsQueryBuilder(conn());
+	}
+	
+	public SSCApplicationVersionsOfAuthEntityQueryBuilder queryApplicationVersionsByAuthEntityId(String authEntityId) {
+		return new SSCApplicationVersionsOfAuthEntityQueryBuilder(conn(), authEntityId);
+	}
+	
+	public SSCApplicationVersionsOfAuthEntityQueryBuilder queryApplicationVersionsByAuthEntityName(String authEntityName) {
+		return queryApplicationVersionsByAuthEntityId(
+				conn().api(SSCAuthEntityAPI.class).getAuthEntityIdByEntityName(authEntityName));
+				
 	}
 	
 	public JSONMap getApplicationVersionById(String applicationVersionId, boolean useCache) {

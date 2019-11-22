@@ -119,7 +119,9 @@ import lombok.extern.apachecommons.CommonsLog;
  *   <li>[cacheName]:[cacheSpec]<br>
  *       Cache specification for individual caches.</li>
  *  </ul>
- *  <p>The format for the cache specification is described here:
+ *  <p>Caching can be globally disabled on a connection using the 
+ *  {@link AbstractRestConnectionConfig#useCache(boolean)} method.
+ *  The format for the cache specification is described here:
  *  <a href="https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html">https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html</a>
  *  </p>
  * 
@@ -145,6 +147,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	private final Map<Class<?>, Object> apis = new HashMap<>();
 	
 	@Getter private final URI baseUrl;
+	@Getter private final boolean useCache;
 	private final ProxyConfig proxy;
 	private final Map<String, Object> connectionProperties;
 	@Getter private final String connectionId;
@@ -154,6 +157,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	protected AbstractRestConnection(AbstractRestConnectionConfig<?> config) {
 		initCache();
 		this.baseUrl = config.getBaseUrl();
+		this.useCache = config.isUseCache();
 		this.proxy = config.getProxy();
 		this.connectionProperties = config.getConnectionProperties();
 		this.connectionId = this.getClass().getName()+config.getConnectionId();
@@ -258,8 +262,8 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	@SuppressWarnings("unchecked")
 	public <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType, String cacheName) {
 		T result;
-		if ( cacheName == null ) {
-			log.trace("No cache name specified, not using cache: "+webResource.getUri());
+		if ( cacheName == null || !useCache ) {
+			log.trace("No cache name specified or caching disabled, not using cache: "+webResource.getUri());
 			result = executeRequest(httpMethod, webResource, returnType);
 		} else {
 			Cache<CacheKey, Object> cache = cacheManager.getUnchecked(cacheName);

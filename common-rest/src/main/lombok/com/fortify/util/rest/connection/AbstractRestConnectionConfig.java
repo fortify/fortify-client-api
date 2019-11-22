@@ -51,12 +51,18 @@ import lombok.EqualsAndHashCode;
 @Data @EqualsAndHashCode(callSuper=false)
 public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnectionConfig<T>> {
 	private URI baseUrl;
+	private boolean useCache = true;
 	private ProxyConfig proxy = new ProxyConfig();
 	private Map<String, Object> connectionProperties;
 	private String connectionId = UUID.randomUUID().toString();
 	
 	public T baseUrl(String baseUrl) {
 		setBaseUrl(baseUrl);
+		return getThis();
+	}
+	
+	public T useCache(boolean useCache) {
+		setUseCache(useCache);
 		return getThis();
 	}
 	

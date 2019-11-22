@@ -26,15 +26,10 @@ package com.fortify.client.ssc.api.query.builder;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
-import com.fortify.client.ssc.api.SSCAttributeAPI;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
-import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -43,11 +38,11 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandP
  * @author Ruud Senden
  * 
  */
-public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCApplicationVersionsQueryBuilder> {
+public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCApplicationVersionsQueryBuilder<SSCApplicationVersionsQueryBuilder> {
 	private static final String[] DEEPLINK_FIELDS = {"id"};
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public SSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
-		super(conn, true);
+		super(conn);
 		appendPath("/api/v1/projectVersions");
 		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBaseUrlStringWithoutTrailingSlash()+"/html/ssc/index.jsp#!/version/${id}/fix", DEEPLINK_FIELDS));
 	}
@@ -113,120 +108,5 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCEntityQ
 	
 	public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId) {
 		return nameOrId(applicationVersionNameOrId, ":");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandAttributes() {
-		return onDemandAttributes("attributes");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandAttributeValuesByName() {
-		return onDemandAttributeValuesByName("attributeValuesByName");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandBugTracker() {
-		return onDemandBugTracker("bugTracker");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandCustomTags() {
-		return onDemandCustomTags("customTags");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandFilterSets() {
-		return onDemandFilterSets("filterSets");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandIssueSearchOptions() {
-		return onDemandIssueSearchOptions("issueSearchOptions");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandPerformanceIndicatorHistories() {
-		return onDemandPerformanceIndicatorHistories("performanceIndicatorHistories");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandVariableHistories() {
-		return onDemandVariableHistories("variableHistories");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandResponsibilities() {
-		return onDemandResponsibilities("responsibilities");
-	}
-	
-	public SSCApplicationVersionsQueryBuilder onDemandResultProcessingRules() {
-		return onDemandResultProcessingRules("processingRules");
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/attributes"})
-	public SSCApplicationVersionsQueryBuilder onDemandAttributes(String propertyName) {
-		return onDemand(propertyName, "/api/v1/projectVersions/${id}/attributes");
-	}
-	
-	/**
-	 * Add on-demand attribute for all application version attribute values by name.
-	 * Attributes without any value will be excluded from the result.
-	 * @param propertyName
-	 * @return
-	 */
-	public SSCApplicationVersionsQueryBuilder onDemandAttributeValuesByName(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderAttributeValuesByName(getConn())));
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/bugtracker"})
-	public SSCApplicationVersionsQueryBuilder onDemandBugTracker(String propertyName, String... fields) {
-		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/bugtracker", fields));
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/customTags"})
-	public SSCApplicationVersionsQueryBuilder onDemandCustomTags(String propertyName, String... fields) {
-		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/customTags", fields));
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/filterSets"})
-	public SSCApplicationVersionsQueryBuilder onDemandFilterSets(String propertyName) {
-		return onDemand(propertyName, "/api/v1/projectVersions/${id}/filterSets");
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/issueSearchOptions"})
-	public SSCApplicationVersionsQueryBuilder onDemandIssueSearchOptions(String propertyName, String... fields) {
-		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/issueSearchOptions", fields));
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/performanceIndicatorHistories"})
-	public SSCApplicationVersionsQueryBuilder onDemandPerformanceIndicatorHistories(String propertyName, String... fields) {
-		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/performanceIndicatorHistories", fields));
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/variableHistories"})
-	public SSCApplicationVersionsQueryBuilder onDemandVariableHistories(String propertyName, String... fields) {
-		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/variableHistories", fields));
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/responsibilities"})
-	public SSCApplicationVersionsQueryBuilder onDemandResponsibilities(String propertyName) {
-		return onDemand(propertyName, "/api/v1/projectVersions/${id}/responsibilities");
-	}
-	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/resultProcessingRules"})
-	public SSCApplicationVersionsQueryBuilder onDemandResultProcessingRules(String propertyName, String... fields) {
-		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/resultProcessingRules", fields));
-	}
-	
-	private static final class SSCJSONMapOnDemandLoaderAttributeValuesByName extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
-		private static final long serialVersionUID = 1L;
-
-		public SSCJSONMapOnDemandLoaderAttributeValuesByName(SSCAuthenticatingRestConnection conn) {
-			super(conn, true);
-		}
-		
-		@Override @SSCCopyToConstructors
-		public Object getOnDemand(SSCAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
-			return conn.api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class));
-		}
-		
-		@Override
-		protected Class<SSCAuthenticatingRestConnection> getConnectionClazz() {
-			return SSCAuthenticatingRestConnection.class;
-		}
-		
 	}
 }
