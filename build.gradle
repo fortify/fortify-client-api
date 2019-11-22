@@ -106,7 +106,7 @@ allprojects {
 				entry 'client-api-wie'
 			}
 			
-			dependencySet(group:'org.springframework', version: '4.3.22.RELEASE') {
+			dependencySet(group:'org.springframework', version: '5.2.1.RELEASE') {
 				entry 'spring-beans'
 				entry 'spring-core'
 				entry 'spring-expression'
