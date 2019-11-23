@@ -28,6 +28,7 @@ import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeAPI;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
@@ -41,6 +42,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 
 	protected static final class SSCJSONMapOnDemandLoaderAttributeValuesByName extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
 			private static final long serialVersionUID = 1L;
+			private volatile JSONList attrDefs;
 	
 			public SSCJSONMapOnDemandLoaderAttributeValuesByName(SSCAuthenticatingRestConnection conn) {
 				super(conn, true);
@@ -48,7 +50,10 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 			
 			@Override @SSCCopyToConstructors
 			public Object getOnDemand(SSCAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
-				return conn.api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class));
+				if ( attrDefs==null ) {
+					attrDefs = conn.api(SSCAttributeAPI.class).getAttributeDefinitions(true, "guid","name");
+				}
+				return conn.api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class), attrDefs);
 			}
 			
 			@Override

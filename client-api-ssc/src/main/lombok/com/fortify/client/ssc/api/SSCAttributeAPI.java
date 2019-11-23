@@ -79,14 +79,22 @@ public class SSCAttributeAPI extends AbstractSSCAPI {
 	/**
 	 * Get all application version attribute values for the given application version,
 	 * indexed by attribute name. Attributes without any value will not be included
-	 * in the result.
+	 * in the result. Note that this method is not efficient if invoked for multiple
+	 * application versions when caching is disabled. In general, it is better to 
+	 * (temporarily) store the results of {@link #getAttributeDefinitions(boolean, String...)},
+	 * and then call {@link #getApplicationVersionAttributeValuesByName(String, JSONList)}
+	 * using the stored attribute definitions. 
 	 * @param applicationVersionId
 	 * @return
 	 */
 	public JSONMap getApplicationVersionAttributeValuesByName(String applicationVersionId) {
+		JSONList attrDefs = getAttributeDefinitions(true, "guid","name");
+		return getApplicationVersionAttributeValuesByName(applicationVersionId, attrDefs);
+	}
+
+	public JSONMap getApplicationVersionAttributeValuesByName(String applicationVersionId, JSONList attrDefs) {
 		JSONMap result = new JSONMap();
 		JSONList attrs = getApplicationVersionAttributes(applicationVersionId, true, "guid","value","values");
-		JSONList attrDefs = getAttributeDefinitions(true, "guid","name");
 		for ( JSONMap attr : attrs.asValueType(JSONMap.class) ) {
 			String attrName = attrDefs.mapValue("guid", attr.get("guid", String.class), "name", String.class);
 			JSONList attrValues = attr.get("values", JSONList.class);
