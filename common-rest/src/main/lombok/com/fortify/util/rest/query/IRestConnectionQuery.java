@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.util.rest.query;
 
+import java.util.function.Consumer;
+
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.processor.IJSONMapProcessor;
@@ -44,6 +46,13 @@ public interface IRestConnectionQuery {
 	 * @param processor
 	 */
 	void processAll(IJSONMapProcessor processor);
+	
+	/** 
+	 * Same as {@link #processAll(IJSONMapProcessor)}, but using lambda
+	 * expressions.
+	 * @param processor
+	 */
+	void processAll(Consumer<JSONMap> processor);
 
 	/**
 	 * Get all results from the REST API call

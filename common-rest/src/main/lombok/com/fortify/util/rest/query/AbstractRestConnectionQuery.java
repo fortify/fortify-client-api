@@ -26,6 +26,7 @@ package com.fortify.util.rest.query;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -34,6 +35,7 @@ import com.fortify.util.rest.connection.IRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
+import com.fortify.util.rest.json.processor.AbstractJSONMapProcessor;
 import com.fortify.util.rest.json.processor.IJSONMapProcessor;
 import com.fortify.util.rest.json.processor.JSONMapsToJSONListProcessor;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
@@ -83,6 +85,17 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	@Override
 	public void processAll(IJSONMapProcessor processor) {
 		processAll(getWebTarget(), new PagingData().maxResults(maxResults), processor);
+	}
+	
+	@Override
+	public void processAll(final Consumer<JSONMap> processor) {
+		processAll(new AbstractJSONMapProcessor() {
+			
+			@Override
+			public void process(JSONMap json) {
+				processor.accept(json);
+			}
+		});
 	}
 
 	/* (non-Javadoc)
