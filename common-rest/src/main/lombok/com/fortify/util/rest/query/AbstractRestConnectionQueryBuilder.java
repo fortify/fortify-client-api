@@ -27,11 +27,13 @@ package com.fortify.util.rest.query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.util.rest.connection.IRestConnection;
+import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
@@ -108,6 +110,15 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 		}
 		this.preProcessors.add(preProcessor);
 		return _this();
+	}
+	
+	public T preProcessor(final Function<JSONMap, Boolean> preProcessor) {
+		return preProcessor(new IJSONMapPreProcessor() {
+			@Override
+			public boolean preProcess(JSONMap json) {
+				return preProcessor.apply(json);
+			}
+		});
 	}
 	
 	public T maxResults(Integer maxResults) {
