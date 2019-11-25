@@ -148,6 +148,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	
 	@Getter private final URI baseUrl;
 	@Getter private final boolean useCache;
+	@Getter private final boolean multiThreaded;
 	private final ProxyConfig proxy;
 	private final Map<String, Object> connectionProperties;
 	@Getter private final String connectionId;
@@ -158,6 +159,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		initCache();
 		this.baseUrl = config.getBaseUrl();
 		this.useCache = config.isUseCache();
+		this.multiThreaded = config.isMultiThreaded();
 		this.proxy = config.getProxy();
 		this.connectionProperties = config.getConnectionProperties();
 		this.connectionId = this.getClass().getName()+config.getConnectionId();
@@ -202,7 +204,17 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 * @return The result of executing the HTTP request.
 	 */
 	public <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType) {
-		return executeRequest(httpMethod, updateWebTarget(webResource).request(), entity, returnType);
+		return executeRequestWithFinalizedWebTarget(httpMethod, updateWebTarget(webResource), entity, returnType);
+	}
+	
+	/**
+	 * This method may be overridden by subclasses if they need to do any final
+	 * processing based on the given {@link WebTarget}, before the {@link WebTarget} 
+	 * is converted into a {@link Builder}. For example, a subclass could synchronize
+	 * on the target URI for rate-limited systems. 
+	 */
+	protected <T> T executeRequestWithFinalizedWebTarget(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType) {
+		return executeRequest(httpMethod, webResource.request(), entity, returnType);
 	}
 	
 	/**

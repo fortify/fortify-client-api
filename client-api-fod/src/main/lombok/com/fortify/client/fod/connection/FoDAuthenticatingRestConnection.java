@@ -59,8 +59,13 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	 */
 	@Override
 	public Builder updateBuilder(Builder builder) {
+		// If the multiThreaded flag is enabled, use the
+		// synchronized variant of getToken()
+		String token = isMultiThreaded() 
+				? tokenProvider.getTokenSynchronized()
+				: tokenProvider.getToken();
 		return super.updateBuilder(builder)
-				.header("Authorization", "Bearer "+tokenProvider.getToken());
+				.header("Authorization", "Bearer "+token);
 	}
 	
 	/**

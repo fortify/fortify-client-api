@@ -32,4 +32,5 @@ package com.fortify.client.ssc.connection;
  */
 public interface ISSCTokenFactory {
 	public String getToken();
+	public String getTokenSynchronized();
 }

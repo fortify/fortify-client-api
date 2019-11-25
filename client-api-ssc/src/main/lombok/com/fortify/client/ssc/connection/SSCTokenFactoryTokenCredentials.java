@@ -40,10 +40,15 @@ public final class SSCTokenFactoryTokenCredentials implements ISSCTokenFactory {
 		this.token = Base64.encodeBase64String(token.getBytes());
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.fortify.ssc.connection.ISSCTokenFactory#getToken()
-	 */
+	@Override
 	public String getToken() {
+		return token;
+	}
+	
+	// We don't need to make this method synchronized in this case,
+	// as we just return the configured token.
+	@Override
+	public String getTokenSynchronized() {
 		return token;
 	}
 }

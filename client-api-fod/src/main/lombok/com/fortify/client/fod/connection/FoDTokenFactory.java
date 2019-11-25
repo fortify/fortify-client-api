@@ -58,6 +58,10 @@ public final class FoDTokenFactory {
 		this.basicConn = basicConn;
 		this.auth = auth;
 	}
+	
+	public synchronized String getTokenSynchronized() {
+		return getToken();
+	}
 
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {

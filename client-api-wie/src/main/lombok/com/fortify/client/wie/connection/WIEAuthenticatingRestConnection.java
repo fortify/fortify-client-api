@@ -76,12 +76,25 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 	@Override
 	protected WebTarget updateWebTarget(WebTarget webTarget) {
 		webTarget = super.updateWebTarget(webTarget);
+		// If the multiThreaded flag is enabled, use the
+		// synchronized variant of getApiKey()
+		String apiKey = isMultiThreaded() 
+				? getApiKeySynchronized()
+				: getApiKey();
+		return webTarget.queryParam("api_key", apiKey);
+	}
+	
+	private synchronized final String getApiKeySynchronized() {
+		return getApiKey();
+	}
+
+	private final String getApiKey() {
 		if ( apiKey == null ) {
 			apiKey = basicConn.executeRequest(HttpMethod.POST, getBaseResource().path("/api/v1/auth"),
 							Entity.entity(auth, MediaType.APPLICATION_JSON), JSONMap.class)
 					.get("data", String.class);
 		}
-		return webTarget.queryParam("api_key", apiKey);
+		return apiKey;
 	}
 	
 	public void uploadTempFile(String sessionId, String fileId, int fileType, File file) {

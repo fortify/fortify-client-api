@@ -24,7 +24,12 @@
  ******************************************************************************/
 package com.fortify.client.fod.connection;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 
@@ -34,21 +39,46 @@ import com.fortify.util.rest.connection.TooManyRequestsRetryStrategy;
 /**
  * This class provides a basic, non-authenticating REST connection
  * for FoD. It's main characteristics compared to a standard 
- * {@link AbstractRestConnection} is that it will add an 
- * <code>Accept: application/json</code> header, and enable a 
- * 'service unavailable' strategy to retry requests that fail 
- * due to FoD rate limiting.
+ * {@link AbstractRestConnection}:
+ * <ul>
+ *  <li>Add an <code>Accept: application/json</code> header</li>
+ *  <li>Enable a 'service unavailable' strategy to retry requests 
+ *      that fail due to FoD rate limiting</li>
+ *  <li>Optimize the number of REST requests being sent to FoD
+ *      in a multi-threaded application (don't send new request
+ *      if another similar request is already waiting for a rate limit
+ *      to expire)</li>
+ * </ul>
+ * 
+ * Note that multi-threading optimization is only provided on the 
+ * {@link WebTarget}-based execute methods. Clients calling the
+ * {@link #executeRequest(String, Builder, Class)} or
+ * {@link #executeRequest(String, WebTarget, Entity, Class)} methods
+ * must provide their on thread synchronization if applicable.
  */
 public class FoDBasicRestConnection extends AbstractRestConnection {
-	
-	private final TooManyRequestsRetryStrategy rateLimitRetryStrategy;
+	private final Map<String, Object> pathMutexes = new HashMap<>();
+	private final int rateLimitMaxRetries;
 
 	protected FoDBasicRestConnection(FoDRestConnectionConfig<?> config) {
 		super(config);
-		this.rateLimitRetryStrategy = new TooManyRequestsRetryStrategy()
-				.retryAfterHeaderName("X-Rate-Limit-Reset")
-				.logPrefix("[FoD]")
-				.maxRetries(config.getRateLimitMaxRetries());
+		this.rateLimitMaxRetries = config.getRateLimitMaxRetries();
+	}
+	
+	protected final Object getMutex(final String path) {
+		String pathWithoutIds = path.replaceAll("\\d", "x");
+		return pathMutexes.computeIfAbsent(pathWithoutIds, key->new Object());
+	}
+	
+	@Override
+	protected <T> T executeRequestWithFinalizedWebTarget(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType) {
+		if ( !isMultiThreaded() ) {
+			return super.executeRequestWithFinalizedWebTarget(httpMethod, webResource, entity, returnType);
+		} else {
+			synchronized (getMutex(webResource.getUri().getPath())) {
+				return super.executeRequestWithFinalizedWebTarget(httpMethod, webResource, entity, returnType);
+			}
+		}
 	}
 	
 	/**
@@ -62,6 +92,9 @@ public class FoDBasicRestConnection extends AbstractRestConnection {
 	
 	@Override
 	protected ServiceUnavailableRetryStrategy getServiceUnavailableRetryStrategy() {
-		return rateLimitRetryStrategy;
+		return new TooManyRequestsRetryStrategy()
+				.retryAfterHeaderName("X-Rate-Limit-Reset")
+				.logPrefix("[FoD]")
+				.maxRetries(rateLimitMaxRetries);
 	}
 }

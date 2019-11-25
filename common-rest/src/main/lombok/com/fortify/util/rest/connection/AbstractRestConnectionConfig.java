@@ -43,6 +43,9 @@ import lombok.EqualsAndHashCode;
 /**
  * This abstract base class allows for configuring {@link AbstractRestConnection} instances
  * by setting properties like base URL, proxy configuration and additional connection properties.
+ * If a connection instance may be used by multiple threads, the {@link #multiThreaded(boolean)}
+ * flag should be set to true to allow the connection instance to enable multi-threading
+ * features.
  * 
  * @author Ruud Senden
  *
@@ -52,6 +55,7 @@ import lombok.EqualsAndHashCode;
 public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnectionConfig<T>> {
 	private URI baseUrl;
 	private boolean useCache = true;
+	private boolean multiThreaded = false;
 	private ProxyConfig proxy = new ProxyConfig();
 	private Map<String, Object> connectionProperties;
 	private String connectionId = UUID.randomUUID().toString();
@@ -63,6 +67,11 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	
 	public T useCache(boolean useCache) {
 		setUseCache(useCache);
+		return getThis();
+	}
+	
+	public T multiThreaded(boolean multiThreaded) {
+		setMultiThreaded(multiThreaded);
 		return getThis();
 	}
 	

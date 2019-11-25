@@ -60,6 +60,11 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 		this.password = password;
 	}
 	
+	@Override
+	public synchronized String getTokenSynchronized() {
+		return getToken();
+	}
+	
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {
 			String authHeaderValue = "Basic "+Base64.encodeBase64String((userName+":"+password).getBytes());

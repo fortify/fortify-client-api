@@ -79,8 +79,13 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	 */
 	@Override
 	public Builder updateBuilder(Builder builder) {
+		// If the multiThreaded flag is enabled, use the
+		// synchronized variant of getToken()
+		String token = isMultiThreaded() 
+				? tokenFactory.getTokenSynchronized()
+				: tokenFactory.getToken();
 		return super.updateBuilder(builder)
-				.header("Authorization", "FortifyToken "+tokenFactory.getToken());
+				.header("Authorization", "FortifyToken "+token);
 	}
 	
 	/**
