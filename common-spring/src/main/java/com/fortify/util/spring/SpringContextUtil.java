@@ -43,6 +43,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import com.fortify.util.spring.expression.SimpleExpression;
+import com.fortify.util.spring.expression.SimpleExpressionEditor;
+import com.fortify.util.spring.expression.TemplateExpression;
+import com.fortify.util.spring.expression.TemplateExpressionEditor;
+
 /**
  * This class provides utility methods for working with Spring {@link ApplicationContext} instances,
  * like reading {@link ApplicationContext} data from XML configuration files and managing related
@@ -61,6 +66,16 @@ public final class SpringContextUtil {
 	 * Automatically load all {@link PropertyEditorWithTargetClass} implementations
 	 * (annotated with {@link Component}) from 
 	 * com.fortify.util.spring.propertyeditor (sub-)packages. 
+	 * 
+	 * TODO Seems like this was mostly used for {@link TemplateExpressionEditor} and
+	 *      {@link SimpleExpressionEditor}; not sure why we didn't just place these
+	 *      classes in the same package as {@link TemplateExpression} and 
+	 *      {@link SimpleExpression}, as we have done now. This needs to be carefully
+	 *      tested for all integrations, but if this works, then the following can
+	 *      be deleted from this class:
+	 *      - getPropertyEditors() method
+	 *      - PROPERTY_EDITORS constant
+	 *      - CustomEditorConfigurer in getBaseContext() method
 	 * @return
 	 */
 	private static final Map<Class<?>, Class<? extends PropertyEditor>> getPropertyEditors() {

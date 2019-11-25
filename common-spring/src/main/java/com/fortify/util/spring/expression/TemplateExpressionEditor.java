@@ -22,7 +22,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.spring.propertyeditor;
+package com.fortify.util.spring.expression;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
@@ -31,20 +31,20 @@ import org.springframework.stereotype.Component;
 
 import com.fortify.util.spring.SpringExpressionUtil;
 import com.fortify.util.spring.SpringContextUtil.PropertyEditorWithTargetClass;
-import com.fortify.util.spring.expression.SimpleExpression;
 
 /**
- * This {@link PropertyEditor} allows parsing String values into an 
- * SPeL Expression object.
+ * This {@link PropertyEditor} allows parsing String values into a 
+ * TemplateExpression object.
  */
 @Component
-public final class SimpleExpressionPropertyEditor extends PropertyEditorSupport implements PropertyEditorWithTargetClass {
+public final class TemplateExpressionEditor extends PropertyEditorSupport implements PropertyEditorWithTargetClass {
 	public void setAsText(String text) {
-        SimpleExpression expression = SpringExpressionUtil.parseSimpleExpression(text);
+        TemplateExpression expression = SpringExpressionUtil.parseTemplateExpression(text);
         setValue(expression);
     }
     
     public Class<?> getTargetClass() {
-    	return SimpleExpression.class;
+    	return TemplateExpression.class;
     }
+
 }
