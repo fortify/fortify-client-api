@@ -104,7 +104,7 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	 * 
 	 * @author Ruud Senden
 	 */
-	public static final class SSCAuthenticatingRestConnectionBuilder extends SSCRestConnectionConfig<SSCAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<SSCAuthenticatingRestConnection> {
+	public static class SSCAuthenticatingRestConnectionBuilder extends SSCRestConnectionConfig<SSCAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<SSCAuthenticatingRestConnection> {
 		@Override
 		public SSCAuthenticatingRestConnection build() {
 			return new SSCAuthenticatingRestConnection(this);

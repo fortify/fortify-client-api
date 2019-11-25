@@ -127,7 +127,7 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 		return new WIEAuthenticatingRestConnectionBuilder();
 	}
 	
-	public static final class WIEAuthenticatingRestConnectionBuilder extends AbstractRestConnectionWithUsernamePasswordConfig<WIEAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<WIEAuthenticatingRestConnection> {
+	public static class WIEAuthenticatingRestConnectionBuilder extends AbstractRestConnectionWithUsernamePasswordConfig<WIEAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<WIEAuthenticatingRestConnection> {
 		@Override
 		public WIEAuthenticatingRestConnection build() {
 			return new WIEAuthenticatingRestConnection(this);

@@ -84,7 +84,7 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	 * 
 	 * @author Ruud Senden
 	 */
-	public static final class FoDAuthenticatingRestConnectionBuilder extends FoDRestConnectionConfig<FoDAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<FoDAuthenticatingRestConnection> {
+	public static class FoDAuthenticatingRestConnectionBuilder extends FoDRestConnectionConfig<FoDAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<FoDAuthenticatingRestConnection> {
 		@Override
 		public FoDAuthenticatingRestConnection build() {
 			return new FoDAuthenticatingRestConnection(this);

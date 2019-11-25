@@ -59,7 +59,7 @@ public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestC
 		return new WebInspectAuthenticatingRestConnectionBuilder();
 	}
 	
-	public static final class WebInspectAuthenticatingRestConnectionBuilder extends WebInspectRestConnectionConfig<WebInspectAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<WebInspectAuthenticatingRestConnection> {
+	public static class WebInspectAuthenticatingRestConnectionBuilder extends WebInspectRestConnectionConfig<WebInspectAuthenticatingRestConnectionBuilder> implements IRestConnectionBuilder<WebInspectAuthenticatingRestConnection> {
 		@Override
 		public WebInspectAuthenticatingRestConnection build() {
 			return new WebInspectAuthenticatingRestConnection(this);
