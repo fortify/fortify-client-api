@@ -78,6 +78,10 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 		return super.paramFilterAnd("applicationType", applicationType);
 	}
 	
+	public FoDApplicationsQueryBuilder onDemandAll() {
+		return onDemandAttributesMap().onDemandBugTracker().onDemandReleases();
+	}
+	
 	public FoDApplicationsQueryBuilder onDemandAttributesMap() {
 		return onDemandAttributesMap("attributesMap");
 	}

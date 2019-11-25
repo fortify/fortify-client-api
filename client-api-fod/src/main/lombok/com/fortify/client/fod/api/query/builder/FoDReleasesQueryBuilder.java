@@ -136,6 +136,10 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		return super.paramFilterAnd("isPassed", Boolean.toString(isPassed));
 	}
 	
+	public FoDReleasesQueryBuilder onDemandAll() {
+		return onDemandApplication();
+	}
+	
 	public FoDReleasesQueryBuilder onDemandApplication() {
 		return onDemandApplication("application");
 	}
