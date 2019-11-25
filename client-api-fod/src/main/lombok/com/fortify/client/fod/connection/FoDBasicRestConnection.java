@@ -40,8 +40,15 @@ import com.fortify.util.rest.connection.TooManyRequestsRetryStrategy;
  * due to FoD rate limiting.
  */
 public class FoDBasicRestConnection extends AbstractRestConnection {
+	
+	private final TooManyRequestsRetryStrategy rateLimitRetryStrategy;
+
 	protected FoDBasicRestConnection(FoDRestConnectionConfig<?> config) {
 		super(config);
+		this.rateLimitRetryStrategy = new TooManyRequestsRetryStrategy()
+				.retryAfterHeaderName("X-Rate-Limit-Reset")
+				.logPrefix("[FoD]")
+				.maxRetries(config.getRateLimitMaxRetries());
 	}
 	
 	/**
@@ -55,6 +62,6 @@ public class FoDBasicRestConnection extends AbstractRestConnection {
 	
 	@Override
 	protected ServiceUnavailableRetryStrategy getServiceUnavailableRetryStrategy() {
-		return new TooManyRequestsRetryStrategy().retryAfterHeaderName("X-Rate-Limit-Reset").logPrefix("[FoD]");
+		return rateLimitRetryStrategy;
 	}
 }

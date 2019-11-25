@@ -46,9 +46,8 @@ public final class TooManyRequestsRetryStrategy implements ServiceUnavailableRet
 	private static final Log LOG = LogFactory.getLog(TooManyRequestsRetryStrategy.class);
 	private String retryAfterHeaderName = "X-Retry-After";
 	private String logPrefix = "";
-	private ThreadLocal<Long> interval = null;
-	
-	public TooManyRequestsRetryStrategy() {}
+	private int maxRetries = 1;
+	private final ThreadLocal<Long> interval = new ThreadLocal<Long>();
 	
 	public TooManyRequestsRetryStrategy retryAfterHeaderName(String retryAfterHeaderName) {
 		this.retryAfterHeaderName = retryAfterHeaderName;
@@ -59,17 +58,16 @@ public final class TooManyRequestsRetryStrategy implements ServiceUnavailableRet
 		this.logPrefix = logPrefix+" ";
 		return this;
 	}
+	
+	public TooManyRequestsRetryStrategy maxRetries(int maxRetries) {
+		this.maxRetries = maxRetries;
+		return this;
+	}
 
-	public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) {
-		// TODO Temporary executionCount work-around for FoD issues; should check executionCount<2 
-		if ( executionCount < 5 && response.getStatusLine().getStatusCode()==429 ) {
+	public boolean retryRequest(HttpResponse response, int executionCount, HttpContext context) { 
+		if ( executionCount < maxRetries+1 && response.getStatusLine().getStatusCode()==429 ) {
 			int retrySeconds = Integer.parseInt(response.getFirstHeader(retryAfterHeaderName).getValue());
-			// TODO Temporary work-around for FoD returning negative numbers
-			if ( retrySeconds < 0 ) {
-				retrySeconds = 1;
-			}
 			LOG.info(logPrefix+"Rate-limited request will be retried after "+retrySeconds+" seconds");
-			interval = new ThreadLocal<Long>();
 			interval.set((long)retrySeconds*1000);
 			return true;
 		}
@@ -77,8 +75,7 @@ public final class TooManyRequestsRetryStrategy implements ServiceUnavailableRet
 	}
 
 	public long getRetryInterval() {
-		long result = interval==null ? -1 : interval.get();
-		interval = null;
-		return result;
+		Long result = interval.get();
+		return result==null ? -1 : result;
 	}
 }

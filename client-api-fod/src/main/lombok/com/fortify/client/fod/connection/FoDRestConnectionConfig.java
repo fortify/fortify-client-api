@@ -53,6 +53,7 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 	private String clientSecret;
 	private String tenant;
 	private URI    browserBaseUrl;
+	private int    rateLimitMaxRetries = 5;
 	
 	public T clientId(String clientId) {
 		setClientId(clientId);
@@ -66,6 +67,11 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 	
 	public T tenant(String tenant) {
 		setTenant(tenant);
+		return getThis();
+	}
+	
+	public T rateLimitMaxRetries(int rateLimitMaxRetries) {
+		setRateLimitMaxRetries(rateLimitMaxRetries);
 		return getThis();
 	}
 	
