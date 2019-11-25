@@ -39,6 +39,7 @@ import com.google.common.base.Splitter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * This abstract base class allows for configuring {@link AbstractRestConnection} instances
@@ -51,7 +52,7 @@ import lombok.EqualsAndHashCode;
  *
  * @param <T>
  */
-@Data @EqualsAndHashCode(callSuper=false)
+@Data @EqualsAndHashCode(callSuper=false) @ToString(callSuper=false)
 public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnectionConfig<T>> {
 	private URI baseUrl;
 	private boolean useCache = true;

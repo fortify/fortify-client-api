@@ -35,6 +35,7 @@ import com.fortify.util.rest.connection.AbstractRestConnectionWithUsernamePasswo
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * This class extends {@link AbstractRestConnectionWithUsernamePasswordConfig}, adding 
@@ -46,7 +47,7 @@ import lombok.EqualsAndHashCode;
  *
  * @param <T>
  */
-@Data @EqualsAndHashCode(callSuper=true)
+@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
 	private String scope = "api-tenant";
 	private String clientId;

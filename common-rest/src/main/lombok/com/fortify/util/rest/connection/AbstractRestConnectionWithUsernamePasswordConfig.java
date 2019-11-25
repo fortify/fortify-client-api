@@ -28,6 +28,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * This {@link AbstractRestConnectionConfig} implementation adds properties for
@@ -38,7 +39,7 @@ import lombok.EqualsAndHashCode;
  *
  * @param <T>
  */
-@Data @EqualsAndHashCode(callSuper=true)
+@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public abstract class AbstractRestConnectionWithUsernamePasswordConfig<T extends AbstractRestConnectionWithUsernamePasswordConfig<T>> extends AbstractRestConnectionConfig<T> {
 	private String userName;
 	private String password;

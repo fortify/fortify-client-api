@@ -28,6 +28,7 @@ import com.fortify.util.rest.connection.AbstractRestConnectionConfig;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * This class extends {@link AbstractRestConnectionConfig}, adding functionality
@@ -37,7 +38,7 @@ import lombok.EqualsAndHashCode;
  *
  * @param <T>
  */
-@Data @EqualsAndHashCode(callSuper=true)
+@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public class WebInspectRestConnectionConfig<T extends WebInspectRestConnectionConfig<T>> extends AbstractRestConnectionConfig<T> {
 	private String apiKey;
 	
