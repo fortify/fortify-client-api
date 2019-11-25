@@ -73,9 +73,9 @@ class JSONMapProcessorWithPreProcessorsAndPagingSupport implements IJSONMapProce
 	 */
 	@Override
 	public void process(JSONMap json) {
-		pagingData.addProcessed(1);
+		pagingData.addProcessedBeforeFilters(1);
 		if ( !pagingData.isMaxResultsReached() && preProcess(json) ) {
-			pagingData.addProcessedNotFiltered(1);
+			pagingData.addProcessedAfterFilters(1);
 			processor.process(json);
 		}
 	}
