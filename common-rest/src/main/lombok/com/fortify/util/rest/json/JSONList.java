@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -214,6 +215,19 @@ public class JSONList extends ArrayList<Object> {
 		return expressionResult==matchValue || (matchValue!=null && matchValue.equals(expressionResult));
 	}
 	
+	public void forEachBlock(int blockSize, Consumer<JSONList> action) {
+		int size = size();
+		for ( int i = 0 ; i < size ; i+=blockSize ) {
+			action.accept(new JSONList(subList(i, Math.min(size, i+blockSize))));
+		}
+	}
+	
+	public JSONMap addNewJSONMap() {
+		JSONMap jsonMap = new JSONMap();
+		add(jsonMap);
+		return jsonMap;
+	}
+	
 	/**
 	 * Return a JSON string representation of this {@link JSONList} instance. Note that
 	 * this is on a best-effort basis; the return value may not always be valid JSON.
@@ -238,5 +252,13 @@ public class JSONList extends ArrayList<Object> {
 		} catch (JsonProcessingException e) {
 			return super.toString();
 		}
+	}
+
+	/**
+	 * @see #get(int)
+	 * This overloaded method adds support for converting the value to the given type.
+	 */
+	public <T> T get(int index, Class<T> type) {
+		return JSONConversionServiceFactory.getConversionService().convert(get(index), type);
 	}
 }

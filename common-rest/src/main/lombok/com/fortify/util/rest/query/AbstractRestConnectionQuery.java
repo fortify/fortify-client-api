@@ -59,6 +59,7 @@ import com.fortify.util.rest.webtarget.IWebTargetUpdater;
 public abstract class AbstractRestConnectionQuery<ResponseType> implements IRestConnectionQuery {
 	private final IRestConnection conn;
 	private final List<IWebTargetUpdater> webTargetUpdaters;
+	private final List<Consumer<JSONList>> pagePreProcessors;
 	private final List<IJSONMapPreProcessor> preProcessors;
 	private final int maxResults;
 	private final boolean useCache;
@@ -70,6 +71,7 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	protected AbstractRestConnectionQuery(AbstractRestConnectionQueryBuilder<?, ?> config) {
 		this.conn = config.getConn();
 		this.webTargetUpdaters = Collections.unmodifiableList(config.getWebTargetUpdaters());
+		this.pagePreProcessors =  Collections.unmodifiableList(config.getPagePreProcessors());
 		this.preProcessors =  Collections.unmodifiableList(config.getPreProcessors());
 		this.maxResults = config.getMaxResults();
 		this.useCache = config.isUseCache();
@@ -214,6 +216,9 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor, PagingData pagingData) {
 		ResponseType data = executeRequest(target);
 		JSONList list = getJSONListFromResponse(data);
+		for (Consumer<JSONList> pagePreProcessor : pagePreProcessors ) {
+			pagePreProcessor.accept(list);
+		}
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
 				if ( pagingData.isMaxResultsReached() ) { break; }

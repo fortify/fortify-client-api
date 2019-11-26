@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
+import java.util.function.Consumer;
+
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeAPI;
@@ -39,123 +41,263 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	public AbstractSSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
 	}
-
-	protected static final class SSCJSONMapOnDemandLoaderAttributeValuesByName extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
-			private static final long serialVersionUID = 1L;
-			private volatile JSONList attrDefs;
 	
-			public SSCJSONMapOnDemandLoaderAttributeValuesByName(SSCAuthenticatingRestConnection conn) {
-				super(conn, true);
-			}
-			
-			@Override @SSCCopyToConstructors
-			public Object getOnDemand(SSCAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
-				if ( attrDefs==null ) {
-					attrDefs = conn.api(SSCAttributeAPI.class).getAttributeDefinitions(true, "guid","name");
-				}
-				return conn.api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class), attrDefs);
-			}
-			
-			@Override
-			protected Class<SSCAuthenticatingRestConnection> getConnectionClazz() {
-				return SSCAuthenticatingRestConnection.class;
-			}
-			
+	public T embedSubEntity(String entityName, boolean onDemand, String... fields) {
+		return embed(entityName, "/api/v1/projectVersions/${id}/"+entityName, onDemand, fields);
+	}
+	
+	public T embedAttributeValuesByName(boolean onDemand) {
+		if ( onDemand ) {
+			return preProcessor(new JSONMapEnrichWithOnDemandProperty("attributeValuesByName", 
+				new SSCJSONMapOnDemandLoaderAttributeValuesByName(getConn())));
+		} else {
+			embedSubEntity("attributes", onDemand, "guid", "value", "values");
+			return pagePreProcessor(new SSCJSONListAddAttributeValuesByName(getConn(), "attributeValuesByName"));
 		}
+	}
+	
+	/**
+	 * Use {@link #embedAttributeValuesByName()}
+	 * @return
+	 */
+	@Deprecated 
+	public T onDemandAttributeValuesByName() {
+		return onDemandAttributeValuesByName("attributeValuesByName");
+	}
+	
+	/**
+	 * Add on-demand attribute for all application version attribute values by name.
+	 * Attributes without any value will be excluded from the result.
+	 * 
+	 * Use {@link #embedAttributeValuesByName(boolean)} instead
+	 * @param propertyName
+	 * @return
+	 */
+	// TODO Add support for pre-loading instead of on-demand
+	@Deprecated
+	public T onDemandAttributeValuesByName(String propertyName) {
+		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
+				new SSCJSONMapOnDemandLoaderAttributeValuesByName(getConn())));
+	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandAttributes() {
 		return onDemandAttributes("attributes");
 	}
 
-	public T onDemandAttributeValuesByName() {
-		return onDemandAttributeValuesByName("attributeValuesByName");
-	}
-
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandBugTracker() {
 		return onDemandBugTracker("bugTracker");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandCustomTags() {
 		return onDemandCustomTags("customTags");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandFilterSets() {
 		return onDemandFilterSets("filterSets");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandIssueSearchOptions() {
 		return onDemandIssueSearchOptions("issueSearchOptions");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandPerformanceIndicatorHistories() {
 		return onDemandPerformanceIndicatorHistories("performanceIndicatorHistories");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandVariableHistories() {
 		return onDemandVariableHistories("variableHistories");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandResponsibilities() {
 		return onDemandResponsibilities("responsibilities");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public T onDemandResultProcessingRules() {
 		return onDemandResultProcessingRules("processingRules");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/attributes" })
 	public T onDemandAttributes(String propertyName) {
 		return onDemand(propertyName, "/api/v1/projectVersions/${id}/attributes");
 	}
 
 	/**
-	 * Add on-demand attribute for all application version attribute values by name.
-	 * Attributes without any value will be excluded from the result.
-	 * @param propertyName
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
 	 * @return
 	 */
-	public T onDemandAttributeValuesByName(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderAttributeValuesByName(getConn())));
-	}
-
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/bugtracker" })
 	public T onDemandBugTracker(String propertyName, String... fields) {
 		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/bugtracker", fields));
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/customTags" })
 	public T onDemandCustomTags(String propertyName, String... fields) {
 		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/customTags", fields));
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/filterSets" })
 	public T onDemandFilterSets(String propertyName) {
 		return onDemand(propertyName, "/api/v1/projectVersions/${id}/filterSets");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/issueSearchOptions" })
 	public T onDemandIssueSearchOptions(String propertyName, String... fields) {
 		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/issueSearchOptions", fields));
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/performanceIndicatorHistories" })
 	public T onDemandPerformanceIndicatorHistories(String propertyName, String... fields) {
 		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/performanceIndicatorHistories", fields));
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/variableHistories" })
 	public T onDemandVariableHistories(String propertyName, String... fields) {
 		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/variableHistories", fields));
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/responsibilities" })
 	public T onDemandResponsibilities(String propertyName) {
 		return onDemand(propertyName, "/api/v1/projectVersions/${id}/responsibilities");
 	}
 
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/resultProcessingRules" })
 	public T onDemandResultProcessingRules(String propertyName, String... fields) {
 		return onDemand(propertyName, appendOnDemandFields("/api/v1/projectVersions/${id}/resultProcessingRules", fields));
+	}
+	
+	protected static final class SSCJSONMapOnDemandLoaderAttributeValuesByName extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
+		private static final long serialVersionUID = 1L;
+		private volatile JSONList attrDefs;
+
+		public SSCJSONMapOnDemandLoaderAttributeValuesByName(SSCAuthenticatingRestConnection conn) {
+			super(conn, true);
+		}
+		
+		@Override @SSCCopyToConstructors
+		public Object getOnDemand(SSCAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
+			if ( attrDefs==null ) {
+				attrDefs = conn.api(SSCAttributeAPI.class).getAttributeDefinitions(true, "guid","name");
+			}
+			return conn.api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class), attrDefs);
+		}
+		
+		@Override
+		protected Class<SSCAuthenticatingRestConnection> getConnectionClazz() {
+			return SSCAuthenticatingRestConnection.class;
+		}
+	}
+	
+	protected static final class SSCJSONListAddAttributeValuesByName implements Consumer<JSONList> {
+		private final SSCAuthenticatingRestConnection conn;
+		private final String propertyName;
+		private volatile JSONList attrDefs;
+		
+		public SSCJSONListAddAttributeValuesByName(SSCAuthenticatingRestConnection conn, String propertyName) {
+			this.conn = conn;
+			this.propertyName = propertyName;
+		}
+		@Override
+		public void accept(JSONList list) {
+			getAttributeDefinitions();
+			list.asValueType(JSONMap.class).forEach(this::addAttributeValuesByName);
+		}
+		private JSONList getAttributeDefinitions() {
+			if ( attrDefs==null ) {
+				attrDefs = conn.api(SSCAttributeAPI.class).getAttributeDefinitions(true, "guid","name");
+			}
+			return attrDefs;
+		}
+		
+		private void addAttributeValuesByName(JSONMap json) {
+			json.getPath("attributes", JSONList.class);
+			// TODO Implement further
+			throw new RuntimeException("Not yet implemented");
+		}
 	}
 }

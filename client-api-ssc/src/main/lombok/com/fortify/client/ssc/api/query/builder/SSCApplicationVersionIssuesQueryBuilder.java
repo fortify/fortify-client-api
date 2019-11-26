@@ -163,32 +163,65 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		this.updateIssueSearchOptions = updateIssueSearchOptions; return _this();
 	}
 	
+	public SSCApplicationVersionIssuesQueryBuilder embedSubEntity(String entityName, boolean onDemand, String... fields) {
+		return embed(entityName, "/api/v1/issues/${id}/"+entityName, onDemand, fields);
+	}
+	
 	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails() {
 		return onDemandDetails("details");
 	}
 	
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public SSCApplicationVersionIssuesQueryBuilder onDemandComments() {
-		return onDemandComments("comments");
+		return embedComments("comments", true);
 	}
 	
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory() {
-		return onDemandAuditHistory("auditHistory");
+		return embedAuditHistory("auditHistory", true);
 	}
 	
+	// TODO Add support for pre-loading instead of on-demand
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
 	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails(String propertyName) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(getConn())));
 	}
 	
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/comments"})
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
 	public SSCApplicationVersionIssuesQueryBuilder onDemandComments(String propertyName) {
-		return onDemand(propertyName, "/api/v1/issues/${id}/comments");
+		return embedComments(propertyName, true);
+	}
+	
+	/**
+	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * @return
+	 */
+	@Deprecated
+	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory(String propertyName) {
+		return embedAuditHistory(propertyName, true);
+	}
+	
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/comments"})
+	private SSCApplicationVersionIssuesQueryBuilder embedComments(String propertyName, boolean onDemand) {
+		return embed(propertyName, "/api/v1/issues/${id}/comments", onDemand);
 	}
 	
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issues/\\d+/auditHistory"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory(String propertyName) {
-		return onDemand(propertyName, "/api/v1/issues/${id}/auditHistory");
+	private SSCApplicationVersionIssuesQueryBuilder embedAuditHistory(String propertyName, boolean onDemand) {
+		return embed(propertyName, "/api/v1/issues/${id}/auditHistory", onDemand);
 	}
 	
 	private static final class SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames extends SSCJSONMapOnDemandLoaderRest {

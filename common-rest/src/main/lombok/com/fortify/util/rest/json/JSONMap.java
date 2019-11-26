@@ -24,11 +24,8 @@
  ******************************************************************************/
 package com.fortify.util.rest.json;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +33,6 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.convert.support.DefaultConversionService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -125,7 +119,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * This overloaded method adds support for converting the value to the given type.
 	 */
 	public <T> T getOrDefault(Object key, T defaultValue, Class<T> type) {
-		return getConversionService().convert(getOrDefault(key, defaultValue), type);
+		return JSONConversionServiceFactory.getConversionService().convert(getOrDefault(key, defaultValue), type);
 	}
 
 	/**
@@ -133,7 +127,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * This overloaded method adds support for converting the value to the given type.
 	 */
 	public <T> T get(Object key, Class<T> type) {
-		return getConversionService().convert(get(key), type);
+		return JSONConversionServiceFactory.getConversionService().convert(get(key), type);
 	}
 	
 	/**
@@ -141,7 +135,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * path, and converts this value to the given type.
 	 */
 	public <T> T getPath(String path, Class<T> type) {
-		return getConversionService().convert(getPath(path), type);
+		return JSONConversionServiceFactory.getConversionService().convert(getPath(path), type);
 	}
 	
 	/**
@@ -261,21 +255,6 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 					|| (value instanceof String && StringUtils.isBlank((String)value))
 					|| (value instanceof Collection && CollectionUtils.isEmpty((Collection<?>)value))
 					|| (value instanceof Object[] && ArrayUtils.isEmpty((Object[])value)) );
-	}
-	
-	private ConversionService getConversionService() {
-		DefaultConversionService result = new DefaultConversionService();
-		result.addConverter(new Converter<String, Date>() {
-			@Override
-			public Date convert(String source) {
-				try {
-					return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse(source);
-				} catch ( ParseException e ) {
-					throw new RuntimeException("Error parsing date format pattern", e);
-				}
-			}
-		});
-		return result;
 	}
 	
 	/**

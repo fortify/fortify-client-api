@@ -27,11 +27,13 @@ package com.fortify.util.rest.query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
 import com.fortify.util.rest.connection.IRestConnection;
+import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
@@ -87,6 +89,7 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	private final WebTargetQueryParamUpdaterBuilder webTargetQueryParamUpdaterBuilder = new WebTargetQueryParamUpdaterBuilder();
 	private final WebTargetTemplateResolverBuilder webTargetTemplateResolverBuilder = new WebTargetTemplateResolverBuilder();
 	
+	private final List<Consumer<JSONList>> pagePreProcessors = new ArrayList<>();
 	private final List<IJSONMapPreProcessor> preProcessors = new ArrayList<>();
 	private int maxResults = -1;
 	private boolean useCache;
@@ -99,6 +102,17 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	protected AbstractRestConnectionQueryBuilder(ConnType conn, boolean pagingSupported) {
 		this.conn = conn;
 		this.pagingSupported = pagingSupported;
+	}
+	
+	public T pagePreProcessor(Consumer<JSONList> pagePreProcessor) {
+		this.pagePreProcessors.add(pagePreProcessor);
+		return _this();
+	}
+	
+	public T pagePreProcessor(final int blockSize, final Consumer<JSONList> pagePreProcessor) {
+		this.pagePreProcessors.add(
+				jsonList->jsonList.forEachBlock(blockSize, pagePreProcessor));
+		return _this();
 	}
 	
 	@SuppressWarnings("unchecked")

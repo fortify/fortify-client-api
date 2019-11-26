@@ -32,6 +32,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.fortify.client.ssc.api.SSCBulkAPI;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
@@ -148,6 +149,35 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 */
 	protected T paramQAnd(String field, Object value) {
 		paramQ.paramQAnd(field, value); return _this();
+	}
+	
+	/**
+	 * Allows for embedding additional SSC entities into the
+	 * resulting JSON objects. Depending on the given onDemand
+	 * flag, the additional entities are either loaded on demand
+	 * whenever they are accessed, or pre-loaded using SSC bulk 
+	 * requests. 
+	 * 
+	 * @param propertyName
+	 * @param uri
+	 * @return
+	 */
+	public T embed(String propertyName, String uriExpression, boolean onDemand, String... fields) {
+		if ( onDemand ) {
+			return onDemand(propertyName, appendOnDemandFields(uriExpression, fields));
+		} else {
+			Map<String,String> queryParamExpressions = null;
+			if ( fields!=null && fields.length>0 ) {
+				queryParamExpressions = new HashMap<>(1);
+				queryParamExpressions.put("fields", String.join(",", fields));
+			}
+			return pagePreProcessor(
+					getConn().api(SSCBulkAPI.class).addBulkData()
+						.targetProperty(propertyName)
+						.pathExpression(uriExpression)
+						.queryParamExpressions(queryParamExpressions)
+						.consumer());
+		}
 	}
 	
 	@Override
