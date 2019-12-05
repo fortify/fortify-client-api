@@ -106,7 +106,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 				throw new RuntimeException("Looping not supported");
 			}
 			if ( responses.size()>0 ) {
-				orgInput.put(targetProperty, responses.get(0, JSONMap.class));
+				orgInput.put(targetProperty, responses.get(0, JSONMap.class).getPath("body.data"));
 			}
 		}
 		
@@ -130,7 +130,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 
 		private Consumer<? super Entry<String, String>> addQueryParam(final WebTarget webTarget, JSONMap input) {
 			return e->webTarget.queryParam(e.getKey(), 
-					SpringExpressionUtil.evaluateExpression(input, e.getValue(), String.class));
+					SpringExpressionUtil.evaluateTemplateExpression(input, e.getValue(), String.class));
 		}
 	}
 }

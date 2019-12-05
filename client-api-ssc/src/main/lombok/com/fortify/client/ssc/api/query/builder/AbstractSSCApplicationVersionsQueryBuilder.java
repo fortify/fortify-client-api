@@ -51,7 +51,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 			return preProcessor(new JSONMapEnrichWithOnDemandProperty("attributeValuesByName", 
 				new SSCJSONMapOnDemandLoaderAttributeValuesByName(getConn())));
 		} else {
-			embedSubEntity("attributes", onDemand, "guid", "value", "values");
+			embedSubEntity("attributes", false, "guid", "value", "values");
 			return pagePreProcessor(new SSCJSONListAddAttributeValuesByName(getConn(), "attributeValuesByName"));
 		}
 	}
@@ -273,7 +273,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		}
 	}
 	
-	protected static final class SSCJSONListAddAttributeValuesByName implements Consumer<JSONList> {
+	private static final class SSCJSONListAddAttributeValuesByName implements Consumer<JSONList> {
 		private final SSCAuthenticatingRestConnection conn;
 		private final String propertyName;
 		private volatile JSONList attrDefs;
@@ -284,7 +284,6 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		}
 		@Override
 		public void accept(JSONList list) {
-			getAttributeDefinitions();
 			list.asValueType(JSONMap.class).forEach(this::addAttributeValuesByName);
 		}
 		private JSONList getAttributeDefinitions() {
@@ -295,9 +294,12 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		}
 		
 		private void addAttributeValuesByName(JSONMap json) {
-			json.getPath("attributes", JSONList.class);
-			// TODO Implement further
-			throw new RuntimeException("Not yet implemented");
+			JSONList attrs = json.getPath("attributes", JSONList.class);
+			if ( attrs==null ) {
+				throw new IllegalArgumentException("Application version does not contain attributes list");
+			}
+			JSONMap attrValuesByName = conn.api(SSCAttributeAPI.class).convertApplicationVersionAttributeValuesListToMap(attrs, getAttributeDefinitions());
+			json.put(propertyName, attrValuesByName);
 		}
 	}
 }

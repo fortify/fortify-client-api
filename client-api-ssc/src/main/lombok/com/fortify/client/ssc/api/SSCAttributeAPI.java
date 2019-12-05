@@ -77,13 +77,16 @@ public class SSCAttributeAPI extends AbstractSSCAPI {
 	}
 	
 	/**
-	 * Get all application version attribute values for the given application version,
-	 * indexed by attribute name. Attributes without any value will not be included
-	 * in the result. Note that this method is not efficient if invoked for multiple
+	 * <p>Get all application version attribute values for the given application version,
+	 * indexed by attribute name; see {@link #convertApplicationVersionAttributeValuesListToMap(JSONList, JSONList)}
+	 * for more details on the returned {@link JSONMap}.<p> 
+	 * 
+	 * <p>Note that this method is not efficient if invoked for multiple
 	 * application versions when caching is disabled. In general, it is better to 
 	 * (temporarily) store the results of {@link #getAttributeDefinitions(boolean, String...)},
 	 * and then call {@link #getApplicationVersionAttributeValuesByName(String, JSONList)}
-	 * using the stored attribute definitions. 
+	 * using the stored attribute definitions.<p>
+	 * 
 	 * @param applicationVersionId
 	 * @return
 	 */
@@ -93,8 +96,23 @@ public class SSCAttributeAPI extends AbstractSSCAPI {
 	}
 
 	public JSONMap getApplicationVersionAttributeValuesByName(String applicationVersionId, JSONList attrDefs) {
-		JSONMap result = new JSONMap();
 		JSONList attrs = getApplicationVersionAttributes(applicationVersionId, true, "guid","value","values");
+		return convertApplicationVersionAttributeValuesListToMap(attrs, attrDefs);
+	}
+
+	/**
+	 * This method converts the given list of application version attributes (as 
+	 * returned by the /api/v1/projectVersions/{id}/attributes endpoint) to a JSONMap,
+	 * using the attribute name as map key, and a JSONList containing one or more 
+	 * attribute values as the map value. Attributes without value(s) will not be 
+	 * included in the resulting map.
+	 * 
+	 * @param attrDefs
+	 * @param attrs
+	 * @return
+	 */
+	public JSONMap convertApplicationVersionAttributeValuesListToMap(JSONList attrs, JSONList attrDefs) {
+		JSONMap result = new JSONMap();
 		for ( JSONMap attr : attrs.asValueType(JSONMap.class) ) {
 			String attrName = attrDefs.mapValue("guid", attr.get("guid", String.class), "name", String.class);
 			JSONList attrValues = attr.get("values", JSONList.class);
