@@ -25,12 +25,6 @@ package com.fortify.util.rest.json;
  ******************************************************************************/
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
