@@ -42,25 +42,200 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		super(conn, true);
 	}
 	
-	public T embedSubEntity(String entityName, boolean onDemand, String... fields) {
-		return embed(entityName, "/api/v1/projectVersions/${id}/"+entityName, onDemand, fields);
+	protected T embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
+		return embed(propertyName, "/api/v1/projectVersions/${id}/"+entityName, embedType, fields);
 	}
 	
-	public T embedAttributeValuesByName(boolean onDemand) {
-		if ( onDemand ) {
-			return preProcessor(new JSONMapEnrichWithOnDemandProperty("attributeValuesByName", 
+	public T embedAttributeValuesByName(EmbedType embedType) {
+		return embedAttributeValuesByName("attributeValuesByName", embedType);
+	}
+	
+	public T embedAttributeValuesByName(String propertyName, EmbedType embedType) {
+		switch (embedType) {
+		case ONDEMAND: return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new SSCJSONMapOnDemandLoaderAttributeValuesByName(getConn())));
-		} else {
-			embedSubEntity("attributes", false, "guid", "value", "values");
-			return pagePreProcessor(new SSCJSONListAddAttributeValuesByName(getConn(), "attributeValuesByName"));
+		case PRELOAD: embedAttributes("attributes", EmbedType.PRELOAD, "guid", "value", "values");
+			return pagePreProcessor(new SSCJSONListAddAttributeValuesByName(getConn(), propertyName));
+		default: throw new RuntimeException("Unknown embed type: "+embedType.name());
 		}
 	}
 	
+	public T embedAttributes(EmbedType embedType, String... fields) {
+		return embedAttributes("attributes", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/attributes" })
+	public T embedAttributes(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "attributes", embedType);
+	}
+	
+	public T embedAuditAssistantTrainingStatus(EmbedType embedType, String... fields) {
+		return embedAuditAssistantTrainingStatus("auditAssistantTrainingStatus", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/auditAssistantTrainingStatus" })
+	public T embedAuditAssistantTrainingStatus(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "auditAssistantTrainingStatus", embedType, fields);
+	}
+	
+	public T embedAuditAssistantStatus(EmbedType embedType, String... fields) {
+		return embedAuditAssistantStatus("auditAssistantStatus", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/auditAssistantStatus" })
+	public T embedAuditAssistantStatus(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "auditAssistantStatus", embedType, fields);
+	}
+	
+	public T embedAuthEntities(EmbedType embedType, String... fields) {
+		return embedAuthEntities("authEntities", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/authEntities" })
+	public T embedAuthEntities(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "authEntities", embedType, fields);
+	}
+	
+	public T embedBugfilingrequirements(EmbedType embedType, String... fields) {
+		return embedBugfilingrequirements("bugfilingrequirements", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements" })
+	public T embedBugfilingrequirements(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "bugfilingrequirements", embedType, fields);
+	}
+	
+	public T embedBugtracker(EmbedType embedType, String... fields) {
+		return embedBugtracker("bugtracker", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/bugtracker" })
+	public T embedBugtracker(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "bugtracker", embedType, fields);
+	}
+	
+	public T embedCustomTags(EmbedType embedType, String... fields) {
+		return embedCustomTags("customTags", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/customTags" })
+	public T embedCustomTags(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "customTags?limit=-1", embedType, fields);
+	}
+	
+	public T embedDynamicScanRequests(EmbedType embedType, String... fields) {
+		return embedDynamicScanRequests("dynamicScanRequests", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/dynamicScanRequests" })
+	public T embedDynamicScanRequests(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "dynamicScanRequests", embedType, fields);
+	}
+	
+	public T embedDynamicScanRequestTemplate(EmbedType embedType) {
+		return embedDynamicScanRequestTemplate("dynamicScanRequestTemplate", embedType);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/dynamicScanRequestTemplate" })
+	public T embedDynamicScanRequestTemplate(String propertyName, EmbedType embedType) {
+		return embedSubEntity(propertyName, "dynamicScanRequestTemplate", embedType);
+	}
+	
+	public T embedDynamicScanRequestsSummary(EmbedType embedType) {
+		return embedDynamicScanRequestsSummary("dynamicScanRequestsSummary", embedType);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/dynamicScanRequestsSummary" })
+	public T embedDynamicScanRequestsSummary(String propertyName, EmbedType embedType) {
+		return embedSubEntity(propertyName, "dynamicScanRequestsSummary", embedType);
+	}
+	
+	public T embedFilterSets(EmbedType embedType, String... fields) {
+		return embedFilterSets("filterSets", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/filterSets" })
+	public T embedFilterSets(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "filterSets?limit=-1", embedType, fields);
+	}
+	
+	public T embedFolders(EmbedType embedType) {
+		return embedFolders("folders", embedType);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/folders" })
+	public T embedFolders(String propertyName, EmbedType embedType) {
+		return embedSubEntity(propertyName, "folders", embedType);
+	}
+	
+	public T embedIidMigrations(EmbedType embedType, String... fields) {
+		return embedIidMigrations("iidMigrations", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/iidMigrations" })
+	public T embedIidMigrations(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "iidMigrations", embedType, fields);
+	}
+	
+	public T embedIssueSearchOptions(EmbedType embedType) {
+		return embedIssueSearchOptions("issueSearchOptions", embedType);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/issueSearchOptions" })
+	public T embedIssueSearchOptions(String propertyName, EmbedType embedType) {
+		return embedSubEntity(propertyName, "issueSearchOptions", embedType);
+	}
+	
+	public T embedIssueSelectorSet(EmbedType embedType, String... fields) {
+		return embedIssueSelectorSet("issueSelectorSet", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/issueSelectorSet" })
+	public T embedIssueSelectorSet(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "issueSelectorSet", embedType, fields);
+	}
+	
+	public T embedPerformanceIndicatorHistories(EmbedType embedType, String... fields) {
+		return embedPerformanceIndicatorHistories("performanceIndicatorHistories", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/performanceIndicatorHistories" })
+	public T embedPerformanceIndicatorHistories(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "performanceIndicatorHistories?limit=-1", embedType, fields);
+	}
+	
+	public T embedResponsibilities(EmbedType embedType, String... fields) {
+		return embedResponsibilities("responsibilities", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/responsibilities" })
+	public T embedResponsibilities(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "responsibilities?limit=-1", embedType);
+	}
+	
+	public T embedResultProcessingRules(EmbedType embedType, String... fields) {
+		return embedResultProcessingRules("resultProcessingRules", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/resultProcessingRules" })
+	public T embedResultProcessingRules(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "resultProcessingRules", embedType, fields);
+	}
+	
+	public T embedVariableHistories(EmbedType embedType, String... fields) {
+		return embedVariableHistories("variableHistories", embedType, fields);
+	}
+	
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/variableHistories" })
+	public T embedVariableHistories(String propertyName, EmbedType embedType, String... fields) {
+		return embedSubEntity(propertyName, "variableHistories?limit=-1", embedType, fields);
+	}
+
 	/**
-	 * Use {@link #embedAttributeValuesByName()}
+	 * Use {@link #embedAttributeValuesByName(EmbedType)}
 	 * @return
 	 */
-	@Deprecated 
+	@Deprecated
 	public T onDemandAttributeValuesByName() {
 		return onDemandAttributeValuesByName("attributeValuesByName");
 	}
@@ -69,7 +244,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	 * Add on-demand attribute for all application version attribute values by name.
 	 * Attributes without any value will be excluded from the result.
 	 * 
-	 * Use {@link #embedAttributeValuesByName(boolean)} instead
+	 * Use {@link #embedAttributeValuesByName(String, EmbedType)} instead
 	 * @param propertyName
 	 * @return
 	 */
@@ -81,7 +256,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedAttributes(EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -90,7 +265,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedBugtracker(EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -99,7 +274,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedCustomTags(EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -108,7 +283,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedFilterSets(EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -117,7 +292,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedIssueSearchOptions(EmbedType)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -126,7 +301,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedPerformanceIndicatorHistories(EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -135,7 +310,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedVariableHistories(EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -144,7 +319,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedResponsibilities(EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -153,7 +328,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedResultProcessingRules(EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -162,7 +337,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedAttributes(String, EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -172,7 +347,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedBugtracker(String, EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -182,7 +357,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedCustomTags(String, EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -192,7 +367,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedFilterSets(String, EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -202,7 +377,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedIssueSearchOptions(String, EmbedType)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -212,7 +387,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedPerformanceIndicatorHistories(String, EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -222,7 +397,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedVariableHistories(String, EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -232,7 +407,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedResponsibilities(String, EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated
@@ -242,7 +417,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 
 	/**
-	 * Use {@link #embedSubEntity(String, boolean, String...)} instead
+	 * Use {@link #embedResultProcessingRules(String, EmbedType, String...)} instead
 	 * @return
 	 */
 	@Deprecated

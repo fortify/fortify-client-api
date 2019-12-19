@@ -26,7 +26,6 @@ package com.fortify.client.ssc.api;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import javax.ws.rs.HttpMethod;
@@ -66,8 +65,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 	@Setter @Accessors(fluent=true)
 	public static final class SSCAddBulkData {
 		private String targetProperty;
-		private Expression pathExpression;
-		private Map<String,String> queryParamExpressions;
+		private Expression uriExpression;
 		private Map<String,JSONMap> uriToObjectMap = new HashMap<>();
 		private final SSCAuthenticatingRestConnection conn;
 		
@@ -79,13 +77,13 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 			return jsonList->addBulkData(jsonList);
 		}
 		
-		public SSCAddBulkData pathExpression(Expression pathExpression) {
-			this.pathExpression = pathExpression;
+		public SSCAddBulkData uriExpression(Expression pathExpression) {
+			this.uriExpression = pathExpression;
 			return this;
 		}
 		
-		public SSCAddBulkData pathExpression(String pathExpression) {
-			return pathExpression(SpringExpressionUtil.parseTemplateExpression(pathExpression));
+		public SSCAddBulkData uriExpression(String pathExpression) {
+			return uriExpression(SpringExpressionUtil.parseTemplateExpression(pathExpression));
 		}
 		
 		public void addBulkData(JSONList jsonList) {
@@ -115,22 +113,10 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		}
 		
 		private void addBulkRequest(SSCBulkQueryBuilder builder, JSONMap input) {
-			String path = SpringExpressionUtil.evaluateExpression(input, pathExpression, String.class);
-			final WebTarget target = conn.getBaseResource().path(path);
-			addQueryParams(target, input);
+			String uri = SpringExpressionUtil.evaluateExpression(input, uriExpression, String.class);
+			final WebTarget target = conn.getResource(uri);
 			builder.addBulkRequest(HttpMethod.GET, target);
 			uriToObjectMap.put(target.getUri().toString(), input);
-		}
-
-		private void addQueryParams(final WebTarget webTarget, JSONMap input) {
-			if ( queryParamExpressions!=null ) {
-				queryParamExpressions.entrySet().forEach(addQueryParam(webTarget, input));
-			}
-		}
-
-		private Consumer<? super Entry<String, String>> addQueryParam(final WebTarget webTarget, JSONMap input) {
-			return e->webTarget.queryParam(e.getKey(), 
-					SpringExpressionUtil.evaluateTemplateExpression(input, e.getValue(), String.class));
 		}
 	}
 }
