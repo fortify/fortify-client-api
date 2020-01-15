@@ -33,6 +33,9 @@ import com.fortify.client.ssc.api.SSCCustomTagAPI;
 import com.fortify.client.ssc.api.SSCIssueAPI;
 import com.fortify.client.ssc.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.JSONList;
@@ -50,7 +53,12 @@ import com.fortify.util.spring.SpringExpressionUtil;
  * @author Ruud Senden
  *
  */
-public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionIssuesQueryBuilder> {
+public class SSCApplicationVersionIssuesQueryBuilder 
+	extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionIssuesQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionIssuesQueryBuilder>,
+           ISSCEntityQueryBuilderParamOrderBy<SSCApplicationVersionIssuesQueryBuilder>,
+           ISSCEntityQueryBuilderParamQ<SSCApplicationVersionIssuesQueryBuilder>
+{
 	private static final String[] DEEPLINK_FIELDS = {"projectVersionId", "id", "engineType", "issueInstanceId"};
 	public static enum QueryMode {
 		adv, issues
@@ -99,7 +107,7 @@ public class SSCApplicationVersionIssuesQueryBuilder extends AbstractSSCApplicat
 		return super.paramQ(q);
 	}
 
-	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(String field, String value) {
+	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(String field, Object value) {
 		return super.paramQAnd(field, value);
 	}
 	

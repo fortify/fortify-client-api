@@ -26,6 +26,7 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 
 /**
@@ -35,7 +36,10 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  * @author Ruud Senden
  *
  */
-public class SSCApplicationVersionCustomTagsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionCustomTagsQueryBuilder> {
+public class SSCApplicationVersionCustomTagsQueryBuilder 
+	extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionCustomTagsQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionCustomTagsQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/customTags"})
 	public SSCApplicationVersionCustomTagsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);

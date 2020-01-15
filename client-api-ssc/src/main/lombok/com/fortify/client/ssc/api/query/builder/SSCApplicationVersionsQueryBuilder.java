@@ -28,6 +28,9 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 
@@ -38,7 +41,12 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
  * @author Ruud Senden
  * 
  */
-public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCApplicationVersionsQueryBuilder<SSCApplicationVersionsQueryBuilder> {
+public final class SSCApplicationVersionsQueryBuilder 
+	extends AbstractSSCApplicationVersionsQueryBuilder<SSCApplicationVersionsQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionsQueryBuilder>,
+			ISSCEntityQueryBuilderParamOrderBy<SSCApplicationVersionsQueryBuilder>,
+			ISSCEntityQueryBuilderParamQ<SSCApplicationVersionsQueryBuilder>
+{
 	private static final String[] DEEPLINK_FIELDS = {"id"};
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions"})
 	public SSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
@@ -54,8 +62,12 @@ public final class SSCApplicationVersionsQueryBuilder extends AbstractSSCApplica
 	public final SSCApplicationVersionsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
 		return super.paramOrderBy(orderBy, direction);
 	}
+	
+	public final SSCApplicationVersionsQueryBuilder paramQ(String q) {
+		return super.paramQ(q);
+	}
 
-	public final SSCApplicationVersionsQueryBuilder paramQAnd(String field, String value) {
+	public final SSCApplicationVersionsQueryBuilder paramQAnd(String field, Object value) {
 		return super.paramQAnd(field, value);
 	}
 

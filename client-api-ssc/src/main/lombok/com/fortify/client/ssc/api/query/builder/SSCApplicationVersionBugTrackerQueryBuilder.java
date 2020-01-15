@@ -26,6 +26,7 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 
 /**
@@ -35,7 +36,10 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  * @author Ruud Senden
  *
  */
-public class SSCApplicationVersionBugTrackerQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugTrackerQueryBuilder> {
+public class SSCApplicationVersionBugTrackerQueryBuilder 
+	extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugTrackerQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionBugTrackerQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/bugtracker"})
 	public SSCApplicationVersionBugTrackerQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);

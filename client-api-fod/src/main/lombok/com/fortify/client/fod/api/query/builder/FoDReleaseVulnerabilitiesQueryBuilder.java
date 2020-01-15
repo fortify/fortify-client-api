@@ -25,6 +25,9 @@
 package com.fortify.client.fod.api.query.builder;
 
 import com.fortify.client.fod.api.query.FoDEntityQuery;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamOrderByWithDirection;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 
@@ -35,7 +38,11 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
  * @author Ruud Senden
  *
  */
-public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChildEntityQueryBuilder<FoDReleaseVulnerabilitiesQueryBuilder> {
+public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChildEntityQueryBuilder<FoDReleaseVulnerabilitiesQueryBuilder> 
+	implements IFoDEntityQueryBuilderParamFields<FoDReleaseVulnerabilitiesQueryBuilder>, 
+	           IFoDEntityQueryBuilderParamFilter<FoDReleaseVulnerabilitiesQueryBuilder>,
+	           IFoDEntityQueryBuilderParamOrderByWithDirection<FoDReleaseVulnerabilitiesQueryBuilder> 
+{
 	private static final String[] DEEPLINK_FIELDS = {"vulnId"};
 	public FoDReleaseVulnerabilitiesQueryBuilder(FoDAuthenticatingRestConnection conn, String releaseId) {
 		super(conn, releaseId, true);

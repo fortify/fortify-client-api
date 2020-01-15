@@ -27,6 +27,8 @@ package com.fortify.client.fod.api.query.builder;
 import java.util.Date;
 
 import com.fortify.client.fod.api.query.FoDEntityQuery;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamOrderByWithDirection;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 
 /**
@@ -36,7 +38,10 @@ import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
  * @author Ruud Senden
  *
  */
-public class FoDScansQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDScansQueryBuilder> {
+public class FoDScansQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDScansQueryBuilder> 
+	implements IFoDEntityQueryBuilderParamFields<FoDScansQueryBuilder>, 
+	           IFoDEntityQueryBuilderParamOrderByWithDirection<FoDScansQueryBuilder> 
+{
 	public FoDScansQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);
 		appendPath("/api/v3/scans");

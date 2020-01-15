@@ -26,6 +26,7 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 
 /**
@@ -35,7 +36,9 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  * @author Ruud Senden
  * 
  */
-public class SSCIssueDetailsByIdQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCIssueDetailsByIdQueryBuilder> {
+public class SSCIssueDetailsByIdQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCIssueDetailsByIdQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCIssueDetailsByIdQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
 	public SSCIssueDetailsByIdQueryBuilder(SSCAuthenticatingRestConnection conn, String issueId) {
 		super(conn, false);

@@ -28,6 +28,9 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.fod.api.FoDApplicationAPI;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamOrderByWithDirection;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
@@ -41,7 +44,11 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandP
  * @author Ruud Senden
  *
  */
-public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDReleasesQueryBuilder> {
+public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDReleasesQueryBuilder> 
+	implements IFoDEntityQueryBuilderParamFields<FoDReleasesQueryBuilder>, 
+	           IFoDEntityQueryBuilderParamFilter<FoDReleasesQueryBuilder>,
+	           IFoDEntityQueryBuilderParamOrderByWithDirection<FoDReleasesQueryBuilder> 
+{
 	private static final String[] DEEPLINK_FIELDS = {"releaseId"};
 	public FoDReleasesQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);

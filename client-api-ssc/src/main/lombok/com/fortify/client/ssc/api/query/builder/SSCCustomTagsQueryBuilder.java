@@ -26,6 +26,8 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 
 /**
@@ -35,7 +37,10 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  * @author Ruud Senden
  * 
  */
-public final class SSCCustomTagsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCCustomTagsQueryBuilder> {
+public final class SSCCustomTagsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCCustomTagsQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCCustomTagsQueryBuilder>,
+		ISSCEntityQueryBuilderParamOrderBy<SSCCustomTagsQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/customTags"})
 	public SSCCustomTagsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);

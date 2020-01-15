@@ -26,6 +26,9 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -38,7 +41,11 @@ import com.fortify.util.rest.json.preprocessor.enrich.AbstractJSONMapEnrich;
  * @author Ruud Senden
  * 
  */
-public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCAttributeDefinitionsQueryBuilder> {
+public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCAttributeDefinitionsQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCAttributeDefinitionsQueryBuilder>,
+           ISSCEntityQueryBuilderParamOrderBy<SSCAttributeDefinitionsQueryBuilder>,
+           ISSCEntityQueryBuilderParamQ<SSCAttributeDefinitionsQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/attributeDefinitions"})
 	public SSCAttributeDefinitionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
@@ -63,6 +70,10 @@ public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntity
 
 	public final SSCAttributeDefinitionsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
 		return super.paramOrderBy(orderBy, direction);
+	}
+	
+	public final SSCAttributeDefinitionsQueryBuilder paramQ(String q) {
+		return super.paramQ(q);
 	}
 
 	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(String field, Object value) {

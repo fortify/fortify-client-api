@@ -26,6 +26,7 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 
 /**
@@ -35,7 +36,10 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  * @author Ruud Senden
  *
  */
-public class SSCApplicationVersionAttributesQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionAttributesQueryBuilder> {
+public class SSCApplicationVersionAttributesQueryBuilder 
+	extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionAttributesQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionAttributesQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/attributes"})
 	public SSCApplicationVersionAttributesQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);

@@ -26,6 +26,9 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 
 /**
@@ -35,7 +38,11 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  * @author Ruud Senden
  * 
  */
-public final class SSCRulepackQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCRulepackQueryBuilder> {
+public final class SSCRulepackQueryBuilder extends AbstractSSCEntityQueryBuilder<SSCRulepackQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCRulepackQueryBuilder>,
+		ISSCEntityQueryBuilderParamOrderBy<SSCRulepackQueryBuilder>,
+		ISSCEntityQueryBuilderParamQ<SSCRulepackQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/coreRulepacks"})
 	public SSCRulepackQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
@@ -49,8 +56,12 @@ public final class SSCRulepackQueryBuilder extends AbstractSSCEntityQueryBuilder
 	public final SSCRulepackQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
 		return super.paramOrderBy(orderBy, direction);
 	}
+	
+	public final SSCRulepackQueryBuilder paramQ(String q) {
+		return super.paramQ(q);
+	}
 
-	public final SSCRulepackQueryBuilder paramQAnd(String field, String value) {
+	public final SSCRulepackQueryBuilder paramQAnd(String field, Object value) {
 		return super.paramQAnd(field, value);
 	}
 

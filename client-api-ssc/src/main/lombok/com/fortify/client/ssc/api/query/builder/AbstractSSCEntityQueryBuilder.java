@@ -93,6 +93,17 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	}
 	
 	/**
+	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
+	 * implementations that expose the {@link #paramEmbed(String)} method.
+	 * @author Ruud Senden
+	 *
+	 * @param <T>
+	 */
+	public static interface ISSCEntityQueryBuilderParamEmbed<T extends AbstractSSCEntityQueryBuilder<T>> {
+		public T paramEmbed(String entity);
+	}
+	
+	/**
 	 * Add the 'fields' query parameter to the request configuration
 	 * 
 	 * @param fields
@@ -100,6 +111,17 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 */
 	protected T paramFields(String... fields) {
 		return queryParam("fields", StringUtils.join(fields, ","));
+	}
+	
+	/**
+	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
+	 * implementations that expose the {@link #paramFields(String...)} method.
+	 * @author Ruud Senden
+	 *
+	 * @param <T>
+	 */
+	public static interface ISSCEntityQueryBuilderParamFields<T extends AbstractSSCEntityQueryBuilder<T>> {
+		public T paramFields(String... fields);
 	}
 	
 	/**
@@ -116,6 +138,17 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	}
 	
 	/**
+	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
+	 * implementations that expose the {@link #paramOrderBy(String, SSCOrderByDirection)} method.
+	 * @author Ruud Senden
+	 *
+	 * @param <T>
+	 */
+	public static interface ISSCEntityQueryBuilderParamOrderBy<T extends AbstractSSCEntityQueryBuilder<T>> {
+		public T paramOrderBy(String orderBy, SSCOrderByDirection orderByDirection);
+	}
+	
+	/**
 	 * Add the 'groupby' query parameter to the request configuration
 	 * 
 	 * @param groupBy
@@ -123,6 +156,17 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 */
 	protected T paramGroupBy(String groupBy) {
 		return queryParam("groupby", groupBy);
+	}
+	
+	/**
+	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
+	 * implementations that expose the {@link #paramGroupBy(String)} method.
+	 * @author Ruud Senden
+	 *
+	 * @param <T>
+	 */
+	public static interface ISSCEntityQueryBuilderParamGroupBy<T extends AbstractSSCEntityQueryBuilder<T>> {
+		public T paramGroupBy(String groupBy);
 	}
 	
 	/**
@@ -149,6 +193,18 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 */
 	protected T paramQAnd(String field, Object value) {
 		paramQ.paramQAnd(field, value); return _this();
+	}
+	
+	/**
+	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
+	 * implementations that expose the various paramQ*() methods method.
+	 * @author Ruud Senden
+	 *
+	 * @param <T>
+	 */
+	public static interface ISSCEntityQueryBuilderParamQ<T extends AbstractSSCEntityQueryBuilder<T>> {
+		public T paramQ(String q);
+		public T paramQAnd(String field, Object value);
 	}
 	
 	/**

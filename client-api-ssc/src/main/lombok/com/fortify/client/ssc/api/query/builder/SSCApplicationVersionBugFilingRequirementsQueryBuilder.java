@@ -29,6 +29,7 @@ import javax.ws.rs.client.Entity;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 
@@ -39,7 +40,10 @@ import com.fortify.util.rest.json.JSONList;
  * @author Ruud Senden
  *
  */
-public class SSCApplicationVersionBugFilingRequirementsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugFilingRequirementsQueryBuilder> {
+public class SSCApplicationVersionBugFilingRequirementsQueryBuilder 
+	extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugFilingRequirementsQueryBuilder> 
+	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionBugFilingRequirementsQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements"})
 	public SSCApplicationVersionBugFilingRequirementsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, false);

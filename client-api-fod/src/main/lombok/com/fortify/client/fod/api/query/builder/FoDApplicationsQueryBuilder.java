@@ -25,6 +25,9 @@
 package com.fortify.client.fod.api.query.builder;
 
 import com.fortify.client.fod.api.query.FoDEntityQuery;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
+import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamOrderByWithDirection;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoader;
@@ -38,7 +41,11 @@ import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandP
  * @author Ruud Senden
  *
  */
-public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDApplicationsQueryBuilder> {
+public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDApplicationsQueryBuilder> 
+	implements IFoDEntityQueryBuilderParamFields<FoDApplicationsQueryBuilder>, 
+	           IFoDEntityQueryBuilderParamFilter<FoDApplicationsQueryBuilder>,
+	           IFoDEntityQueryBuilderParamOrderByWithDirection<FoDApplicationsQueryBuilder> 
+{
 	private static final String[] DEEPLINK_FIELDS = {"applicationId"};
 	public FoDApplicationsQueryBuilder(FoDAuthenticatingRestConnection conn) {
 		super(conn, true);

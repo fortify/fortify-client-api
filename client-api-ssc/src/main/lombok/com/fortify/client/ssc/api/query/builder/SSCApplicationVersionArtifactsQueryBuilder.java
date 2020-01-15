@@ -26,6 +26,9 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 
 /**
@@ -35,7 +38,12 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  * @author Ruud Senden
  *
  */
-public class SSCApplicationVersionArtifactsQueryBuilder extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionArtifactsQueryBuilder> {
+public class SSCApplicationVersionArtifactsQueryBuilder 
+	extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionArtifactsQueryBuilder>
+	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionArtifactsQueryBuilder>,
+	           ISSCEntityQueryBuilderParamOrderBy<SSCApplicationVersionArtifactsQueryBuilder>,
+	           ISSCEntityQueryBuilderParamQ<SSCApplicationVersionArtifactsQueryBuilder>
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/artifacts"})
 	public SSCApplicationVersionArtifactsQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
 		super(conn, applicationVersionId, true);
@@ -49,8 +57,12 @@ public class SSCApplicationVersionArtifactsQueryBuilder extends AbstractSSCAppli
 	public final SSCApplicationVersionArtifactsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
 		return super.paramOrderBy(orderBy, direction);
 	}
+	
+	public final SSCApplicationVersionArtifactsQueryBuilder paramQ(String q) {
+		return super.paramQ(q);
+	}
 
-	public final SSCApplicationVersionArtifactsQueryBuilder paramQAnd(String field, String value) {
+	public final SSCApplicationVersionArtifactsQueryBuilder paramQAnd(String field, Object value) {
 		return super.paramQAnd(field, value);
 	}
 	

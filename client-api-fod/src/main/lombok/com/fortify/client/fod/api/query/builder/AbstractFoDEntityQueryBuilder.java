@@ -111,6 +111,17 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	}
 	
 	/**
+	 * This interface is to be implemented by all {@link AbstractFoDEntityQueryBuilder}
+	 * implementations that expose the {@link #paramOrderBy(String, FoDOrderByDirection)} method.
+	 * @author Ruud Senden
+	 *
+	 * @param <T>
+	 */
+	public static interface IFoDEntityQueryBuilderParamOrderByWithDirection<T extends AbstractFoDEntityQueryBuilder<T>> {
+		public T paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection);
+	}
+	
+	/**
 	 * Add the 'fields' query parameter to the request configuration
 	 * 
 	 * @param fields
@@ -118,6 +129,17 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 */
 	protected T paramFields(String... fields) {
 		return queryParam("fields", StringUtils.join(fields, ","));
+	}
+	
+	/**
+	 * This interface is to be implemented by all {@link AbstractFoDEntityQueryBuilder}
+	 * implementations that expose the various paramFields*() methods.
+	 * @author Ruud Senden
+	 *
+	 * @param <T>
+	 */
+	public static interface IFoDEntityQueryBuilderParamFields<T extends AbstractFoDEntityQueryBuilder<T>> {
+		public T paramFields(String... fields);
 	}
 	
 	/**
@@ -143,6 +165,18 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 */
 	protected T paramFilterAnd(String filter) {
 		paramFilter.paramFilterAnd(filter); return _this();
+	}
+	
+	/**
+	 * This interface is to be implemented by all {@link AbstractFoDEntityQueryBuilder}
+	 * implementations that expose the various paramFilter*() methods.
+	 * @author Ruud Senden
+	 *
+	 * @param <T>
+	 */
+	public static interface IFoDEntityQueryBuilderParamFilter<T extends AbstractFoDEntityQueryBuilder<T>> {
+		public T paramFilterAnd(String field, String... values);
+		public T paramFilterAnd(String filter);
 	}
 	
 	@Override

@@ -26,6 +26,8 @@ package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
+import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 
 /**
@@ -35,7 +37,11 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
  * @author Ruud Senden
  * 
  */
-public final class SSCApplicationVersionsOfAuthEntityQueryBuilder extends AbstractSSCApplicationVersionsQueryBuilder<SSCApplicationVersionsOfAuthEntityQueryBuilder> {
+public final class SSCApplicationVersionsOfAuthEntityQueryBuilder 
+	extends AbstractSSCApplicationVersionsQueryBuilder<SSCApplicationVersionsOfAuthEntityQueryBuilder>
+	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionsOfAuthEntityQueryBuilder>,
+		ISSCEntityQueryBuilderParamQ<SSCApplicationVersionsOfAuthEntityQueryBuilder> 
+{
 	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/authEntities"})
 	public SSCApplicationVersionsOfAuthEntityQueryBuilder(SSCAuthenticatingRestConnection conn, String authEntityId) {
 		super(conn);
@@ -45,8 +51,12 @@ public final class SSCApplicationVersionsOfAuthEntityQueryBuilder extends Abstra
 	public final SSCApplicationVersionsOfAuthEntityQueryBuilder paramFields(String... fields) {
 		return super.paramFields(fields);
 	}
+	
+	public final SSCApplicationVersionsOfAuthEntityQueryBuilder paramQ(String q) {
+		return super.paramQ(q);
+	}
 
-	public final SSCApplicationVersionsOfAuthEntityQueryBuilder paramQAnd(String field, String value) {
+	public final SSCApplicationVersionsOfAuthEntityQueryBuilder paramQAnd(String field, Object value) {
 		return super.paramQAnd(field, value);
 	}
 }
