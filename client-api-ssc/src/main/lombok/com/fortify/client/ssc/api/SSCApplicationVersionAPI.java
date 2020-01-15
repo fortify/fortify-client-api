@@ -140,6 +140,11 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
+		public CreateApplicationVersionBuilder attributes(MultiValueMap<String, Object> values) {
+			attributeNameOrIdToValueMap.addAll(values);
+			return this;
+		}
+		
 		public String execute() {
 			MultiValueMap<String,Object> attributes = getApplicationVersionAttributes();
 			String applicationVersionId = createNonCommittedApplicationVersiom().get("id", String.class);
