@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
+import com.fortify.client.ssc.api.query.builder.EmbedType;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -43,9 +44,16 @@ import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
  */
 public class SSCJSONMapFilterApplicationVersionHasAllCustomTags extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
 	private final List<String> customTagNames;
+	private final EmbedType embedType;
 	
 	public SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode matchMode, String... customTagNames) {
+		// For backward compatibility we use EmbedType.ONDEMAND by default
+		this(matchMode, EmbedType.ONDEMAND, customTagNames);
+	}
+	
+	public SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode matchMode, EmbedType embedType, String... customTagNames) {
 		super(matchMode);
+		this.embedType = embedType;
 		this.customTagNames = Arrays.asList(customTagNames);
 	}
 	
@@ -57,6 +65,6 @@ public class SSCJSONMapFilterApplicationVersionHasAllCustomTags extends Abstract
 
 	@Override @SSCCopyToConstructors
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
-		currentBuilder.onDemandCustomTags("customTagsNamesOnly","name");
+		currentBuilder.embedCustomTags("customTagsNamesOnly", embedType, "name");
 	}
 }

@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
+import com.fortify.client.ssc.api.query.builder.EmbedType;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter;
@@ -42,9 +43,16 @@ import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
  */
 public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
 	private final Collection<String> attributeNames;
-
+	private final EmbedType embedType;
+	
 	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,	Collection<String> attributeNames) {
+		// For backward compatibility we use EmbedType.ONDEMAND by default
+		this(matchMode, EmbedType.ONDEMAND, attributeNames);
+	}
+
+	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,	EmbedType embedType, Collection<String> attributeNames) {
 		super(matchMode);
+		this.embedType = embedType;
 		this.attributeNames = attributeNames;
 	}
 
@@ -60,6 +68,6 @@ public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends
 
 	@Override @SSCCopyToConstructors
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
-		currentBuilder.onDemandAttributeValuesByName();
+		currentBuilder.embedAttributeValuesByName(embedType);
 	}
 }

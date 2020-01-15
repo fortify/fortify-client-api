@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.ssc.json.preprocessor.filter;
 
+import com.fortify.client.ssc.api.query.builder.EmbedType;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -39,9 +40,16 @@ import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
  */
 public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder>{
 	private final String bugTrackerPluginShortDisplayName;
+	private final EmbedType embedType;
 	
 	public SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName(MatchMode matchMode, String bugTrackerPluginShortDisplayName) {
+		// For backward compatibility we use EmbedType.ONDEMAND by default
+		this(matchMode, EmbedType.ONDEMAND, bugTrackerPluginShortDisplayName);
+	}
+	
+	public SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName(MatchMode matchMode, EmbedType embedType, String bugTrackerPluginShortDisplayName) {
 		super(matchMode);
+		this.embedType = embedType;
 		this.bugTrackerPluginShortDisplayName = bugTrackerPluginShortDisplayName;
 	}
 	
@@ -56,6 +64,6 @@ public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName ext
 	
 	@Override
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder builder) {
-		builder.onDemandBugTracker();
+		builder.embedBugtracker(embedType);
 	}
 }
