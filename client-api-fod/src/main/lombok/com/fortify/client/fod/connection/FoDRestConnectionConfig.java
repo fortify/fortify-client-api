@@ -49,7 +49,7 @@ import lombok.ToString;
  */
 @Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
-	private String scope = "api-tenant";
+	private String[] scopes = {"api-tenant"};
 	private String clientId;
 	private String clientSecret;
 	private String tenant;
@@ -71,8 +71,8 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		return getThis();
 	}
 	
-	public T scope(String scope) {
-		setScope(scope);
+	public T scopes(String... scopes) {
+		setScopes(scopes);
 		return getThis();
 	}
 	
@@ -83,6 +83,10 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 	
 	public String getUserNameWithTenant() {
 		return getTenant() + "\\" + getUserName();
+	}
+	
+	public void setScopes(String... scopes) {
+		this.scopes = scopes;
 	}
 	
 	@Override
@@ -156,5 +160,9 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		form.param("username", getUserNameWithTenant());
 		form.param("password", getPassword());
 		return form;
+	}
+	
+	private String getScope() {
+		return StringUtils.join(getScopes(), ' ');
 	}
 }
