@@ -71,6 +71,11 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		return getThis();
 	}
 	
+	public T scope(String scope) {
+		setScope(scope);
+		return getThis();
+	}
+	
 	public T rateLimitMaxRetries(int rateLimitMaxRetries) {
 		setRateLimitMaxRetries(rateLimitMaxRetries);
 		return getThis();
