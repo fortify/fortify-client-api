@@ -77,6 +77,16 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		return queryApplicationVersions().nameOrId(nameOrId).useCache(useCache).build().getUnique();
 	}
 	
+	public void deleteApplicationVersion(JSONMap applicationVersion) {
+		deleteApplicationVersionById(applicationVersion.get("id", String.class));
+	}
+	
+	@SSCRequiredActionsPermitted({"DELETE=/api/v\\d+/projectVersions/\\d+"})
+	public void deleteApplicationVersionById(String applicationVersionId) {
+		conn().executeRequest(HttpMethod.DELETE, 
+			conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId), Void.class);
+	}
+
 	public CreateApplicationVersionBuilder createApplicationVersion() {
 		return new CreateApplicationVersionBuilder(conn());
 	}
