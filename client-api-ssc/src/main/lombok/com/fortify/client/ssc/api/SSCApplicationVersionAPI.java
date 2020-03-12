@@ -158,7 +158,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		public String execute() {
 			MultiValueMap<String,Object> attributes = getApplicationVersionAttributes();
 			String applicationVersionId = createNonCommittedApplicationVersiom().get("id", String.class);
-			conn.api(SSCAttributeAPI.class).updateApplicationVersionAttributes(applicationVersionId, attributes);
+			conn.api(SSCApplicationVersionAttributeAPI.class).updateApplicationVersionAttributes(applicationVersionId, attributes);
 			commitApplicationVersion(applicationVersionId);
 			return applicationVersionId;
 		}
@@ -182,7 +182,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		private MultiValueMap<String, Object> getApplicationVersionAttributes() {
 			LinkedMultiValueMap<String, Object> data = new LinkedMultiValueMap<>();
 			if ( autoAddRequiredAttributes ) {
-				data.putAll(conn.api(SSCAttributeAPI.class).getRequiredAttributesWithDefaultValues());
+				data.putAll(conn.api(SSCAttributeDefinitionAPI.class).getRequiredAttributesWithDefaultValues());
 			}
 			if ( attributeNameOrIdToValueMap != null ) {
 				data.putAll(attributeNameOrIdToValueMap);

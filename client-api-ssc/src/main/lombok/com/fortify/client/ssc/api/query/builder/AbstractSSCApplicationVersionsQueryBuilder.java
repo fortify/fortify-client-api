@@ -28,7 +28,8 @@ import java.util.function.Consumer;
 
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
-import com.fortify.client.ssc.api.SSCAttributeAPI;
+import com.fortify.client.ssc.api.SSCApplicationVersionAttributeAPI;
+import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -437,9 +438,9 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		@Override @SSCCopyToConstructors
 		public Object getOnDemand(SSCAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
 			if ( attrDefs==null ) {
-				attrDefs = conn.api(SSCAttributeAPI.class).getAttributeDefinitions(true, "guid","name");
+				attrDefs = conn.api(SSCAttributeDefinitionAPI.class).getAttributeDefinitions(true, "guid","name");
 			}
-			return conn.api(SSCAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class), attrDefs);
+			return conn.api(SSCApplicationVersionAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class), attrDefs);
 		}
 		
 		@Override
@@ -463,7 +464,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		}
 		private JSONList getAttributeDefinitions() {
 			if ( attrDefs==null ) {
-				attrDefs = conn.api(SSCAttributeAPI.class).getAttributeDefinitions(true, "guid","name");
+				attrDefs = conn.api(SSCAttributeDefinitionAPI.class).getAttributeDefinitions(true, "guid","name");
 			}
 			return attrDefs;
 		}
@@ -473,7 +474,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 			if ( attrs==null ) {
 				throw new IllegalArgumentException("Application version does not contain attributes list");
 			}
-			JSONMap attrValuesByName = conn.api(SSCAttributeAPI.class).convertApplicationVersionAttributeValuesListToMap(attrs, getAttributeDefinitions());
+			JSONMap attrValuesByName = conn.api(SSCApplicationVersionAttributeAPI.class).convertApplicationVersionAttributeValuesListToMap(attrs, getAttributeDefinitions());
 			json.put(propertyName, attrValuesByName);
 		}
 	}
