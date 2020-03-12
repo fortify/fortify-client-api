@@ -240,10 +240,10 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 
 	protected T embedPreload(String propertyName, String uriExpression, String... fields) {
 		return pagePreProcessor(
-				getConn().api(SSCBulkAPI.class).addBulkData()
+				getConn().api(SSCBulkAPI.class).bulkEmbedder()
 					.targetProperty(propertyName)
 					.uriExpression(appendOnDemandFields(uriExpression, fields))
-					.consumer());
+					.asPagePreProcessor());
 	}
 	
 	@Override
