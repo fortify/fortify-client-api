@@ -114,7 +114,12 @@ public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
 	private JSONMap xml2json(InputStream is) {
 	    try {
 	    	final DataCollector handler = new DataCollector();
-			SAXParserFactory.newInstance().newSAXParser().parse(is, handler);
+			SAXParserFactory factory = SAXParserFactory.newInstance();
+			factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
+			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			factory.newSAXParser().parse(is, handler);
 			return handler.result;
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			throw new RuntimeException("Error converting XML to JSONMap", e);
