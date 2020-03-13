@@ -301,7 +301,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		cacheManager = CacheBuilder.from(cacheProperties.getProperty("cacheManager", getDefaultCacheManagerSpec()))
 				.build(new CacheLoader<String, Cache<CacheKey, Object>>() {
 					@Override
-					public Cache<CacheKey, Object> load(String key) throws Exception {
+					public Cache<CacheKey, Object> load(String key) {
 						String cacheSpec = cacheProperties.getProperty(key, cacheProperties.getProperty("default", getDefaultCacheSpec()));
 						log.debug("Creating cache "+key+" with spec "+cacheSpec);
 						return CacheBuilder.from(cacheSpec).build();
