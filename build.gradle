@@ -37,7 +37,7 @@ subprojects {
 	}
 	
 	task myjavadoc(type: Javadoc) {
-	    failOnError = false
+		failOnError = false
 	}
 	
 	task javadocJar(type: Jar) {
@@ -70,6 +70,15 @@ configure(subprojects.findAll {new File(it.projectDir, "src/main/lombok").exists
 	
 	myjavadoc {
 		source = delombok
+	}
+	
+	if (project.hasProperty('fortify')) {
+		tasks.withType(JavaCompile) {
+		    source = delombok
+		}
+		// For some reason tests fail due to the source = delombok setting above
+		// We don't need to run tests anyway during SCA translation, so we disable tests here
+		test.enabled = false
 	}
 }
 
