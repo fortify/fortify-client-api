@@ -119,6 +119,8 @@ public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
 			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 			factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
 			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			factory.setFeature("http://xml.org/sax/features/validation", true);
+			factory.setValidating(true);
 			factory.newSAXParser().parse(is, handler);
 			return handler.result;
 		} catch (SAXException | IOException | ParserConfigurationException e) {
