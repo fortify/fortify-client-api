@@ -5,9 +5,6 @@ scanOpts="-scan-module -Dcom.fortify.sca.UseSynchronousSerialization=true -Dcom.
 
 set -x
 
-# Remove any old FPR file
-rm -f ${projectName}.fpr
-
 # Clean our build model
 sourceanalyzer -b ${projectName} -clean
 
