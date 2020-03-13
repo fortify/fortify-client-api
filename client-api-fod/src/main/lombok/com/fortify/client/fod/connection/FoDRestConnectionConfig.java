@@ -132,14 +132,16 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 				password = userInfoParts[1];
 			}
 			
-			String[] userParts = user.split("\\\\", 2);
-			if ( userParts.length == 2 ) {
-				setTenant(userParts[0]);
-				setUserName(userParts[1]);
-				setPassword(password);
-			} else {
-				setClientId(user);
-				setClientSecret(password);
+			if ( StringUtils.isNotBlank(user) ) {
+				String[] userParts = user.split("\\\\", 2);
+				if ( userParts.length == 2 ) {
+					setTenant(userParts[0]);
+					setUserName(userParts[1]);
+					setPassword(password);
+				} else {
+					setClientId(user);
+					setClientSecret(password);
+				}
 			}
 		}
 	}
