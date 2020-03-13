@@ -24,13 +24,10 @@
  ******************************************************************************/
 package com.fortify.util.rest.json.preprocessor.enrich;
 
-import java.text.MessageFormat;
-
 import com.fortify.util.rest.json.JSONMap;
 
 public class JSONMapEnrichWithOnDemandJSONMapFromJSONList extends JSONMapEnrichWithOnDemandSpEL {
-	private static final MessageFormat FMT = new MessageFormat("{0}.toJSONMap(\"{1}\", T(String), \"{2}\", T(Object))") ;
 	public JSONMapEnrichWithOnDemandJSONMapFromJSONList(String propertyName, String listPropertyName, String keyName, String valueName, boolean storeValue) {
-		super(propertyName, FMT.format(new String[] {listPropertyName, keyName, valueName}), JSONMap.class, storeValue);
+		super(propertyName, String.format("%s.toJSONMap(\"%s\", T(String), \"%s\", T(Object))", listPropertyName, keyName, valueName), JSONMap.class, storeValue);
 	}
 }
