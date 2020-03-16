@@ -1,6 +1,6 @@
 package com.fortify.util.rest.json;
 /*******************************************************************************
- * (c) Copyright 2017 EntIT Software LLC
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
