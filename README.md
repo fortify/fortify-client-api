@@ -78,7 +78,7 @@ project for more information and other Gradle helper scripts.
 			<dependency>
 				<groupId>com.fortify.client.api</groupId>
 				<artifactId>fortify-client-api</artifactId>
-				<version>version</version>
+				<version>[version]</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
