@@ -5,13 +5,12 @@ As of version 5.4:
 
 * Snapshot versions are provided on https://oss.jfrog.org/artifactory/oss-snapshot-local
 * Release versions are provided on https://dl.bintray.com/fortify-ps/maven
+* Build status is available at https://travis-ci.com/github/fortify-ps/fortify-client-api
 
 For older versions:
 
 * Snapshot versions are not available
 * Release versions are provided on https://raw.githubusercontent.com/fortify-ps/FortifyMavenRepo/master
-
-TODO: Verify instructions in this readme
 
 ## Configure dependent projects
 
@@ -26,8 +25,6 @@ examples need to be adjusted according to:
  
 
 ### Gradle
-
-TODO: Verify this
 
 ```groovy
 
@@ -51,9 +48,15 @@ dependencyManagement {
 dependencies {
    compile 'com.fortify.client.api:client-api-ssc'
 }
-
-
 ```
+
+Note that most projects in the fortify-ps organization use the
+[repo-helper.gradle](https://github.com/fortify-ps/gradle-helpers/blob/1.0/repo-helper.gradle)
+Gradle helper script to configure repositories; this script uses
+slightly different repository settings than listed above, in order to also 
+allow access to snapshot builds. See the https://github.com/fortify-ps/gradle-helpers 
+project for more information and other Gradle helper scripts.
+
 
 ### Maven
 
@@ -92,8 +95,10 @@ dependencies {
 
 ## Version Management
 
-This section provides a quick overview on how to manage branches and versions
-for fortify-client-api. Basically:
+Version management for this project is handled by the 
+[version-helper.gradle](https://github.com/fortify-ps/gradle-helpers/blob/1.0/version-helper.gradle)
+Gradle helper script. This section provides a quick overview on how to 
+manage branches and versions for fortify-client-api. Basically:
 
 * Any development is done on a `<version>-SNAPSHOT` branch
 * When a snapshot is ready to be released:
@@ -132,13 +137,11 @@ and tags; the project source code does not define any version numbers.
 ## Build Environment
 
 Whenever changes are pushed to the remote repository, a build will be triggered 
-on travis-ci.org/travis-ci.com. These builds will automatically publish the current
-project version:
+on travis-ci.com. These builds will automatically publish the current project version:
 
 * Release versions are published to https://dl.bintray.com/fortify-ps/maven
 * Snapshot versions are published to https://oss.jfrog.org/artifactory/oss-snapshot-local
 * Any other versions are only built, but not published
 
-TODO: Publishing to Bintray/JFrog not yet implemented due to travis-ci issues
 
 
