@@ -1,5 +1,0 @@
-To-do's for converting these projects from Maven to Gradle builds:
-
-- Change artifactId for root project to old name? (client-api-root)
-- Verify & fix published pom.xml files (dependencyManagement, dependencies)
-- Disable lombok.config? (any consequences?)

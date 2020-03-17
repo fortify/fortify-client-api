@@ -97,8 +97,10 @@ project for more information and other Gradle helper scripts.
 
 Version management for this project is handled by the 
 [version-helper.gradle](https://github.com/fortify-ps/gradle-helpers/blob/1.0/version-helper.gradle)
-Gradle helper script. This section provides a quick overview on how to 
-manage branches and versions for fortify-client-api. Basically:
+Gradle helper script. 
+
+This section provides a quick overview on how to manage branches and versions 
+for fortify-client-api. Basically:
 
 * Any development is done on a `<version>-SNAPSHOT` branch
 * When a snapshot is ready to be released:
@@ -143,5 +145,14 @@ on travis-ci.com. These builds will automatically publish the current project ve
 * Snapshot versions are published to https://oss.jfrog.org/artifactory/oss-snapshot-local
 * Any other versions are only built, but not published
 
+## IDE's
 
+Most of the modules in this project use Lombok. In order to have your IDE compile these
+projects without errors, you may need to add Lombok support to your IDE. Please see
+https://projectlombok.org/setup/overview for more information.
+
+# Licensing
+
+See [LICENSE.TXT](LICENSE.TXT)
+ 
 
