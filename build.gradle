@@ -9,10 +9,12 @@ plugins {
 }
 
 ext {
-	gradleHelpersLocation = "https://raw.githubusercontent.com/fortify-ps/gradle-helpers/1.0"
+	gradleHelpersLocation = "https://raw.githubusercontent.com/fortify-ps/gradle-helpers/master"
 }
 
 apply from: "${gradleHelpersLocation}/version-helper.gradle"
+apply from: "${gradleHelpersLocation}/upload-mvn-helper.gradle"
+apply from: "${gradleHelpersLocation}/fortify-helper.gradle"
 
 repositories {
     jcenter()
@@ -74,15 +76,6 @@ configure(subprojects.findAll {new File(it.projectDir, "src/main/lombok").exists
 	
 	myjavadoc {
 		source = delombok
-	}
-	
-	if (project.hasProperty('fortify')) {
-		tasks.withType(JavaCompile) {
-		    source = delombok
-		}
-		// For some reason tests fail due to the source = delombok setting above
-		// We don't need to run tests anyway during SCA translation, so we disable tests here
-		test.enabled = false
 	}
 }
 
@@ -205,7 +198,7 @@ allprojects {
 	                    }
 	                }
 	                scm {
-	                    developerConnection = 'scm:git:https://github.com/fortify-ps/fortify-client-api.git'
+	                    developerConnection = "scm:git:https://github.com/fortify-ps/${rootProject.name}.git"
 	                }
 	            }
 	        }
@@ -213,38 +206,4 @@ allprojects {
 	}
 	// Publish to Maven local repository when publish task is executed
 	publish.finalizedBy publishToMavenLocal
-	
-	bintray {
-	    user = System.getenv('BINTRAY_USER')
-	    key = System.getenv('BINTRAY_KEY')
-	    publications = ['mavenJava']
-	    publish = true
-	    pkg {
-	        repo = 'maven'
-	        name = 'fortify-client-api'
-	        licenses = ['MIT']
-	        vcsUrl = 'https://github.com/fortify-ps/fortify-client-api.git'
-	        userOrg = 'fortify-ps'
-	    }
-	}
-	
-	artifactory {
-	    contextUrl = 'http://oss.jfrog.org'
-	    publish {
-	        repository {
-	            repoKey = 'oss-snapshot-local'
-	            username = System.getenv('BINTRAY_USER')
-	            password = System.getenv('BINTRAY_KEY')
-	        }
-	        defaults {
-	            publications('mavenJava')
-	            publishArtifacts = true
-	            publishPom = true
-	        }
-	    }
-	    resolve {
-	        repoKey = 'jcenter'
-	    }
-	    clientConfig.info.setBuildNumber(System.getProperty('build.number'))
-	}
 }
