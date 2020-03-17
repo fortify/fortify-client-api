@@ -31,22 +31,27 @@ listed above:
 
 ## Usage
 
-Please refer to the JavaDoc and sample projects listed in the previous sections
-for details on how to use these client libraries. The remainder of this section
-just describes the build configuration to be used to include the fortify-client-api
-libraries into your own projects.
+### API
+Please refer to the JavaDoc and sample projects listed in the [Related Links](#related-links) section
+for details on how to use these client libraries.
+
+### Build System
+The Maven artifacts for this project are automatically deployed to
+the Maven repositories listed in the [Related Links](#related-links) section.
 
 The published pom.xml file for fortify-client-api provides a dependencyManagement 
 section that can be imported to declare the correct dependency versions. The 
-following sections provide examples on how to configure Gradle or Maven to use 
-the `client-api-ssc` project provided by fortify-client-api. Obviously, these
-examples need to be adjusted according to:
+following examples show how to configure Gradle or Maven to use the `client-api-ssc` 
+project provided by fortify-client-api. Obviously, these examples need to be adjusted 
+according to:
 
 * The version of fortify-client-api to be used
-* Specific module(s) to be used from fortify-client-api
+* Specific module(s) to be used from fortify-client-api 
  
+Please refer to the sample projects listed in the [Related Links](#related-links) sections
+for more examples on how to add the `fortify-client-api` libraries to your projects.
 
-### Gradle
+#### Gradle Example
 
 ```gradle
 
@@ -74,13 +79,13 @@ dependencies {
 
 Note that most projects in the fortify-ps organization use the
 [repo-helper.gradle](https://github.com/fortify-ps/gradle-helpers/blob/1.0/repo-helper.gradle)
-Gradle helper script to configure repositories; this script uses
-slightly different repository settings than listed above, in order to also 
+Gradle helper script to configure repositories; that script uses
+slightly different repository settings than listed above in order to also 
 allow access to snapshot builds. See the https://github.com/fortify-ps/gradle-helpers 
 project for more information and other Gradle helper scripts.
 
 
-### Maven
+#### Maven Example
 
 ```xml
 
@@ -115,50 +120,11 @@ project for more information and other Gradle helper scripts.
 	</dependencies>
 ```
 
-## Information for developers
 
-### Version Management
+## Information for library developers
 
-Version management for this project is handled by the 
-[version-helper.gradle](https://github.com/fortify-ps/gradle-helpers/blob/1.0/version-helper.gradle)
-Gradle helper script. 
-
-This section provides a quick overview on how to manage branches and versions 
-for fortify-client-api. Basically:
-
-* Any development is done on a `<version>-SNAPSHOT` branch
-* When a snapshot is ready to be released:
-    * Changes from the snapshot branch are merged with master
-    * A new `<version>` tag is created 
-
-Main thing to note is that Gradle project version is based on these git branches 
-and tags; the project source code does not define any version numbers.
-
-### Git commands
-
-* Clone the project: 
-    * `git clone https://github.com/fortify-ps/fortify-client-api.git`
-* Check out an existing snapshot branch: 
-    * `git checkout <version>-SNAPSHOT`
-* Allow `git push` to push to snapshot branch: 
-    * `git config --global push.default current`
-
-### Gradle commands
-
-* Publish artifacts to local Maven repository to make them available for dependent projects:
-    * `gradle publish`
-* Show current project version: 
-    * `gradle printProjectVersion`
-* Start a new snapshot branch from master; Both these operations will check out a new branch named `<nextVersion>-SNAPSHOT`
-    * Prompt for new version number: 
-        * `gradle startSnapshotBranch`
-    * Provide new version number on command line: 
-        * `gradle startSnapshotBranch -PnextVersion=<major>.<minor>[.<patch>]`
- * Release new version from snapshot branch: 
-     * `gradle releaseSnapshot`
- 
- Note that all of these commands operate on the local Git repository only;
- you will need to push any changes to the remote repository where applicable.
+The following sections provide information that may be useful for developers of the 
+`fortify-client-api` library.
 
 ### IDE's
 
@@ -166,8 +132,53 @@ Most of the modules in this project use Lombok. In order to have your IDE compil
 projects without errors, you may need to add Lombok support to your IDE. Please see
 https://projectlombok.org/setup/overview for more information.
 
+### Gradle
+
+It is strongly recommended to build this project using the included Gradle Wrapper
+scripts; using other Gradle versions may result in build errors and other issues.
+
+The Gradle build uses various helper scripts from https://github.com/fortify-ps/gradle-helpers;
+please refer to the documentation and comments in included scripts for more information. 
+
+### Commonly used commands
+
+All commands listed below use Linux/bash notation; adjust accordingly if you
+are running on a different platform. All commands are to be executed from
+the main project directory.
+
+* `./gradlew tasks --all`: List all available tasks
+* Build & publish:
+  * `./gradlew clean build`: Clean and build the project
+  * `./gradlew build`: Build the project without cleaning
+  * `./gradlew publish`: Publish the project to the local Maven repository, for use by other local projects. Should usually only be done from a snapshot branch; see [Versioning](#versioning).
+  * `./gradlew build`: Build the project without cleaning
+* Version management:
+  * `./gradlew printProjectVersion`: Print the current version
+  * `./gradlew startSnapshotBranch -PnextVersion=2.0`: Start a new snapshot branch for an upcoming `2.0` version
+  * `./gradlew releaseSnapshot`: Merge the changes from the current branch to the master branch, and create release tag
+* `./fortify-scan.sh`: Run a Fortify scan; requires Fortify SCA to be installed
+
+### Versioning
+
+The various version-related Gradle tasks assume the following versioning methodology:
+* The `master` branch is only used for creating tagged release versions
+* A branch named `<version>-SNAPSHOT` contains the current snapshot state for the upcoming release
+* Optionally, other branches can be used to develop individual features, perform bug fixes, ...
+  * However, note that the Gradle build may be unable to identify a correct version number for the project
+  * As such, only builds from tagged versions or from a `<version>-SNAPSHOT` branch should be published to a Maven repository
+
+### Automated Builds & publishing
+
+Travis-CI builds are automatically triggered when there is any change in the project repository,
+for example due to pushing changes, or creating tags or branches. Build results can be found
+at https://travis-ci.com/github/fortify-ps/fortify-client-api.
+
+If applicable, build artifacts are automatically published to a Maven repository based on the
+following:
+* When building a branch named `<version>-SNAPSHOT` without any tag, the Gradle `artifactoryPublish` task will be invoked to publish a snapshot version to JFrog Artifactory
+* When building a tagged version, the Gradle `bintrayUpload` task will be invoked to upload the release version to JFrog Bintray
+* No artifacts will be deployed for any other build, for example when Travis-CI builds the `master` branch
 
 # Licensing
 See [LICENSE.TXT](LICENSE.TXT)
- 
 
