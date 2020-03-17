@@ -14,7 +14,7 @@ jobs:
     - stage: build
       script: /bin/sh ./gradlew build
     - stage: snapshotBranch
-      script: /bin/sh ./gradlew "-PoverrideVersion=$TRAVIS_BRANCH" bintrayUpload -x test -Dbuild.number=$TRAVIS_BUILD_NUMBER
+      script: /bin/sh ./gradlew "-PoverrideVersion=$TRAVIS_BRANCH" artifactoryPublish -x test -Dbuild.number=$TRAVIS_BUILD_NUMBER
     - stage: releaseTag
       script: /bin/sh ./gradlew "-PoverrideVersion=$TRAVIS_TAG" bintrayUpload -x test -Dbuild.number=$TRAVIS_BUILD_NUMBER
       
