@@ -1,18 +1,40 @@
-# fortify-client-api
-This project provides Java modules for working with various Fortify products.
+# Fortify Client API libraries
 
-As of version 5.4:
+The **fortify-client-api** project provides the following Java modules for working with various Fortify products:
 
-* Snapshot versions are provided on https://oss.jfrog.org/artifactory/oss-snapshot-local
-* Release versions are provided on https://dl.bintray.com/fortify-ps/maven
-* Build status is available at https://travis-ci.com/github/fortify-ps/fortify-client-api
+* **client-api-fod** Client library for working with the Fortify on Demand (FoD) REST API
+* **client-api-ssc** Client library for working with the Fortify Software Security Center (SSC) REST API
+* **client-api-webinspect** Client library for working with the Fortify WebInspect REST API
+* **client-api-wie** Client library for working with the Fortify WebInspect Enterprise (WIE) REST API
 
-For older versions:
+The following modules in this project do not contain any Fortify-specific functionality,
+but provide common, low-level functionality that is used by the various client modules
+listed above:
 
-* Snapshot versions are not available
-* Release versions are provided on https://raw.githubusercontent.com/fortify-ps/FortifyMavenRepo/master
+* **common-log** Low-level functionality related to logging
+* **common-spring** Low-level functionality related to the Spring framework and Spring Expression Language
+* **common-rest** Low-level functionality for invoking REST API's and handling JSON data.
 
-## Configure dependent projects
+### Related links
+
+* **Automated builds**: https://travis-ci.com/github/fortify-ps/fortify-client-api
+* **Maven Repositories**
+  * **Snapshots**: https://oss.jfrog.org/artifactory/oss-snapshot-local
+  * **Releases**: https://dl.bintray.com/fortify-ps/maven
+  * **Releases (older versions)**: https://raw.githubusercontent.com/fortify-ps/FortifyMavenRepo/master
+* **Sample Projects using fortify-client-api**
+  * https://github.com/fortify-ps/FortifyBugTrackerUtility
+  * https://github.com/fortify-ps/FortifySyncFoDToSSC
+  * https://github.com/fortify-ps/fortify-integration-sonarqube
+  * https://github.com/fortify-ps/fortify-integration-maven-webinspect 
+
+
+## Usage
+
+Please refer to the JavaDoc and sample projects listed in the previous sections
+for details on how to use these client libraries. The remainder of this section
+just describes the build configuration to be used to include the fortify-client-api
+libraries into your own projects.
 
 The published pom.xml file for fortify-client-api provides a dependencyManagement 
 section that can be imported to declare the correct dependency versions. The 
@@ -26,7 +48,7 @@ examples need to be adjusted according to:
 
 ### Gradle
 
-```groovy
+```gradle
 
 plugins {
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
@@ -93,7 +115,9 @@ project for more information and other Gradle helper scripts.
 	</dependencies>
 ```
 
-## Version Management
+## Information for developers
+
+### Version Management
 
 Version management for this project is handled by the 
 [version-helper.gradle](https://github.com/fortify-ps/gradle-helpers/blob/1.0/version-helper.gradle)
@@ -136,23 +160,14 @@ and tags; the project source code does not define any version numbers.
  Note that all of these commands operate on the local Git repository only;
  you will need to push any changes to the remote repository where applicable.
 
-## Build Environment
-
-Whenever changes are pushed to the remote repository, a build will be triggered 
-on travis-ci.com. These builds will automatically publish the current project version:
-
-* Release versions are published to https://dl.bintray.com/fortify-ps/maven
-* Snapshot versions are published to https://oss.jfrog.org/artifactory/oss-snapshot-local
-* Any other versions are only built, but not published
-
-## IDE's
+### IDE's
 
 Most of the modules in this project use Lombok. In order to have your IDE compile these
 projects without errors, you may need to add Lombok support to your IDE. Please see
 https://projectlombok.org/setup/overview for more information.
 
-# Licensing
 
+# Licensing
 See [LICENSE.TXT](LICENSE.TXT)
  
 
