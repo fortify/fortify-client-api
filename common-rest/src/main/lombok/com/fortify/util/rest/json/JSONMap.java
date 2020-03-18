@@ -91,8 +91,10 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	public JSONMap(Map<? extends String, ? extends Object> source, String field, String... extraFields) {
 		super((extraFields==null?0:extraFields.length)+1);
 		put(field, source.get(field));
-		for ( String extraField : extraFields ) {
-			put(extraField, source.get(extraField));
+		if ( extraFields != null ) {
+			for ( String extraField : extraFields ) {
+				put(extraField, source.get(extraField));
+			}
 		}
 	}
 	
