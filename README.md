@@ -158,6 +158,9 @@ the main project directory.
   * `./gradlew releaseSnapshot`: Merge the changes from the current branch to the master branch, and create release tag
 * `./fortify-scan.sh`: Run a Fortify scan; requires Fortify SCA to be installed
 
+Note that the version management tasks operate only on the local repository; you will need to manually
+push any changes (including tags and branches) to the remote repository.
+
 ### Versioning
 
 The various version-related Gradle tasks assume the following versioning methodology:
