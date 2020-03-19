@@ -17,6 +17,8 @@ listed above:
 
 ### Related links
 
+* **Branches**: https://github.com/fortify-ps/fortify-client-api/branches  
+  Current development is usually done on latest snapshot branch, which may not be the default branch
 * **Automated builds**: https://travis-ci.com/github/fortify-ps/fortify-client-api
 * **Maven Repositories**
   * **Snapshots**: https://oss.jfrog.org/artifactory/oss-snapshot-local
@@ -151,7 +153,6 @@ the main project directory.
   * `./gradlew clean build`: Clean and build the project
   * `./gradlew build`: Build the project without cleaning
   * `./gradlew publish`: Publish the project to the local Maven repository, for use by other local projects. Should usually only be done from a snapshot branch; see [Versioning](#versioning).
-  * `./gradlew build`: Build the project without cleaning
 * Version management:
   * `./gradlew printProjectVersion`: Print the current version
   * `./gradlew startSnapshotBranch -PnextVersion=2.0`: Start a new snapshot branch for an upcoming `2.0` version
@@ -173,14 +174,15 @@ The various version-related Gradle tasks assume the following versioning methodo
 ### Automated Builds & publishing
 
 Travis-CI builds are automatically triggered when there is any change in the project repository,
-for example due to pushing changes, or creating tags or branches. Build results can be found
-at https://travis-ci.com/github/fortify-ps/fortify-client-api.
+for example due to pushing changes, or creating tags or branches. If applicable, build artifacts 
+are automatically published to a Maven repository:
 
-If applicable, build artifacts are automatically published to a Maven repository based on the
-following:
-* When building a branch named `<version>-SNAPSHOT` without any tag, the Gradle `artifactoryPublish` task will be invoked to publish a snapshot version to JFrog Artifactory
 * When building a tagged version, the Gradle `bintrayUpload` task will be invoked to upload the release version to JFrog Bintray
+* When building a branch named `<version>-SNAPSHOT`, the Gradle `artifactoryPublish` task will be invoked to publish a snapshot version to JFrog Artifactory
 * No artifacts will be deployed for any other build, for example when Travis-CI builds the `master` branch
+
+See the [Related Links](#related-links) section for the relevant Travis-CI, Bintray and Artifactory links.
+
 
 # Licensing
 See [LICENSE.TXT](LICENSE.TXT)
