@@ -165,6 +165,7 @@ push any changes (including tags and branches) to the remote repository.
 ### Versioning
 
 The various version-related Gradle tasks assume the following versioning methodology:
+
 * The `master` branch is only used for creating tagged release versions
 * A branch named `<version>-SNAPSHOT` contains the current snapshot state for the upcoming release
 * Optionally, other branches can be used to develop individual features, perform bug fixes, ...
