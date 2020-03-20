@@ -38,6 +38,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.builder.SSCAttributeDefinitionsQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
@@ -154,6 +155,7 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
+		@SSCRequiredActionsPermitted({"POST=/api/v\\d+/attributeDefinitions"})
 		public JSONMap execute() {
 			Assert.notNull(name, "Attribute definition name must be specified");
 			if ( !SSCAttributeDefinitionType.SINGLE.equals(type) && !SSCAttributeDefinitionType.MULTIPLE.equals(type) ) {

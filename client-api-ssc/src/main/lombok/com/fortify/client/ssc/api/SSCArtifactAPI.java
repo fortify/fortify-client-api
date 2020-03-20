@@ -91,7 +91,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return conn().api(SSCFileUpDownloadAPI.class).uploadFile(webTarget, FileTokenType.UPLOAD, fprFile);
 	}
 	
-	@SSCRequiredActionsPermitted({"POST=/api/\\d+/artifacts/\\d+/action"})
+	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/artifacts/\\d+/action"})
 	public final JSONMap approveArtifact(String artifactId, String comment) {
 		JSONMap data = new JSONMap();
 		data.putPath("type", "approve");
