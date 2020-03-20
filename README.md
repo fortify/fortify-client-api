@@ -22,7 +22,9 @@ listed above:
 * **Automated builds**: https://travis-ci.com/github/fortify-ps/fortify-client-api
 * **Maven Repositories**
   * **Snapshots**: https://oss.jfrog.org/artifactory/oss-snapshot-local
+    * **Artifacts**: https://oss.jfrog.org/artifactory/oss-snapshot-local/com/fortify/client/api/
   * **Releases**: https://dl.bintray.com/fortify-ps/maven
+    * **Artifacts**: https://dl.bintray.com/fortify-ps/maven/com/fortify/client/api/
   * **Releases (older versions)**: https://raw.githubusercontent.com/fortify-ps/FortifyMavenRepo/master
 * **Sample Projects using fortify-client-api**
   * https://github.com/fortify-ps/FortifyBugTrackerUtility
