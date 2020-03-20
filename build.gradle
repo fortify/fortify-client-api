@@ -44,7 +44,7 @@ subprojects {
 	
 	task myjavadoc(type: Javadoc) {
 		source = sourceSets.main.allJava
-		classpath = sourceSets.main.runtimeClasspath
+		classpath = sourceSets.main.compileClasspath
 		failOnError = false
 	}
 	
