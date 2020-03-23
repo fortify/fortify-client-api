@@ -38,10 +38,10 @@ import org.apache.logging.log4j.core.LogEvent;
  * Applications that want to enable log masking must provide an actual 
  * Log4J plugin class that extends from this class, as follows:
  * 
- * <pre><code>
+ * <pre>
 
-@Plugin(name = LogMaskingHelper.NAME, category = LogMaskingHelper.CATEGORY)
-@ConverterKeys(LogMaskingHelper.NAME)
+&#64;Plugin(name = LogMaskingHelper.NAME, category = LogMaskingHelper.CATEGORY)
+&#64;ConverterKeys(LogMaskingHelper.NAME)
 public final class LogMaskingConverterPlugin extends LogEventPatternConverter {
 	public LogMaskingConverterPlugin(String[] options) {
 		super(LogMaskingHelper.NAME, LogMaskingHelper.NAME);
@@ -51,14 +51,14 @@ public final class LogMaskingConverterPlugin extends LogEventPatternConverter {
 		return new LogMaskingConverterPlugin(options);
 	}
 	
-	@Override
+	&#64;Override
 	public void format(LogEvent event, StringBuilder outputMessage) {
 		LogMaskingHelper.format(event, outputMessage);
 	}
 }
 
 
- * </pre></code>
+ * </pre>
  * 
  * @author Ruud Senden
  *

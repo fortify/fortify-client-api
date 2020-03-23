@@ -70,7 +70,7 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 	 * 
 	 * <p>Note that this method is not efficient if invoked for multiple
 	 * application versions when caching is disabled. In general, it is better to 
-	 * (temporarily) store the results of {@link #getAttributeDefinitions(boolean, String...)},
+	 * (temporarily) store the results of {@link SSCAttributeDefinitionAPI#getAttributeDefinitions(boolean, String...)},
 	 * and then call {@link #getApplicationVersionAttributeValuesByName(String, JSONList)}
 	 * using the stored attribute definitions.<p>
 	 * 

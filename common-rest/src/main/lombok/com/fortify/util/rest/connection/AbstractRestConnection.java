@@ -125,13 +125,6 @@ import lombok.extern.apachecommons.CommonsLog;
  *  <a href="https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html">https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html</a>
  *  </p>
  * 
- * <p>This base class allows for serialization of instances using a customized serialization mechanism.
- * This customized serialization mechanism must be enabled using the 
- * {@link AbstractRestConnectionConfig#enableSerializationSingleJVM()} or 
- * {@link AbstractRestConnectionConfig#enableSerializationMultiJVM(String)} methods. Upon serialization,
- * only the connection id is serialized. Upon deserialization, this connection id is looked up in
- * the static connection instances map.</p>
- * 
  * <p>Implementations may choose to also provide more high-level functionality. Usually such implementations
  * provide an api() method that provides access to these more high-level functionalities, keeping the
  * actual connection implementation lean and clean.</p>

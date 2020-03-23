@@ -212,10 +212,12 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * resulting JSON objects. Depending on the given embedType,
 	 * the additional entities are either loaded on demand
 	 * whenever they are accessed, or pre-loaded using SSC bulk 
-	 * requests. 
-	 * 
+	 * requests.
+	 *
 	 * @param propertyName
-	 * @param uri
+	 * @param uriExpression
+	 * @param embedType
+	 * @param fields
 	 * @return
 	 */
 	public T embed(String propertyName, String uriExpression, EmbedType embedType, String... fields) {

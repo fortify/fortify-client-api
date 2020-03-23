@@ -48,7 +48,7 @@ import lombok.extern.apachecommons.CommonsLog;
 /**
  * This class provides an authenticated REST connection for WIE. Low-level API's are
  * available through the various executeRequest() methods provided by {@link AbstractRestConnection}.
- * Higher-level API's are available through the {@link #api()} method. Instances of this class
+ * Higher-level API's are available through the {@link #api(Class)} method. Instances of this class
  * can be created using the {@link #builder()} method.
  * 
  * @author Ruud Senden
