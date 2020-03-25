@@ -35,6 +35,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.springframework.expression.Expression;
 
+import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
+import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -122,6 +124,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * 
 		 * @return
 		 */
+		@SSCRequiredActionsPermitted("POST=/api/v\\d+/bulk")
 		public JSONList execute() {
 			WebTarget bulkTarget = conn.getBaseResource().path("/api/v1/bulk");
 			JSONMap bulkRequest = new JSONMap();
@@ -198,6 +201,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * @author Ruud Senden
 		 *
 		 */
+		@SSCCopyToConstructors
 		public void addBulkData(JSONList jsonList) {
 			SSCBulkRequestBuilder builder = conn.api(SSCBulkAPI.class).bulkRequestBuilder();
 			addBulkRequests(builder, jsonList);

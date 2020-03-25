@@ -462,6 +462,8 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		public void accept(JSONList list) {
 			list.asValueType(JSONMap.class).forEach(this::addAttributeValuesByName);
 		}
+		
+		@SSCCopyToConstructors
 		private JSONList getAttributeDefinitions() {
 			if ( attrDefs==null ) {
 				attrDefs = conn.api(SSCAttributeDefinitionAPI.class).getAttributeDefinitions(true, "guid","name");

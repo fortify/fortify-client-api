@@ -190,7 +190,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 			return data;
 		}
 
-		@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+/action"})
+		@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+"})
 		private void commitApplicationVersion(String applicationVersionId) {
 			JSONMap data = new JSONMap();
 			data.put("committed", true);
