@@ -55,7 +55,6 @@ import lombok.ToString;
 @Data @EqualsAndHashCode(callSuper=false) @ToString(callSuper=false)
 public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnectionConfig<T>> {
 	private URI baseUrl;
-	private boolean useCache = true;
 	private boolean multiThreaded = false;
 	private ProxyConfig proxy = new ProxyConfig();
 	private Map<String, Object> connectionProperties;
@@ -63,11 +62,6 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	
 	public T baseUrl(String baseUrl) {
 		setBaseUrl(baseUrl);
-		return getThis();
-	}
-	
-	public T useCache(boolean useCache) {
-		setUseCache(useCache);
 		return getThis();
 	}
 	

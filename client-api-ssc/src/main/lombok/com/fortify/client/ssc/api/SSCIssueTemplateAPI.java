@@ -47,8 +47,8 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 		return new SSCIssueTemplatesQueryBuilder(conn());
 	}
 	
-	public JSONList getIssueTemplates(boolean useCache) {
-		return queryIssueTemplates().useCache(useCache).build().getAll();
+	public JSONList getIssueTemplates() {
+		return queryIssueTemplates().build().getAll();
 	}
 	
 	public SSCApplicationVersionFilterSetsQueryBuilder queryApplicationVersionFilterSets(String applicationVersionId) {
@@ -59,13 +59,39 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 		return queryApplicationVersionFilterSets(applicationVersionId).build().getAll();
 	}
 	
-	public String getIssueTemplateIdForName(String issueTemplateName) {
-		JSONList issueTemplates = getIssueTemplates(true);
-		if ( issueTemplates != null ) {
-			return issueTemplates.mapValue("name", issueTemplateName, "id", String.class);
-		}
-		return null;
+	public SSCIssueTemplateHelper getIssueTemplateHelper() {
+		return new SSCIssueTemplateHelper();
 	}
+	
+	public final class SSCIssueTemplateHelper {
+		private JSONList issueTemplates;
+		
+		public JSONList getIssueTemplates() {
+			if ( issueTemplates==null ) {
+				issueTemplates = SSCIssueTemplateAPI.this.getIssueTemplates();
+			}
+			return issueTemplates;
+		}
+		
+		public JSONMap getDefaultIssueTemplate() {
+			return getIssueTemplates().find("defaultTemplate", true, JSONMap.class);
+		}
+		
+		public String getDefaultIssueTemplateId() {
+			JSONMap defaultIssueTemplate = getDefaultIssueTemplate();
+			return defaultIssueTemplate==null ? null : defaultIssueTemplate.get("id", String.class);
+		}
+		
+		public String getIssueTemplateIdForName(String issueTemplateName) {
+			JSONList issueTemplates = getIssueTemplates();
+			if ( issueTemplates != null ) {
+				return issueTemplates.mapValue("name", issueTemplateName, "id", String.class);
+			}
+			return null;
+		}
+	}
+	
+	
 	
 	/**
 	 * @param applicationVersionId Application version id

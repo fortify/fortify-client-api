@@ -38,7 +38,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -78,7 +77,6 @@ import org.glassfish.jersey.client.ClientResponse;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -86,15 +84,9 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.fortify.util.log4j.LogMaskingHelper;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
-import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * <p>Base class for low-level functionality for accessing REST API's. Concrete implementations
@@ -104,43 +96,18 @@ import lombok.extern.apachecommons.CommonsLog;
  * of {@link AbstractRestConnectionConfig} which also implements the {@link IRestConnectionBuilder}
  * interface, allowing clients to easily build a concrete {@link AbstractRestConnection} implementation.</p>
  * 
- * <p>This base class allows for caching REST results by calling the {@link #executeRequest(String, WebTarget, Class, String)}
- * method, specifying the cache name to use as the last method parameter. Caches can be configured 
- * through a properties file named [ConnectionClassName]Cache.properties. This properties file can 
- * contain the following entries:</p>
- *  <ul>
- *   <li>cacheManager:[cacheSpec]<br>
- *       Cache specification for the connection-specific cache manager. You can use this
- *       for example to limit the total number of caches, or to clean up complete caches
- *       based on a time-out. By default, caches are kept indefinitely.</li>
- *   <li>default:[cacheSpec]<br>
- *       Default cache specification for individual caches. If not specified, the default
- *       specification will be 'maximumSize=1000,expireAfterWrite=60s'.</li>
- *   <li>[cacheName]:[cacheSpec]<br>
- *       Cache specification for individual caches.</li>
- *  </ul>
- *  <p>Caching can be globally disabled on a connection using the 
- *  {@link AbstractRestConnectionConfig#useCache(boolean)} method.
- *  The format for the cache specification is described here:
- *  <a href="https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html">https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilderSpec.html</a>
- *  </p>
- * 
  * <p>Implementations may choose to also provide more high-level functionality. Usually such implementations
  * provide an api() method that provides access to these more high-level functionalities, keeping the
  * actual connection implementation lean and clean.</p>
  */
-@CommonsLog
 @ToString
 public abstract class AbstractRestConnection implements IRestConnection {
 	private static final Pattern EXPR_AUTH_HEADER = Pattern.compile("Authorization: (.*)", Pattern.CASE_INSENSITIVE);
 	private static final Set<String> DEFAULT_HTTP_METHODS_TO_PRE_AUTHENTICATE = new HashSet<String>(Arrays.asList("POST","PUT","PATCH"));
 	
-	private Properties cacheProperties; 
-	private LoadingCache<String, Cache<CacheKey, Object>> cacheManager;
 	private final Map<Class<?>, Object> apis = new HashMap<>();
 	
 	@Getter private final URI baseUrl;
-	@Getter private final boolean useCache;
 	@Getter private final boolean multiThreaded;
 	private final ProxyConfig proxy;
 	private final Map<String, Object> connectionProperties;
@@ -149,9 +116,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	private Client client;
 	
 	protected AbstractRestConnection(AbstractRestConnectionConfig<?> config) {
-		initCache();
 		this.baseUrl = config.getBaseUrl();
-		this.useCache = config.isUseCache();
 		this.multiThreaded = config.isMultiThreaded();
 		this.proxy = config.getProxy();
 		this.connectionProperties = config.getConnectionProperties();
@@ -264,60 +229,6 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType, String cacheName) {
-		T result;
-		if ( cacheName == null || !useCache ) {
-			log.trace("No cache name specified or caching disabled, not using cache: "+webResource.getUri());
-			result = executeRequest(httpMethod, webResource, returnType);
-		} else {
-			Cache<CacheKey, Object> cache = cacheManager.getUnchecked(cacheName);
-			CacheKey cacheKey = getCacheKey(httpMethod, webResource, returnType);
-			result = (T)cache.getIfPresent(cacheKey);
-			if ( result == null ) {
-				log.trace("Cache miss: "+webResource.getUri());
-				result = executeRequest(httpMethod, webResource, returnType);
-				cache.put(cacheKey, result);
-			} else {
-				log.trace("Cache hit: "+webResource.getUri());
-			}
-		}
-		return result;
-	}
-	
-	protected void initCache() {
-		try {
-			cacheProperties = PropertiesLoaderUtils.loadAllProperties(getCachePropertiesResourceName());
-		} catch (IOException e) {
-			throw new RuntimeException("Error loading cache properties", e);
-		} 
-		cacheManager = CacheBuilder.from(cacheProperties.getProperty("cacheManager", getDefaultCacheManagerSpec()))
-				.build(new CacheLoader<String, Cache<CacheKey, Object>>() {
-					@Override
-					public Cache<CacheKey, Object> load(String key) {
-						String cacheSpec = cacheProperties.getProperty(key, cacheProperties.getProperty("default", getDefaultCacheSpec()));
-						log.debug("Creating cache "+key+" with spec "+cacheSpec);
-						return CacheBuilder.from(cacheSpec).build();
-					}
-				});
-	}
-	
-	protected String getCachePropertiesResourceName() {
-		return this.getClass().getSimpleName()+"Cache.properties";
-	}
-	
-	protected String getDefaultCacheManagerSpec() {
-		return "";
-	}
-	
-	protected String getDefaultCacheSpec() {
-		return "maximumSize=1000,expireAfterWrite=15m";
-	}
-	
-	protected CacheKey getCacheKey(String httpMethod, WebTarget webResource, Class<?> returnType) {
-		return new CacheKey(httpMethod, webResource.getUri(), returnType);
-	}	
-
 	/**
 	 * Authenticating with the server may require several round trips,
 	 * especially when using NTLM authentication. For HTTP methods that
@@ -478,7 +389,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 * has not been previously cached, this method will call 
 	 * {@link #createClient()} to create a new client and then
 	 * cache it.
-	 * @return Cache {@link Client} instance if available, new {@link Client} instance otherwise
+	 * @return Cached {@link Client} instance if available, new {@link Client} instance otherwise
 	 */
 	public final Client getClient() {
 		if ( client == null ) {
@@ -494,7 +405,6 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	public void close() {
 		Connections.unRegister(this);
 		getClient().close();
-		cacheManager.invalidateAll();
 		apis.clear();
 	}
 	
@@ -679,13 +589,6 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 */
 	protected void updateHttpClientBuilder(HttpClientBuilder httpClientBuilder) {
 		httpClientBuilder.setServiceUnavailableRetryStrategy(getServiceUnavailableRetryStrategy());
-	}
-
-	@Data
-	protected static class CacheKey {
-		private final String httpMethod;
-		private final URI uri;
-		private final Class<?> returnType;
 	}
 
 	protected static class JacksonFeature implements Feature {

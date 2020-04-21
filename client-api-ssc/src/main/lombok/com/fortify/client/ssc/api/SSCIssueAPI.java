@@ -56,8 +56,8 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 		return new SSCIssueDetailsByIdQueryBuilder(conn(), issueId);
 	}
 	
-	public JSONMap getIssueDetails(String issueId, boolean useCache, String... fields) {
-		return queryIssueDetailsById(issueId).useCache(useCache).paramFields(fields).build().getUnique();
+	public JSONMap getIssueDetails(String issueId, String... fields) {
+		return queryIssueDetailsById(issueId).paramFields(fields).build().getUnique();
 	}
 	
 	/**

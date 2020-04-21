@@ -48,20 +48,20 @@ public class FoDReleaseAPI extends AbstractFoDAPI {
 		return new FoDReleasesQueryBuilder(conn());
 	}
 	
-	public JSONMap getReleaseById(String releaseId, boolean useCache) {
-		return queryReleases().releaseId(releaseId).useCache(useCache).build().getUnique();
+	public JSONMap getReleaseById(String releaseId) {
+		return queryReleases().releaseId(releaseId).build().getUnique();
 	}
 	
-	public JSONMap getReleaseByName(String applicationName, String releaseName, boolean useCache) {
-		return queryReleases().applicationName(applicationName).releaseName(releaseName).useCache(useCache).build().getUnique();
+	public JSONMap getReleaseByName(String applicationName, String releaseName) {
+		return queryReleases().applicationName(applicationName).releaseName(releaseName).build().getUnique();
 	}
 	
-	public JSONMap getReleaseByNameOrId(String nameOrId, String separator, boolean useCache) {
-		return queryReleases().nameOrId(nameOrId, separator).useCache(useCache).build().getUnique();
+	public JSONMap getReleaseByNameOrId(String nameOrId, String separator) {
+		return queryReleases().nameOrId(nameOrId, separator).build().getUnique();
 	}
 	
-	public JSONMap getReleaseByNameOrId(String nameOrId, boolean useCache) {
-		return queryReleases().nameOrId(nameOrId).useCache(useCache).build().getUnique();
+	public JSONMap getReleaseByNameOrId(String nameOrId) {
+		return queryReleases().nameOrId(nameOrId).build().getUnique();
 	}
 	
 	/**

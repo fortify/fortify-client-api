@@ -68,8 +68,8 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 		return new SSCBugTrackersQueryBuilder(conn());
 	}
 	
-	public JSONList getBugTrackers(boolean useCache, String... fields) {
-		return queryBugTrackers().useCache(useCache).paramFields(fields).build().getAll();
+	public JSONList getBugTrackers(String... fields) {
+		return queryBugTrackers().paramFields(fields).build().getAll();
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @return
 	 */
 	public Map<String, String> getBugTrackerShortDisplayNamesByIds() {
-		return getBugTrackers(true).toMap("pluginId", String.class, "shortDisplayName", String.class);
+		return getBugTrackers().toMap("pluginId", String.class, "shortDisplayName", String.class);
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
 	public JSONMap fileBug(String applicationVersionId, Map<String,Object> issueDetails, List<String> issueInstanceIds) {
 		// TODO Clean up this code
-		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId, true);
+		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId);
 		Set<String> processedDependentParams = new HashSet<String>();
 		boolean allDependentParamsProcessed = false;
 		while ( !allDependentParamsProcessed ) {
@@ -199,7 +199,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @return
 	 */
 	public boolean isBugTrackerAuthenticationRequired(String applicationVersionId) {
-		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId, false);
+		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId);
 		return SpringExpressionUtil.evaluateExpression(bugFilingRequirements, "requiresAuthentication", Boolean.class);
 	}
 	
@@ -208,8 +208,8 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @param applicationVersionId
 	 * @return
 	 */
-	private JSONMap getInitialBugFilingRequirements(String applicationVersionId, boolean useCache) {
-		return queryApplicationVersionBugFilingRequirements(applicationVersionId).useCache(useCache).build().getUnique();
+	private JSONMap getInitialBugFilingRequirements(String applicationVersionId) {
+		return queryApplicationVersionBugFilingRequirements(applicationVersionId).build().getUnique();
 	}
 	
 	/**

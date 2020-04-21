@@ -32,6 +32,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI.SSCAttributeDefinitionHelper;
+import com.fortify.client.ssc.api.SSCIssueTemplateAPI.SSCIssueTemplateHelper;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsOfAuthEntityQueryBuilder;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
@@ -62,20 +63,20 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 				
 	}
 	
-	public JSONMap getApplicationVersionById(String applicationVersionId, boolean useCache) {
-		return queryApplicationVersions().id(applicationVersionId).useCache(useCache).build().getUnique();
+	public JSONMap getApplicationVersionById(String applicationVersionId) {
+		return queryApplicationVersions().id(applicationVersionId).build().getUnique();
 	}
 	
-	public JSONMap getApplicationVersionByName(String applicationName, String versionName, boolean useCache) {
-		return queryApplicationVersions().applicationName(applicationName).versionName(versionName).useCache(useCache).build().getUnique();
+	public JSONMap getApplicationVersionByName(String applicationName, String versionName) {
+		return queryApplicationVersions().applicationName(applicationName).versionName(versionName).build().getUnique();
 	}
 	
-	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator, boolean useCache) {
-		return queryApplicationVersions().nameOrId(nameOrId, separator).useCache(useCache).build().getUnique();
+	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
+		return queryApplicationVersions().nameOrId(nameOrId, separator).build().getUnique();
 	}
 	
-	public JSONMap getApplicationVersionByNameOrId(String nameOrId, boolean useCache) {
-		return queryApplicationVersions().nameOrId(nameOrId).useCache(useCache).build().getUnique();
+	public JSONMap getApplicationVersionByNameOrId(String nameOrId) {
+		return queryApplicationVersions().nameOrId(nameOrId).build().getUnique();
 	}
 	
 	public void deleteApplicationVersion(JSONMap applicationVersion) {
@@ -95,6 +96,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	// TODO Add support for defining application version team, copying state & other info from other version
 	public final class CreateApplicationVersionBuilder {
 		private SSCAttributeDefinitionHelper attributeDefinitionHelper;
+		private SSCIssueTemplateHelper issueTemplateHelper;
 		private String applicationName;
 		private String applicationId;
 		private String applicationDescription;
@@ -106,6 +108,11 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 
 		public CreateApplicationVersionBuilder withAttributeDefinitionHelper(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
 			this.attributeDefinitionHelper = attributeDefinitionHelper;
+			return this;
+		}
+		
+		public CreateApplicationVersionBuilder withIssueTemplateHelper(SSCIssueTemplateHelper issueTemplateHelper) {
+			this.issueTemplateHelper = issueTemplateHelper;
 			return this;
 		}
 		
@@ -140,7 +147,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		}
 		
 		public CreateApplicationVersionBuilder issueTemplateName(String issueTemplateName) {
-			this.issueTemplateId = conn().api(SSCIssueTemplateAPI.class).getIssueTemplateIdForName(issueTemplateName);
+			this.issueTemplateId = getIssueTemplateHelper().getIssueTemplateIdForName(issueTemplateName);
 			if ( this.issueTemplateId==null ) {
 				throw new IllegalArgumentException("Unknown issue template "+issueTemplateName);
 			}
@@ -177,13 +184,21 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 			data.put("project", getExistingOrNewApplicationData());
 			data.put("active", true);
 			data.put("committed", false);
-			data.put("issueTemplateId", issueTemplateId);
+			data.put("issueTemplateId", getIssueTemplateId());
 			
 			return conn().executeRequest(HttpMethod.POST, 
 					conn().getBaseResource().path("/api/v1/projectVersions"), 
 					Entity.entity(data, "application/json"), JSONMap.class).getOrCreateJSONMap("data");
 		}
 		
+		private String getIssueTemplateId() {
+			issueTemplateId = issueTemplateId!=null ? issueTemplateId : getIssueTemplateHelper().getDefaultIssueTemplateId(); 
+			if ( issueTemplateId == null ) {
+				throw new IllegalStateException("No issue template specified, and no default issue template configured on SSC");
+			}
+			return issueTemplateId;
+		}
+
 		private MultiValueMap<String, Object> getApplicationVersionAttributes() {
 			LinkedMultiValueMap<String, Object> data = new LinkedMultiValueMap<>();
 			if ( autoAddRequiredAttributes ) {
@@ -231,6 +246,11 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 			return attributeDefinitionHelper;
 		}
 		
-		
+		private SSCIssueTemplateHelper getIssueTemplateHelper() {
+			if ( issueTemplateHelper==null ) {
+				issueTemplateHelper = conn().api(SSCIssueTemplateAPI.class).getIssueTemplateHelper();
+			}
+			return issueTemplateHelper;
+		}
 	}
 }

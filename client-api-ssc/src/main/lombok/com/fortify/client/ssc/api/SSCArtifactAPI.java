@@ -62,8 +62,8 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return new SSCArtifactByIdQueryBuilder(conn(), artifactId);
 	}
 	
-	public final JSONMap getArtifactById(String artifactId, boolean useCache, String... fields) {
-		return queryArtifactById(artifactId).useCache(useCache).paramFields(fields).build().getUnique();
+	public final JSONMap getArtifactById(String artifactId, String... fields) {
+		return queryArtifactById(artifactId).paramFields(fields).build().getUnique();
 	}
 	
 	@SSCRequiredActionsPermitted({"POST=/download/currentStateFprDownload.html"})
@@ -109,20 +109,19 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 	public final void waitForProcessingCompletion(String artifactId, int timeOutSeconds) {
 		Set<String> incompleteStates = new HashSet<>(Arrays.asList("PROCESSING", "SCHED_PROCESSING")); 
 		long startTime = new Date().getTime();
-		JSONMap artifact = getArtifactById(artifactId, false, "status");
+		JSONMap artifact = getArtifactById(artifactId, "status");
 		while ( new Date().getTime() < startTime+timeOutSeconds*1000 && incompleteStates.contains(artifact.get("status", String.class)) ) {
 			try {
 				Thread.sleep(1000L);
 			} catch ( InterruptedException ignore ) {}
-			artifact = getArtifactById(artifactId, false, "status");
+			artifact = getArtifactById(artifactId, "status");
 		}
 	}
 
 	public final JSONMap getJobForUpload(JSONMap uploadResult, int secondsToWaitForCompletion) {
 		String jobId = uploadResult.get("id", String.class);
 		SSCJobAPI jobApi = conn().api(SSCJobAPI.class);
-		jobApi.waitForJobCompletion(jobId, secondsToWaitForCompletion);
-		return jobApi.getJobById(jobId, true);
+		return jobApi.waitForJobCompletion(jobId, secondsToWaitForCompletion);
 	}
 	
 	public final String getArtifactIdForUploadJob(JSONMap job) {
@@ -138,7 +137,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 	public final String uploadArtifactAndWaitProcessingCompletionWithApproval(String applicationVersionId, File fprFile, String approvalMessage, int timeOutSeconds) {
 		long startTimeSeconds = new Date().getTime()/1000;
 		String artifactId = uploadArtifactAndWaitProcessingCompletion(applicationVersionId, fprFile, timeOutSeconds);
-		String artifactStatus = getArtifactById(artifactId, false, "status").get("status", String.class);
+		String artifactStatus = getArtifactById(artifactId, "status").get("status", String.class);
 		if ( "REQUIRE_AUTH".equals(artifactStatus) ) {
 			int approvalTimeOutSeconds = timeOutSeconds-(int)(new Date().getTime()/1000-startTimeSeconds);
 			approveArtifactAndWaitProcessingCompletion(artifactId, "Auto-approved by Jenkins", approvalTimeOutSeconds);

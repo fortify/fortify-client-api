@@ -47,7 +47,7 @@ public class SSCMetricsAPI extends AbstractSSCAPI {
 		return new SSCApplicationVersionMetricHistoriesQueryBuilder(conn(), applicationVersionId, metricType);
 	}
 	
-	public JSONList getApplicationVersionMetrics(String applicationVersionId, MetricType metricType, boolean useCache) {
-		return queryApplicationVersionMetricHistories(applicationVersionId, metricType).useCache(useCache).build().getAll();
+	public JSONList getApplicationVersionMetrics(String applicationVersionId, MetricType metricType) {
+		return queryApplicationVersionMetricHistories(applicationVersionId, metricType).build().getAll();
 	}
 }

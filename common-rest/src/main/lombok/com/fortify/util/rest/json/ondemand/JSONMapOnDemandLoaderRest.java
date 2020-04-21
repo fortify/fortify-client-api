@@ -43,22 +43,16 @@ public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWith
 	private static final long serialVersionUID = 1L;
 	private final String uriTemplateExpression;
 	private final String resultExpression;
-	private final String cacheName;
 	
 	public JSONMapOnDemandLoaderRest(IRestConnection conn, boolean storeValue, String uriTemplateExpression, String resultExpression) {
-		this(conn, storeValue, uriTemplateExpression, resultExpression, null);
-	}
-	
-	public JSONMapOnDemandLoaderRest(IRestConnection conn, boolean storeValue, String uriTemplateExpression, String resultExpression, String cacheName) {
 		super(conn, storeValue);
 		this.uriTemplateExpression = uriTemplateExpression;
 		this.resultExpression = resultExpression;
-		this.cacheName = cacheName;
 	}
 
 	@Override
 	public Object getOnDemand(IRestConnection conn, String propertyName, JSONMap parent) {
-		return getResult(conn.executeRequest(HttpMethod.GET, getWebTarget(conn, parent), JSONMap.class, cacheName));
+		return getResult(conn.executeRequest(HttpMethod.GET, getWebTarget(conn, parent), JSONMap.class));
 	}
 
 	protected Object getResult(JSONMap restResult) {

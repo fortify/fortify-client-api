@@ -92,7 +92,6 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	private final List<Consumer<JSONList>> pagePreProcessors = new ArrayList<>();
 	private final List<IJSONMapPreProcessor> preProcessors = new ArrayList<>();
 	private int maxResults = -1;
-	private boolean useCache;
 	private final boolean pagingSupported;
 	@Setter(AccessLevel.PROTECTED) private String httpMethod = HttpMethod.GET;
 	@Setter(AccessLevel.PROTECTED) private Entity<?> entity = null;
@@ -126,11 +125,6 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	
 	public T maxResults(Integer maxResults) {
 		this.maxResults = maxResults;
-		return _this();
-	}
-	
-	public T useCache(boolean useCache) {
-		this.useCache = useCache;
 		return _this();
 	}
 	

@@ -62,7 +62,6 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	private final List<Consumer<JSONList>> pagePreProcessors;
 	private final List<IJSONMapPreProcessor> preProcessors;
 	private final int maxResults;
-	private final boolean useCache;
 	private final boolean pagingSupported;
 	private final Entity<?> entity;
 	private final String httpMethod;
@@ -74,7 +73,6 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 		this.pagePreProcessors =  Collections.unmodifiableList(config.getPagePreProcessors());
 		this.preProcessors =  Collections.unmodifiableList(config.getPreProcessors());
 		this.maxResults = config.getMaxResults();
-		this.useCache = config.isUseCache();
 		this.pagingSupported = config.isPagingSupported();
 		this.entity = config.getEntity();
 		this.httpMethod = config.getHttpMethod();
@@ -137,18 +135,10 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	
 	protected ResponseType executeRequest(WebTarget target) {
 		if ( entity == null ) {
-			if ( useCache ) {
-				return conn.executeRequest(httpMethod, target, getResponseTypeClass(), getCacheName());
-			} else {
-				return conn.executeRequest(httpMethod, target, getResponseTypeClass());
-			}
+			return conn.executeRequest(httpMethod, target, getResponseTypeClass());
 		} else {
 			return conn.executeRequest(httpMethod, target, entity, getResponseTypeClass());
 		}
-	}
-	
-	protected String getCacheName() {
-		return this.getClass().getName();
 	}
 	
 	/**
