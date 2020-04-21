@@ -155,12 +155,8 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	}
 	
 	public T onDemand(String propertyName, String uri) {
-		return onDemand(propertyName, uri, null);
-	}
-	
-	public T onDemand(String propertyName, String uri, String cacheName) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				createOnDemandLoader(uri)));
+			createOnDemandLoader(uri)));
 	}
 	
 	protected abstract IJSONMapOnDemandLoader createOnDemandLoader(String uri);

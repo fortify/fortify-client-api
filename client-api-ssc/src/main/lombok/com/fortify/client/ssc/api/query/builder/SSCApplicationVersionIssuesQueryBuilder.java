@@ -30,8 +30,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCCustomTagAPI;
-import com.fortify.client.ssc.api.SSCIssueAPI;
-import com.fortify.client.ssc.api.SSCIssueAPI.IssueSearchOptions;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
@@ -42,7 +40,6 @@ import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
-import com.fortify.util.rest.query.IRequestInitializer;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.spring.SpringExpressionUtil;
 
@@ -64,24 +61,12 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		adv, issues
 	}
 	
-	private IssueSearchOptions issueSearchOptions = null;
-	private boolean updateIssueSearchOptions = true;
 	private String filterSetId = null;
 	
-	// TODO Can we propagate issueSearchOptions permissions from updateApplicationVersionIssueSearchOptions to this constructor,
-	//      instead of specifying this explicitly?
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/issues", "PUT=/api/v\\d+/projectVersions/\\d+/issueSearchOptions"})
+	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/issues"})
 	public SSCApplicationVersionIssuesQueryBuilder(final SSCAuthenticatingRestConnection conn, final String applicationVersionId) {
 		super(conn, applicationVersionId, true);
 		appendPath("issues");
-		setRequestInitializer(new IRequestInitializer() {
-			@Override
-			public void initRequest() {
-				if ( updateIssueSearchOptions && issueSearchOptions != null ) {
-					conn.api(SSCIssueAPI.class).updateApplicationVersionIssueSearchOptions(applicationVersionId, issueSearchOptions);
-				}
-			}
-		});
 	}
 	
 	@Override
@@ -144,33 +129,6 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return super.queryParam("showsuppressed", ""+showSuppressed);
 	}
 	
-	@Deprecated /** For recent SSC versions, use #paramShowHidden */
-	public SSCApplicationVersionIssuesQueryBuilder includeHidden(boolean includeHidden) {
-		getIssueSearchOptions().setIncludeHidden(includeHidden); return _this();
-	}
-	
-	@Deprecated /** For recent SSC versions, use #paramShowRemoved */
-	public SSCApplicationVersionIssuesQueryBuilder includeRemoved(boolean includeRemoved) {
-		getIssueSearchOptions().setIncludeRemoved(includeRemoved); return _this();
-	}
-	
-	@Deprecated /** For recent SSC versions, use #paramShowSuppressed */
-	public SSCApplicationVersionIssuesQueryBuilder includeSuppressed(boolean includeSuppressed) {
-		getIssueSearchOptions().setIncludeSuppressed(includeSuppressed); return _this();
-	}
-	
-	private IssueSearchOptions getIssueSearchOptions() {
-		if ( issueSearchOptions==null ) {
-			issueSearchOptions = new IssueSearchOptions();
-		}
-		return issueSearchOptions;
-	}
-	
-	@Deprecated
-	public SSCApplicationVersionIssuesQueryBuilder updateIssueSearchOptions(boolean updateIssueSearchOptions) {
-		this.updateIssueSearchOptions = updateIssueSearchOptions; return _this();
-	}
-	
 	protected SSCApplicationVersionIssuesQueryBuilder embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
 		return embed(propertyName, "/api/v1/issues/${id}/"+entityName, embedType, fields);
 	}
@@ -203,63 +161,6 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		//return embed(propertyName, "/api/v1/issueDetails/${id}", embedType);
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 				new SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(getConn())));
-	}
-	
-	/**
-	 * Use {@link #embedDetails(EmbedType, String...)} instead
-	 * @return
-	 */
-	@Deprecated
-	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails() {
-		return onDemandDetails("details");
-	}
-	
-	/**
-	 * Use {@link #embedComments(EmbedType, String...)} instead
-	 * @return
-	 */
-	@Deprecated
-	public SSCApplicationVersionIssuesQueryBuilder onDemandComments() {
-		return embedComments(EmbedType.ONDEMAND);
-	}
-	
-	/**
-	 * Use {@link #embedAuditHistory(EmbedType, String...)} instead
-	 * @return
-	 */
-	@Deprecated
-	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory() {
-		return embedAuditHistory(EmbedType.ONDEMAND);
-	}
-	
-	/**
-	 * Use {@link #embedDetails(String, EmbedType, String...)} instead
-	 * @param propertyName
-	 * @return
-	 */
-	@Deprecated
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/issueDetails/\\d+"})
-	public SSCApplicationVersionIssuesQueryBuilder onDemandDetails(String propertyName) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(getConn())));
-	}
-	
-	/**
-	 * Use {@link #embedComments(String, EmbedType, String...)} instead
-	 * @return
-	 */
-	@Deprecated
-	public SSCApplicationVersionIssuesQueryBuilder onDemandComments(String propertyName) {
-		return embedComments(propertyName, EmbedType.ONDEMAND);
-	}
-	
-	/**
-	 * Use {@link #embedAuditHistory(String, EmbedType, String...)} instead
-	 * @return
-	 */
-	@Deprecated
-	public SSCApplicationVersionIssuesQueryBuilder onDemandAuditHistory(String propertyName) {
-		return embedAuditHistory(propertyName, EmbedType.ONDEMAND);
 	}
 	
 	private static final class SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames extends SSCJSONMapOnDemandLoaderRest {
