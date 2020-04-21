@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -98,6 +99,36 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		public String getAttributeIdForName(String attributeName) {
 			JSONList attributeDefinitions = getAttributeDefinitions();
 			return attributeDefinitions.mapValue("name", attributeName, "id", String.class);
+		}
+		
+		public String getAttributeNameForId(String attributeId) {
+			JSONList attributeDefinitions = getAttributeDefinitions();
+			return attributeDefinitions.mapValue("id", attributeId, "name", String.class);
+		}
+		
+		/**
+		 * This method converts the given list of application version attributes (as 
+		 * returned by the /api/v1/projectVersions/{id}/attributes endpoint) to a JSONMap,
+		 * using the attribute name as map key, and a JSONList containing one or more 
+		 * attribute values as the map value. Attributes without value(s) will not be 
+		 * included in the resulting map.
+		 * 
+		 * @param attrs
+		 * @return
+		 */
+		public JSONMap getAttributeValuesByName(JSONList attrs) {
+			JSONMap result = new JSONMap();
+			for ( JSONMap attr : attrs.asValueType(JSONMap.class) ) {
+				String attrName = getAttributeNameForId(attr.get("attributeDefinitionId", String.class));
+				JSONList attrValues = attr.get("values", JSONList.class);
+				String attrValue = attr.get("value", String.class);
+				if ( StringUtils.isNotBlank(attrValue) ) {
+					result.put(attrName, new JSONList(Arrays.asList(attrValue))); 
+				} else if ( attrValues!=null && attrValues.size()>0 ) {
+					result.put(attrName, new JSONList(attrValues.getValues("name", String.class)));
+				}
+			}
+			return result;
 		}
 		
 		/**

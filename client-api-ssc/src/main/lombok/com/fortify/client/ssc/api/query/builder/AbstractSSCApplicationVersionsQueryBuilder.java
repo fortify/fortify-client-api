@@ -25,7 +25,11 @@
 package com.fortify.client.ssc.api.query.builder;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
+import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI.SSCAttributeDefinitionHelper;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.rest.json.JSONList;
+import com.fortify.util.rest.json.JSONMap;
+import com.fortify.util.rest.json.preprocessor.enrich.AbstractJSONMapEnrich;
 
 public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends AbstractSSCApplicationVersionsQueryBuilder<T>>
 		extends AbstractSSCEntityQueryBuilder<T> {
@@ -36,6 +40,18 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	
 	protected T embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
 		return embed(propertyName, "/api/v1/projectVersions/${id}/"+entityName, embedType, fields);
+	}
+	
+	public T embedAttributeValuesByName(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
+		embedAttributes(EmbedType.PRELOAD, "id", "value", "values");
+		preProcessor(new JSONMapEnrichWithAttributeValuesByName("attributeValuesByName", attributeDefinitionHelper));
+		return _this();
+	}
+	
+	public T embedAttributeValuesByName(String propertyName, SSCAttributeDefinitionHelper attributeDefinitionHelper) {
+		embedAttributes(EmbedType.PRELOAD, "id", "value", "values");
+		preProcessor(new JSONMapEnrichWithAttributeValuesByName(propertyName, attributeDefinitionHelper));
+		return _this();
 	}
 	
 	public T embedAttributes(EmbedType embedType, String... fields) {
@@ -207,5 +223,22 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/variableHistories" })
 	public T embedVariableHistories(String propertyName, EmbedType embedType, String... fields) {
 		return embedSubEntity(propertyName, "variableHistories?limit=-1", embedType, fields);
+	}
+	
+	private final class JSONMapEnrichWithAttributeValuesByName extends AbstractJSONMapEnrich {
+		private final String propertyName;
+		private final SSCAttributeDefinitionHelper attributeDefinitionHelper;
+		
+		
+		public JSONMapEnrichWithAttributeValuesByName(String propertyName, SSCAttributeDefinitionHelper attributeDefinitionHelper) {
+			this.propertyName = propertyName;
+			this.attributeDefinitionHelper = attributeDefinitionHelper;
+		}
+
+		@Override
+		protected void enrich(JSONMap json) {
+			json.put(propertyName, 
+				attributeDefinitionHelper.getAttributeValuesByName(json.get("attributes", JSONList.class)));
+		}
 	}
 }
