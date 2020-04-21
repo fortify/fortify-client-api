@@ -31,6 +31,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
+import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI.SSCAttributeDefinitionHelper;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsOfAuthEntityQueryBuilder;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
@@ -88,12 +89,12 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	}
 
 	public CreateApplicationVersionBuilder createApplicationVersion() {
-		return new CreateApplicationVersionBuilder(conn());
+		return new CreateApplicationVersionBuilder();
 	}
 	
 	// TODO Add support for defining application version team, copying state & other info from other version
-	public static final class CreateApplicationVersionBuilder {
-		private final SSCAuthenticatingRestConnection conn;
+	public final class CreateApplicationVersionBuilder {
+		private SSCAttributeDefinitionHelper attributeDefinitionHelper;
 		private String applicationName;
 		private String applicationId;
 		private String applicationDescription;
@@ -103,8 +104,9 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		private boolean autoAddRequiredAttributes;
 		private LinkedMultiValueMap<String, Object> attributeNameOrIdToValueMap = new LinkedMultiValueMap<>();
 
-		public CreateApplicationVersionBuilder(SSCAuthenticatingRestConnection conn) {
-			this.conn = conn;
+		public CreateApplicationVersionBuilder withAttributeDefinitionHelper(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
+			this.attributeDefinitionHelper = attributeDefinitionHelper;
+			return this;
 		}
 		
 		public CreateApplicationVersionBuilder applicationId(String applicationId) {
@@ -138,7 +140,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		}
 		
 		public CreateApplicationVersionBuilder issueTemplateName(String issueTemplateName) {
-			this.issueTemplateId = conn.api(SSCIssueTemplateAPI.class).getIssueTemplateIdForName(issueTemplateName);
+			this.issueTemplateId = conn().api(SSCIssueTemplateAPI.class).getIssueTemplateIdForName(issueTemplateName);
 			if ( this.issueTemplateId==null ) {
 				throw new IllegalArgumentException("Unknown issue template "+issueTemplateName);
 			}
@@ -158,7 +160,10 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		public String execute() {
 			MultiValueMap<String,Object> attributes = getApplicationVersionAttributes();
 			String applicationVersionId = createNonCommittedApplicationVersiom().get("id", String.class);
-			conn.api(SSCApplicationVersionAttributeAPI.class).updateApplicationVersionAttributes(applicationVersionId, attributes);
+			conn().api(SSCApplicationVersionAttributeAPI.class).updateApplicationVersionAttributes(applicationVersionId)
+				.withHelper(getAttributeDefinitionHelper())
+				.byNameOrId(attributes)
+				.execute();
 			commitApplicationVersion(applicationVersionId);
 			return applicationVersionId;
 		}
@@ -174,15 +179,15 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 			data.put("committed", false);
 			data.put("issueTemplateId", issueTemplateId);
 			
-			return conn.executeRequest(HttpMethod.POST, 
-					conn.getBaseResource().path("/api/v1/projectVersions"), 
+			return conn().executeRequest(HttpMethod.POST, 
+					conn().getBaseResource().path("/api/v1/projectVersions"), 
 					Entity.entity(data, "application/json"), JSONMap.class).getOrCreateJSONMap("data");
 		}
 		
 		private MultiValueMap<String, Object> getApplicationVersionAttributes() {
 			LinkedMultiValueMap<String, Object> data = new LinkedMultiValueMap<>();
 			if ( autoAddRequiredAttributes ) {
-				data.putAll(conn.api(SSCAttributeDefinitionAPI.class).getRequiredAttributesWithDefaultValues());
+				data.putAll(getAttributeDefinitionHelper().getRequiredAttributesWithDefaultValues());
 			}
 			if ( attributeNameOrIdToValueMap != null ) {
 				data.putAll(attributeNameOrIdToValueMap);
@@ -195,13 +200,13 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 			JSONMap data = new JSONMap();
 			data.put("committed", true);
 			
-			conn.executeRequest(HttpMethod.PUT, 
-					conn.getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId), 
+			conn().executeRequest(HttpMethod.PUT, 
+					conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId), 
 					Entity.entity(data, "application/json"), JSONMap.class);
 		}
 
 		private final JSONMap getExistingOrNewApplicationData() {
-			JSONMap result = conn.api(SSCApplicationVersionAPI.class)
+			JSONMap result = conn().api(SSCApplicationVersionAPI.class)
 					.queryApplicationVersions().applicationName(applicationName)
 					.applicationId(applicationId).maxResults(1).paramFields("project").build().getUnique();
 			return result == null ? getNewApplicationData() : getExistingApplicationData(result.get("project", JSONMap.class));
@@ -217,6 +222,13 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		
 		private JSONMap getExistingApplicationData(JSONMap existingApplication) {
 			return new JSONMap(existingApplication, "name", "id", "issueTemplateId", "description");
+		}
+		
+		private SSCAttributeDefinitionHelper getAttributeDefinitionHelper() {
+			if ( attributeDefinitionHelper==null ) {
+				attributeDefinitionHelper = conn().api(SSCAttributeDefinitionAPI.class).getAttributeDefinitionHelper();
+			}
+			return attributeDefinitionHelper;
 		}
 		
 		

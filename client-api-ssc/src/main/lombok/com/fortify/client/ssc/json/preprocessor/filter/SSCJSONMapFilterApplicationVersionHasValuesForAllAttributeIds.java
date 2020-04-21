@@ -26,10 +26,12 @@ package com.fortify.client.ssc.json.preprocessor.filter;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.api.query.builder.EmbedType;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
+import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter;
 import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
@@ -41,33 +43,30 @@ import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;
  * @author Ruud Senden
  *
  */
-public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
-	private final Collection<String> attributeNames;
+public class SSCJSONMapFilterApplicationVersionHasValuesForAllAttributeIds extends AbstractJSONMapFilter implements IRestConnectionQueryConfigAware<SSCApplicationVersionsQueryBuilder> {
+	private final Collection<String> attributeIds;
 	private final EmbedType embedType;
 	
-	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,	Collection<String> attributeNames) {
-		// For backward compatibility we use EmbedType.ONDEMAND by default
-		this(matchMode, EmbedType.ONDEMAND, attributeNames);
-	}
-
-	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode,	EmbedType embedType, Collection<String> attributeNames) {
+	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributeIds(MatchMode matchMode,	EmbedType embedType, Collection<String> attributeIds) {
 		super(matchMode);
 		this.embedType = embedType;
-		this.attributeNames = attributeNames;
+		this.attributeIds = attributeIds;
 	}
 
-	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributes(MatchMode matchMode, String... attributeNames) {
-		this(matchMode, Arrays.asList(attributeNames));
+	public SSCJSONMapFilterApplicationVersionHasValuesForAllAttributeIds(MatchMode matchMode, EmbedType embedType, String... attributeGuids) {
+		this(matchMode, embedType, Arrays.asList(attributeGuids));
 	}
 
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		JSONMap attributeValuesByName = json.get("attributeValuesByName", JSONMap.class);
-		return attributeValuesByName.keySet().containsAll(attributeNames);
+		// SSC only returns attributes for which a value has been set, so we just need to check
+		// whether all id's are available in the attributes list.
+		List<String> availableAttributeIds = json.get("attributes", JSONList.class).getValues("id", String.class);
+		return availableAttributeIds.containsAll(attributeIds);
 	}
 
 	@Override @SSCCopyToConstructors
 	public void setRestConnectionQueryConfig(SSCApplicationVersionsQueryBuilder currentBuilder) {
-		currentBuilder.embedAttributeValuesByName(embedType);
+		currentBuilder.embedAttributes(embedType);
 	}
 }

@@ -24,17 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
-import java.util.function.Consumer;
-
-import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
-import com.fortify.client.ssc.api.SSCApplicationVersionAttributeAPI;
-import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.util.rest.json.JSONList;
-import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
-import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 
 public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends AbstractSSCApplicationVersionsQueryBuilder<T>>
 		extends AbstractSSCEntityQueryBuilder<T> {
@@ -45,20 +36,6 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	
 	protected T embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
 		return embed(propertyName, "/api/v1/projectVersions/${id}/"+entityName, embedType, fields);
-	}
-	
-	public T embedAttributeValuesByName(EmbedType embedType) {
-		return embedAttributeValuesByName("attributeValuesByName", embedType);
-	}
-	
-	public T embedAttributeValuesByName(String propertyName, EmbedType embedType) {
-		switch (embedType) {
-		case ONDEMAND: return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderAttributeValuesByName(getConn())));
-		case PRELOAD: embedAttributes("attributes", EmbedType.PRELOAD, "guid", "value", "values");
-			return pagePreProcessor(new SSCJSONListAddAttributeValuesByName(getConn(), propertyName));
-		default: throw new RuntimeException("Unknown embed type: "+embedType.name());
-		}
 	}
 	
 	public T embedAttributes(EmbedType embedType, String... fields) {
@@ -230,59 +207,5 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/variableHistories" })
 	public T embedVariableHistories(String propertyName, EmbedType embedType, String... fields) {
 		return embedSubEntity(propertyName, "variableHistories?limit=-1", embedType, fields);
-	}
-	
-	protected static final class SSCJSONMapOnDemandLoaderAttributeValuesByName extends AbstractJSONMapOnDemandLoaderWithConnection<SSCAuthenticatingRestConnection> {
-		private static final long serialVersionUID = 1L;
-		private volatile JSONList attrDefs;
-
-		public SSCJSONMapOnDemandLoaderAttributeValuesByName(SSCAuthenticatingRestConnection conn) {
-			super(conn, true);
-		}
-		
-		@Override @SSCCopyToConstructors
-		public Object getOnDemand(SSCAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
-			if ( attrDefs==null ) {
-				attrDefs = conn.api(SSCAttributeDefinitionAPI.class).getAttributeDefinitions(true, "guid","name");
-			}
-			return conn.api(SSCApplicationVersionAttributeAPI.class).getApplicationVersionAttributeValuesByName(parent.get("id",String.class), attrDefs);
-		}
-		
-		@Override
-		protected Class<SSCAuthenticatingRestConnection> getConnectionClazz() {
-			return SSCAuthenticatingRestConnection.class;
-		}
-	}
-	
-	private static final class SSCJSONListAddAttributeValuesByName implements Consumer<JSONList> {
-		private final SSCAuthenticatingRestConnection conn;
-		private final String propertyName;
-		private volatile JSONList attrDefs;
-		
-		public SSCJSONListAddAttributeValuesByName(SSCAuthenticatingRestConnection conn, String propertyName) {
-			this.conn = conn;
-			this.propertyName = propertyName;
-		}
-		@Override
-		public void accept(JSONList list) {
-			list.asValueType(JSONMap.class).forEach(this::addAttributeValuesByName);
-		}
-		
-		@SSCCopyToConstructors
-		private JSONList getAttributeDefinitions() {
-			if ( attrDefs==null ) {
-				attrDefs = conn.api(SSCAttributeDefinitionAPI.class).getAttributeDefinitions(true, "guid","name");
-			}
-			return attrDefs;
-		}
-		
-		private void addAttributeValuesByName(JSONMap json) {
-			JSONList attrs = json.getPath("attributes", JSONList.class);
-			if ( attrs==null ) {
-				throw new IllegalArgumentException("Application version does not contain attributes list");
-			}
-			JSONMap attrValuesByName = conn.api(SSCApplicationVersionAttributeAPI.class).convertApplicationVersionAttributeValuesListToMap(attrs, getAttributeDefinitions());
-			json.put(propertyName, attrValuesByName);
-		}
 	}
 }
