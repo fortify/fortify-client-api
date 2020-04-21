@@ -24,24 +24,16 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
-import com.fortify.client.ssc.api.SSCCustomTagAPI;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
-import com.fortify.util.rest.json.JSONList;
-import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
-import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
 import com.fortify.util.rest.query.IRestConnectionQuery;
-import com.fortify.util.spring.SpringExpressionUtil;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -157,27 +149,6 @@ public class SSCApplicationVersionIssuesQueryBuilder
 	
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/issuesDetails/\\d+" })
 	public SSCApplicationVersionIssuesQueryBuilder embedDetails(String propertyName, EmbedType embedType, String... fields) {
-		// TODO Add pre-load support / support for adding custom tag names
-		//return embed(propertyName, "/api/v1/issueDetails/${id}", embedType);
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-				new SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(getConn())));
-	}
-	
-	private static final class SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames extends SSCJSONMapOnDemandLoaderRest {
-		private static final long serialVersionUID = 1L;
-
-		public SSCJSONMapOnDemandLoaderIssueDetailsWithCustomTagNames(SSCAuthenticatingRestConnection conn) {
-			super(conn, "/api/v1/issueDetails/${id}");
-		}
-		
-		@Override
-		protected Object getResult(JSONMap restResult) {
-			List<JSONMap> customTags = SpringExpressionUtil.evaluateExpression(restResult, "data.customTagValues", JSONList.class).asValueType(JSONMap.class);
-			for ( JSONMap customTag : customTags ) {
-				// TODO Can we avoid SSCAuthenticatingRestConnection cast?
-				customTag.put("customTagName", ((SSCAuthenticatingRestConnection)getConnection()).api(SSCCustomTagAPI.class).getCustomTagName(customTag.get("customTagGuid", String.class), true));
-			}
-			return super.getResult(restResult);
-		}		
+		return embed(propertyName, "/api/v1/issueDetails/${id}", embedType);
 	}
 }

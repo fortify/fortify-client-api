@@ -24,9 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,12 +59,49 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		return new SSCCustomTagsQueryBuilder(conn());
 	}
 	
-	public JSONList getCustomTags(boolean useCache) {
-		return queryCustomTags().useCache(useCache).build().getAll();
+	public JSONList getCustomTags() {
+		return queryCustomTags().build().getAll();
+	}
+	
+	public SSCCustomTagHelper getCustomTagHelper() {
+		return new SSCCustomTagHelper();
+	}
+	
+	public final class SSCCustomTagHelper {
+		private JSONList customTags;
+
+		/**
+		 * Lazy-load the list of custom tags
+		 * @return
+		 */
+		public JSONList getCustomTags() {
+			if ( customTags==null ) {
+				customTags = SSCCustomTagAPI.this.getCustomTags();
+			}
+			return customTags;
+		}
+		
+		/**
+		 * Get the custom tag GUID for the given custom tag name
+		 * @param customTagName
+		 * @return
+		 */
+		public String getCustomTagGuid(String customTagName) {
+			return getCustomTags().mapValue("name.toLowerCase()", customTagName.toLowerCase(), "guid", String.class);
+		}
+		
+		/**
+		 * Get the custom tag name for the given custom tag GUID
+		 * @param customTagGUID
+		 * @return
+		 */
+		public String getCustomTagName(String customTagGUID) {
+			return getCustomTags().mapValue("guid", customTagGUID, "name", String.class);
+		}
 	}
 
-	public JSONList getApplicationVersionCustomTags(String applicationVersionId, boolean useCache) {
-		return queryApplicationVersionCustomTags(applicationVersionId).useCache(useCache).build().getAll();
+	public JSONList getApplicationVersionCustomTags(String applicationVersionId) {
+		return queryApplicationVersionCustomTags(applicationVersionId).build().getAll();
 	}
 	
 	/**
@@ -74,8 +109,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	 * @param applicationVersionId
 	 * @return
 	 */
-	public List<String> getApplicationVersionCustomTagNames(String applicationVersionId, boolean useCache) {
-		return getApplicationVersionCustomTags(applicationVersionId, useCache).getValues("name", String.class);
+	public List<String> getApplicationVersionCustomTagNames(String applicationVersionId) {
+		return getApplicationVersionCustomTags(applicationVersionId).getValues("name", String.class);
 	}
 	
 	/**
@@ -83,75 +118,93 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	 * @param applicationVersionId
 	 * @return
 	 */
-	public List<String> getApplicationVersionCustomTagGuids(String applicationVersionId, boolean useCache) {
-		return getApplicationVersionCustomTags(applicationVersionId, useCache).getValues("guid", String.class);
+	public List<String> getApplicationVersionCustomTagGuids(String applicationVersionId) {
+		return getApplicationVersionCustomTags(applicationVersionId).getValues("guid", String.class);
 	}
 	
-	/**
-	 * Get the custom tag GUID for the given custom tag name
-	 * @param customTagName
-	 * @return
-	 */
-	public String getCustomTagGuid(String customTagName, boolean useCache) {
-		return getCustomTags(useCache).mapValue("name.toLowerCase()", customTagName.toLowerCase(), "guid", String.class);
+	public SSCApplicationVersionCustomTagUpdater updateCustomTags(String applicationVersionId) {
+		return new SSCApplicationVersionCustomTagUpdater(applicationVersionId);
 	}
 	
-	/**
-	 * Get the custom tag name for the given custom tag GUID
-	 * @param customTagGUID
-	 * @return
-	 */
-	public String getCustomTagName(String customTagGUID, boolean useCache) {
-		return getCustomTags(useCache).mapValue("guid", customTagGUID, "name", String.class);
-	}
-	
-	/**
-	 * Set a custom tag value for the given collection of vulnerabilities
-	 * @param applicationVersionId
-	 * @param customTagName
-	 * @param value
-	 * @param vulns
-	 */
-	public void setCustomTagValue(String applicationVersionId, String customTagName, String value, Collection<Object> vulns) {
-		Map<String,String> customTagValues = new HashMap<String, String>(1);
-		customTagValues.put(customTagName, value);
-		setCustomTagValues(applicationVersionId, customTagValues, vulns);
-	}
-
-	
-	/**
-	 * Set multiple custom tag values for the given collection of vulnerabilities
-	 * @param applicationVersionId
-	 * @param customTagNamesAndValues
-	 * @param vulns
-	 */
-	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
-	public void setCustomTagValues(String applicationVersionId, Map<String,String> customTagNamesAndValues, Collection<Object> vulns) {
-		// TODO Simplify this code
-		JSONMap request = new JSONMap();
-		request.put("type", "AUDIT_ISSUE");
-
-		List<JSONMap> issues = new ArrayList<JSONMap>();
-		for ( Object vuln : vulns ) {
+	public final class SSCApplicationVersionCustomTagUpdater {
+		private final String applicationVersionId;
+		private SSCCustomTagHelper helper;
+		private JSONList issues = new JSONList();
+		private JSONList customTagAuditValues = new JSONList();
+		
+		public SSCApplicationVersionCustomTagUpdater(String applicationVersionId) {
+			this.applicationVersionId = applicationVersionId;
+		}
+		
+		public SSCApplicationVersionCustomTagUpdater withHelper(SSCCustomTagHelper helper) {
+			this.helper = helper;
+			return this;
+		}
+		
+		public SSCApplicationVersionCustomTagUpdater forVulnerability(Object vulnerability) {
 			JSONMap issue = new JSONMap();
-			Long id = SpringExpressionUtil.evaluateExpression(vuln, "id", Long.class);
-			Long revision = SpringExpressionUtil.evaluateExpression(vuln, "revision", Long.class);
+			Long id = SpringExpressionUtil.evaluateExpression(vulnerability, "id", Long.class);
+			Long revision = SpringExpressionUtil.evaluateExpression(vulnerability, "revision", Long.class);
 			if ( revision == null ) { revision = 0L; }
 			issue.put("id", id);
 			issue.put("revision", revision);
 			issues.add(issue);
+			return this;
 		}
-		request.putPath("values.issues", issues);
-		JSONList customTagAuditValues = new JSONList(customTagNamesAndValues.size());
-		for ( Map.Entry<String, String> customTagNameAndValue : customTagNamesAndValues.entrySet() ) {
+		
+		
+		public SSCApplicationVersionCustomTagUpdater forVulnerabilities(Collection<Object> vulnerabilities) {
+			for ( Object vuln : vulnerabilities ) {
+				forVulnerability(vuln);
+			}
+			return this;
+		}
+		
+		public SSCApplicationVersionCustomTagUpdater byGuid(String customTagGuid, String customTagValue) {
 			JSONMap customTagAudit = new JSONMap();
-			customTagAudit.put("customTagGuid", getCustomTagGuid(customTagNameAndValue.getKey(), true));
-			customTagAudit.put("textValue", customTagNameAndValue.getValue());
+			customTagAudit.put("customTagGuid", customTagGuid);
+			customTagAudit.put("textValue", customTagValue);
 			customTagAuditValues.add(customTagAudit);
+			return this;
 		}
-		request.putPath("values.customTagAudit", customTagAuditValues);
-		conn().executeRequest(HttpMethod.POST, 
-				conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId).path("issues/action"),
-				Entity.entity(request, "application/json"), JSONMap.class);
+		
+		public SSCApplicationVersionCustomTagUpdater byGuid(Map<String, String> customTagGuidToValueMap) {
+			for ( Map.Entry<String, String> customTagGuidAndValue : customTagGuidToValueMap.entrySet() ) {
+				byGuid(customTagGuidAndValue.getKey(), customTagGuidAndValue.getValue());
+			}
+			return this;
+		}
+		
+		public SSCApplicationVersionCustomTagUpdater byName(String customTagName, String customTagValue) {
+			return byGuid(getHelper().getCustomTagGuid(customTagName), customTagValue);
+		}
+		
+		public SSCApplicationVersionCustomTagUpdater byName(Map<String, String> customTagNameToValueMap) {
+			for ( Map.Entry<String, String> customTagNameAndValue : customTagNameToValueMap.entrySet() ) {
+				byName(customTagNameAndValue.getKey(), customTagNameAndValue.getValue());
+			}
+			return this;
+		}
+		
+		private SSCCustomTagHelper getHelper() {
+			if ( helper==null ) {
+				helper = SSCCustomTagAPI.this.getCustomTagHelper();
+			}
+			return helper;
+		}
+		
+		@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
+		public void execute() {
+			if ( issues.size()>0 && customTagAuditValues.size()>0 ) {
+				JSONMap request = new JSONMap();
+				request.put("type", "AUDIT_ISSUE");
+				request.putPath("values.issues", issues);
+				request.putPath("values.customTagAudit", customTagAuditValues);
+				conn().executeRequest(HttpMethod.POST, 
+						conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId).path("issues/action"),
+						Entity.entity(request, "application/json"), JSONMap.class);
+			}
+		}
+		
 	}
 }
