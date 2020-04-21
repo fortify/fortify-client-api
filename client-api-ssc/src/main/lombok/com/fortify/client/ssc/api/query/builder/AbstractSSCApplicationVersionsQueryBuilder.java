@@ -24,6 +24,10 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI.SSCAttributeDefinitionHelper;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
@@ -237,8 +241,32 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 
 		@Override
 		protected void enrich(JSONMap json) {
-			json.put(propertyName, 
-				attributeDefinitionHelper.getAttributeValuesByName(json.get("attributes", JSONList.class)));
+			json.put(propertyName, getAttributeValuesByName(json.get("attributes", JSONList.class)));
+		}
+		
+		/**
+		 * This method converts the given list of application version attributes (as 
+		 * returned by the /api/v1/projectVersions/{id}/attributes endpoint) to a JSONMap,
+		 * using the attribute name as map key, and a JSONList containing one or more 
+		 * attribute values as the map value. Attributes without value(s) will not be 
+		 * included in the resulting map.
+		 * 
+		 * @param attrs
+		 * @return
+		 */
+		private JSONMap getAttributeValuesByName(JSONList attrs) {
+			JSONMap result = new JSONMap();
+			for ( JSONMap attr : attrs.asValueType(JSONMap.class) ) {
+				String attrName = attributeDefinitionHelper.getAttributeNameForId(attr.get("attributeDefinitionId", String.class));
+				JSONList attrValues = attr.get("values", JSONList.class);
+				String attrValue = attr.get("value", String.class);
+				if ( StringUtils.isNotBlank(attrValue) ) {
+					result.put(attrName, new JSONList(Arrays.asList(attrValue))); 
+				} else if ( attrValues!=null && attrValues.size()>0 ) {
+					result.put(attrName, new JSONList(attrValues.getValues("name", String.class)));
+				}
+			}
+			return result;
 		}
 	}
 }

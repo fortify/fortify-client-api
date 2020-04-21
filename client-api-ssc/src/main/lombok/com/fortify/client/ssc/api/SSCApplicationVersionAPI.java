@@ -105,6 +105,8 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		private String issueTemplateId;
 		private boolean autoAddRequiredAttributes;
 		private LinkedMultiValueMap<String, Object> attributeNameOrIdToValueMap = new LinkedMultiValueMap<>();
+		
+		private CreateApplicationVersionBuilder() {}
 
 		public CreateApplicationVersionBuilder withAttributeDefinitionHelper(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
 			this.attributeDefinitionHelper = attributeDefinitionHelper;
@@ -168,7 +170,7 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 			MultiValueMap<String,Object> attributes = getApplicationVersionAttributes();
 			String applicationVersionId = createNonCommittedApplicationVersiom().get("id", String.class);
 			conn().api(SSCApplicationVersionAttributeAPI.class).updateApplicationVersionAttributes(applicationVersionId)
-				.withHelper(getAttributeDefinitionHelper())
+				.withAttributeDefinitionHelper(getAttributeDefinitionHelper())
 				.byNameOrId(attributes)
 				.execute();
 			commitApplicationVersion(applicationVersionId);

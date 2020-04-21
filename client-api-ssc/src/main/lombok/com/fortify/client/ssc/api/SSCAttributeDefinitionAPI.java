@@ -33,7 +33,6 @@ import java.util.Map;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -82,13 +81,40 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		return queryAttributeDefinitions().paramFields(fields==null?null:fields).build().getAll();
 	}
 	
+	/**
+	 * Get an {@link SSCAttributeDefinitionHelper} instance for efficiently
+	 * working with attribute definition data.
+	 * @return
+	 */
 	public SSCAttributeDefinitionHelper getAttributeDefinitionHelper() {
 		return new SSCAttributeDefinitionHelper();
 	}
 	
+	/**
+	 * This class provides various utility methods for working with SSC
+	 * attribute definitions. Data is loaded from SSC only once per 
+	 * {@link SSCAttributeDefinitionHelper} instance. As such it is 
+	 * recommended to store and re-use a single instance of this class
+	 * where possible. Keep in mind though that you need to get a fresh
+	 * instance in order to see any attribute definition changes on SSC. 
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
 	public final class SSCAttributeDefinitionHelper {
 		private JSONList attributeDefinitions;
 		
+		/**
+		 * Instances can only be created through the {@link SSCAttributeDefinitionAPI#getAttributeDefinitionHelper()}
+		 * method.
+		 */
+		private SSCAttributeDefinitionHelper() {}
+		
+		/**
+		 * Get the list of attribute definitions, lazy loading the list
+		 * if it hasn't been loaded before by this instance.
+		 * @return
+		 */
 		public JSONList getAttributeDefinitions() {
 			if ( attributeDefinitions==null ) {
 				attributeDefinitions = SSCAttributeDefinitionAPI.this.getAttributeDefinitions();
@@ -96,39 +122,24 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 			return attributeDefinitions;
 		}
 		
+		/**
+		 * Get the attribute definition id for the given attribute name
+		 * @param attributeName
+		 * @return
+		 */
 		public String getAttributeIdForName(String attributeName) {
 			JSONList attributeDefinitions = getAttributeDefinitions();
 			return attributeDefinitions.mapValue("name", attributeName, "id", String.class);
 		}
 		
+		/**
+		 * Get the attribute name for the given attribute definition id
+		 * @param attributeName
+		 * @return
+		 */
 		public String getAttributeNameForId(String attributeId) {
 			JSONList attributeDefinitions = getAttributeDefinitions();
 			return attributeDefinitions.mapValue("id", attributeId, "name", String.class);
-		}
-		
-		/**
-		 * This method converts the given list of application version attributes (as 
-		 * returned by the /api/v1/projectVersions/{id}/attributes endpoint) to a JSONMap,
-		 * using the attribute name as map key, and a JSONList containing one or more 
-		 * attribute values as the map value. Attributes without value(s) will not be 
-		 * included in the resulting map.
-		 * 
-		 * @param attrs
-		 * @return
-		 */
-		public JSONMap getAttributeValuesByName(JSONList attrs) {
-			JSONMap result = new JSONMap();
-			for ( JSONMap attr : attrs.asValueType(JSONMap.class) ) {
-				String attrName = getAttributeNameForId(attr.get("attributeDefinitionId", String.class));
-				JSONList attrValues = attr.get("values", JSONList.class);
-				String attrValue = attr.get("value", String.class);
-				if ( StringUtils.isNotBlank(attrValue) ) {
-					result.put(attrName, new JSONList(Arrays.asList(attrValue))); 
-				} else if ( attrValues!=null && attrValues.size()>0 ) {
-					result.put(attrName, new JSONList(attrValues.getValues("name", String.class)));
-				}
-			}
-			return result;
 		}
 		
 		/**
@@ -143,6 +154,13 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 			return attributeDefinitionsByNameOrId;
 		}
 		
+		/**
+		 * Get a {@link MultiValueMap} containing all required attribute definition id's
+		 * as keys, and one or more default values for that attribute as map value. Mainly
+		 * used to automatically set default attribute values when creating new SSC application
+		 * versions.
+		 * @return
+		 */
 		public MultiValueMap<String, Object> getRequiredAttributesWithDefaultValues() {
 			MultiValueMap<String, Object> result = new LinkedMultiValueMap<>();
 			JSONList attributeDefinitions = getAttributeDefinitions();
@@ -171,6 +189,13 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		}
 	}
 	
+	/**
+	 * Return an {@link SSCCreateAttributeDefinitionBuilder} instance to assist
+	 * with adding a new attribute definition to SSC. Don't forget to call
+	 * {@link SSCCreateAttributeDefinitionBuilder#execute()} to actually
+	 * send the update request to SSC. 
+	 * @return
+	 */
 	public SSCCreateAttributeDefinitionBuilder createAttributeDefinition() {
 		return new SSCCreateAttributeDefinitionBuilder(conn());
 	}
@@ -187,7 +212,12 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		@JsonProperty private SSCAttributeDefinitionAppEntityType appEntityType = SSCAttributeDefinitionAppEntityType.PROJECT_VERSION;
 		@JsonProperty private List<SSCAttributeDefinitionOption> options;
 		
-		SSCCreateAttributeDefinitionBuilder(SSCAuthenticatingRestConnection conn) {
+		/**
+		 * Private constructor; instances can only be created through
+		 * {@link SSCAttributeDefinitionAPI#createAttributeDefinition()}
+		 * @param applicationVersionId
+		 */
+		private SSCCreateAttributeDefinitionBuilder(SSCAuthenticatingRestConnection conn) {
 			this.conn = conn;
 		}
 		

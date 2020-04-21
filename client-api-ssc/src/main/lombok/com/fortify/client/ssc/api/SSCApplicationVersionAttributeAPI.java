@@ -36,6 +36,7 @@ import org.springframework.util.MultiValueMap;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI.SSCAttributeDefinitionHelper;
+import com.fortify.client.ssc.api.SSCCustomTagAPI.SSCApplicationVersionCustomTagUpdater;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionAttributesQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
@@ -60,6 +61,13 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 		return queryApplicationVersionAttributes(applicationVersionId).paramFields(fields).build().getAll();
 	}
 	
+	/**
+	 * Return an {@link SSCApplicationVersionAttributesUpdater} instance to assist
+	 * with updating application version attributes. Don't forget to call 
+	 * {@link SSCApplicationVersionCustomTagUpdater#execute()} to actually send the 
+	 * update request to SSC. 
+	 * @return
+	 */
 	public SSCApplicationVersionAttributesUpdater updateApplicationVersionAttributes(String applicationVersionId) {
 		return new SSCApplicationVersionAttributesUpdater(applicationVersionId);
 	}
@@ -70,15 +78,38 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 		private SSCAttributeDefinitionHelper attributeDefinitionHelper;
 		private JSONMap attributeDefinitionsByNameOrId;
 		
+		/**
+		 * Private constructor; instances can only be created through
+		 * {@link SSCApplicationVersionAttributeAPI#updateApplicationVersionAttributes(String)}
+		 * @param applicationVersionId
+		 */
 		private SSCApplicationVersionAttributesUpdater(String applicationVersionId) {
 			this.applicationVersionId = applicationVersionId;
 		}
 		
-		public SSCApplicationVersionAttributesUpdater withHelper(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
+		/**
+		 * Set the {@link SSCAttributeDefinitionHelper} instance to be used for mapping between
+		 * attribute names and id's and for retrieving attribute definition details. If not set, 
+		 * a new {@link SSCAttributeDefinitionHelper} instance will be created when needed. As 
+		 * this will potentially result in additional SSC API calls, it is recommended to re-use 
+		 * an existing {@link SSCAttributeDefinitionHelper} instance if possible. For optimal
+		 * performance, this method should be called before calling any of the other methods.
+		 * @param helper
+		 * @return
+		 */
+		public SSCApplicationVersionAttributesUpdater withAttributeDefinitionHelper(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
 			this.attributeDefinitionHelper = attributeDefinitionHelper;
 			return this;
 		}
 		
+		/**
+		 * Add a single attribute to be updated, by specifying either attribute name or id, and zero or
+		 * more attribute values (depending on attribute type).
+		 * 
+		 * @param attributeNameOrId
+		 * @param attributeValues
+		 * @return
+		 */
 		public SSCApplicationVersionAttributesUpdater byNameOrId(String attributeNameOrId, List<Object> attributeValues) {
 			JSONMap attributeDefinition = getAttributeDefinitionsByNameOrId().get(attributeNameOrId, JSONMap.class);
 			if ( attributeDefinition == null ) {
@@ -106,6 +137,11 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
+		/**
+		 * Update all attributes specified in the given map.
+		 * @param attributeNameOrIdToValuesMap
+		 * @return
+		 */
 		public SSCApplicationVersionAttributesUpdater byNameOrId(MultiValueMap<String, Object> attributeNameOrIdToValuesMap) {
 			for (Entry<String, List<Object>> entry : attributeNameOrIdToValuesMap.entrySet()) {
 				byNameOrId(entry.getKey(), entry.getValue());
@@ -113,6 +149,10 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
+		/**
+		 * Send the attribute(s) update request to SSC.
+		 * @return
+		 */
 		@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+/attributes"})
 		public JSONList execute() {
 			JSONMap result = conn().executeRequest(HttpMethod.PUT, 

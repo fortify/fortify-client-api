@@ -63,10 +63,26 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		return queryCustomTags().build().getAll();
 	}
 	
+	/**
+	 * Get an {@link SSCCustomTagHelper} instance for efficiently
+	 * working with custom tag data.
+	 * @return
+	 */
 	public SSCCustomTagHelper getCustomTagHelper() {
 		return new SSCCustomTagHelper();
 	}
 	
+	/**
+	 * This class provides various utility methods for working with SSC
+	 * custom tag data. Data is loaded from SSC only once per 
+	 * {@link SSCCustomTagHelper} instance. As such it is recommended to 
+	 * store and re-use a single instance of this class where possible. 
+	 * Keep in mind though that you need to get a fresh instance in order 
+	 * to see any attribute definition changes on SSC. 
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
 	public final class SSCCustomTagHelper {
 		private JSONList customTags;
 
@@ -122,25 +138,53 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		return getApplicationVersionCustomTags(applicationVersionId).getValues("guid", String.class);
 	}
 	
+	/**
+	 * Return an {@link SSCApplicationVersionCustomTagUpdater} instance to assist
+	 * with updating custom tags. Don't forget to call {@link SSCApplicationVersionCustomTagUpdater#execute()} 
+	 * to actually send the request to SSC. 
+	 * @return
+	 */
 	public SSCApplicationVersionCustomTagUpdater updateCustomTags(String applicationVersionId) {
 		return new SSCApplicationVersionCustomTagUpdater(applicationVersionId);
 	}
 	
 	public final class SSCApplicationVersionCustomTagUpdater {
 		private final String applicationVersionId;
-		private SSCCustomTagHelper helper;
+		private SSCCustomTagHelper customTagHelper;
 		private JSONList issues = new JSONList();
 		private JSONList customTagAuditValues = new JSONList();
 		
-		public SSCApplicationVersionCustomTagUpdater(String applicationVersionId) {
+		/**
+		 * Private constructor; instances can only be created through
+		 * {@link SSCCustomTagAPI#updateCustomTags(String)}
+		 * @param applicationVersionId
+		 */
+		private SSCApplicationVersionCustomTagUpdater(String applicationVersionId) {
 			this.applicationVersionId = applicationVersionId;
 		}
 		
-		public SSCApplicationVersionCustomTagUpdater withHelper(SSCCustomTagHelper helper) {
-			this.helper = helper;
+		/**
+		 * Set the {@link SSCCustomTagHelper} instance to be used in case any mapping between
+		 * custom tag names and id's needs to be done, for example when calling the {@link #byName(Map)}
+		 * or {@link #byName(String, String)} methods. If not set, a new {@link SSCCustomTagHelper} instance
+		 * will be created when needed. As this will potentially result in additional SSC API calls, it is
+		 * recommended to re-use an existing {@link SSCCustomTagHelper} instance if possible. For optimal
+		 * performance, this method should be called before calling any of the other methods.
+		 * @param helper
+		 * @return
+		 */
+		public SSCApplicationVersionCustomTagUpdater withCustomTagHelper(SSCCustomTagHelper helper) {
+			this.customTagHelper = helper;
 			return this;
 		}
 		
+		/**
+		 * Specify a single vulnerability for which custom tags should be updated. The given 
+		 * vulnerability is expected to contain 'id' and 'revision' properties; usually this
+		 * information is returned by the SSC issues endpoint.
+		 * @param vulnerability
+		 * @return
+		 */
 		public SSCApplicationVersionCustomTagUpdater forVulnerability(Object vulnerability) {
 			JSONMap issue = new JSONMap();
 			Long id = SpringExpressionUtil.evaluateExpression(vulnerability, "id", Long.class);
@@ -152,7 +196,13 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
-		
+		/**
+		 * Specify a collection of vulnerabilities for which custom tags should be updated.
+		 * See {@link #forVulnerability(Object)} for a description of expected format of the
+		 * individual entries.
+		 * @param vulnerabilities
+		 * @return
+		 */
 		public SSCApplicationVersionCustomTagUpdater forVulnerabilities(Collection<Object> vulnerabilities) {
 			for ( Object vuln : vulnerabilities ) {
 				forVulnerability(vuln);
@@ -160,6 +210,12 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
+		/**
+		 * Update the custom tag identified by the given custom tag guid with the given value.
+		 * @param customTagGuid
+		 * @param customTagValue
+		 * @return
+		 */
 		public SSCApplicationVersionCustomTagUpdater byGuid(String customTagGuid, String customTagValue) {
 			JSONMap customTagAudit = new JSONMap();
 			customTagAudit.put("customTagGuid", customTagGuid);
@@ -168,6 +224,13 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
+		/**
+		 * Update the custom tags identified by the given custom tag guid's in the given {@link Map}
+		 * keys with the corresponding values.
+		 * @param customTagGuid
+		 * @param customTagValue
+		 * @return
+		 */
 		public SSCApplicationVersionCustomTagUpdater byGuid(Map<String, String> customTagGuidToValueMap) {
 			for ( Map.Entry<String, String> customTagGuidAndValue : customTagGuidToValueMap.entrySet() ) {
 				byGuid(customTagGuidAndValue.getKey(), customTagGuidAndValue.getValue());
@@ -175,10 +238,22 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
+		/**
+		 * Update the custom tag identified by the given custom tag name with the given value.
+		 * @param customTagName
+		 * @param customTagValue
+		 * @return
+		 */
 		public SSCApplicationVersionCustomTagUpdater byName(String customTagName, String customTagValue) {
-			return byGuid(getHelper().getCustomTagGuid(customTagName), customTagValue);
+			return byGuid(getCustomTagHelper().getCustomTagGuid(customTagName), customTagValue);
 		}
 		
+		/**
+		 * Update the custom tags identified by the given custom tag names in the given {@link Map}
+		 * keys with the corresponding values.
+		 * @param customTagNameToValueMap
+		 * @return
+		 */
 		public SSCApplicationVersionCustomTagUpdater byName(Map<String, String> customTagNameToValueMap) {
 			for ( Map.Entry<String, String> customTagNameAndValue : customTagNameToValueMap.entrySet() ) {
 				byName(customTagNameAndValue.getKey(), customTagNameAndValue.getValue());
@@ -186,13 +261,10 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 			return this;
 		}
 		
-		private SSCCustomTagHelper getHelper() {
-			if ( helper==null ) {
-				helper = SSCCustomTagAPI.this.getCustomTagHelper();
-			}
-			return helper;
-		}
-		
+		/**
+		 * Send the attribute(s) update request to SSC.
+		 * @return
+		 */
 		@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
 		public void execute() {
 			if ( issues.size()>0 && customTagAuditValues.size()>0 ) {
@@ -204,6 +276,13 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 						conn().getBaseResource().path("/api/v1/projectVersions").path(applicationVersionId).path("issues/action"),
 						Entity.entity(request, "application/json"), JSONMap.class);
 			}
+		}
+		
+		private SSCCustomTagHelper getCustomTagHelper() {
+			if ( customTagHelper==null ) {
+				customTagHelper = SSCCustomTagAPI.this.getCustomTagHelper();
+			}
+			return customTagHelper;
 		}
 		
 	}

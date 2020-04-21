@@ -59,13 +59,39 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 		return queryApplicationVersionFilterSets(applicationVersionId).build().getAll();
 	}
 	
+	/**
+	 * Get an {@link SSCIssueTemplateHelper} instance for efficiently
+	 * working with issue template data.
+	 * @return
+	 */
 	public SSCIssueTemplateHelper getIssueTemplateHelper() {
 		return new SSCIssueTemplateHelper();
 	}
 	
+	/**
+	 * This class provides various utility methods for working with SSC
+	 * issue templates. Data is loaded from SSC only once per 
+	 * {@link SSCIssueTemplateHelper} instance. As such it is 
+	 * recommended to store and re-use a single instance of this class
+	 * where possible. Keep in mind though that you need to get a fresh
+	 * instance in order to see any issue template changes on SSC. 
+	 * 
+	 * @author Ruud Senden
+	 *
+	 */
 	public final class SSCIssueTemplateHelper {
 		private JSONList issueTemplates;
 		
+		/**
+		 * Instances can only be created through the {@link SSCIssueTemplateAPI#getIssueTemplateHelper()}
+		 * method.
+		 */
+		private SSCIssueTemplateHelper() {}
+		
+		/**
+		 * Lazy-load the list of issue templates from SSC
+		 * @return
+		 */
 		public JSONList getIssueTemplates() {
 			if ( issueTemplates==null ) {
 				issueTemplates = SSCIssueTemplateAPI.this.getIssueTemplates();
@@ -73,15 +99,30 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 			return issueTemplates;
 		}
 		
+		/**
+		 * Get the {@link JSONMap} object representing the default issue template
+		 * (if any). This method returns null if no default template is defined on SSC.
+		 * @return
+		 */
 		public JSONMap getDefaultIssueTemplate() {
 			return getIssueTemplates().find("defaultTemplate", true, JSONMap.class);
 		}
 		
+		/**
+		 * Get the id of the default issue template (if any). This method returns
+		 * null if no default template is defined on SSC.
+		 * @return
+		 */
 		public String getDefaultIssueTemplateId() {
 			JSONMap defaultIssueTemplate = getDefaultIssueTemplate();
 			return defaultIssueTemplate==null ? null : defaultIssueTemplate.get("id", String.class);
 		}
 		
+		/**
+		 * Get the issue template id for the given issue template name.
+		 * @param issueTemplateName
+		 * @return
+		 */
 		public String getIssueTemplateIdForName(String issueTemplateName) {
 			JSONList issueTemplates = getIssueTemplates();
 			if ( issueTemplates != null ) {
