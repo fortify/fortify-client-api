@@ -25,6 +25,7 @@
 package com.fortify.util.rest.webtarget;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,6 +42,14 @@ public class WebTargetPathUpdaterBuilder implements IWebTargetUpdaterBuilder {
 	
 	public WebTargetPathUpdaterBuilder appendPath(String path) {
 		paths.add(path); return this;
+	}
+	
+	public List<String> getPaths() {
+		return Collections.unmodifiableList(paths);
+	}
+	
+	public String getPath() {
+		return String.join("/", paths);
 	}
 	
 	@Override

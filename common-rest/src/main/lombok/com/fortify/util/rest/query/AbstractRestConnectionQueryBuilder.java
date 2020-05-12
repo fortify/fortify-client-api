@@ -150,6 +150,10 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 		return _this();
 	}
 	
+	protected String getPath() {
+		return webTargetPathUpdaterBuilder.getPath();
+	}
+	
 	protected T templateValue(String name, String value) {
 		webTargetTemplateResolverBuilder.templateValue(name, value);
 		return _this();

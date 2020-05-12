@@ -42,8 +42,13 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		super(conn, true);
 	}
 	
-	protected T embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
+	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/\\s+" })
+	public T embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
 		return embed(propertyName, "/api/v1/projectVersions/${id}/"+entityName, embedType, fields);
+	}
+	
+	public T embedSubEntity(String entityName, EmbedType embedType, String... fields) {
+		return embedSubEntity(entityName, entityName, embedType, fields);
 	}
 	
 	public T embedAttributeValuesByName(SSCAttributeDefinitionHelper attributeDefinitionHelper) {

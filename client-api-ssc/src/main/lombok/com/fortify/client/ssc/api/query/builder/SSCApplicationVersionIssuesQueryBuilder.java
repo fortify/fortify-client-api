@@ -136,8 +136,13 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return super.queryParam("showsuppressed", ""+showSuppressed);
 	}
 	
-	protected SSCApplicationVersionIssuesQueryBuilder embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
-		return embed(propertyName, "/api/v1/issues/${id}/"+entityName, embedType, fields);
+	
+	public SSCApplicationVersionIssuesQueryBuilder embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
+		switch (entityName.toLowerCase()) {
+			case "details": return embed(propertyName, "/api/v1/issueDetails/${id}", embedType);
+			case "comments": return embed(propertyName, "/api/v1/issues/${id}/"+entityName+"?limit=-1", embedType, fields);
+			default: return embed(propertyName, "/api/v1/issues/${id}/"+entityName, embedType, fields);
+		}
 	}
 	
 	public SSCApplicationVersionIssuesQueryBuilder embedAuditHistory(EmbedType embedType, String... fields) {
@@ -155,15 +160,15 @@ public class SSCApplicationVersionIssuesQueryBuilder
 	
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/issues/\\d+/comments" })
 	public SSCApplicationVersionIssuesQueryBuilder embedComments(String propertyName, EmbedType embedType, String... fields) {
-		return embedSubEntity(propertyName, "Comments?limit=-1", embedType);
+		return embedSubEntity(propertyName, "comments", embedType);
 	}
 	
-	public SSCApplicationVersionIssuesQueryBuilder embedDetails(EmbedType embedType, String... fields) {
-		return embedDetails("details", embedType, fields);
+	public SSCApplicationVersionIssuesQueryBuilder embedDetails(EmbedType embedType) {
+		return embedDetails("details", embedType);
 	}
 	
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/issuesDetails/\\d+" })
-	public SSCApplicationVersionIssuesQueryBuilder embedDetails(String propertyName, EmbedType embedType, String... fields) {
-		return embed(propertyName, "/api/v1/issueDetails/${id}", embedType);
+	public SSCApplicationVersionIssuesQueryBuilder embedDetails(String propertyName, EmbedType embedType) {
+		return embedSubEntity(propertyName, "details", embedType);
 	}
 }
