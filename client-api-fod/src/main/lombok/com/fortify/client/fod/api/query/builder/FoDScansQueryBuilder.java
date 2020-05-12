@@ -52,9 +52,13 @@ public class FoDScansQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDScans
 		return super.paramFields(fields);
 	}
 	
-	@Override
+	@Deprecated
 	public FoDScansQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
-		return super.paramOrderBy(orderBy, orderByDirection);
+		return paramOrderBy(new FoDOrderBy(orderBy, orderByDirection));
+	}
+	
+	public FoDScansQueryBuilder paramOrderBy(FoDOrderBy orderBy) {
+		return super.paramOrderBy(orderBy);
 	}
 	
 	public FoDScansQueryBuilder paramStartedOnStartDate(Date dateTime) {

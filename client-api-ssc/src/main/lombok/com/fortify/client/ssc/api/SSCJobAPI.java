@@ -53,7 +53,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 	}
 	
 	public final JSONMap getJobById(String jobId, String... fields) {
-		return queryJobs().id(jobId).paramFields(fields).build().getUnique();
+		return queryJobs().id(false, jobId).paramFields(fields).build().getUnique();
 	}
 	
 	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {

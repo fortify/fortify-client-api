@@ -71,9 +71,13 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		return super.paramFilterAnd(filter);
 	}
 	
-	@Override
+	@Deprecated
 	public FoDReleasesQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
-		return super.paramOrderBy(orderBy, orderByDirection);
+		return paramOrderBy(new FoDOrderBy(orderBy, orderByDirection));
+	}
+	
+	public FoDReleasesQueryBuilder paramOrderBy(FoDOrderBy orderBy) {
+		return super.paramOrderBy(orderBy);
 	}
 	
 	public FoDReleasesQueryBuilder releaseId(String releaseId) {

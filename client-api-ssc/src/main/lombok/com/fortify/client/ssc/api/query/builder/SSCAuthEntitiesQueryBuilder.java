@@ -55,20 +55,40 @@ public final class SSCAuthEntitiesQueryBuilder extends AbstractSSCEntityQueryBui
 		return super.paramFields(fields);
 	}
 
+	@Deprecated
 	public final SSCAuthEntitiesQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		return super.paramOrderBy(orderBy, direction);
+		return paramOrderBy(false, new SSCOrderBy(orderBy, direction));
 	}
 	
+	public final SSCAuthEntitiesQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	}
+	
+	@Deprecated
 	public final SSCAuthEntitiesQueryBuilder paramQ(String q) {
-		return super.paramQ(q);
+		return paramQ(false, q);
+	}
+	
+	public final SSCAuthEntitiesQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
+		return super.paramQ(ignoreIfBlank, q);
 	}
 
+	@Deprecated
 	public final SSCAuthEntitiesQueryBuilder paramQAnd(String field, Object value) {
-		return super.paramQAnd(field, value);
+		return paramQAnd(false, field, value);
 	}
 	
+	public final SSCAuthEntitiesQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
+		return super.paramQAnd(ignoreIfBlank, field, value);
+	}
+	
+	@Deprecated
 	public final SSCAuthEntitiesQueryBuilder paramEmbed(String entity) {
-		return super.paramEmbed(entity);
+		return paramEmbed(false, entity);
+	}
+	
+	public final SSCAuthEntitiesQueryBuilder paramEmbed(boolean ignoreIfBlank, String entity) {
+		return super.paramEmbed(ignoreIfBlank, entity);
 	}
 	
 	public final SSCAuthEntitiesQueryBuilder paramEntityName(String entityName) {

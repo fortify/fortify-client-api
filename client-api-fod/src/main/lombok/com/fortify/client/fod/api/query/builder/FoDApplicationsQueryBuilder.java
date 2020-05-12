@@ -68,9 +68,13 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 		return super.paramFilterAnd(filter);
 	}
 	
-	@Override
+	@Deprecated
 	public FoDApplicationsQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
-		return super.paramOrderBy(orderBy, orderByDirection);
+		return paramOrderBy(new FoDOrderBy(orderBy, orderByDirection));
+	}
+	
+	public FoDApplicationsQueryBuilder paramOrderBy(FoDOrderBy orderBy) {
+		return super.paramOrderBy(orderBy);
 	}
 	
 	public FoDApplicationsQueryBuilder applicationId(String applicationId) {

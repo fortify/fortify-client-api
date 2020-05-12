@@ -83,7 +83,7 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 		Date now = new Date();
 		IRestConnectionQuery jobQuery = jobApi.queryJobs()
 				// Query for artifact upload job
-			.jobClassName("com.fortify.manager.BLL.jobs.ArtifactUploadJob")
+			.jobClassName(false, "com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				// Only for selected application version 
 			.preProcessor(new JSONMapFilterRegEx(MatchMode.INCLUDE, "projectVersionId", applicationVersionId))
 				// Only for artifact names starting with 'AA_' (Audit Assistant)

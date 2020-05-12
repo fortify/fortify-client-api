@@ -73,19 +73,34 @@ public class SSCApplicationVersionIssuesQueryBuilder
 	}
 
 	public final SSCApplicationVersionIssuesQueryBuilder paramFields(String... fields) {
-		return super.paramFields(replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
+		return super.paramFields(fields);
 	}
 
+	@Deprecated
 	public final SSCApplicationVersionIssuesQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		return super.paramOrderBy(orderBy, direction);
+		return paramOrderBy(false, new SSCOrderBy(orderBy, direction));
 	}
 	
+	public final SSCApplicationVersionIssuesQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	}
+	
+	@Deprecated
 	public final SSCApplicationVersionIssuesQueryBuilder paramQ(String q) {
-		return super.paramQ(q);
+		return paramQ(false, q);
+	}
+	
+	public final SSCApplicationVersionIssuesQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
+		return super.paramQ(ignoreIfBlank, q);
 	}
 
+	@Deprecated
 	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(String field, Object value) {
-		return super.paramQAnd(field, value);
+		return paramQAnd(false, field, value);
+	}
+	
+	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
+		return super.paramQAnd(ignoreIfBlank, field, value);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramGroupId(String groupId) {

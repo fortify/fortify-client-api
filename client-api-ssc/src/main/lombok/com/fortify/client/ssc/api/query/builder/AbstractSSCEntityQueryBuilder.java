@@ -88,8 +88,12 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param entity
 	 * @return
 	 */
+	protected T paramEmbed(boolean ignoreIfBlank, String entity) {
+		return queryParam(ignoreIfBlank, "embed", entity);
+	}
+	
 	protected T paramEmbed(String entity) {
-		return queryParam("embed", entity);
+		return queryParam(false, "embed", entity);
 	}
 	
 	/**
@@ -100,7 +104,7 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param <T>
 	 */
 	public static interface ISSCEntityQueryBuilderParamEmbed<T extends AbstractSSCEntityQueryBuilder<T>> {
-		public T paramEmbed(String entity);
+		public T paramEmbed(boolean ignoreIfBlank, String entity);
 	}
 	
 	/**
@@ -130,22 +134,27 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param orderBy
 	 * @return
 	 */
-	protected T paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		if ( SSCOrderByDirection.DESC.equals(direction) ) {
-			orderBy = "-"+orderBy;
+	protected T paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
+		if ( isNull(!ignoreIfBlank, "orderBy", orderBy) || isBlank(!ignoreIfBlank, "orderBy.field", orderBy.getField()) ) {
+			return _this();
+		} else {
+			String orderByParam = orderBy.getField();
+			if ( SSCOrderByDirection.DESC.equals(orderBy.getDirection()) ) {
+				orderByParam = "-"+orderByParam;
+			}
+			return queryParam("orderby", orderByParam);
 		}
-		return queryParam("orderby", orderBy);
 	}
 	
 	/**
 	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
-	 * implementations that expose the {@link #paramOrderBy(String, SSCOrderByDirection)} method.
+	 * implementations that expose the {@link #paramOrderBy(boolean, SSCOrderBy)} method.
 	 * @author Ruud Senden
 	 *
 	 * @param <T>
 	 */
 	public static interface ISSCEntityQueryBuilderParamOrderBy<T extends AbstractSSCEntityQueryBuilder<T>> {
-		public T paramOrderBy(String orderBy, SSCOrderByDirection orderByDirection);
+		public T paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy);
 	}
 	
 	/**
@@ -154,8 +163,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param groupBy
 	 * @return
 	 */
-	protected T paramGroupBy(String groupBy) {
-		return queryParam("groupby", groupBy);
+	protected T paramGroupBy(boolean ignoreIfBlank, String groupBy) {
+		return queryParam(ignoreIfBlank, "groupby", groupBy);
 	}
 	
 	/**
@@ -166,7 +175,7 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param <T>
 	 */
 	public static interface ISSCEntityQueryBuilderParamGroupBy<T extends AbstractSSCEntityQueryBuilder<T>> {
-		public T paramGroupBy(String groupBy);
+		public T paramGroupBy(boolean ignoreIfBlank, String groupBy);
 	}
 	
 	/**
@@ -178,8 +187,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param q
 	 * @return
 	 */
-	protected T paramQ(String q) {
-		return queryParam("q", q);
+	protected T paramQ(boolean ignoreIfBlank, String q) {
+		return queryParam(ignoreIfBlank, "q", q);
 	}
 	
 	/**
@@ -191,10 +200,13 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param value
 	 * @return
 	 */
-	protected T paramQAnd(String field, Object value) {
-		paramQ.paramQAnd(field, value); return _this();
+	protected T paramQAnd(boolean ignoreIfBlank, String field, Object value) {
+		if ( !isBlank(!ignoreIfBlank, field, value) ) {
+			paramQ.paramQAnd(field, value);
+		}
+		return _this();
 	}
-	
+
 	/**
 	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
 	 * implementations that expose the various paramQ*() methods method.
@@ -203,8 +215,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param <T>
 	 */
 	public static interface ISSCEntityQueryBuilderParamQ<T extends AbstractSSCEntityQueryBuilder<T>> {
-		public T paramQ(String q);
-		public T paramQAnd(String field, Object value);
+		public T paramQ(boolean ignoreIfBlank, String q);
+		public T paramQAnd(boolean ignoreIfBlank, String field, Object value);
 	}
 	
 	/**
@@ -220,12 +232,20 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param fields
 	 * @return
 	 */
-	public T embed(String propertyName, String uriExpression, EmbedType embedType, String... fields) {
-		switch (embedType) {
-		case ONDEMAND: return embedOnDemand(propertyName, uriExpression, fields);
-		case PRELOAD: return embedPreload(propertyName, uriExpression, fields);
-		default: throw new RuntimeException("Unknown embed type: "+embedType.name());
+	public T embed(boolean ignoreIfBlank, String propertyName, String uriExpression, EmbedType embedType, String... fields) {
+		if ( isNull(!ignoreIfBlank, "embedType", embedType) ) {
+			return _this();
+		} else {
+			switch (embedType) {
+			case ONDEMAND: return embedOnDemand(ignoreIfBlank, propertyName, uriExpression, fields);
+			case PRELOAD: return embedPreload(ignoreIfBlank, propertyName, uriExpression, fields);
+			default: throw new RuntimeException("Unknown embed type: "+embedType.name());
+			}
 		}
+	}
+	
+	public T embed(String propertyName, String uriExpression, EmbedType embedType, String... fields) {
+		return embed(false, propertyName, uriExpression, embedType, fields);
 	}
 
 	/**
@@ -236,16 +256,32 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * @param fields
 	 * @return
 	 */
+	protected T embedOnDemand(boolean ignoreIfBlank, String propertyName, String uriExpression, String... fields) {
+		if ( isNull(!ignoreIfBlank, "propertyName", propertyName) || isNull(!ignoreIfBlank, "uriExpression", uriExpression) ) {
+			return _this();
+		} else {
+			return onDemand(propertyName, appendOnDemandFields(uriExpression, fields));
+		}
+	}
+	
 	protected T embedOnDemand(String propertyName, String uriExpression, String... fields) {
-		return onDemand(propertyName, appendOnDemandFields(uriExpression, fields));
+		return embedOnDemand(false, propertyName, uriExpression, fields);
 	}
 
+	protected T embedPreload(boolean ignoreIfBlank, String propertyName, String uriExpression, String... fields) {
+		if ( isNull(!ignoreIfBlank, "propertyName", propertyName) || isNull(!ignoreIfBlank, "uriExpression", uriExpression) ) {
+			return _this();
+		} else {
+			return pagePreProcessor(
+					getConn().api(SSCBulkAPI.class).bulkEmbedder()
+						.targetProperty(propertyName)
+						.uriExpression(appendOnDemandFields(uriExpression, fields))
+						.asPagePreProcessor());
+		}
+	}
+	
 	protected T embedPreload(String propertyName, String uriExpression, String... fields) {
-		return pagePreProcessor(
-				getConn().api(SSCBulkAPI.class).bulkEmbedder()
-					.targetProperty(propertyName)
-					.uriExpression(appendOnDemandFields(uriExpression, fields))
-					.asPagePreProcessor());
+		return embedPreload(false, propertyName, uriExpression, fields);
 	}
 	
 	@Override

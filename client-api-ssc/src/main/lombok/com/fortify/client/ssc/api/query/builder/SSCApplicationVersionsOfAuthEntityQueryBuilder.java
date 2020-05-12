@@ -52,11 +52,21 @@ public final class SSCApplicationVersionsOfAuthEntityQueryBuilder
 		return super.paramFields(fields);
 	}
 	
+	@Deprecated
 	public final SSCApplicationVersionsOfAuthEntityQueryBuilder paramQ(String q) {
-		return super.paramQ(q);
+		return paramQ(false, q);
+	}
+	
+	public final SSCApplicationVersionsOfAuthEntityQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
+		return super.paramQ(ignoreIfBlank, q);
 	}
 
+	@Deprecated
 	public final SSCApplicationVersionsOfAuthEntityQueryBuilder paramQAnd(String field, Object value) {
-		return super.paramQAnd(field, value);
+		return paramQAnd(false, field, value);
+	}
+	
+	public final SSCApplicationVersionsOfAuthEntityQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
+		return super.paramQAnd(ignoreIfBlank, field, value);
 	}
 }

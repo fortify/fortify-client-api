@@ -28,9 +28,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.fortify.util.rest.connection.IRestConnection;
 import com.fortify.util.rest.json.JSONList;
@@ -138,6 +141,10 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 		return _this();
 	}
 	
+	protected T queryParam(boolean ignoreIfBlank, String paramName, String paramValue) {
+		return isBlank(!ignoreIfBlank, paramName, paramValue) ? _this() : queryParam(paramName, paramValue); 
+	}
+	
 	protected T appendPath(String path) {
 		webTargetPathUpdaterBuilder.appendPath(path);
 		return _this();
@@ -189,6 +196,40 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 			}
 		}
 		return resultList.toArray(new String[] {});
+	}
+	
+	/**
+	 * Utility method for checking that input parameter value is not blank
+	 * @param name
+	 * @param value
+	 */
+	protected boolean isBlank(boolean throwExceptionIfBlank, String name, Object value) {
+		if ( isBlank(value) ) {
+			if ( throwExceptionIfBlank ) { throw new IllegalArgumentException(String.format("%s must have a value", name)); }
+			return true;
+		}
+		return false;
+	}
+
+	protected boolean isBlank(Object value) {
+		return value==null || (value instanceof String && StringUtils.isBlank((String)value));
+	}
+	
+	/**
+	 * Utility method for checking that input parameter value is not null
+	 * @param name
+	 * @param value
+	 */
+	protected boolean isNull(boolean throwExceptionIfBlank, String name, Object value) {
+		if ( value==null ) {
+			if ( throwExceptionIfBlank ) { throw new IllegalArgumentException(String.format("%s must have a value", name)); }
+			return true;
+		}
+		return false;
+	}
+	
+	protected T ignoreIfBlank(String value, Function<String, T> ifNotBlankFunction) {
+		return StringUtils.isBlank(value) ? _this() : ifNotBlankFunction.apply(value);
 	}
 
 	public abstract IRestConnectionQuery build();

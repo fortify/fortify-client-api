@@ -47,11 +47,21 @@ public class SSCApplicationVersionMetricHistoriesQueryBuilder
 		appendPath(metricType.name() + "Histories");
 	}
 	
+	@Deprecated
 	public final SSCApplicationVersionMetricHistoriesQueryBuilder paramQ(String q) {
-		return super.paramQ(q);
+		return paramQ(false, q);
 	}
 	
+	public final SSCApplicationVersionMetricHistoriesQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
+		return super.paramQ(ignoreIfBlank, q);
+	}
+
+	@Deprecated
 	public final SSCApplicationVersionMetricHistoriesQueryBuilder paramQAnd(String field, Object value) {
-		return super.paramQAnd(field, value);
+		return paramQAnd(false, field, value);
+	}
+	
+	public final SSCApplicationVersionMetricHistoriesQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
+		return super.paramQAnd(ignoreIfBlank, field, value);
 	}
 }

@@ -78,7 +78,7 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 	}
 	
 	public JSONList getAttributeDefinitions(String... fields) {
-		return queryAttributeDefinitions().paramFields(fields==null?null:fields).build().getAll();
+		return queryAttributeDefinitions().paramFields(fields).build().getAll();
 	}
 	
 	/**

@@ -53,31 +53,66 @@ public final class SSCJobsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSC
 		return super.paramFields(fields);
 	}
 
+	@Deprecated
 	public final SSCJobsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		return super.paramOrderBy(orderBy, direction);
+		return paramOrderBy(false, new SSCOrderBy(orderBy, direction));
 	}
 	
+	public final SSCJobsQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	}
+	
+	@Deprecated
 	public final SSCJobsQueryBuilder paramQ(String q) {
-		return super.paramQ(q);
+		return paramQ(false, q);
+	}
+	
+	public final SSCJobsQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
+		return super.paramQ(ignoreIfBlank, q);
 	}
 
+	@Deprecated
 	public final SSCJobsQueryBuilder paramQAnd(String field, Object value) {
-		return super.paramQAnd(field, value);
+		return paramQAnd(false, field, value);
 	}
-
+	
+	public final SSCJobsQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
+		return super.paramQAnd(ignoreIfBlank, field, value);
+	}
+	
+	@Deprecated
 	public final SSCJobsQueryBuilder id(String id) {
-		return super.paramQAnd("id", id);
+		return super.paramQAnd(false, "id", id);
+	}
+	
+	public final SSCJobsQueryBuilder id(boolean ignoreIfBlank, String id) {
+		return super.paramQAnd(ignoreIfBlank, "id", id);
 	}
 
+	@Deprecated
 	public final SSCJobsQueryBuilder jobClassName(String jobClassName) {
-		return super.paramQAnd("jobClassName", jobClassName);
+		return super.paramQAnd(false, "jobClassName", jobClassName);
+	}
+	
+	public final SSCJobsQueryBuilder jobClassName(boolean ignoreIfBlank, String jobClassName) {
+		return super.paramQAnd(ignoreIfBlank, "jobClassName", jobClassName);
 	}
 
+	@Deprecated
 	public final SSCJobsQueryBuilder priority(int priority) {
-		return super.paramQAnd("priority", "" + priority);
+		return super.paramQAnd(false, "priority", "" + priority);
+	}
+	
+	public final SSCJobsQueryBuilder priority(boolean ignoreIfBlank, int priority) {
+		return super.paramQAnd(ignoreIfBlank, "priority", "" + priority);
 	}
 
+	@Deprecated
 	public final SSCJobsQueryBuilder state(String state) {
-		return super.paramQAnd("state", state);
+		return super.paramQAnd(false, "state", state);
+	}
+	
+	public final SSCJobsQueryBuilder state(boolean ignoreIfBlank, String state) {
+		return super.paramQAnd(ignoreIfBlank, "state", state);
 	}
 }

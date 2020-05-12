@@ -91,8 +91,8 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param orderBy
 	 * @return
 	 */
-	protected T paramOrderBy(String orderBy) {
-		return queryParam("orderBy", orderBy);
+	protected T paramOrderBy(String field) {
+		return queryParam("orderBy", field);
 	}
 	
 	/**
@@ -105,9 +105,16 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 		return queryParam("orderByDirection", orderByDirection.name());
 	}
 	
-	protected T paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
-		paramOrderBy(orderBy);
-		return paramOrderByDirection(orderByDirection);
+	protected T paramOrderBy(FoDOrderBy orderBy) {
+		if ( orderBy!=null ) {
+			if ( StringUtils.isNotBlank(orderBy.getField()) ) {
+				paramOrderBy(orderBy.getField());
+			}
+			if ( orderBy.getDirection()!=null ) {
+				paramOrderByDirection(orderBy.getDirection());
+			}
+		}
+		return _this();
 	}
 	
 	/**

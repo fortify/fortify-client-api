@@ -56,12 +56,22 @@ public class SSCApplicationVersionIssueGroupsQueryBuilder
 		return super.paramFields(fields);
 	}
 	
+	@Deprecated
 	public final SSCApplicationVersionIssueGroupsQueryBuilder paramQ(String q) {
-		return super.paramQ(q);
+		return paramQ(false, q);
+	}
+	
+	public final SSCApplicationVersionIssueGroupsQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
+		return super.paramQ(ignoreIfBlank, q);
 	}
 
+	@Deprecated
 	public final SSCApplicationVersionIssueGroupsQueryBuilder paramQAnd(String field, Object value) {
-		return super.paramQAnd(field, value);
+		return paramQAnd(false, field, value);
+	}
+	
+	public final SSCApplicationVersionIssueGroupsQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
+		return super.paramQAnd(ignoreIfBlank, field, value);
 	}
 	
 	public final SSCApplicationVersionIssueGroupsQueryBuilder paramGroupingType(String groupingType) {

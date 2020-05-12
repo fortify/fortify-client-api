@@ -47,6 +47,6 @@ public class SSCApplicationVersionCustomTagsQueryBuilder
 	}
 
 	public final SSCApplicationVersionCustomTagsQueryBuilder paramFields(String... fields) {
-		super.paramFields(fields); return _this();
+		return super.paramFields(fields);
 	}
 }

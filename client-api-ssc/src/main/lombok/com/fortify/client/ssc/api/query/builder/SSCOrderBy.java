@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2020 Micro Focus or one of its affiliates, a Micro Focus company
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -24,29 +24,23 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
-import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
-import com.fortify.client.ssc.api.query.SSCEntityQuery;
-import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
-import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import lombok.Data;
 
-/**
- * This class allows for building an {@link SSCEntityQuery} instance that allows for
- * querying SSC application version bug trackers.
- * 
- * @author Ruud Senden
- *
- */
-public class SSCApplicationVersionBugTrackerQueryBuilder 
-	extends AbstractSSCApplicationVersionChildEntityQueryBuilder<SSCApplicationVersionBugTrackerQueryBuilder> 
-	implements ISSCEntityQueryBuilderParamFields<SSCApplicationVersionBugTrackerQueryBuilder>
-{
-	@SSCRequiredActionsPermitted({"GET=/api/v\\d+/projectVersions/\\d+/bugtracker"})
-	public SSCApplicationVersionBugTrackerQueryBuilder(SSCAuthenticatingRestConnection conn, String applicationVersionId) {
-		super(conn, applicationVersionId, false);
-		appendPath("bugtracker");
+@Data
+public class SSCOrderBy {
+	private String field;
+	private SSCOrderByDirection direction = SSCOrderByDirection.ASC;
+	
+	public SSCOrderBy() {}
+	public SSCOrderBy(String field, SSCOrderByDirection direction) {
+		field(field).direction(direction);
 	}
-
-	public final SSCApplicationVersionBugTrackerQueryBuilder paramFields(String... fields) {
-		return super.paramFields(fields);
+	
+	public SSCOrderBy field(String field) {
+		setField(field); return this;
+	}
+	
+	public SSCOrderBy direction(SSCOrderByDirection direction) {
+		setDirection(direction); return this;
 	}
 }

@@ -65,9 +65,13 @@ public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChi
 		return super.paramFilterAnd(filter);
 	}
 	
-	@Override
+	@Deprecated
 	public FoDReleaseVulnerabilitiesQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
-		return super.paramOrderBy(orderBy, orderByDirection);
+		return paramOrderBy(new FoDOrderBy(orderBy, orderByDirection));
+	}
+	
+	public FoDReleaseVulnerabilitiesQueryBuilder paramOrderBy(FoDOrderBy orderBy) {
+		return super.paramOrderBy(orderBy);
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder paramExcludeFilters(boolean excludeFilters) {

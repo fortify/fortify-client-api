@@ -64,19 +64,19 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	}
 	
 	public JSONMap getApplicationVersionById(String applicationVersionId) {
-		return queryApplicationVersions().id(applicationVersionId).build().getUnique();
+		return queryApplicationVersions().id(false, applicationVersionId).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByName(String applicationName, String versionName) {
-		return queryApplicationVersions().applicationName(applicationName).versionName(versionName).build().getUnique();
+		return queryApplicationVersions().applicationName(false, applicationName).versionName(false, versionName).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
-		return queryApplicationVersions().nameOrId(nameOrId, separator).build().getUnique();
+		return queryApplicationVersions().nameOrId(false, nameOrId, separator).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByNameOrId(String nameOrId) {
-		return queryApplicationVersions().nameOrId(nameOrId).build().getUnique();
+		return queryApplicationVersions().nameOrId(false, nameOrId).build().getUnique();
 	}
 	
 	public void deleteApplicationVersion(JSONMap applicationVersion) {
@@ -224,8 +224,8 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 
 		private final JSONMap getExistingOrNewApplicationData() {
 			JSONMap result = conn().api(SSCApplicationVersionAPI.class)
-					.queryApplicationVersions().applicationName(applicationName)
-					.applicationId(applicationId).maxResults(1).paramFields("project").build().getUnique();
+					.queryApplicationVersions().applicationName(false, applicationName)
+					.applicationId(false, applicationId).maxResults(1).paramFields("project").build().getUnique();
 			return result == null ? getNewApplicationData() : getExistingApplicationData(result.get("project", JSONMap.class));
 		}
 
