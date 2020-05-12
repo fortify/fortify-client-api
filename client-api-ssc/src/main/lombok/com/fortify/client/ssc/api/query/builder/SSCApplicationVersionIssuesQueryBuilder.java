@@ -103,25 +103,50 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return super.paramQAnd(ignoreIfBlank, field, value);
 	}
 	
+	@Deprecated
 	public final SSCApplicationVersionIssuesQueryBuilder paramGroupId(String groupId) {
-		return super.queryParam("groupid", groupId);
+		return paramGroupId(false, groupId);
 	}
 	
+	public final SSCApplicationVersionIssuesQueryBuilder paramGroupId(boolean ignoreIfBlank, String groupId) {
+		return super.queryParam(ignoreIfBlank, "groupid", groupId);
+	}
+	
+	@Deprecated
 	public final SSCApplicationVersionIssuesQueryBuilder paramGroupingType(String groupingType) {
-		return super.queryParam("groupingtype", groupingType);
+		return paramGroupingType(false, groupingType);
 	}
 	
+	public final SSCApplicationVersionIssuesQueryBuilder paramGroupingType(boolean ignoreIfBlank, String groupingType) {
+		return super.queryParam(ignoreIfBlank, "groupingtype", groupingType);
+	}
+	
+	@Deprecated
 	public final SSCApplicationVersionIssuesQueryBuilder paramFilterSet(String filterSetId) {
+		return paramFilterSetId(false, filterSetId);
+	}
+	
+	public final SSCApplicationVersionIssuesQueryBuilder paramFilterSetId(boolean ignoreIfBlank, String filterSetId) {
 		this.filterSetId = filterSetId; // Used for building deep link pre-processor
-		return super.queryParam("filterset", filterSetId);
+		return super.queryParam(ignoreIfBlank, "filterset", filterSetId);
 	}
 	
+	@Deprecated
 	public final SSCApplicationVersionIssuesQueryBuilder paramFilter(String filter) {
-		return super.queryParam("filter", filter);
+		return paramFilter(false, filter);
 	}
 	
+	public final SSCApplicationVersionIssuesQueryBuilder paramFilter(boolean ignoreIfBlank, String filter) {
+		return super.queryParam(ignoreIfBlank, "filter", filter);
+	}
+	
+	@Deprecated
 	public final SSCApplicationVersionIssuesQueryBuilder paramQm(QueryMode queryMode) {
-		return super.queryParam("qm", queryMode.name());
+		return paramQm(false, queryMode);
+	}
+	
+	public final SSCApplicationVersionIssuesQueryBuilder paramQm(boolean ignoreIfBlank, QueryMode queryMode) {
+		return super.queryParam(ignoreIfBlank, "qm", queryMode.name());
 	}
 	
 	public SSCApplicationVersionIssuesQueryBuilder paramShowHidden(boolean showHidden) {
