@@ -161,6 +161,9 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return super.queryParam("showsuppressed", ""+showSuppressed);
 	}
 	
+	public SSCApplicationVersionIssuesQueryBuilder embedSubEntity(String entityName, EmbedType embedType, String... fields) {
+		return embedSubEntity(entityName, entityName, embedType, fields);
+	}
 	
 	public SSCApplicationVersionIssuesQueryBuilder embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
 		switch (entityName.toLowerCase()) {
