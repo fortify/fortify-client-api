@@ -27,6 +27,7 @@ package com.fortify.util.spring;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.springframework.context.expression.MapAccessor;
 import org.springframework.expression.EvaluationContext;
@@ -119,5 +120,10 @@ public class SpringExpressionUtil {
 
 	public static final <T> T evaluateTemplateExpression(EvaluationContext context, Object input, String expression, Class<T> returnType) {
 		return evaluateExpression(context, input, parseTemplateExpression(expression), returnType);
+	}
+	
+	public static final <T> Function<Object,T> expressionAsFunction(Expression expr, Class<T> returnType) {
+		final StandardEvaluationContext context = getStandardEvaluationContext();
+		return input -> expr==null ? null : expr.getValue(context, input, returnType);
 	}
 }
