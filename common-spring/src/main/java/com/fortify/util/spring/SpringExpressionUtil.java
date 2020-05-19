@@ -122,7 +122,7 @@ public class SpringExpressionUtil {
 		return evaluateExpression(context, input, parseTemplateExpression(expression), returnType);
 	}
 	
-	public static final <T> Function<Object,T> expressionAsFunction(Expression expr, Class<T> returnType) {
+	public static final <I,O> Function<I,O> expressionAsFunction(Expression expr, Class<O> returnType) {
 		final StandardEvaluationContext context = getStandardEvaluationContext();
 		return input -> expr==null ? null : expr.getValue(context, input, returnType);
 	}
