@@ -77,7 +77,7 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	}
 	
 	private TokenData getTokenData(JSONMap json) {
-		JSONMap data = (JSONMap)json.get("data");
+		JSONMap data = json.get("data", JSONMap.class);
 		return new TokenData((String)data.get("token"), data.get("terminalDate", Date.class));
 	}
 
