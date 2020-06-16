@@ -171,7 +171,6 @@ allprojects {
 			dependency "commons-codec:commons-codec:${dependencyVersion.commons_codec}"
 			dependency "commons-collections:commons-collections:${dependencyVersion.commons_collections}"
 			dependency "commons-logging:commons-logging:${dependencyVersion.commons_logging}"
-			dependency "com.google.guava:guava:${dependencyVersion.guava}"
 		}
 	}
 	
