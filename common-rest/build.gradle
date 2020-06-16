@@ -24,7 +24,6 @@ dependencies {
 	compile 'commons-collections:commons-collections'
 	compile 'commons-lang:commons-lang'
 	compile 'commons-logging:commons-logging'
-	compile 'com.google.guava:guava'
 	
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation 'org.junit.platform:junit-platform-launcher:1.1.0'

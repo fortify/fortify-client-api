@@ -24,13 +24,13 @@
  ******************************************************************************/
 package com.fortify.util.rest.webtarget;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.client.WebTarget;
 
 import org.apache.commons.lang.StringUtils;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * This {@link IWebTargetUpdater} implementation allows for adding
@@ -55,7 +55,7 @@ public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	 * @param values
 	 */
 	public WebTargetQueryParamUpdater(String name, String... values) {
-		this.queryParams = ImmutableMap.of(name, values);
+		this.queryParams = Collections.singletonMap(name, values);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	 * @param queryParams
 	 */
 	public WebTargetQueryParamUpdater(Map<String, String[]> queryParams) {
-		this.queryParams = ImmutableMap.copyOf(queryParams);
+		this.queryParams = Collections.unmodifiableMap(new HashMap<>(queryParams));
 	}
 
 	/**

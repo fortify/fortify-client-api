@@ -26,16 +26,16 @@ package com.fortify.util.rest.connection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 import org.glassfish.jersey.client.ClientProperties;
 
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
-import com.google.common.base.Splitter;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -121,15 +121,15 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	
 	public void setConnectionProperties(String propertiesString) {
 		if ( StringUtils.isNotBlank(propertiesString) ) {
-			Map<String, Object> orgProperties = Collections.<String,Object>unmodifiableMap(
-					Splitter.on(',').withKeyValueSeparator("=").split(propertiesString));
-			Map<String, Object> connectionProperties = new HashMap<String, Object>();
 			Map<String,String> propertyKeyReplacementMap = getPropertyKeyReplacementMap();
-			for ( Map.Entry<String, Object> entry : orgProperties.entrySet() ) {
-				connectionProperties.put(propertyKeyReplacementMap.getOrDefault(entry.getKey(),  entry.getKey()), entry.getValue());
-			}
+			Map<String, Object> connectionProperties = Stream.of(propertiesString.split(","))
+				.map(s->s.split("=",2))
+				.filter(a->a.length==2)
+				.collect(
+						Collectors.toMap(a->propertyKeyReplacementMap.getOrDefault(a[0], a[0]), 
+						a -> a[1]));
+			setConnectionProperties(connectionProperties);
 		}
-		setConnectionProperties(connectionProperties);
 	}
 	
 	@SuppressWarnings("unchecked")

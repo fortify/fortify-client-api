@@ -24,13 +24,13 @@
  ******************************************************************************/
 package com.fortify.util.rest.json.preprocessor.filter;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.fortify.util.rest.json.JSONMap;
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import lombok.Getter;
 
@@ -48,22 +48,15 @@ import lombok.Getter;
  */
 @Getter
 public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
-	private static final Function<String, Pattern> STRING_TO_PATTERN_TRANSFORMER = new Function<String, Pattern>() {
-		@Override
-		public Pattern apply(String input) {
-			return Pattern.compile(input);
-		}
-		
-	};
-	private final ImmutableMap<String, Pattern> fieldPathPatternsMap;
+	private final Map<String, Pattern> fieldPathPatternsMap;
 	
 	public JSONMapFilterRegEx(MatchMode matchMode, Map<String, Pattern> fieldPathPatternsMap) {
 		super(matchMode);
-		this.fieldPathPatternsMap = ImmutableMap.copyOf(fieldPathPatternsMap);
+		this.fieldPathPatternsMap = Collections.unmodifiableMap(new HashMap<>(fieldPathPatternsMap));
 	}
 	
 	public JSONMapFilterRegEx(MatchMode matchMode, String fieldPath, Pattern pattern) {
-		this(matchMode, ImmutableMap.of(fieldPath, pattern));
+		this(matchMode, Collections.singletonMap(fieldPath, pattern));
 	}
 	
 	public JSONMapFilterRegEx(MatchMode matchMode, String fieldPath, String regex) {
@@ -72,7 +65,7 @@ public class JSONMapFilterRegEx extends AbstractJSONMapFilter {
 	
 	// We cannot create a constructor for this, as generic type erasure would result in duplicate constructor
 	public static final JSONMapFilterRegEx fromFieldPathToPatternStringMap(MatchMode matchMode, Map<String, String> fieldPathPatternsMap) {
-		return new JSONMapFilterRegEx(matchMode, Maps.transformValues(fieldPathPatternsMap, STRING_TO_PATTERN_TRANSFORMER));
+		return new JSONMapFilterRegEx(matchMode, fieldPathPatternsMap.entrySet().stream().collect(Collectors.toMap(e->e.getKey(), e->Pattern.compile(e.getValue()))));
 	}
 
 	@Override

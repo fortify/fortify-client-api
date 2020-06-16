@@ -27,7 +27,9 @@ package com.fortify.client.fod.api.query.builder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,8 +44,6 @@ import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.util.rest.webtarget.WebTargetQueryParamUpdater;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
 
 /**
  * <p>This abstract base class is used to build {@link FoDEntityQuery} instances. Concrete implementations
@@ -199,11 +199,11 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 *
 	 */
 	private static class FoDParamFilter implements IWebTargetUpdaterBuilder {
-		private final ListMultimap<String, String> paramFilterAndsMap = ArrayListMultimap.create();
+		private final Map<String, Collection<String>> paramFilterAndsMap = new LinkedHashMap<>();
 		private final List<String> paramFilterAndsList = new ArrayList<>();
 		
 		public final FoDParamFilter paramFilterAnd(String field, String... values) {
-			paramFilterAndsMap.putAll(field, Arrays.asList(values));
+			paramFilterAndsMap.put(field, Arrays.asList(values));
 			return this;
 		}
 		
@@ -230,7 +230,7 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 
 		private void appendParamFilterAndsMap(StringBuffer sb) {
 			if ( !paramFilterAndsMap.isEmpty() ) {
-				for ( Entry<String, Collection<String>> entry : paramFilterAndsMap.asMap().entrySet() ) {
+				for ( Entry<String, Collection<String>> entry : paramFilterAndsMap.entrySet() ) {
 					String filterAppend = entry.getKey()+":"+StringUtils.join(entry.getValue(),'|');
 					appendFilter(sb, filterAppend);
 				}
