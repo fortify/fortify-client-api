@@ -78,12 +78,9 @@ import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.fortify.util.log4j.LogMaskingHelper;
-import com.fortify.util.rest.json.JSONList;
-import com.fortify.util.rest.json.JSONMap;
+import com.fortify.util.rest.json.JSONObjectMapperSupplier;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -592,19 +589,9 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	}
 
 	protected static class JacksonFeature implements Feature {
-
-	    @SuppressWarnings("serial")
-		private static final ObjectMapper mapper =
-	        new ObjectMapper(){{
-	        	final SimpleModule module = new SimpleModule("treemaps");
-	            module.addAbstractTypeMapping(Map.class, JSONMap.class);
-	            module.addAbstractTypeMapping(List.class, JSONList.class);
-	            registerModule(module);
-	        }};
-	 
 	    private static final JacksonJaxbJsonProvider provider =
 	        new JacksonJaxbJsonProvider(){{
-	            setMapper(mapper);
+	            setMapper(JSONObjectMapperSupplier.getObjectMapper());
 	        }};
 	 
 	    public boolean configure(FeatureContext context) {
