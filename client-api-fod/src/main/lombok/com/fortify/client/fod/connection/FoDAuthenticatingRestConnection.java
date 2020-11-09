@@ -44,7 +44,7 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	private final FoDTokenFactory tokenProvider;
 	private final URI browserBaseUrl;
 	
-	protected FoDAuthenticatingRestConnection(FoDRestConnectionConfig<?> config) {
+	public FoDAuthenticatingRestConnection(FoDRestConnectionConfig<?> config) {
 		super(config);
 		this.browserBaseUrl = config.getBrowserBaseUrl();
 		this.tokenProvider = new FoDTokenFactory(new FoDBasicRestConnection(config), config.getAuth());

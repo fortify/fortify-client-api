@@ -50,7 +50,7 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	 * 
 	 * @param config
 	 */
-	protected SSCAuthenticatingRestConnection(SSCRestConnectionConfig<?> config) {
+	public SSCAuthenticatingRestConnection(SSCRestConnectionConfig<?> config) {
 		super(config);
 		this.tokenFactory = getTokenFactory(config);
 	}

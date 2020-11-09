@@ -1,6 +1,6 @@
 /*******************************************************************************
- * (c) Copyright 2020 Micro Focus or one of its affiliates, a Micro Focus company
- * 
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
  * "Software"), to deal in the Software without restriction, including without 
@@ -22,27 +22,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.connection;
+package com.fortify.client.fod.connection;
 
-import java.net.URI;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
-
-/**
- * Interface providing low-level methods for building and executing REST requests.
- * 
- * @author Ruud Senden
- *
- */
-public interface IRestConnection extends AutoCloseable {
-	public abstract <T> T executeRequest(String httpMethod, Builder builder, Entity<?> entity, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Class<T> returnType);
-	public abstract <T> T executeRequest(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType);
-	public abstract URI getBaseUrl();
-	public abstract WebTarget getBaseResource();
-	public abstract WebTarget getResource(String url);
-	public abstract String getConnectionId();
-	public abstract void close();
-}
+public class BasicFoDRestConnectionConfig extends FoDRestConnectionConfig<BasicFoDRestConnectionConfig> {}
