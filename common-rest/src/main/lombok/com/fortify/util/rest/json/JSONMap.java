@@ -29,6 +29,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -49,6 +51,7 @@ import com.fortify.util.spring.SpringExpressionUtil;
  */
 public class JSONMap extends LinkedHashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
+	private final Pattern patternArraySegment = Pattern.compile("(?<name>.*)\\[(?<index>\\d*)\\]$");
 
 	/**
 	 * @see LinkedHashMap#LinkedHashMap()
@@ -232,10 +235,16 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 			} else if ( path.size()>1 ){
 				String currentSegment = path.get(0);
 				JSONMap intermediate;
-				if ( currentSegment.endsWith("[]") ) {
-					JSONList list = getOrCreateJSONList(currentSegment.substring(0, currentSegment.length()-2));
-					intermediate = new JSONMap();
-					list.add(intermediate);
+				Matcher arrayMatcher = patternArraySegment.matcher(currentSegment);
+				if ( arrayMatcher.matches() ) {
+					JSONList list = getOrCreateJSONList(arrayMatcher.group("name"));
+					if ( StringUtils.isBlank(arrayMatcher.group("index")) ) { 
+						intermediate = new JSONMap();
+						list.add(intermediate);
+					} else {
+						int index = Integer.valueOf(arrayMatcher.group("index"));
+						intermediate = list.getOrCreateJSONMap(index);
+					}
 				} else {
 					intermediate = getOrCreateJSONMap(currentSegment);
 				}

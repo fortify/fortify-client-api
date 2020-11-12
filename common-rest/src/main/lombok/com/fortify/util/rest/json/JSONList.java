@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -260,5 +261,20 @@ public class JSONList extends ArrayList<Object> {
 	 */
 	public <T> T get(int index, Class<T> type) {
 		return JSONConversionServiceFactory.getConversionService().convert(get(index), type);
+	}
+	
+	public JSONMap getOrCreateJSONMap(int index) {
+		growTo(index+1, JSONMap::new); // If necessary, initialize this list with empty JSONMap instances up to the given index
+		return get(index, JSONMap.class);
+	}
+	
+	public void growTo(int newSize) {
+		growTo(newSize, ()->null);
+	}
+	
+	public void growTo(int newSize, Supplier<?> eltSupplier) {
+		for ( int i=size(); i<newSize; i++) {
+			add(eltSupplier.get());
+		}
 	}
 }
