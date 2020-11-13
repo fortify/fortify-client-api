@@ -44,10 +44,10 @@ public class FoDApplicationAPI extends AbstractFoDAPI {
 	}
 	
 	public JSONMap getApplicationById(String applicationId) {
-		return queryApplications().applicationId(applicationId).onDemandAttributesMap().build().getUnique();
+		return queryApplications().applicationId(false, applicationId).onDemandAttributesMap().build().getUnique();
 	}
 	
 	public JSONMap getApplicationByName(String applicationName) {
-		return queryApplications().applicationName(applicationName).onDemandAttributesMap().build().getUnique();
+		return queryApplications().applicationName(false, applicationName).onDemandAttributesMap().build().getUnique();
 	}
 }

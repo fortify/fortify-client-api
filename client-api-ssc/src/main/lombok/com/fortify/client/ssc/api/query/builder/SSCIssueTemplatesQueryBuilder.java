@@ -50,11 +50,6 @@ public final class SSCIssueTemplatesQueryBuilder extends AbstractSSCEntityQueryB
 	public final SSCIssueTemplatesQueryBuilder paramFields(String... fields) {
 		return super.paramFields(fields);
 	}
-
-	@Deprecated
-	public final SSCIssueTemplatesQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		return paramOrderBy(false, new SSCOrderBy(orderBy, direction));
-	}
 	
 	public final SSCIssueTemplatesQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
 		return super.paramOrderBy(ignoreIfBlank, orderBy);

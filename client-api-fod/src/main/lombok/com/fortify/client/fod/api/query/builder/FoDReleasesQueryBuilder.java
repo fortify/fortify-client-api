@@ -57,94 +57,92 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	}
 	
 	@Override
-	public FoDReleasesQueryBuilder paramFields(String... fields) {
-		return super.paramFields(replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
+	public FoDReleasesQueryBuilder paramFields(boolean ignoreIfBlank, String... fields) {
+		return super.paramFields(ignoreIfBlank, replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 	
 	@Override
-	public FoDReleasesQueryBuilder paramFilterAnd(String field, String... values) {
-		return super.paramFilterAnd(field, values);
+	public FoDReleasesQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String field, String... values) {
+		return super.paramFilterAnd(ignoreIfBlank, field, values);
 	}
 	
 	@Override
-	public FoDReleasesQueryBuilder paramFilterAnd(String filter) {
-		return super.paramFilterAnd(filter);
+	public FoDReleasesQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String filter) {
+		return super.paramFilterAnd(ignoreIfBlank, filter);
 	}
 	
-	@Deprecated
-	public FoDReleasesQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
-		return paramOrderBy(new FoDOrderBy(orderBy, orderByDirection));
+	public FoDReleasesQueryBuilder paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy) {
+		return super.paramOrderBy(ignoreIfBlank, orderBy);
 	}
 	
-	public FoDReleasesQueryBuilder paramOrderBy(FoDOrderBy orderBy) {
-		return super.paramOrderBy(orderBy);
+	public FoDReleasesQueryBuilder releaseId(boolean ignoreIfBlank, String releaseId) {
+		return super.paramFilterAnd(ignoreIfBlank, "releaseId", releaseId);
 	}
 	
-	public FoDReleasesQueryBuilder releaseId(String releaseId) {
-		return super.paramFilterAnd("releaseId", releaseId);
+	public FoDReleasesQueryBuilder releaseName(boolean ignoreIfBlank, String releaseName) {
+		return super.paramFilterAnd(ignoreIfBlank, "releaseName", releaseName);
 	}
 	
-	public FoDReleasesQueryBuilder releaseName(String releaseName) {
-		return super.paramFilterAnd("releaseName", releaseName);
+	public FoDReleasesQueryBuilder applicationAndOrReleaseName(boolean ignoreIfBlank, String applicationAndOrReleaseName) {
+		return applicationAndOrReleaseName(ignoreIfBlank, applicationAndOrReleaseName, ":");
 	}
 	
-	public FoDReleasesQueryBuilder applicationAndOrReleaseName(String applicationAndOrReleaseName) {
-		return applicationAndOrReleaseName(applicationAndOrReleaseName, ":");
-	}
-	
-	public FoDReleasesQueryBuilder applicationAndOrReleaseName(String applicationAndOrReleaseName, String separator) {
-		if ( StringUtils.isBlank(applicationAndOrReleaseName) ) {
-			throw new IllegalArgumentException("Application and/or release name must be specified");
+	public FoDReleasesQueryBuilder applicationAndOrReleaseName(boolean ignoreIfBlank, String applicationAndOrReleaseName, String separator) {
+		if ( !isBlank(!ignoreIfBlank, "applicationAndOrReleaseName", applicationAndOrReleaseName)) {
+			String[] elts = applicationAndOrReleaseName.split(separator);
+			if ( elts.length == 1 && StringUtils.isNotBlank(elts[0]) || elts.length == 2 && StringUtils.isBlank(elts[1]) ) {
+				return applicationName(false, elts[0]);
+			} else if ( elts.length == 2 && StringUtils.isBlank(elts[0]) ) {
+				return releaseName(false, elts[1]);
+			} else if ( elts.length == 2 ) {
+				return applicationName(false, elts[0]).releaseName(false, elts[1]);
+			} else {
+				throw new IllegalArgumentException("Applications or releases containing a '"+separator+"' are unsupported");
+			}
 		}
-		String[] elts = applicationAndOrReleaseName.split(separator);
-		if ( elts.length == 1 && StringUtils.isNotBlank(elts[0]) || elts.length == 2 && StringUtils.isBlank(elts[1]) ) {
-			return applicationName(elts[0]);
-		} else if ( elts.length == 2 && StringUtils.isBlank(elts[0]) ) {
-			return releaseName(elts[1]);
-		} else if ( elts.length == 2 ) {
-			return applicationName(elts[0]).releaseName(elts[1]);
-		} else {
-			throw new IllegalArgumentException("Applications or releases containing a '"+separator+"' are unsupported");
+		return _this();
+	}
+	
+	public FoDReleasesQueryBuilder applicationAndReleaseName(boolean ignoreIfBlank, String applicationName, String releaseName) {
+		return applicationName(ignoreIfBlank, applicationName).releaseName(ignoreIfBlank, releaseName);
+	}
+	
+	public FoDReleasesQueryBuilder applicationId(boolean ignoreIfBlank, String applicationId) {
+		return super.paramFilterAnd(ignoreIfBlank, "applicationId", applicationId);
+	}
+	
+	public FoDReleasesQueryBuilder applicationName(boolean ignoreIfBlank, String applicationName) {
+		return super.paramFilterAnd(ignoreIfBlank, "applicationName", applicationName);
+	}
+	
+	public FoDReleasesQueryBuilder nameOrId(boolean ignoreIfBlank, String applicationAndReleaseNameOrId, String separator) {
+		if ( !isBlank(!ignoreIfBlank, "applicationAndReleaseNameOrId", applicationAndReleaseNameOrId)) {
+			String[] appVersionElements = applicationAndReleaseNameOrId.split(separator);
+			if ( appVersionElements.length == 1 ) {
+				return releaseId(ignoreIfBlank, appVersionElements[0]);
+			} else if ( appVersionElements.length == 2 ) {
+				return applicationAndReleaseName(ignoreIfBlank, appVersionElements[0], appVersionElements[1]);
+			} else {
+				throw new IllegalArgumentException("Applications or releases containing a '+separator+' can only be specified by id");
+			}
 		}
+		return _this();
 	}
 	
-	public FoDReleasesQueryBuilder applicationAndReleaseName(String applicationName, String releaseName) {
-		return applicationName(applicationName).releaseName(releaseName);
+	public FoDReleasesQueryBuilder nameOrId(boolean ignoreIfBlank, String applicationAndReleaseNameOrId) {
+		return nameOrId(ignoreIfBlank, applicationAndReleaseNameOrId, ":");
 	}
 	
-	public FoDReleasesQueryBuilder applicationId(String applicationId) {
-		return super.paramFilterAnd("applicationId", applicationId);
+	public FoDReleasesQueryBuilder rating(boolean ignoreIfBlank, Integer rating) {
+		return super.paramFilterAnd(ignoreIfBlank, "rating", rating+"");
 	}
 	
-	public FoDReleasesQueryBuilder applicationName(String applicationName) {
-		return super.paramFilterAnd("applicationName", applicationName);
+	public FoDReleasesQueryBuilder sdlcStatusType(boolean ignoreIfBlank, String sdlcStatusType) {
+		return super.paramFilterAnd(ignoreIfBlank, "sdlcStatusType", sdlcStatusType);
 	}
 	
-	public FoDReleasesQueryBuilder nameOrId(String applicationAndReleaseNameOrId, String separator) {
-		String[] appVersionElements = applicationAndReleaseNameOrId.split(separator);
-		if ( appVersionElements.length == 1 ) {
-			return releaseId(appVersionElements[0]);
-		} else if ( appVersionElements.length == 2 ) {
-			return applicationAndReleaseName(appVersionElements[0], appVersionElements[1]);
-		} else {
-			throw new IllegalArgumentException("Applications or releases containing a '+separator+' can only be specified by id");
-		}
-	}
-	
-	public FoDReleasesQueryBuilder nameOrId(String applicationAndReleaseNameOrId) {
-		return nameOrId(applicationAndReleaseNameOrId, ":");
-	}
-	
-	public FoDReleasesQueryBuilder rating(int rating) {
-		return super.paramFilterAnd("rating", rating+"");
-	}
-	
-	public FoDReleasesQueryBuilder sdlcStatusType(String sdlcStatusType) {
-		return super.paramFilterAnd("sdlcStatusType", sdlcStatusType);
-	}
-	
-	public FoDReleasesQueryBuilder isPassed(boolean isPassed) {
-		return super.paramFilterAnd("isPassed", Boolean.toString(isPassed));
+	public FoDReleasesQueryBuilder isPassed(boolean ignoreIfBlank, Boolean isPassed) {
+		return super.paramFilterAnd(ignoreIfBlank, "isPassed", Boolean.toString(isPassed));
 	}
 	
 	public FoDReleasesQueryBuilder onDemandAll() {
@@ -170,7 +168,7 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		@Override
 		public Object getOnDemand(FoDAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
 			return conn.api(FoDApplicationAPI.class).queryApplications()
-				.applicationId(parent.get("applicationId", String.class))
+				.applicationId(false, parent.get("applicationId", String.class))
 				.onDemandAttributesMap()
 				.onDemandBugTracker()
 				.build().getUnique();

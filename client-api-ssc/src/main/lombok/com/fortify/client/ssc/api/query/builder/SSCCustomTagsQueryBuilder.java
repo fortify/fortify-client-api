@@ -51,11 +51,6 @@ public final class SSCCustomTagsQueryBuilder extends AbstractSSCEntityQueryBuild
 		return super.paramFields(fields);
 	}
 
-	@Deprecated
-	public final SSCCustomTagsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		return paramOrderBy(false, new SSCOrderBy(orderBy, direction));
-	}
-	
 	public final SSCCustomTagsQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
 		return super.paramOrderBy(ignoreIfBlank, orderBy);
 	}

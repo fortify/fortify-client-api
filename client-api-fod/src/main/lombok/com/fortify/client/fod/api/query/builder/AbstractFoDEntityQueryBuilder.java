@@ -88,11 +88,12 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	/**
 	 * Add the 'orderBy' query parameter to the request configuration
 	 * 
+	 * @param ignoreIfBlank
 	 * @param orderBy
 	 * @return
 	 */
-	protected T paramOrderBy(String field) {
-		return queryParam("orderBy", field);
+	protected T paramOrderBy(boolean ignoreIfBlank, String field) {
+		return queryParam(ignoreIfBlank, "orderBy", field);
 	}
 	
 	/**
@@ -101,17 +102,17 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param orderByDirection
 	 * @return
 	 */
-	protected T paramOrderByDirection(FoDOrderByDirection orderByDirection) {
-		return queryParam("orderByDirection", orderByDirection.name());
+	protected T paramOrderByDirection(boolean ignoreIfBlank, FoDOrderByDirection orderByDirection) {
+		return queryParam(ignoreIfBlank, "orderByDirection", orderByDirection==null?null:orderByDirection.name());
 	}
 	
-	protected T paramOrderBy(FoDOrderBy orderBy) {
+	protected T paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy) {
 		if ( orderBy!=null ) {
 			if ( StringUtils.isNotBlank(orderBy.getField()) ) {
-				paramOrderBy(orderBy.getField());
+				paramOrderBy(ignoreIfBlank, orderBy.getField());
 			}
 			if ( orderBy.getDirection()!=null ) {
-				paramOrderByDirection(orderBy.getDirection());
+				paramOrderByDirection(ignoreIfBlank, orderBy.getDirection());
 			}
 		}
 		return _this();
@@ -119,13 +120,13 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	
 	/**
 	 * This interface is to be implemented by all {@link AbstractFoDEntityQueryBuilder}
-	 * implementations that expose the {@link #paramOrderBy(String, FoDOrderByDirection)} method.
+	 * implementations that expose the {@link #paramOrderBy(boolean, FoDOrderBy)} method.
 	 * @author Ruud Senden
 	 *
 	 * @param <T>
 	 */
 	public static interface IFoDEntityQueryBuilderParamOrderByWithDirection<T extends AbstractFoDEntityQueryBuilder<T>> {
-		public T paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection);
+		public T paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy);
 	}
 	
 	/**
@@ -134,8 +135,11 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param fields
 	 * @return
 	 */
-	protected T paramFields(String... fields) {
-		return queryParam("fields", StringUtils.join(fields, ","));
+	protected T paramFields(boolean ignoreIfBlank, String... fields) {
+		if ( !isBlank(!ignoreIfBlank, "fields", fields) ) {
+			queryParam("fields", StringUtils.join(fields, ","));
+		}
+		return _this();
 	}
 	
 	/**
@@ -146,7 +150,7 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param <T>
 	 */
 	public static interface IFoDEntityQueryBuilderParamFields<T extends AbstractFoDEntityQueryBuilder<T>> {
-		public T paramFields(String... fields);
+		public T paramFields(boolean ignoreIfBlank, String... fields);
 	}
 	
 	/**
@@ -159,8 +163,11 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param values
 	 * @return
 	 */
-	protected T paramFilterAnd(String field, String... values) {
-		paramFilter.paramFilterAnd(field, values); return _this();
+	protected T paramFilterAnd(boolean ignoreIfBlank, String field, String... values) {
+		if ( !isBlank(!ignoreIfBlank, "paramFilter."+field, values) ) {
+			paramFilter.paramFilterAnd(field, values);
+		}
+		return _this();
 	}
 	
 	/**
@@ -170,8 +177,11 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param filter
 	 * @return
 	 */
-	protected T paramFilterAnd(String filter) {
-		paramFilter.paramFilterAnd(filter); return _this();
+	protected T paramFilterAnd(boolean ignoreIfBlank, String filter) {
+		if ( !isBlank(!ignoreIfBlank, "paramFilter", filter) ) {
+			paramFilter.paramFilterAnd(filter); return _this();
+		}
+		return _this();
 	}
 	
 	/**
@@ -182,8 +192,8 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param <T>
 	 */
 	public static interface IFoDEntityQueryBuilderParamFilter<T extends AbstractFoDEntityQueryBuilder<T>> {
-		public T paramFilterAnd(String field, String... values);
-		public T paramFilterAnd(String filter);
+		public T paramFilterAnd(boolean ignoreIfBlank, String field, String... values);
+		public T paramFilterAnd(boolean ignoreIfBlank, String filter);
 	}
 	
 	@Override

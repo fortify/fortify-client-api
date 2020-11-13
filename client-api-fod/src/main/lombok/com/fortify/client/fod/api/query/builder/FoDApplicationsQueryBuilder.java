@@ -54,39 +54,34 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 	}
 	
 	@Override
-	public FoDApplicationsQueryBuilder paramFields(String... fields) {
-		return super.paramFields(replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
+	public FoDApplicationsQueryBuilder paramFields(boolean ignoreIfBlank, String... fields) {
+		return super.paramFields(ignoreIfBlank, replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 	
 	@Override
-	public FoDApplicationsQueryBuilder paramFilterAnd(String field, String... values) {
-		return super.paramFilterAnd(field, values);
+	public FoDApplicationsQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String field, String... values) {
+		return super.paramFilterAnd(ignoreIfBlank, field, values);
 	}
 	
 	@Override
-	public FoDApplicationsQueryBuilder paramFilterAnd(String filter) {
-		return super.paramFilterAnd(filter);
+	public FoDApplicationsQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String filter) {
+		return super.paramFilterAnd(ignoreIfBlank, filter);
 	}
 	
-	@Deprecated
-	public FoDApplicationsQueryBuilder paramOrderBy(String orderBy, FoDOrderByDirection orderByDirection) {
-		return paramOrderBy(new FoDOrderBy(orderBy, orderByDirection));
+	public FoDApplicationsQueryBuilder paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy) {
+		return super.paramOrderBy(ignoreIfBlank, orderBy);
 	}
 	
-	public FoDApplicationsQueryBuilder paramOrderBy(FoDOrderBy orderBy) {
-		return super.paramOrderBy(orderBy);
+	public FoDApplicationsQueryBuilder applicationId(boolean ignoreIfBlank, String applicationId) {
+		return super.paramFilterAnd(ignoreIfBlank, "applicationId", applicationId);
 	}
 	
-	public FoDApplicationsQueryBuilder applicationId(String applicationId) {
-		return super.paramFilterAnd("applicationId", applicationId);
+	public FoDApplicationsQueryBuilder applicationName(boolean ignoreIfBlank, String applicationName) {
+		return super.paramFilterAnd(ignoreIfBlank, "applicationName", applicationName);
 	}
 	
-	public FoDApplicationsQueryBuilder applicationName(String applicationName) {
-		return super.paramFilterAnd("applicationName", applicationName);
-	}
-	
-	public FoDApplicationsQueryBuilder applicationType(String applicationType) {
-		return super.paramFilterAnd("applicationType", applicationType);
+	public FoDApplicationsQueryBuilder applicationType(boolean ignoreIfBlank, String applicationType) {
+		return super.paramFilterAnd(ignoreIfBlank, "applicationType", applicationType);
 	}
 	
 	public FoDApplicationsQueryBuilder onDemandAll() {

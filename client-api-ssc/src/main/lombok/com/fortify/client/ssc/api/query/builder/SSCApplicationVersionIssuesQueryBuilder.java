@@ -76,54 +76,24 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return super.paramFields(fields);
 	}
 
-	@Deprecated
-	public final SSCApplicationVersionIssuesQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		return paramOrderBy(false, new SSCOrderBy(orderBy, direction));
-	}
-	
 	public final SSCApplicationVersionIssuesQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
 		return super.paramOrderBy(ignoreIfBlank, orderBy);
-	}
-	
-	@Deprecated
-	public final SSCApplicationVersionIssuesQueryBuilder paramQ(String q) {
-		return paramQ(false, q);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
 		return super.paramQ(ignoreIfBlank, q);
 	}
 
-	@Deprecated
-	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(String field, Object value) {
-		return paramQAnd(false, field, value);
-	}
-	
 	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
 		return super.paramQAnd(ignoreIfBlank, field, value);
-	}
-	
-	@Deprecated
-	public final SSCApplicationVersionIssuesQueryBuilder paramGroupId(String groupId) {
-		return paramGroupId(false, groupId);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramGroupId(boolean ignoreIfBlank, String groupId) {
 		return super.queryParam(ignoreIfBlank, "groupid", groupId);
 	}
 	
-	@Deprecated
-	public final SSCApplicationVersionIssuesQueryBuilder paramGroupingType(String groupingType) {
-		return paramGroupingType(false, groupingType);
-	}
-	
 	public final SSCApplicationVersionIssuesQueryBuilder paramGroupingType(boolean ignoreIfBlank, String groupingType) {
 		return super.queryParam(ignoreIfBlank, "groupingtype", groupingType);
-	}
-	
-	@Deprecated
-	public final SSCApplicationVersionIssuesQueryBuilder paramFilterSet(String filterSetId) {
-		return paramFilterSetId(false, filterSetId);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramFilterSetId(boolean ignoreIfBlank, String filterSetId) {
@@ -131,18 +101,8 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return super.queryParam(ignoreIfBlank, "filterset", filterSetId);
 	}
 	
-	@Deprecated
-	public final SSCApplicationVersionIssuesQueryBuilder paramFilter(String filter) {
-		return paramFilter(false, filter);
-	}
-	
 	public final SSCApplicationVersionIssuesQueryBuilder paramFilter(boolean ignoreIfBlank, String filter) {
 		return super.queryParam(ignoreIfBlank, "filter", filter);
-	}
-	
-	@Deprecated
-	public final SSCApplicationVersionIssuesQueryBuilder paramQm(QueryMode queryMode) {
-		return paramQm(false, queryMode);
 	}
 	
 	public final SSCApplicationVersionIssuesQueryBuilder paramQm(boolean ignoreIfBlank, QueryMode queryMode) {

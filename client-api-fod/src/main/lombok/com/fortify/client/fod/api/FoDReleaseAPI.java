@@ -49,19 +49,19 @@ public class FoDReleaseAPI extends AbstractFoDAPI {
 	}
 	
 	public JSONMap getReleaseById(String releaseId) {
-		return queryReleases().releaseId(releaseId).build().getUnique();
+		return queryReleases().releaseId(false, releaseId).build().getUnique();
 	}
 	
 	public JSONMap getReleaseByName(String applicationName, String releaseName) {
-		return queryReleases().applicationName(applicationName).releaseName(releaseName).build().getUnique();
+		return queryReleases().applicationName(false, applicationName).releaseName(false, releaseName).build().getUnique();
 	}
 	
 	public JSONMap getReleaseByNameOrId(String nameOrId, String separator) {
-		return queryReleases().nameOrId(nameOrId, separator).build().getUnique();
+		return queryReleases().nameOrId(false, nameOrId, separator).build().getUnique();
 	}
 	
 	public JSONMap getReleaseByNameOrId(String nameOrId) {
-		return queryReleases().nameOrId(nameOrId).build().getUnique();
+		return queryReleases().nameOrId(false, nameOrId).build().getUnique();
 	}
 	
 	/**

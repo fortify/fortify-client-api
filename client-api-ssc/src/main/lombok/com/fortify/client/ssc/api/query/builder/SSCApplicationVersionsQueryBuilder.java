@@ -59,63 +59,28 @@ public final class SSCApplicationVersionsQueryBuilder
 		return super.paramFields(fields);
 	}
 
-	@Deprecated
-	public final SSCApplicationVersionsQueryBuilder paramOrderBy(String orderBy, SSCOrderByDirection direction) {
-		return paramOrderBy(false, new SSCOrderBy(orderBy, direction));
-	}
-	
 	public final SSCApplicationVersionsQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
 		return super.paramOrderBy(ignoreIfBlank, orderBy);
-	}
-	
-	@Deprecated
-	public final SSCApplicationVersionsQueryBuilder paramQ(String q) {
-		return paramQ(false, q);
 	}
 	
 	public final SSCApplicationVersionsQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
 		return super.paramQ(ignoreIfBlank, q);
 	}
 
-	@Deprecated
-	public final SSCApplicationVersionsQueryBuilder paramQAnd(String field, Object value) {
-		return paramQAnd(false, field, value);
-	}
-	
 	public final SSCApplicationVersionsQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
 		return super.paramQAnd(ignoreIfBlank, field, value);
 	}
 
-	@Deprecated
-	public SSCApplicationVersionsQueryBuilder id(String id) {
-		return id(false, id);
-	}
-	
 	public SSCApplicationVersionsQueryBuilder id(boolean ignoreIfBlank, String id) {
 		return super.paramQAnd(ignoreIfBlank, "id", id);
 	}
 
-	@Deprecated
-	public SSCApplicationVersionsQueryBuilder applicationId(String applicationId) {
-		return applicationId(false, applicationId);
-	}
-	
 	public SSCApplicationVersionsQueryBuilder applicationId(boolean ignoreIfBlank, String applicationId) {
 		return super.paramQAnd(ignoreIfBlank, "project.id", applicationId);
 	}
 	
-	@Deprecated
-	public SSCApplicationVersionsQueryBuilder applicationName(String applicationName) {
-		return applicationName(false, applicationName);
-	}
-	
 	public SSCApplicationVersionsQueryBuilder applicationName(boolean ignoreIfBlank, String applicationName) {
 		return super.paramQAnd(ignoreIfBlank, "project.name", applicationName);
-	}
-	
-	@Deprecated
-	public SSCApplicationVersionsQueryBuilder versionName(String versionName) {
-		return versionName(false, versionName);
 	}
 	
 	public SSCApplicationVersionsQueryBuilder versionName(boolean ignoreIfBlank, String versionName) {
@@ -125,11 +90,6 @@ public final class SSCApplicationVersionsQueryBuilder
 	
 	public SSCApplicationVersionsQueryBuilder applicationAndOrVersionName(boolean ignoreIfBlank, String applicationAndOrVersionName) {
 		return applicationAndOrVersionName(ignoreIfBlank, applicationAndOrVersionName, ":");
-	}
-	
-	@Deprecated
-	public SSCApplicationVersionsQueryBuilder applicationAndOrVersionName(String applicationAndOrVersionName, String separator) {
-		return applicationAndOrVersionName(false, applicationAndOrVersionName, separator);
 	}
 	
 	public SSCApplicationVersionsQueryBuilder applicationAndOrVersionName(boolean ignoreIfBlank, String applicationAndOrVersionName, String separator) {
@@ -162,11 +122,6 @@ public final class SSCApplicationVersionsQueryBuilder
 				throw new IllegalArgumentException("Applications or versions containing a '+separator+' can only be specified by id");
 			}
 		}
-	}
-	
-	@Deprecated
-	public SSCApplicationVersionsQueryBuilder nameOrId(String applicationVersionNameOrId) {
-		return nameOrId(false, applicationVersionNameOrId, ":");
 	}
 	
 	public SSCApplicationVersionsQueryBuilder nameOrId(boolean ignoreIfBlank, String applicationVersionNameOrId) {
