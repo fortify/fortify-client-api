@@ -300,4 +300,14 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 		}
 		return true;
 	}
+	
+	public void resolveOnDemandValues() {
+		keySet().stream().map(this::get).forEach(this::resolveOnDemandValues);
+	}
+	
+	private void resolveOnDemandValues(Object o) {
+		if ( o instanceof JSONMap ) {
+			((JSONMap)o).resolveOnDemandValues();
+		}
+	}
 }
