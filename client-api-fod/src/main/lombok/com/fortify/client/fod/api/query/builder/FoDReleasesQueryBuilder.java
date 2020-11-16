@@ -158,6 +158,17 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 				new FoDApplicationOnDemandLoader(getConn())));
 	}
 	
+	public FoDReleasesQueryBuilder onDemandSubEntity(String entityName) {
+		return onDemandSubEntity(entityName, entityName);
+	}
+	
+	public FoDReleasesQueryBuilder onDemandSubEntity(String propertyName, String entityName) {
+		switch (entityName) {
+		case "application": return onDemandApplication();
+		default: return onDemand(propertyName, "/api/v3/releases/${releaseId}/"+entityName); 
+		}
+	}
+	
 	private static class FoDApplicationOnDemandLoader extends AbstractJSONMapOnDemandLoaderWithConnection<FoDAuthenticatingRestConnection> {
 		private static final long serialVersionUID = 1L;
 		
