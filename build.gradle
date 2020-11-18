@@ -1,11 +1,11 @@
 plugins {
     id 'maven-publish'
     id 'base'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE' apply false
-    id 'io.freefair.lombok' version '4.1.2' apply false
-    id 'com.jfrog.bintray' version "1.8.4" apply false
-    id 'com.jfrog.artifactory' version "4.10.0" apply false
-    id 'org.ajoberstar.grgit' version "4.0.0"
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply false
+    id 'io.freefair.lombok' version '5.2.1' apply false
+    id 'com.jfrog.bintray' version "1.8.5" apply false
+    id 'com.jfrog.artifactory' version "4.17.2" apply false
+    id 'org.ajoberstar.grgit' version "4.0.2"
 }
 
 ext {
@@ -93,12 +93,12 @@ allprojects {
 	
 	ext {
 		dependencyVersion=[
-			spring:              '5.2.7.RELEASE',
-			log4j:               '2.13.3',
-			jersey:              '2.31',
-			jackson:             '2.10.4',
+			spring:              '5.3.1',
+			log4j:               '2.14.0',
+			jersey:              '2.32',
+			jackson:             '2.10.5',
 			httpcore:            '4.4.13',
-			httpclient:          '4.5.12',
+			httpclient:          '4.5.13',
 			rs_api:              '2.1.6',
 			commons_lang:        '2.6',
 			commons_beanutils:   '1.9.4',
