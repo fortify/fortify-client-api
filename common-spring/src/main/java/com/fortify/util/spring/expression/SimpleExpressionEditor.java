@@ -29,16 +29,18 @@ import java.beans.PropertyEditorSupport;
 
 import org.springframework.stereotype.Component;
 
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelper;
 
 /**
  * This {@link PropertyEditor} allows parsing String values into an 
- * SPeL Expression object.
+ * SpEL Expression object.
  */
 @Component
 public final class SimpleExpressionEditor extends PropertyEditorSupport {
 	public void setAsText(String text) {
-        SimpleExpression expression = DefaultExpressionHelperProvider.get().parseSimpleExpression(text);
+		// As these are usually application-specific expressions, we use DefaultExpressionHelper
+		// rather than InternalExpressionHelper
+        SimpleExpression expression = DefaultExpressionHelper.get().parseSimpleExpression(text);
         setValue(expression);
     }
     

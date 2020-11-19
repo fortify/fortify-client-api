@@ -43,7 +43,7 @@ import com.fortify.client.ssc.api.query.builder.SSCBugTrackersQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
 /**
  * This class is used to access SSC bug tracker related functionality.
@@ -111,7 +111,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @return
 	 */
 	public String getApplicationVersionBugTrackerShortName(String applicationVersionId) {
-		return DefaultExpressionHelperProvider.get().evaluateSimpleExpression(getApplicationVersionBugTracker(applicationVersionId), "shortDisplayName", String.class);
+		return InternalExpressionHelper.get().evaluateSimpleExpression(getApplicationVersionBugTracker(applicationVersionId), "shortDisplayName", String.class);
 	}
 	
 	/**
@@ -200,7 +200,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 */
 	public boolean isBugTrackerAuthenticationRequired(String applicationVersionId) {
 		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId);
-		return DefaultExpressionHelperProvider.get().evaluateSimpleExpression(bugFilingRequirements, "requiresAuthentication", Boolean.class);
+		return InternalExpressionHelper.get().evaluateSimpleExpression(bugFilingRequirements, "requiresAuthentication", Boolean.class);
 	}
 	
 	/**

@@ -41,7 +41,7 @@ import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionArtifactsQu
 import com.fortify.client.ssc.api.query.builder.SSCArtifactByIdQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
 /**
  * This class is used to access SSC artifact-related functionality.
@@ -125,7 +125,7 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 	}
 	
 	public final String getArtifactIdForUploadJob(JSONMap job) {
-		return DefaultExpressionHelperProvider.get().evaluateSimpleExpression(job, "jobData.PARAM_ARTIFACT_ID", String.class);
+		return InternalExpressionHelper.get().evaluateSimpleExpression(job, "jobData.PARAM_ARTIFACT_ID", String.class);
 	}
 	
 	public final String uploadArtifactAndWaitProcessingCompletion(String applicationVersionId, File fprFile, int timeOutSeconds) {

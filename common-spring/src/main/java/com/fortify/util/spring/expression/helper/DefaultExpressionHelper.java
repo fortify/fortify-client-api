@@ -26,7 +26,7 @@ package com.fortify.util.spring.expression.helper;
 
 /**
  * <p>This class provides a default {@link IExpressionHelper} instance for use
- * throughout an application. By default, {@link StandardExpressionHelper} is
+ * throughout an application. By default, {@link InternalExpressionHelper} is
  * registered as the default {@link IExpressionHelper}. Applications can use
  * a different default {@link IExpressionHelper} instance by calling the
  * {@link #setDefaultExpressionHelper(IExpressionHelper)} method on application 
@@ -45,14 +45,14 @@ package com.fortify.util.spring.expression.helper;
  * @author Ruud Senden
  *
  */
-public class DefaultExpressionHelperProvider {
-	private static IExpressionHelper defaultExpressionHelper = StandardExpressionHelper.INSTANCE;
+public class DefaultExpressionHelper {
+	private static IExpressionHelper defaultExpressionHelper = InternalExpressionHelper.get();
 
 	public static final IExpressionHelper get() {
 		return defaultExpressionHelper;
 	}
 
 	public static final void set(IExpressionHelper defaultExpressionHelper) {
-		DefaultExpressionHelperProvider.defaultExpressionHelper = defaultExpressionHelper;
+		DefaultExpressionHelper.defaultExpressionHelper = defaultExpressionHelper;
 	}
 }

@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.spring.expression.TemplateExpression;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
 import lombok.Getter;
 
@@ -67,8 +67,8 @@ public class JSONMapFilterListenerLogger implements IJSONMapFilterListener {
 	 */
 	public JSONMapFilterListenerLogger(LogLevel logLevel, String logExpressionIncluded, String logExpressionExcluded) {
 		this(logLevel, 
-				DefaultExpressionHelperProvider.get().parseTemplateExpression(logExpressionIncluded), 
-				DefaultExpressionHelperProvider.get().parseTemplateExpression(logExpressionExcluded));
+				InternalExpressionHelper.get().parseTemplateExpression(logExpressionIncluded), 
+				InternalExpressionHelper.get().parseTemplateExpression(logExpressionExcluded));
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class JSONMapFilterListenerLogger implements IJSONMapFilterListener {
 	protected String getLogMessage(JSONMap json, boolean isIncluded, AbstractJSONMapFilter filter, TemplateExpression logExpression) {
 		return logExpression == null 
 				? null 
-				: DefaultExpressionHelperProvider.get().evaluateExpression(new LogExpressionInput(json, isIncluded, filter), logExpression, String.class);
+				: InternalExpressionHelper.get().evaluateExpression(new LogExpressionInput(json, isIncluded, filter), logExpression, String.class);
 	}
 
 	protected void log(String message) {

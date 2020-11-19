@@ -37,7 +37,7 @@ import com.fortify.client.ssc.api.query.builder.SSCCustomTagsQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
 /**
  * This class is used to access SSC custom tag related functionality.
@@ -187,8 +187,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		 */
 		public SSCApplicationVersionCustomTagUpdater forVulnerability(Object vulnerability) {
 			JSONMap issue = new JSONMap();
-			Long id = DefaultExpressionHelperProvider.get().evaluateSimpleExpression(vulnerability, "id", Long.class);
-			Long revision = DefaultExpressionHelperProvider.get().evaluateSimpleExpression(vulnerability, "revision", Long.class);
+			Long id = InternalExpressionHelper.get().evaluateSimpleExpression(vulnerability, "id", Long.class);
+			Long revision = InternalExpressionHelper.get().evaluateSimpleExpression(vulnerability, "revision", Long.class);
 			if ( revision == null ) { revision = 0L; }
 			issue.put("id", id);
 			issue.put("revision", revision);

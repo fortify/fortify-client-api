@@ -41,7 +41,7 @@ import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -188,7 +188,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * @return
 		 */
 		public SSCBulkEmbedder uriExpression(String pathExpression) {
-			return uriExpression(DefaultExpressionHelperProvider.get().parseTemplateExpression(pathExpression));
+			return uriExpression(InternalExpressionHelper.get().parseTemplateExpression(pathExpression));
 		}
 		
 		/**
@@ -256,7 +256,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * @param input
 		 */
 		private void addBulkRequest(SSCBulkRequestBuilder builder, JSONMap input) {
-			String uri = DefaultExpressionHelperProvider.get().evaluateExpression(input, uriExpression, String.class);
+			String uri = InternalExpressionHelper.get().evaluateExpression(input, uriExpression, String.class);
 			final WebTarget target = conn.getResource(uri);
 			builder.addBulkRequest(HttpMethod.GET, target);
 			uriToObjectMap.put(target.getUri().toString(), input);

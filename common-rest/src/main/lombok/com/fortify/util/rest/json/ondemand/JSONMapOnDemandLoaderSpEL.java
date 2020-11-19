@@ -25,12 +25,10 @@
 package com.fortify.util.rest.json.ondemand;
 
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
-import com.fortify.util.spring.expression.helper.IExpressionHelper;
+import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
 public class JSONMapOnDemandLoaderSpEL extends AbstractJSONMapOnDemandLoader {
 	private static final long serialVersionUID = 1L;
-	private final IExpressionHelper expressionHelper = DefaultExpressionHelperProvider.get();
 	private final String expression;
 	private final Class<?> returnType;
 
@@ -42,7 +40,7 @@ public class JSONMapOnDemandLoaderSpEL extends AbstractJSONMapOnDemandLoader {
 
 	@Override
 	public Object getOnDemand(String propertyName, JSONMap parent) {
-		return expressionHelper.evaluateSimpleExpression(parent, expression, returnType);
+		return InternalExpressionHelper.get().evaluateSimpleExpression(parent, expression, returnType);
 	}
 
 }

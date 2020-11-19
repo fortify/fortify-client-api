@@ -25,10 +25,9 @@
 package com.fortify.util.rest.json.preprocessor.filter;
 
 import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
 import lombok.Getter;
 
@@ -52,11 +51,11 @@ public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
 	}
 	
 	public JSONMapFilterSpEL(MatchMode matchMode, String expression) {
-		this(matchMode, new SpelExpressionParser().parseExpression(expression));
+		this(matchMode, InternalExpressionHelper.get().parseSimpleExpression(expression));
 	}
 
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		return DefaultExpressionHelperProvider.get().evaluateExpression(json, expression, Boolean.class);
+		return InternalExpressionHelper.get().evaluateExpression(json, expression, Boolean.class);
 	}
 }

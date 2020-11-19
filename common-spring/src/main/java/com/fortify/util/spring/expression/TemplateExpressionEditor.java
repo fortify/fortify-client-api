@@ -29,7 +29,7 @@ import java.beans.PropertyEditorSupport;
 
 import org.springframework.stereotype.Component;
 
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelper;
 
 /**
  * This {@link PropertyEditor} allows parsing String values into a 
@@ -38,7 +38,9 @@ import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider
 @Component
 public final class TemplateExpressionEditor extends PropertyEditorSupport {
 	public void setAsText(String text) {
-        TemplateExpression expression = DefaultExpressionHelperProvider.get().parseTemplateExpression(text);
+		// As these are usually application-specific expressions, we use DefaultExpressionHelper
+		// rather than InternalExpressionHelper
+        TemplateExpression expression = DefaultExpressionHelper.get().parseTemplateExpression(text);
         setValue(expression);
     }
     
