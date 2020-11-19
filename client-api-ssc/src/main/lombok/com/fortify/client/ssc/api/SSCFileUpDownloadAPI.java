@@ -52,7 +52,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.SpringExpressionUtil;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
 
 /**
  * This class is used to access SSC functionality related to up- and downloading files.
@@ -79,7 +79,7 @@ public class SSCFileUpDownloadAPI extends AbstractSSCAPI {
 		JSONMap data = conn().executeRequest(HttpMethod.POST, 
 				conn().getBaseResource().path("/api/v1/fileTokens"),
 				Entity.entity(entity, "application/json"), JSONMap.class);
-		return SpringExpressionUtil.evaluateExpression(data, "data.token", String.class);
+		return DefaultExpressionHelperProvider.get().evaluateSimpleExpression(data, "data.token", String.class);
 	}
 	
 	public final JSONMap uploadFile(WebTarget baseTarget, FileTokenType type, File file) {

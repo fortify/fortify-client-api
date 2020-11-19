@@ -40,7 +40,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
-import com.fortify.util.spring.SpringExpressionUtil;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.IExpressionHelper;
 
 /**
  * This class represents JSON objects as a standard Java
@@ -51,7 +52,9 @@ import com.fortify.util.spring.SpringExpressionUtil;
  */
 public class JSONMap extends LinkedHashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
+	private final IExpressionHelper expressionHelper = DefaultExpressionHelperProvider.get();
 	private final Pattern patternArraySegment = Pattern.compile("(?<name>.*)\\[(?<index>\\d*)\\]$");
+	
 
 	/**
 	 * @see LinkedHashMap#LinkedHashMap()
@@ -148,7 +151,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * path.
 	 */
 	public Object getPath(String path) {
-		return SpringExpressionUtil.evaluateExpression(this, path, Object.class);
+		return expressionHelper.evaluateSimpleExpression(this, path, Object.class);
 	}
 	
 	/**

@@ -40,12 +40,16 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import com.fortify.util.spring.expression.SimpleExpression;
 import com.fortify.util.spring.expression.TemplateExpression;
+import com.fortify.util.spring.expression.helper.StandardExpressionHelper;
 
 /**
  * This class provides several utility methods related to 
  * Spring Expression Language, for example for evaluating
  * (template) expressions on input objects.
+ * 
+ * This class has been replaced by {@link StandardExpressionHelper}.
  */
+@Deprecated
 public class SpringExpressionUtil {
 	private static final List<PropertyAccessor> PROPERTY_ACCESSORS = getPropertyAccessors();
 	private static final SpelExpressionParser SPEL_PARSER = new SpelExpressionParser();

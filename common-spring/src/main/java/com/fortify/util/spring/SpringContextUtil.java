@@ -53,9 +53,12 @@ import com.fortify.util.spring.expression.TemplateExpressionEditor;
  * like reading {@link ApplicationContext} data from XML configuration files and managing related
  * {@link PropertyEditor} instances.
  * 
+ * This class is deprecated; new integrations should use Spring Boot Yaml files for easier configuration.
+ * 
  * @author Ruud Senden
  *
  */
+@Deprecated
 public final class SpringContextUtil {
 	private static final Log LOG = LogFactory.getLog(SpringContextUtil.class);
 	private static final Map<Class<?>, Class<? extends PropertyEditor>> PROPERTY_EDITORS = getPropertyEditors();

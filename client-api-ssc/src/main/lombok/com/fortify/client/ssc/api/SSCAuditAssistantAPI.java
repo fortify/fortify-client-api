@@ -34,12 +34,12 @@ import org.apache.commons.collections.CollectionUtils;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterCompareDate;
-import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterRegEx;
 import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter.MatchMode;
+import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterCompareDate;
 import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterCompareDate.DateComparisonOperator;
+import com.fortify.util.rest.json.preprocessor.filter.JSONMapFilterRegEx;
 import com.fortify.util.rest.query.IRestConnectionQuery;
-import com.fortify.util.spring.SpringExpressionUtil;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
 
 /**
  * This class is used to access SSC Audit Assistant related functionality.
@@ -66,7 +66,7 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 		JSONMap data = conn().executeRequest(HttpMethod.POST, 
 				conn().getBaseResource().path("/api/v1/projectVersions/").path(applicationVersionId).path("/action"),
 				Entity.entity(entity, "application/json"), JSONMap.class);
-		return SpringExpressionUtil.evaluateExpression(data, "data.status=='success'", Boolean.class);
+		return DefaultExpressionHelperProvider.get().evaluateSimpleExpression(data, "data.status=='success'", Boolean.class);
 	}
 	
 	/**

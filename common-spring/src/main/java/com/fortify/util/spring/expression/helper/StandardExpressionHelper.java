@@ -22,27 +22,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.json.ondemand;
+package com.fortify.util.spring.expression.helper;
 
-import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
-import com.fortify.util.spring.expression.helper.IExpressionHelper;
-
-public class JSONMapOnDemandLoaderSpEL extends AbstractJSONMapOnDemandLoader {
-	private static final long serialVersionUID = 1L;
-	private final IExpressionHelper expressionHelper = DefaultExpressionHelperProvider.get();
-	private final String expression;
-	private final Class<?> returnType;
-
-	public JSONMapOnDemandLoaderSpEL(String expression, Class<?> returnType, boolean storeValue) {
-		super(storeValue);
-		this.expression = expression;
-		this.returnType = returnType;
-	}
-
-	@Override
-	public Object getOnDemand(String propertyName, JSONMap parent) {
-		return expressionHelper.evaluateSimpleExpression(parent, expression, returnType);
-	}
-
+public class StandardExpressionHelper extends AbstractExpressionHelper {
+	public static final StandardExpressionHelper INSTANCE = new StandardExpressionHelper();
+	
+	private StandardExpressionHelper() {}
 }

@@ -25,8 +25,8 @@
 package com.fortify.util.rest.json.preprocessor.enrich;
 
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.SpringExpressionUtil;
 import com.fortify.util.spring.expression.TemplateExpression;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
 
 /**
  * This {@link AbstractJSONMapEnrich} implementation allows for enriching a
@@ -49,12 +49,12 @@ public class JSONMapEnrichWithDeepLink extends AbstractJSONMapEnrich {
 	}
 	
 	public JSONMapEnrichWithDeepLink(String deepLinkExpression, String... requiredProperties) {
-		this(SpringExpressionUtil.parseTemplateExpression(deepLinkExpression), requiredProperties);
+		this(DefaultExpressionHelperProvider.get().parseTemplateExpression(deepLinkExpression), requiredProperties);
 	}
 	@Override
 	protected final void enrich(JSONMap json) {
 		if ( json.containsAllKeys(requiredProperties) ) {
-			json.put(DEEPLINK_FIELD, SpringExpressionUtil.evaluateExpression(json, deepLinkExpression, String.class));
+			json.put(DEEPLINK_FIELD, DefaultExpressionHelperProvider.get().evaluateExpression(json, deepLinkExpression, String.class));
 		}
 	}
 }

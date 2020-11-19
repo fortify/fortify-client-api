@@ -29,17 +29,16 @@ import java.beans.PropertyEditorSupport;
 
 import org.springframework.stereotype.Component;
 
-import com.fortify.util.spring.SpringExpressionUtil;
-import com.fortify.util.spring.SpringContextUtil.PropertyEditorWithTargetClass;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
 
 /**
  * This {@link PropertyEditor} allows parsing String values into a 
  * TemplateExpression object.
  */
 @Component
-public final class TemplateExpressionEditor extends PropertyEditorSupport implements PropertyEditorWithTargetClass {
+public final class TemplateExpressionEditor extends PropertyEditorSupport {
 	public void setAsText(String text) {
-        TemplateExpression expression = SpringExpressionUtil.parseTemplateExpression(text);
+        TemplateExpression expression = DefaultExpressionHelperProvider.get().parseTemplateExpression(text);
         setValue(expression);
     }
     

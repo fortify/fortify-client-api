@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2020 Micro Focus or one of its affiliates, a Micro Focus company
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -22,41 +22,37 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.json.preprocessor.filter;
+package com.fortify.util.spring.expression.helper;
+
+import java.util.function.Function;
 
 import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 
-import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.SimpleExpression;
+import com.fortify.util.spring.expression.TemplateExpression;
 
-import lombok.Getter;
+public interface IExpressionHelper {
 
-/**
- * This {@link AbstractJSONMapFilter} implementation evaluates the
- * configured SpEL expression against a given {@link JSONMap} instance,
- * and either includes or excludes (based on the configured {@link MatchMode})
- * this {@link JSONMap} instance from further processing based on the
- * expression evaluation result.
- * 
- * @author Ruud Senden
- *
- */
-@Getter
-public class JSONMapFilterSpEL extends AbstractJSONMapFilter {
-	private final Expression expression;
-	
-	public JSONMapFilterSpEL(MatchMode matchMode, Expression expression) {
-		super(matchMode);
-		this.expression = expression;
-	}
-	
-	public JSONMapFilterSpEL(MatchMode matchMode, String expression) {
-		this(matchMode, new SpelExpressionParser().parseExpression(expression));
-	}
+	/**
+	 * Parse the given string as a SpEL expression.
+	 * @param exprStr
+	 * @return The SpEL {@link Expression} object for the given expression string, or null if input is null
+	 */
+	SimpleExpression parseSimpleExpression(String exprStr);
 
-	@Override
-	protected boolean isMatching(JSONMap json) {
-		return DefaultExpressionHelperProvider.get().evaluateExpression(json, expression, Boolean.class);
-	}
+	/**
+	 * Parse the given string as a SpEL template expression.
+	 * @param exprStr
+	 * @return The SpEL {@link Expression} object for the given expression string, or null if input is null 
+	 */
+	TemplateExpression parseTemplateExpression(String exprStr);
+
+	<T> T evaluateExpression(Object input, Expression expression, Class<T> returnType);
+
+	<T> T evaluateSimpleExpression(Object input, String expression, Class<T> returnType);
+
+	<T> T evaluateTemplateExpression(Object input, String expression, Class<T> returnType);
+
+	<I, O> Function<I, O> expressionAsFunction(Expression expr, Class<O> returnType);
+
 }

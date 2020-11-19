@@ -38,7 +38,8 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fortify.util.spring.SpringExpressionUtil;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.IExpressionHelper;
 
 /**
  * This class represents JSON arrays/lists as a standard Java
@@ -49,6 +50,7 @@ import com.fortify.util.spring.SpringExpressionUtil;
  */
 public class JSONList extends ArrayList<Object> {
 	private static final long serialVersionUID = 1L;
+	private final IExpressionHelper expressionHelper = DefaultExpressionHelperProvider.get();
 
 	/**
 	 * @see ArrayList#ArrayList()
@@ -96,7 +98,7 @@ public class JSONList extends ArrayList<Object> {
 	public final <R> List<R> getValues(String listValueExpression, Class<R> listValueType) {
 		List<R> result = new ArrayList<R>();
 		for( Object value : this ){
-			CollectionUtils.addIgnoreNull(result, SpringExpressionUtil.evaluateExpression(value, listValueExpression, listValueType) );
+			CollectionUtils.addIgnoreNull(result, expressionHelper.evaluateSimpleExpression(value, listValueExpression, listValueType) );
 		}
 		return result;
 	}
@@ -136,7 +138,7 @@ public class JSONList extends ArrayList<Object> {
 	 */
 	public final <M,R> R mapValue(String matchExpression, M matchValue, String returnExpression, Class<R> returnType) {
 		Object value = find(matchExpression, matchValue, Object.class);
-		return SpringExpressionUtil.evaluateExpression(value, returnExpression, returnType);
+		return expressionHelper.evaluateSimpleExpression(value, returnExpression, returnType);
 	}
 	
 	/**
@@ -168,8 +170,8 @@ public class JSONList extends ArrayList<Object> {
 	public final <K, V> LinkedHashMap<K, V> toMap(String keyExpression, Class<K> keyType, String valueExpression, Class<V> valueType) {
 		LinkedHashMap<K, V> result = new LinkedHashMap<K, V>();
 		for ( Object obj : this ) {
-			K key = SpringExpressionUtil.evaluateExpression(obj, keyExpression, keyType);
-			V value = SpringExpressionUtil.evaluateExpression(obj, valueExpression, valueType);
+			K key = expressionHelper.evaluateSimpleExpression(obj, keyExpression, keyType);
+			V value = expressionHelper.evaluateSimpleExpression(obj, valueExpression, valueType);
 			result.put(key, value);
 		}
 		return result;
@@ -210,9 +212,9 @@ public class JSONList extends ArrayList<Object> {
 	 * @return Boolean indicating whether the result of evaluating the given matchExpression
 	 * 		against the given {@link JSONObject} matches the given matchValue.
 	 */
-	private static boolean isMatching(Object obj, String matchExpression, Object matchValue) {
+	private boolean isMatching(Object obj, String matchExpression, Object matchValue) {
 		if ( matchValue == null ) { return false; }
-		Object expressionResult = SpringExpressionUtil.evaluateExpression(obj, matchExpression, matchValue.getClass());
+		Object expressionResult = expressionHelper.evaluateSimpleExpression(obj, matchExpression, matchValue.getClass());
 		return expressionResult==matchValue || (matchValue!=null && matchValue.equals(expressionResult));
 	}
 	

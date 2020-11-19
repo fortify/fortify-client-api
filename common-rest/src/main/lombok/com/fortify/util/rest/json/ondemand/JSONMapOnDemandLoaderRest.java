@@ -29,7 +29,8 @@ import javax.ws.rs.client.WebTarget;
 
 import com.fortify.util.rest.connection.IRestConnection;
 import com.fortify.util.rest.json.JSONMap;
-import com.fortify.util.spring.SpringExpressionUtil;
+import com.fortify.util.spring.expression.helper.DefaultExpressionHelperProvider;
+import com.fortify.util.spring.expression.helper.IExpressionHelper;
 
 /**
  * This {@link AbstractJSONMapOnDemandLoaderWithConnection} implementation allows for
@@ -41,6 +42,7 @@ import com.fortify.util.spring.SpringExpressionUtil;
  */
 public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWithIRestConnection {
 	private static final long serialVersionUID = 1L;
+	private final IExpressionHelper expressionHelper = DefaultExpressionHelperProvider.get();
 	private final String uriTemplateExpression;
 	private final String resultExpression;
 	
@@ -59,12 +61,12 @@ public class JSONMapOnDemandLoaderRest extends AbstractJSONMapOnDemandLoaderWith
 		if ( resultExpression == null ) {
 			return restResult;
 		} else {
-			return SpringExpressionUtil.evaluateExpression(restResult, resultExpression, Object.class);
+			return expressionHelper.evaluateSimpleExpression(restResult, resultExpression, Object.class);
 		}
 	}
 
 	protected WebTarget getWebTarget(IRestConnection conn, JSONMap parent) {
-		String uri = SpringExpressionUtil.evaluateTemplateExpression(parent, uriTemplateExpression, String.class);
+		String uri = expressionHelper.evaluateTemplateExpression(parent, uriTemplateExpression, String.class);
 		return conn.getResource(uri);
 	}
 
