@@ -95,14 +95,22 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 
 	/**
 	 * Create the {@link EvaluationContext} to be used for evaluating
-	 * expressions. This default implementation returns a {@link StandardEvaluationContext}
-	 * instance configured with the property accessors returned by the
-	 * {@link #createPropertyAccessors()} method. Subclasses can
-	 * override this method to provide a customized {@link EvaluationContext}
-	 * instance.
+	 * expressions. This default implementation simply calls 
+	 * {@link #createStandardEvaluationContext()} to create the {@link EvaluationContext}
+	 * instances. Subclasses can override this method to provide a customized 
+	 * {@link EvaluationContext} instance.
 	 * @return
 	 */
 	protected EvaluationContext createEvaluationContext() {
+		return createStandardEvaluationContext();
+	}
+
+	/**
+	 * Create a {@link StandardEvaluationContext} configured with the property
+	 * accessors returned by the {@link #createPropertyAccessors()} method.
+	 * @return
+	 */
+	protected final StandardEvaluationContext createStandardEvaluationContext() {
 		StandardEvaluationContext result = new StandardEvaluationContext();
 		result.setPropertyAccessors(createPropertyAccessors());
 		return result;
