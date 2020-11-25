@@ -45,7 +45,7 @@ public class JSONConversionServiceFactory {
 	}
 
 	private static final DateTimeFormatter getDefaultDateTimeFormatter() {
-		return DateTimeFormatter.ofPattern("yyyy-MM-dd[['T'][' ']HH:mm:ss[.SS[S]]][Z]");
+		return DateTimeFormatter.ofPattern("yyyy-MM-dd[['T'][' ']HH:mm:ss[.SSS][.SS]][Z]");
 	}
 
 	public static final ConversionService getDefaultConversionService() {
