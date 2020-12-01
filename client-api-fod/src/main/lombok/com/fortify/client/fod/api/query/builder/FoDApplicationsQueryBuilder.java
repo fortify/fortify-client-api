@@ -101,7 +101,7 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 	}
 	
 	public FoDApplicationsQueryBuilder onDemandBugTracker(String propertyName) {
-		return onDemand(propertyName, "/api/v3/applications/${applicationId}/bug-tracker");
+		return embedSubEntity(propertyName, "bug-tracker");
 	}
 	
 	public FoDApplicationsQueryBuilder onDemandReleases() {
@@ -109,7 +109,7 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 	}
 	
 	public FoDApplicationsQueryBuilder onDemandReleases(String propertyName) {
-		return onDemand(propertyName, "/api/v3/applications/${applicationId}/releases");
+		return embedSubEntity(propertyName, "releases");
 	}
 	
 	private static class FoDApplicationAttributesMapOnDemandLoader extends AbstractJSONMapOnDemandLoader {

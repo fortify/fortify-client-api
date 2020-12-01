@@ -29,7 +29,9 @@ import java.util.Arrays;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
+import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI.SSCAttributeDefinitionHelper;
+import com.fortify.client.ssc.api.query.builder.SSCEmbedDescriptor.EmbedType;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -42,19 +44,28 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		super(conn, true);
 	}
 	
-	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/\\s+" })
-	public T embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
-		return embed(propertyName, "/api/v1/projectVersions/${id}/"+entityName, embedType, fields);
+	@Override
+	public T embed(SSCEmbedDescriptor descriptor) {
+		if ( "attributeValuesByName".equals(descriptor.getSubEntity()) ) {
+			return embedAttributeValuesByName(descriptor.getPropertyName());
+		} else {
+			return super.embed(descriptor);
+		}
 	}
 	
-	public T embedSubEntity(String entityName, EmbedType embedType, String... fields) {
-		return embedSubEntity(entityName, entityName, embedType, fields);
+	@Override
+	protected String getSubEntityUri(String subEntity) {
+		return "/api/v1/projectVersions/${id}/"+subEntity;
 	}
 	
 	public T embedAttributeValuesByName(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
 		embedAttributes(EmbedType.PRELOAD, "id", "value", "values");
 		preProcessor(new JSONMapEnrichWithAttributeValuesByName("attributeValuesByName", attributeDefinitionHelper));
 		return _this();
+	}
+	
+	public T embedAttributeValuesByName(String propertyName) {
+		return embedAttributeValuesByName(propertyName, getConn().api(SSCAttributeDefinitionAPI.class).getAttributeDefinitionHelper());
 	}
 	
 	public T embedAttributeValuesByName(String propertyName, SSCAttributeDefinitionHelper attributeDefinitionHelper) {
@@ -69,9 +80,9 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	
 	@SSCRequiredActionsPermitted({ "GET=/api/v\\d+/projectVersions/\\d+/attributes" })
 	public T embedAttributes(String propertyName, EmbedType embedType, String... fields) {
-		return embedSubEntity(propertyName, "attributes", embedType);
+		return embedSubEntity(propertyName, "attributes", embedType, fields);
 	}
-	
+
 	public T embedAuditAssistantTrainingStatus(EmbedType embedType, String... fields) {
 		return embedAuditAssistantTrainingStatus("auditAssistantTrainingStatus", embedType, fields);
 	}

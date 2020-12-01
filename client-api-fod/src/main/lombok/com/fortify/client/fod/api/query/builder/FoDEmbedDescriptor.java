@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2020 Micro Focus or one of its affiliates, a Micro Focus company
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -24,28 +24,15 @@
  ******************************************************************************/
 package com.fortify.client.fod.api.query.builder;
 
-import com.fortify.client.fod.api.query.FoDEntityQuery;
-import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.rest.query.EmbedDescriptor;
 
-/**
- * This abstract base class is used to build {@link FoDEntityQuery} instances
- * for querying FoD release child entities.
- *  
- * @author Ruud Senden
- *
- * @param <T> Concrete builder type
- */
-public abstract class AbstractFoDReleaseChildEntityQueryBuilder<T extends AbstractFoDReleaseChildEntityQueryBuilder<T>> extends AbstractFoDEntityQueryBuilder<T> {
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-	protected AbstractFoDReleaseChildEntityQueryBuilder(FoDAuthenticatingRestConnection conn, String releaseId, boolean pagingSupported) 
-	{
-		super(conn, pagingSupported);
-		appendPath("/api/v3/releases");
-		appendPath(releaseId);
-	}
-	
-	@Override
-	protected String getSubEntityUri(String subEntity) {
-		return "/api/v3/releases/${releaseId}/"+subEntity;
-	}
+@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
+@SuperBuilder // @AllArgsConstructor(access=AccessLevel.PACKAGE) // Needs to be enabled if we ever add any properties
+public class FoDEmbedDescriptor extends EmbedDescriptor {
+	public FoDEmbedDescriptor() {}
 }

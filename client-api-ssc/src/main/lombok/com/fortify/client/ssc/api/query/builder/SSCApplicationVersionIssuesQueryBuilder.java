@@ -31,6 +31,7 @@ import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
+import com.fortify.client.ssc.api.query.builder.SSCEmbedDescriptor.EmbedType;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.query.IRestConnectionQuery;
@@ -125,11 +126,12 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return embedSubEntity(entityName, entityName, embedType, fields);
 	}
 	
-	public SSCApplicationVersionIssuesQueryBuilder embedSubEntity(String propertyName, String entityName, EmbedType embedType, String... fields) {
-		switch (entityName.toLowerCase()) {
-			case "details": return embed(propertyName, "/api/v1/issueDetails/${id}", embedType);
-			case "comments": return embed(propertyName, "/api/v1/issues/${id}/"+entityName+"?limit=-1", embedType, fields);
-			default: return embed(propertyName, "/api/v1/issues/${id}/"+entityName, embedType, fields);
+	@Override
+	protected String getSubEntityUri(String subEntity) {
+		switch (subEntity.toLowerCase()) {
+		case "details": return "/api/v1/issueDetails/${id}";
+		case "comments": return "/api/v1/issues/${id}/comments?limit=-1";
+		default: return "/api/v1/issues/${id}/"+subEntity;
 		}
 	}
 	

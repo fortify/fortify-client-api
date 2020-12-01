@@ -159,6 +159,12 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 		return _this();
 	}
 	
+	protected T onDemand(EmbedDescriptor descriptor, Function<String, String> subEntityToUriExpression) {
+		String propertyName = descriptor.getPropertyName();
+		String uriExpression = descriptor.buildUriExpression(subEntityToUriExpression);
+		return onDemand(propertyName, uriExpression);
+	}
+	
 	public T onDemand(String propertyName, String uri) {
 		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
 			createOnDemandLoader(uri)));

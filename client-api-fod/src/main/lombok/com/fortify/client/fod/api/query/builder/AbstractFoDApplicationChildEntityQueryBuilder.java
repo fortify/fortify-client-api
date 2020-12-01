@@ -43,4 +43,9 @@ public abstract class AbstractFoDApplicationChildEntityQueryBuilder<T extends Ab
 		appendPath("/api/v3/applications");
 		appendPath(applicationId);
 	}
+	
+	@Override
+	protected String getSubEntityUri(String subEntity) {
+		return "/api/v3/applications/${applicationId}/"+subEntity;
+	}
 }

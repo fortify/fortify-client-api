@@ -196,6 +196,29 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 		public T paramFilterAnd(boolean ignoreIfBlank, String filter);
 	}
 	
+	/**
+	 * Allows for embedding additional FoD entities into the resulting JSON objects.
+	 * 
+	 * @param descriptor
+	 * @return
+	 */
+	public T embed(FoDEmbedDescriptor descriptor) {
+		return onDemand(descriptor, this::getSubEntityUri);
+	}
+	
+	public T embedSubEntity(String propertyName, String subEntity, String... fields) {
+		return embed(FoDEmbedDescriptor.builder()
+				.propertyName(propertyName)
+				.subEntity(subEntity)
+				.param("fields", fields==null?null : String.join(",", fields))
+				.build());
+	}
+	
+	protected String getSubEntityUri(String subEntity) {
+		throw new RuntimeException("Embedding sub-entities is not supported by this entity query builder");
+	}
+
+	
 	@Override
 	protected IJSONMapOnDemandLoader createOnDemandLoader(String uri) {
 		return new FoDJSONMapOnDemandLoaderRest(getConn(), uri);

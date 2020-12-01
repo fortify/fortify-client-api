@@ -136,54 +136,51 @@ public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChi
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandAllData(String propertyName) {
-		return onDemandSubEntity(propertyName, "all-data");
+		return embedSubEntity(propertyName, "all-data");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandSummary(String propertyName) {
-		return onDemandSubEntity(propertyName, "summary");
+		return embedSubEntity(propertyName, "summary");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandDetails(String propertyName) {
-		return onDemandSubEntity(propertyName, "details");
+		return embedSubEntity(propertyName, "details");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandRecommendations(String propertyName) {
-		return onDemandSubEntity(propertyName, "recommendations");
+		return embedSubEntity(propertyName, "recommendations");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandHistory(String propertyName) {
-		return onDemandSubEntity(propertyName, "history");
+		return embedSubEntity(propertyName, "history");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandScreenshots(String propertyName) {
-		return onDemandSubEntity(propertyName, "screenshots");
+		return embedSubEntity(propertyName, "screenshots");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandRequestResponse(String propertyName) {
-		return onDemandSubEntity(propertyName, "response");
+		return embedSubEntity(propertyName, "response");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandHeaders(String propertyName) {
-		return onDemandSubEntity(propertyName, "headers");
+		return embedSubEntity(propertyName, "headers");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandParameters(String propertyName) {
-		return onDemandSubEntity(propertyName, "parameters");
+		return embedSubEntity(propertyName, "parameters");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandTraces(String propertyName) {
-		return onDemandSubEntity(propertyName, "traces");
+		return embedSubEntity(propertyName, "traces");
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandAuditOptions(String propertyName) {
-		return onDemandSubEntity(propertyName, "auditOptions");
+		return embedSubEntity(propertyName, "auditOptions");
 	}
 	
-	public FoDReleaseVulnerabilitiesQueryBuilder onDemandSubEntity(String propertyName, String entityName) {
-		return onDemand(propertyName, "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/"+entityName);
-	}
-	
-	public FoDReleaseVulnerabilitiesQueryBuilder onDemandSubEntity(String entityName) {
-		return onDemandSubEntity(entityName, entityName);
+	@Override
+	protected String getSubEntityUri(String subEntity) {
+		return "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/"+subEntity;
 	}
 }

@@ -145,6 +145,15 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		return super.paramFilterAnd(ignoreIfBlank, "isPassed", Boolean.toString(isPassed));
 	}
 	
+	@Override
+	public FoDReleasesQueryBuilder embed(FoDEmbedDescriptor descriptor) {
+		if ( "application".equals(descriptor.getSubEntity()) ) {
+			return onDemandApplication(descriptor.getPropertyName());
+		} else {
+			return super.embed(descriptor);
+		}
+	}
+	
 	public FoDReleasesQueryBuilder onDemandAll() {
 		return onDemandApplication();
 	}
@@ -162,10 +171,10 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		return onDemandSubEntity(entityName, entityName);
 	}
 	
-	public FoDReleasesQueryBuilder onDemandSubEntity(String propertyName, String entityName) {
-		switch (entityName) {
+	public FoDReleasesQueryBuilder onDemandSubEntity(String propertyName, String subEntity) {
+		switch (subEntity) {
 		case "application": return onDemandApplication();
-		default: return onDemand(propertyName, "/api/v3/releases/${releaseId}/"+entityName); 
+		default: return embedSubEntity(propertyName, subEntity); 
 		}
 	}
 	

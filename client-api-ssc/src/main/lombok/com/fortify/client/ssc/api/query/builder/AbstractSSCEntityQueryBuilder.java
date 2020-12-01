@@ -27,13 +27,12 @@ package com.fortify.client.ssc.api.query.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.core.UriBuilder;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.ssc.api.SSCBulkAPI;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
+import com.fortify.client.ssc.api.query.builder.SSCEmbedDescriptor.EmbedType;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
 import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
@@ -219,82 +218,51 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 		public T paramQAnd(boolean ignoreIfBlank, String field, Object value);
 	}
 	
+	
 	/**
-	 * Allows for embedding additional SSC entities into the
-	 * resulting JSON objects. Depending on the given embedType,
-	 * the additional entities are either loaded on demand
-	 * whenever they are accessed, or pre-loaded using SSC bulk 
-	 * requests.
-	 *
-	 * @param propertyName
-	 * @param uriExpression
-	 * @param embedType
-	 * @param fields
+	 * Allows for embedding additional SSC entities into the resulting JSON objects. 
+	 * Depending on the embedType in given {@link SSCEmbedDescriptor}, the additional 
+	 * entities are either loaded on demand whenever they are accessed, or pre-loaded 
+	 * using SSC bulk requests.
+	 * 
+	 * @param descriptor
 	 * @return
 	 */
-	public T embed(boolean ignoreIfBlank, String propertyName, String uriExpression, EmbedType embedType, String... fields) {
-		if ( isNull(!ignoreIfBlank, "embedType", embedType) ) {
-			return _this();
-		} else {
-			switch (embedType) {
-			case ONDEMAND: return embedOnDemand(ignoreIfBlank, propertyName, uriExpression, fields);
-			case PRELOAD: return embedPreload(ignoreIfBlank, propertyName, uriExpression, fields);
-			default: throw new RuntimeException("Unknown embed type: "+embedType.name());
-			}
+	public T embed(SSCEmbedDescriptor descriptor) {
+		String propertyName = descriptor.getPropertyName();
+		String uriExpression = descriptor.buildUriExpression(this::getSubEntityUri);
+		EmbedType embedType = descriptor.getEmbedType();
+		switch (embedType) {
+		case ONDEMAND: return onDemand(propertyName, uriExpression);
+		case PRELOAD: return embedPreload(propertyName, uriExpression);
+		default: throw new RuntimeException("Unknown embed type: "+embedType.name());
 		}
 	}
 	
-	public T embed(String propertyName, String uriExpression, EmbedType embedType, String... fields) {
-		return embed(false, propertyName, uriExpression, embedType, fields);
+	public T embedSubEntity(String propertyName, String subEntity, EmbedType embedType, String... fields) {
+		return embed(SSCEmbedDescriptor.builder()
+				.propertyName(propertyName)
+				.subEntity(subEntity)
+				.embedType(embedType)
+				.param("fields", fields==null?null : String.join(",", fields))
+				.build());
+	}
+	
+	protected String getSubEntityUri(String subEntity) {
+		throw new RuntimeException("Embedding sub-entities is not supported by this entity query builder");
 	}
 
-	/**
-	 * Allows for embedding additional SSC entities into the resulting
-	 * JSON objects;  
-	 * @param propertyName
-	 * @param uriExpression
-	 * @param fields
-	 * @return
-	 */
-	protected T embedOnDemand(boolean ignoreIfBlank, String propertyName, String uriExpression, String... fields) {
-		if ( isNull(!ignoreIfBlank, "propertyName", propertyName) || isNull(!ignoreIfBlank, "uriExpression", uriExpression) ) {
-			return _this();
-		} else {
-			return onDemand(propertyName, appendOnDemandFields(uriExpression, fields));
-		}
-	}
-	
-	protected T embedOnDemand(String propertyName, String uriExpression, String... fields) {
-		return embedOnDemand(false, propertyName, uriExpression, fields);
-	}
-
-	protected T embedPreload(boolean ignoreIfBlank, String propertyName, String uriExpression, String... fields) {
-		if ( isNull(!ignoreIfBlank, "propertyName", propertyName) || isNull(!ignoreIfBlank, "uriExpression", uriExpression) ) {
-			return _this();
-		} else {
-			return pagePreProcessor(
-					getConn().api(SSCBulkAPI.class).bulkEmbedder()
-						.targetProperty(propertyName)
-						.uriExpression(appendOnDemandFields(uriExpression, fields))
-						.asPagePreProcessor());
-		}
-	}
-	
-	protected T embedPreload(String propertyName, String uriExpression, String... fields) {
-		return embedPreload(false, propertyName, uriExpression, fields);
+	protected T embedPreload(String propertyName, String uriExpression) {
+		return pagePreProcessor(
+				getConn().api(SSCBulkAPI.class).bulkEmbedder()
+					.targetProperty(propertyName)
+					.uriExpression(uriExpression)
+					.asPagePreProcessor());
 	}
 	
 	@Override
 	protected IJSONMapOnDemandLoader createOnDemandLoader(String uriString) {
 		return new SSCJSONMapOnDemandLoaderRest(getConn(), uriString);
-	}
-	
-	protected String appendOnDemandFields(String uriString, String... fields) {
-		String result = uriString;
-		if ( fields!=null && fields.length > 0 ) {
-			result = UriBuilder.fromUri(uriString).queryParam("fields", String.join(",", fields)).toTemplate();
-		}
-		return result;
 	}
 	
 	/**

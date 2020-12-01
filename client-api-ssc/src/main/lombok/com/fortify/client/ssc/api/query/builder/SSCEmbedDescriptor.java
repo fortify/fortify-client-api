@@ -24,6 +24,27 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
-public enum EmbedType {
-	ONDEMAND, PRELOAD
+import com.fortify.util.rest.query.EmbedDescriptor;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
+@SuperBuilder @AllArgsConstructor(access=AccessLevel.PACKAGE) 
+public class SSCEmbedDescriptor extends EmbedDescriptor {
+	private EmbedType embedType;
+	
+	public SSCEmbedDescriptor() {}
+	
+	public EmbedType getEmbedType() {
+		return embedType!=null ? embedType : EmbedType.PRELOAD;
+	}
+	
+	public static enum EmbedType {
+		ONDEMAND, PRELOAD
+	}
 }
