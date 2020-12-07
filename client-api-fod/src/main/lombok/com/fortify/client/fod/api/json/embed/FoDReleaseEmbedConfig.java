@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2020 Micro Focus or one of its affiliates, a Micro Focus company
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -22,24 +22,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.client.ssc.json.ondemand;
+package com.fortify.client.fod.api.json.embed;
 
-import com.fortify.util.rest.connection.IRestConnection;
-import com.fortify.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
-
-/**
- * This {@link JSONMapOnDemandLoaderRest} implementation allows for loading
- * on-demand data from SSC. Instances of this class can be configured with
- * a path template expression indicating the SSC REST endpoint to load the
- * data from.
- * 
- * @author Ruud Senden
- *
- */
-public class SSCJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
+public class FoDReleaseEmbedConfig extends FoDEmbedConfig {
 	private static final long serialVersionUID = 1L;
 
-	public SSCJSONMapOnDemandLoaderRest(IRestConnection conn, String uriTemplateExpression) {
-		super(conn, true, uriTemplateExpression, "data");
+	@Override
+	protected String getSubEntityUri(String subEntity) {
+		return "/api/v3/releases/${releaseId}/"+subEntity;
 	}
 }

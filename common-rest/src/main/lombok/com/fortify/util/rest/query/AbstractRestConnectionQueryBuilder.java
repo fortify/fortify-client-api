@@ -37,9 +37,10 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.util.rest.connection.IRestConnection;
 import com.fortify.util.rest.json.JSONList;
-import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
+import com.fortify.util.rest.json.embed.StandardEmbedConfig;
+import com.fortify.util.rest.json.embed.StandardEmbedDefinition;
 import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
-import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandProperty;
+import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithOnDemandRestData;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
 import com.fortify.util.rest.webtarget.IWebTargetUpdaterBuilder;
 import com.fortify.util.rest.webtarget.WebTargetPathUpdaterBuilder;
@@ -159,18 +160,9 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 		return _this();
 	}
 	
-	protected T onDemand(EmbedDescriptor descriptor, Function<String, String> subEntityToUriExpression) {
-		String propertyName = descriptor.getPropertyName();
-		String uriExpression = descriptor.buildUriExpression(subEntityToUriExpression);
-		return onDemand(propertyName, uriExpression);
+	public <C extends StandardEmbedConfig> T embed(C embedConfig) {
+		return preProcessor(new JSONMapEnrichWithOnDemandRestData(getConn(), new StandardEmbedDefinition(embedConfig)));
 	}
-	
-	public T onDemand(String propertyName, String uri) {
-		return preProcessor(new JSONMapEnrichWithOnDemandProperty(propertyName, 
-			createOnDemandLoader(uri)));
-	}
-	
-	protected abstract IJSONMapOnDemandLoader createOnDemandLoader(String uri);
 	
 	protected <B extends IWebTargetUpdaterBuilder> B add(B builder) {
 		webTargetUpdaterBuilders.add(builder);

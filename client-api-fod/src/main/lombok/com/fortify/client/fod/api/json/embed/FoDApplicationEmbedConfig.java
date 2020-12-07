@@ -22,29 +22,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.client.ssc.api.query.builder;
+package com.fortify.client.fod.api.json.embed;
 
-import com.fortify.util.rest.query.EmbedDescriptor;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
-
-@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
-@SuperBuilder @AllArgsConstructor(access=AccessLevel.PACKAGE) 
-public class SSCEmbedDescriptor extends EmbedDescriptor {
-	private EmbedType embedType;
+public class FoDApplicationEmbedConfig extends FoDEmbedConfig {
+	private static final long serialVersionUID = 1L;
 	
-	public SSCEmbedDescriptor() {}
-	
-	public EmbedType getEmbedType() {
-		return embedType!=null ? embedType : EmbedType.PRELOAD;
-	}
-	
-	public static enum EmbedType {
-		ONDEMAND, PRELOAD
+	@Override
+	protected String getSubEntityUri(String subEntity) {
+		return "/api/v3/applications/${applicationId}/"+subEntity;
 	}
 }

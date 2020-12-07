@@ -31,7 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI.SSCAttributeDefinitionHelper;
-import com.fortify.client.ssc.api.query.builder.SSCEmbedDescriptor.EmbedType;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.EmbedType;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -45,17 +46,12 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 	
 	@Override
-	public T embed(SSCEmbedDescriptor descriptor) {
-		if ( "attributeValuesByName".equals(descriptor.getSubEntity()) ) {
-			return embedAttributeValuesByName(descriptor.getPropertyName());
+	public T embed(SSCEmbedConfig embedConfig) {
+		if ( "attributeValuesByName".equals(embedConfig.getSubEntity()) ) {
+			return embedAttributeValuesByName(embedConfig.getPropertyName());
 		} else {
-			return super.embed(descriptor);
+			return super.embed(embedConfig);
 		}
-	}
-	
-	@Override
-	protected String getSubEntityUri(String subEntity) {
-		return "/api/v1/projectVersions/${id}/"+subEntity;
 	}
 	
 	public T embedAttributeValuesByName(SSCAttributeDefinitionHelper attributeDefinitionHelper) {

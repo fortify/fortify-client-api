@@ -31,11 +31,10 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.ssc.api.SSCBulkAPI;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.EmbedType;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
-import com.fortify.client.ssc.api.query.builder.SSCEmbedDescriptor.EmbedType;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
-import com.fortify.client.ssc.json.ondemand.SSCJSONMapOnDemandLoaderRest;
-import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
@@ -221,48 +220,36 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	
 	/**
 	 * Allows for embedding additional SSC entities into the resulting JSON objects. 
-	 * Depending on the embedType in given {@link SSCEmbedDescriptor}, the additional 
+	 * Depending on the embedType in given {@link SSCEmbedConfig}, the additional 
 	 * entities are either loaded on demand whenever they are accessed, or pre-loaded 
 	 * using SSC bulk requests.
 	 * 
 	 * @param descriptor
 	 * @return
 	 */
-	public T embed(SSCEmbedDescriptor descriptor) {
-		String propertyName = descriptor.getPropertyName();
-		String uriExpression = descriptor.buildUriExpression(this::getSubEntityUri);
-		EmbedType embedType = descriptor.getEmbedType();
+	public T embed(SSCEmbedConfig embedConfig) {
+		EmbedType embedType = embedConfig.getEmbedType();
 		switch (embedType) {
-		case ONDEMAND: return onDemand(propertyName, uriExpression);
-		case PRELOAD: return embedPreload(propertyName, uriExpression);
+		case ONDEMAND: return super.embed(embedConfig);
+		case PRELOAD: return embedPreload(embedConfig);
 		default: throw new RuntimeException("Unknown embed type: "+embedType.name());
 		}
 	}
 	
 	public T embedSubEntity(String propertyName, String subEntity, EmbedType embedType, String... fields) {
-		return embed(SSCEmbedDescriptor.builder()
+		return embed(SSCEmbedConfig.builder()
 				.propertyName(propertyName)
 				.subEntity(subEntity)
 				.embedType(embedType)
 				.param("fields", fields==null?null : String.join(",", fields))
 				.build());
 	}
-	
-	protected String getSubEntityUri(String subEntity) {
-		throw new RuntimeException("Embedding sub-entities is not supported by this entity query builder");
-	}
 
-	protected T embedPreload(String propertyName, String uriExpression) {
+	protected T embedPreload(SSCEmbedConfig embedConfig) {
 		return pagePreProcessor(
 				getConn().api(SSCBulkAPI.class).bulkEmbedder()
-					.targetProperty(propertyName)
-					.uriExpression(uriExpression)
+					.embedConfig(embedConfig)
 					.asPagePreProcessor());
-	}
-	
-	@Override
-	protected IJSONMapOnDemandLoader createOnDemandLoader(String uriString) {
-		return new SSCJSONMapOnDemandLoaderRest(getConn(), uriString);
 	}
 	
 	/**

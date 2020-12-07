@@ -27,11 +27,11 @@ package com.fortify.client.ssc.api.query.builder;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.EmbedType;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
-import com.fortify.client.ssc.api.query.builder.SSCEmbedDescriptor.EmbedType;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.query.IRestConnectionQuery;
@@ -124,15 +124,6 @@ public class SSCApplicationVersionIssuesQueryBuilder
 	
 	public SSCApplicationVersionIssuesQueryBuilder embedSubEntity(String entityName, EmbedType embedType, String... fields) {
 		return embedSubEntity(entityName, entityName, embedType, fields);
-	}
-	
-	@Override
-	protected String getSubEntityUri(String subEntity) {
-		switch (subEntity.toLowerCase()) {
-		case "details": return "/api/v1/issueDetails/${id}";
-		case "comments": return "/api/v1/issues/${id}/comments?limit=-1";
-		default: return "/api/v1/issues/${id}/"+subEntity;
-		}
 	}
 	
 	public SSCApplicationVersionIssuesQueryBuilder embedAuditHistory(EmbedType embedType, String... fields) {

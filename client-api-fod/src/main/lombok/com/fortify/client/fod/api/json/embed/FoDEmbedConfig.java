@@ -22,47 +22,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.util.rest.query;
+package com.fortify.client.fod.api.json.embed;
 
-import java.util.Map;
-import java.util.function.Function;
+import com.fortify.util.rest.json.embed.StandardEmbedConfig;
 
-import javax.ws.rs.core.UriBuilder;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Singular;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-/**
- * Data class for describing sub-entities and/or arbitrary URI's
- * to be embedded into REST query results. 
- * 
- * @author Ruud Senden
- *
- */
-@Data @SuperBuilder @AllArgsConstructor(access=AccessLevel.PACKAGE)
-public class EmbedDescriptor {
-	private String propertyName; 
-	private String subEntity;
-	private String uri;
-	@Singular private Map<String, Object> params;
+@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
+@SuperBuilder // @AllArgsConstructor(access=AccessLevel.PROTECTED) // To be enabled if we add any instance fields
+public class FoDEmbedConfig extends StandardEmbedConfig {
+	private static final long serialVersionUID = 1L;
+
+	public FoDEmbedConfig() {}
 	
-	public EmbedDescriptor() {}
-	
-	public String getPropertyName() {
-		return propertyName!=null ? propertyName : subEntity; 
-	}
-	
-	public String buildUriExpression(Function<String, String> subEntityToUriExpression) {
-		String uriExpression = getUri()!=null ? getUri() : subEntityToUriExpression.apply(getSubEntity());
-		Map<String, Object> params = getParams();
-		if ( params!=null && !params.isEmpty() ) {
-			UriBuilder uriBuilder = UriBuilder.fromUri(uriExpression);
-			params.entrySet().stream().filter(e->e.getValue()!=null).forEach(e->uriBuilder.queryParam(e.getKey(), e.getValue()));
-			uriExpression = uriBuilder.toTemplate();
-		}
-		return uriExpression;
+	@Override
+	protected String getDefaultResultExpression() {
+		return "containsKey('items')?items:#root";
 	}
 }

@@ -27,19 +27,23 @@ package com.fortify.client.ssc.api;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.expression.Expression;
 
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
+import com.fortify.util.rest.json.embed.StandardEmbedDefinition;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
@@ -146,7 +150,8 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 	@Setter @Accessors(fluent=true)
 	public static final class SSCBulkEmbedder {
 		private String targetProperty;
-		private Expression uriExpression;
+		private Function<JSONMap, String> uriFunction;
+		private Function<JSONMap, Boolean> enabledFunction;
 		private Map<String,JSONMap> uriToObjectMap = new HashMap<>();
 		private final SSCAuthenticatingRestConnection conn;
 		
@@ -168,6 +173,24 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 			return jsonList->addBulkData(jsonList);
 		}
 		
+		public SSCBulkEmbedder uriFunction(Function<JSONMap, String> uriFunction) {
+			this.uriFunction = uriFunction;
+			return this;
+		}
+		
+		public SSCBulkEmbedder embedConfig(SSCEmbedConfig embedConfig) {
+			StandardEmbedDefinition def = new StandardEmbedDefinition(embedConfig);
+			this.targetProperty(def.getPropertyName());
+			this.uriFunction(def::buildUri);
+			this.enabledFunction(def::isEnabled);
+			return this;
+		}
+		
+		private SSCBulkEmbedder enabledFunction(Function<JSONMap, Boolean> enabledFunction) {
+			this.enabledFunction = enabledFunction;
+			return this;
+		}
+
 		/**
 		 * Configure the URI {@link Expression} used to generate URI's
 		 * from {@link JSONMap} input objects.
@@ -176,8 +199,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * @return
 		 */
 		public SSCBulkEmbedder uriExpression(Expression pathExpression) {
-			this.uriExpression = pathExpression;
-			return this;
+			return uriFunction(InternalExpressionHelper.get().expressionAsFunction(pathExpression, String.class));
 		}
 		
 		/**
@@ -256,10 +278,14 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * @param input
 		 */
 		private void addBulkRequest(SSCBulkRequestBuilder builder, JSONMap input) {
-			String uri = InternalExpressionHelper.get().evaluateExpression(input, uriExpression, String.class);
-			final WebTarget target = conn.getResource(uri);
-			builder.addBulkRequest(HttpMethod.GET, target);
-			uriToObjectMap.put(target.getUri().toString(), input);
+			if ( enabledFunction.apply(input) ) {
+				String uri = uriFunction.apply(input);
+				if ( StringUtils.isNotBlank(uri) ) {
+					final WebTarget target = conn.getResource(uri);
+					builder.addBulkRequest(HttpMethod.GET, target);
+					uriToObjectMap.put(target.getUri().toString(), input);
+				}
+			}
 		}
 	}
 }

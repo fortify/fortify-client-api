@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2020 Micro Focus or one of its affiliates, a Micro Focus company
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -22,25 +22,36 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.client.fod.api.query.builder;
+package com.fortify.client.ssc.api.json.embed;
 
-import com.fortify.client.fod.api.query.FoDEntityQuery;
-import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.rest.json.embed.StandardEmbedConfig;
 
-/**
- * This abstract base class is used to build {@link FoDEntityQuery} instances
- * for querying FoD application child entities.
- *  
- * @author Ruud Senden
- *
- * @param <T> Concrete builder type
- */
-public abstract class AbstractFoDApplicationChildEntityQueryBuilder<T extends AbstractFoDApplicationChildEntityQueryBuilder<T>> extends AbstractFoDEntityQueryBuilder<T> {
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-	protected AbstractFoDApplicationChildEntityQueryBuilder(FoDAuthenticatingRestConnection conn, String applicationId, boolean pagingSupported) 
-	{
-		super(conn, pagingSupported);
-		appendPath("/api/v3/applications");
-		appendPath(applicationId);
+@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
+@SuperBuilder @AllArgsConstructor(access=AccessLevel.PROTECTED)
+public class SSCEmbedConfig extends StandardEmbedConfig {
+	private static final long serialVersionUID = 1L;
+	private EmbedType embedType;
+	
+	public SSCEmbedConfig() {}
+	
+	@Override
+	protected String getDefaultResultExpression() {
+		return "data";
+	}
+	
+	
+	public EmbedType getEmbedType() {
+		return embedType!=null ? embedType : EmbedType.PRELOAD;
+	}
+	
+	public static enum EmbedType {
+		ONDEMAND, PRELOAD
 	}
 }

@@ -24,8 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.ssc.json.preprocessor.filter;
 
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.EmbedType;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
-import com.fortify.client.ssc.api.query.builder.SSCEmbedDescriptor.EmbedType;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter;
 import com.fortify.util.rest.query.IRestConnectionQueryConfigAware;

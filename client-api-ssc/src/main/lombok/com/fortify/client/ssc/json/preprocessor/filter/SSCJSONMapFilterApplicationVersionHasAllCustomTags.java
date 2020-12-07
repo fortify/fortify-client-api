@@ -28,8 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.EmbedType;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
-import com.fortify.client.ssc.api.query.builder.SSCEmbedDescriptor.EmbedType;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter;

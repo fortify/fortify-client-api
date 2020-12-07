@@ -43,9 +43,4 @@ public abstract class AbstractFoDReleaseChildEntityQueryBuilder<T extends Abstra
 		appendPath("/api/v3/releases");
 		appendPath(releaseId);
 	}
-	
-	@Override
-	protected String getSubEntityUri(String subEntity) {
-		return "/api/v3/releases/${releaseId}/"+subEntity;
-	}
 }

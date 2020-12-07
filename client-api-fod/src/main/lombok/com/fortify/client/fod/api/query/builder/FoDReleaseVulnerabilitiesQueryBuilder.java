@@ -178,9 +178,4 @@ public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChi
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandAuditOptions(String propertyName) {
 		return embedSubEntity(propertyName, "auditOptions");
 	}
-	
-	@Override
-	protected String getSubEntityUri(String subEntity) {
-		return "/api/v3/releases/${releaseId}/vulnerabilities/${vulnId}/"+subEntity;
-	}
 }

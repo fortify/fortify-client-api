@@ -27,6 +27,7 @@ package com.fortify.client.fod.api.query.builder;
 import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.fod.api.FoDApplicationAPI;
+import com.fortify.client.fod.api.json.embed.FoDEmbedConfig;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
@@ -145,12 +146,11 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		return super.paramFilterAnd(ignoreIfBlank, "isPassed", Boolean.toString(isPassed));
 	}
 	
-	@Override
-	public FoDReleasesQueryBuilder embed(FoDEmbedDescriptor descriptor) {
-		if ( "application".equals(descriptor.getSubEntity()) ) {
-			return onDemandApplication(descriptor.getPropertyName());
+	public FoDReleasesQueryBuilder embed(FoDEmbedConfig embedConfig) {
+		if ( "application".equals(embedConfig.getSubEntity()) ) {
+			return onDemandApplication(embedConfig.getPropertyName());
 		} else {
-			return super.embed(descriptor);
+			return super.embed(embedConfig);
 		}
 	}
 	

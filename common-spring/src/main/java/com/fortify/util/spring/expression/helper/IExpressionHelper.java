@@ -54,5 +54,9 @@ public interface IExpressionHelper {
 	<T> T evaluateTemplateExpression(Object input, String expression, Class<T> returnType);
 
 	<I, O> Function<I, O> expressionAsFunction(Expression expr, Class<O> returnType);
+	
+	<I, O> Function<I, O> simpleExpressionAsFunction(String simpleExpr, Class<O> returnType);
+	
+	<I, O> Function<I, O> templateExpressionAsFunction(String templateExpr, Class<O> returnType);
 
 }

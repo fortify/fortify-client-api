@@ -22,17 +22,53 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.client.fod.api.query.builder;
+package com.fortify.util.rest.json.embed;
 
-import com.fortify.util.rest.query.EmbedDescriptor;
+import java.io.Serializable;
+import java.util.Map;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Singular;
 import lombok.experimental.SuperBuilder;
 
-@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
-@SuperBuilder // @AllArgsConstructor(access=AccessLevel.PACKAGE) // Needs to be enabled if we ever add any properties
-public class FoDEmbedDescriptor extends EmbedDescriptor {
-	public FoDEmbedDescriptor() {}
+/**
+ * Data class for describing sub-entities and/or arbitrary URI's
+ * to be embedded into REST query results. 
+ * 
+ * @author Ruud Senden
+ *
+ */
+@Data @SuperBuilder @AllArgsConstructor(access=AccessLevel.PROTECTED)
+public abstract class StandardEmbedConfig implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private String propertyName;
+	private String subEntity;
+	private String uri;
+	private String resultExpression;
+	private String embedIf;
+	@Singular private Map<String, Object> params;
+	
+	public StandardEmbedConfig() {}
+	
+	public String getUri() {
+		return uri!=null ? uri : getSubEntityUri();
+	}
+	
+	protected String getSubEntityUri() {
+		return subEntity==null ? null : getSubEntityUri(subEntity);
+	}
+
+	public String getResultExpression() {
+		return resultExpression!=null ? resultExpression : getDefaultResultExpression();
+	}
+	
+	protected String getDefaultResultExpression() {
+		return null;
+	}
+	
+	protected String getSubEntityUri(String subEntity) {
+		throw new RuntimeException("Embedding sub-entities is not supported by this entity query builder");
+	}
 }

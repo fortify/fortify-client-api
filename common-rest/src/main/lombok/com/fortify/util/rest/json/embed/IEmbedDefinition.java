@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2020 Micro Focus or one of its affiliates, a Micro Focus company
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -22,24 +22,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.client.fod.json.ondemand;
+package com.fortify.util.rest.json.embed;
 
-import com.fortify.util.rest.connection.IRestConnection;
-import com.fortify.util.rest.json.ondemand.JSONMapOnDemandLoaderRest;
+import com.fortify.util.rest.json.JSONMap;
 
-/**
- * This {@link JSONMapOnDemandLoaderRest} implementation allows for loading
- * on-demand data from FoD. Instances of this class can be configured with
- * a path template expression indicating the FoD REST endpoint to load the
- * data from.
- * 
- * @author Ruud Senden
- *
- */
-public class FoDJSONMapOnDemandLoaderRest extends JSONMapOnDemandLoaderRest {
-	private static final long serialVersionUID = 1L;
-
-	public FoDJSONMapOnDemandLoaderRest(IRestConnection conn, String uriTemplateExpression) {
-		super(conn, true, uriTemplateExpression, "containsKey('items')?items:#root");
-	}
+public interface IEmbedDefinition {
+	public String getPropertyName();
+	public boolean isEnabled(JSONMap parent);
+	public String buildUri(JSONMap parent);
+	public Object getResult(JSONMap rawResult);
 }

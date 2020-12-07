@@ -170,4 +170,14 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	public final <I,O> Function<I,O> expressionAsFunction(Expression expr, Class<O> returnType) {
 		return input -> expr==null ? null : expr.getValue(evaluationContext, input, returnType);
 	}
+	
+	@Override
+	public final <I,O> Function<I,O> simpleExpressionAsFunction(String exprStr, Class<O> returnType) {
+		return expressionAsFunction(parseSimpleExpression(exprStr), returnType);
+	}
+	
+	@Override
+	public final <I,O> Function<I,O> templateExpressionAsFunction(String exprStr, Class<O> returnType) {
+		return expressionAsFunction(parseTemplateExpression(exprStr), returnType);
+	}
 }

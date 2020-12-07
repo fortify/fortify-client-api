@@ -35,10 +35,9 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 
+import com.fortify.client.fod.api.json.embed.FoDEmbedConfig;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.client.fod.json.ondemand.FoDJSONMapOnDemandLoaderRest;
-import com.fortify.util.rest.json.ondemand.IJSONMapOnDemandLoader;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
@@ -196,32 +195,12 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 		public T paramFilterAnd(boolean ignoreIfBlank, String filter);
 	}
 	
-	/**
-	 * Allows for embedding additional FoD entities into the resulting JSON objects.
-	 * 
-	 * @param descriptor
-	 * @return
-	 */
-	public T embed(FoDEmbedDescriptor descriptor) {
-		return onDemand(descriptor, this::getSubEntityUri);
-	}
-	
 	public T embedSubEntity(String propertyName, String subEntity, String... fields) {
-		return embed(FoDEmbedDescriptor.builder()
+		return embed(FoDEmbedConfig.builder()
 				.propertyName(propertyName)
 				.subEntity(subEntity)
 				.param("fields", fields==null?null : String.join(",", fields))
 				.build());
-	}
-	
-	protected String getSubEntityUri(String subEntity) {
-		throw new RuntimeException("Embedding sub-entities is not supported by this entity query builder");
-	}
-
-	
-	@Override
-	protected IJSONMapOnDemandLoader createOnDemandLoader(String uri) {
-		return new FoDJSONMapOnDemandLoaderRest(getConn(), uri);
 	}
 	
 	/**
