@@ -52,6 +52,14 @@ public abstract class StandardEmbedConfig implements Serializable {
 	
 	public StandardEmbedConfig() {}
 	
+	public String getPropertyName() {
+		return propertyName!=null ? propertyName : getPropertyNameFromSubEntity();
+	}
+	
+	protected String getPropertyNameFromSubEntity() {
+		return subEntity==null ? null : subEntity.replaceAll("-", "_").replaceAll("\\W", "");
+	}
+
 	public String getUri() {
 		return uri!=null ? uri : getSubEntityUri();
 	}
@@ -69,6 +77,6 @@ public abstract class StandardEmbedConfig implements Serializable {
 	}
 	
 	protected String getSubEntityUri(String subEntity) {
-		throw new RuntimeException("Embedding sub-entities is not supported by this entity query builder");
+		throw new RuntimeException("Embedding sub-entities is not supported by this embed configuration class");
 	}
 }
