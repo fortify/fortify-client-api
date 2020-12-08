@@ -246,10 +246,7 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	}
 
 	protected T embedPreload(SSCEmbedConfig embedConfig) {
-		return pagePreProcessor(
-				getConn().api(SSCBulkAPI.class).bulkEmbedder()
-					.embedConfig(embedConfig)
-					.asPagePreProcessor());
+		return pagePreProcessor(getConn().api(SSCBulkAPI.class).bulkEmbedder(embedConfig).asPagePreProcessor());
 	}
 	
 	/**

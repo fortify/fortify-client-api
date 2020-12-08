@@ -27,7 +27,6 @@ package com.fortify.client.ssc.api;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
@@ -45,7 +44,6 @@ import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.embed.StandardEmbedDefinition;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
-import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -65,8 +63,8 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		return new SSCBulkRequestBuilder(conn());
 	}
 	
-	public SSCBulkEmbedder bulkEmbedder() {
-		return new SSCBulkEmbedder(conn());
+	public SSCBulkEmbedder bulkEmbedder(SSCEmbedConfig embedConfig) {
+		return new SSCBulkEmbedder(conn(), embedConfig);
 	}
 	
 	/**
@@ -149,18 +147,17 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 	 */
 	@Setter @Accessors(fluent=true)
 	public static final class SSCBulkEmbedder {
-		private String targetProperty;
-		private Function<JSONMap, String> uriFunction;
-		private Function<JSONMap, Boolean> enabledFunction;
 		private Map<String,JSONMap> uriToObjectMap = new HashMap<>();
 		private final SSCAuthenticatingRestConnection conn;
+		private final StandardEmbedDefinition embedDefinition;
 		
 		/**
 		 * Create instance using the given {@link SSCAuthenticatingRestConnection}
 		 * @param conn
 		 */
-		public SSCBulkEmbedder(SSCAuthenticatingRestConnection conn) {
+		public SSCBulkEmbedder(SSCAuthenticatingRestConnection conn, SSCEmbedConfig embedConfig) {
 			this.conn = conn;
+			this.embedDefinition = new StandardEmbedDefinition(embedConfig);
 		}
 		
 		/**
@@ -173,62 +170,22 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 			return jsonList->addBulkData(jsonList);
 		}
 		
-		public SSCBulkEmbedder uriFunction(Function<JSONMap, String> uriFunction) {
-			this.uriFunction = uriFunction;
-			return this;
-		}
-		
-		public SSCBulkEmbedder embedConfig(SSCEmbedConfig embedConfig) {
-			StandardEmbedDefinition def = new StandardEmbedDefinition(embedConfig);
-			this.targetProperty(def.getPropertyName());
-			this.uriFunction(def::buildUri);
-			this.enabledFunction(def::isEnabled);
-			return this;
-		}
-		
-		private SSCBulkEmbedder enabledFunction(Function<JSONMap, Boolean> enabledFunction) {
-			this.enabledFunction = enabledFunction;
-			return this;
-		}
-
 		/**
-		 * Configure the URI {@link Expression} used to generate URI's
-		 * from {@link JSONMap} input objects.
-		 * 
-		 * @param pathExpression
-		 * @return
-		 */
-		public SSCBulkEmbedder uriExpression(Expression pathExpression) {
-			return uriFunction(InternalExpressionHelper.get().expressionAsFunction(pathExpression, String.class));
-		}
-		
-		/**
-		 * Configure the URI template expression used to generate URI's
-		 * from {@link JSONMap} input objects.
-		 * 
-		 * @param pathExpression
-		 * @return
-		 */
-		public SSCBulkEmbedder uriExpression(String pathExpression) {
-			return uriExpression(InternalExpressionHelper.get().parseTemplateExpression(pathExpression));
-		}
-		
-		/**
-		 * For each entry in the given {@link JSONList}, this method will evaluate the URI {@link Expression} 
-		 * that has been configured through the {@link uriExpression(String)} or {@link #uriExpression(Expression)} 
-		 * methods. All evaluated URI's are then requested from SSC using a single bulk request, and the results 
-		 * are then added to each corresponding entry in the given {@link JSONList}, using the property name that 
-		 * has been configured using the {@link #targetProperty(String)} method. 
-		 *   
-		 * @author Ruud Senden
-		 *
+		 * For each entry in the given {@link JSONList}, this method will build and execute an SSC bulk request 
+		 * for retrieving embedded data according to the configured {@link SSCEmbedConfig} instance. The retrieved
+		 * data is then added to each of the entries in the given {@link JSONList}, using the property name provided
+		 * in the configured {@link SSCEmbedConfig} instance.
 		 */
 		@SSCCopyToConstructors
 		public void addBulkData(JSONList jsonList) {
 			SSCBulkRequestBuilder builder = conn.api(SSCBulkAPI.class).bulkRequestBuilder();
 			addBulkRequests(builder, jsonList);
-			JSONList bulkResults = builder.execute();
-			bulkResults.asValueType(JSONMap.class).forEach(this::addResultToInputList);
+			try {
+				JSONList bulkResults = builder.execute();
+				bulkResults.asValueType(JSONMap.class).forEach(this::addResultToInputList);
+			} catch (RuntimeException e) {
+				embedDefinition.handleError(e);
+			}
 		}
 		
 		/**
@@ -251,7 +208,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 				throw new RuntimeException("Looping not supported");
 			}
 			if ( responses.size()>0 ) {
-				orgInput.put(targetProperty, responses.get(0, JSONMap.class).getPath("body.data"));
+				orgInput.put(embedDefinition.getPropertyName(), responses.get(0, JSONMap.class).getPath("body.data"));
 			}
 		}
 		
@@ -278,8 +235,8 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * @param input
 		 */
 		private void addBulkRequest(SSCBulkRequestBuilder builder, JSONMap input) {
-			if ( enabledFunction.apply(input) ) {
-				String uri = uriFunction.apply(input);
+			if ( embedDefinition.isEnabled(input) ) {
+				String uri = embedDefinition.buildUri(input);
 				if ( StringUtils.isNotBlank(uri) ) {
 					final WebTarget target = conn.getResource(uri);
 					builder.addBulkRequest(HttpMethod.GET, target);
