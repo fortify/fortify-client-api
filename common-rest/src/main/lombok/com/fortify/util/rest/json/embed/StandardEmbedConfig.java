@@ -27,6 +27,8 @@ package com.fortify.util.rest.json.embed;
 import java.io.Serializable;
 import java.util.Map;
 
+import com.fortify.util.rest.json.embed.StandardEmbedDefinition.OnErrorAction;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -48,6 +50,7 @@ public abstract class StandardEmbedConfig implements Serializable {
 	private String uri;
 	private String resultExpression;
 	private String embedIf;
+	private OnErrorAction onError;
 	@Singular private Map<String, Object> params;
 	
 	public StandardEmbedConfig() {}
@@ -70,6 +73,10 @@ public abstract class StandardEmbedConfig implements Serializable {
 
 	public String getResultExpression() {
 		return resultExpression!=null ? resultExpression : getDefaultResultExpression();
+	}
+	
+	public OnErrorAction getOnError() {
+		return onError==null ? OnErrorAction.FAIL : onError;
 	}
 	
 	protected String getDefaultResultExpression() {

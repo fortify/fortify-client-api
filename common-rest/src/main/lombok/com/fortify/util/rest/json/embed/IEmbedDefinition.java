@@ -31,4 +31,5 @@ public interface IEmbedDefinition {
 	public boolean isEnabled(JSONMap parent);
 	public String buildUri(JSONMap parent);
 	public Object getResult(JSONMap rawResult);
+	public Object getResultOnError(RuntimeException exception);
 }

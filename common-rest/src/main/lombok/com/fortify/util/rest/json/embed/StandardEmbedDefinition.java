@@ -26,6 +26,7 @@ package com.fortify.util.rest.json.embed;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -35,6 +36,7 @@ import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.apachecommons.CommonsLog;
 
 /**
  * Data class for describing REST data to be embedded into REST query results
@@ -42,7 +44,7 @@ import lombok.experimental.SuperBuilder;
  * @author Ruud Senden
  *
  */
-@Data @SuperBuilder @RequiredArgsConstructor
+@Data @SuperBuilder @RequiredArgsConstructor @CommonsLog
 public class StandardEmbedDefinition implements Serializable, IEmbedDefinition {
 	private static final long serialVersionUID = 1L;
 	private final StandardEmbedConfig config;
@@ -78,4 +80,50 @@ public class StandardEmbedDefinition implements Serializable, IEmbedDefinition {
 	public Object getResult(JSONMap rawResult) {
 		return InternalExpressionHelper.get().evaluateSimpleExpression(rawResult, config.getResultExpression(), Object.class);
 	}
+	
+	@Override
+	public Object getResultOnError(RuntimeException e) {
+		return config.getOnError().handle(getPropertyName(), e);
+	}
+	
+	public static enum OnErrorAction {
+		FAIL(OnErrorAction::fail), 
+		LOG_WARN(OnErrorAction::logWarn), 
+		LOG_INFO(OnErrorAction::logInfo), 
+		LOG_DEBUG(OnErrorAction::logDebug),
+		IGNORE(OnErrorAction::ignore);
+		
+		private BiConsumer<String, RuntimeException> f;
+		private OnErrorAction(BiConsumer<String, RuntimeException> f) {
+			this.f = f;
+		}
+		
+		public Object handle(String propertyName, RuntimeException e) {
+			f.accept(propertyName, e);
+			return null;
+		}
+		
+		private static final void fail(String propertyName, RuntimeException e) {
+			throw new RuntimeException(getErrorMessage(propertyName),e);
+		}
+		
+		private static final void logWarn(String propertyName, RuntimeException e) {
+			log.warn(getErrorMessage(propertyName), e);
+		}
+		
+		private static final void logInfo(String propertyName, RuntimeException e) {
+			log.info(getErrorMessage(propertyName), e);
+		}
+		
+		private static final void logDebug(String propertyName, RuntimeException e) {
+			log.debug(getErrorMessage(propertyName), e);
+		}
+		
+		private static final void ignore(String propertyName, RuntimeException e) {}
+		
+		private static final String getErrorMessage(String propertyName) {
+			return "Error loading data for property "+propertyName;
+		}
+	}
+	
 }

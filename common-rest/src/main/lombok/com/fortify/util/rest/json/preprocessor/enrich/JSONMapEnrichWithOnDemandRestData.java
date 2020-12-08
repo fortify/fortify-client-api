@@ -55,7 +55,11 @@ public class JSONMapEnrichWithOnDemandRestData extends JSONMapEnrichWithOnDemand
 		
 		private Object getResult(IRestConnection conn, JSONMap parent) {
 			WebTarget webTarget = getWebTarget(conn, parent);
-			return embedDefinition.getResult(conn.executeRequest(HttpMethod.GET, webTarget, JSONMap.class));
+			try {
+				return embedDefinition.getResult(conn.executeRequest(HttpMethod.GET, webTarget, JSONMap.class));
+			} catch ( RuntimeException e ) {
+				return embedDefinition.getResultOnError(e);
+			}
 		}
 
 		protected WebTarget getWebTarget(IRestConnection conn, JSONMap parent) {
