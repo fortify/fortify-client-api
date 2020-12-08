@@ -86,6 +86,10 @@ public class StandardEmbedDefinition implements Serializable, IEmbedDefinition {
 		return config.getOnError().handle(getPropertyName(), e);
 	}
 	
+	public void handleError(RuntimeException e) {
+		getResultOnError(e);
+	}
+	
 	public static enum OnErrorAction {
 		FAIL(OnErrorAction::fail), 
 		LOG_WARN(OnErrorAction::logWarn), 
@@ -108,15 +112,19 @@ public class StandardEmbedDefinition implements Serializable, IEmbedDefinition {
 		}
 		
 		private static final void logWarn(String propertyName, RuntimeException e) {
-			log.warn(getErrorMessage(propertyName), e);
+			log.warn(getErrorMessage(propertyName)); logDetails(propertyName, e);
 		}
 		
 		private static final void logInfo(String propertyName, RuntimeException e) {
-			log.info(getErrorMessage(propertyName), e);
+			log.info(getErrorMessage(propertyName)); logDetails(propertyName, e);
 		}
 		
 		private static final void logDebug(String propertyName, RuntimeException e) {
-			log.debug(getErrorMessage(propertyName), e);
+			log.debug(getErrorMessage(propertyName)); logDetails(propertyName, e);
+		}
+		
+		private static final void logDetails(String propertyName, RuntimeException e) {
+			log.debug("Exception details for error while loading data for property "+propertyName, e);
 		}
 		
 		private static final void ignore(String propertyName, RuntimeException e) {}
