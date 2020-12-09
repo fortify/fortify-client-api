@@ -54,12 +54,12 @@ public final class JSONDateTimeConverter implements Converter<String,Date> {
 		return parseDate(source);
 	}
 	
-	private Date parseDate(String source) {
+	public Date parseDate(String source) {
 		return Date.from(parseZonedDateTime(source).toInstant());
 	}
 	
-	private ZonedDateTime parseZonedDateTime(String source) {
-		TemporalAccessor temporalAccessor = fmtDateTime.parseBest(source, ZonedDateTime::from, LocalDateTime::from, LocalDate::from);
+	public ZonedDateTime parseZonedDateTime(String source) {
+		TemporalAccessor temporalAccessor = parseTemporalAccessor(source);
 		if (temporalAccessor instanceof ZonedDateTime) {
 		    return ((ZonedDateTime) temporalAccessor);
 		}
@@ -67,5 +67,9 @@ public final class JSONDateTimeConverter implements Converter<String,Date> {
 		    return ((LocalDateTime) temporalAccessor).atZone(ZoneId.systemDefault());
 		}
 		return ((LocalDate) temporalAccessor).atStartOfDay(ZoneId.systemDefault());
+	}
+
+	public TemporalAccessor parseTemporalAccessor(String source) {
+		return fmtDateTime.parseBest(source, ZonedDateTime::from, LocalDateTime::from, LocalDate::from);
 	}
 }
