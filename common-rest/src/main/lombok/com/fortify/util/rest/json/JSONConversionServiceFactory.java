@@ -24,59 +24,26 @@
  ******************************************************************************/
 package com.fortify.util.rest.json;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.Date;
 
 import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.DefaultConversionService;
 
 public class JSONConversionServiceFactory {
 	private static final ConversionService INSTANCE = getDefaultConversionService();
-	private static DateTimeFormatter fmtDateTime = getDefaultDateTimeFormatter();
+	private static DateTimeFormatter fmtDateTime = null;
 	
 	public static final ConversionService getConversionService() {
 		return INSTANCE;
 	}
 
-	private static final DateTimeFormatter getDefaultDateTimeFormatter() {
-		return DateTimeFormatter.ofPattern("yyyy-MM-dd[['T'][' ']HH:mm:ss[.SSS][.SS]][Z]");
-	}
-
 	public static final ConversionService getDefaultConversionService() {
 		DefaultConversionService result = new DefaultConversionService();
-		result.addConverter(new DateConverter());
+		result.addConverter(new JSONDateTimeConverter(fmtDateTime));
 		return result;
 	}
 	
 	public static final void setDateTimePattern(String pattern) {
 		fmtDateTime = DateTimeFormatter.ofPattern(pattern);
-	}
-	
-	private static final class DateConverter implements Converter<String,Date> {
-		@Override
-		public Date convert(String source) {
-			return parseDate(source);
-		}
-		
-		private Date parseDate(String source) {
-			return Date.from(parseZonedDateTime(source).toInstant());
-		}
-		
-		private ZonedDateTime parseZonedDateTime(String source) {
-			TemporalAccessor temporalAccessor = fmtDateTime.parseBest(source, ZonedDateTime::from, LocalDateTime::from, LocalDate::from);
-			if (temporalAccessor instanceof ZonedDateTime) {
-			    return ((ZonedDateTime) temporalAccessor);
-			}
-			if (temporalAccessor instanceof LocalDateTime) {
-			    return ((LocalDateTime) temporalAccessor).atZone(ZoneId.systemDefault());
-			}
-			return ((LocalDate) temporalAccessor).atStartOfDay(ZoneId.systemDefault());
-		}
 	}
 }
