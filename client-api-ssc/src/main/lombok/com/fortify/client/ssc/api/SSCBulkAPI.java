@@ -208,7 +208,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 				throw new RuntimeException("Looping not supported");
 			}
 			if ( responses.size()>0 ) {
-				orgInput.put(embedDefinition.getPropertyName(), responses.get(0, JSONMap.class).getPath("body.data"));
+				orgInput.put(embedDefinition.getPropertyName(), embedDefinition.getResult(responses.get(0, JSONMap.class).getPath("body", JSONMap.class)));
 			}
 		}
 		
