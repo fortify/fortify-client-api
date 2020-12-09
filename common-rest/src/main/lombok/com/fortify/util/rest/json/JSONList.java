@@ -263,6 +263,22 @@ public class JSONList extends ArrayList<Object> {
 		return JSONConversionServiceFactory.getConversionService().convert(get(index), type);
 	}
 	
+	public <T> T getOrDefault(int index, T defaultValue, Class<T> type) {
+		return index<size() ? get(index, type) : defaultValue;
+	}
+	
+	public Object getOrDefault(int index, Object defaultValue) {
+		return getOrDefault(index, defaultValue, Object.class);
+	}
+	
+	public Object getOrNull(int index) {
+		return getOrDefault(index, null);
+	}
+	
+	public <T> T getOrNull(int index, Class<T> type) {
+		return getOrDefault(index, null, type);
+	}
+	
 	public JSONMap getOrCreateJSONMap(int index) {
 		growTo(index+1, JSONMap::new); // If necessary, initialize this list with empty JSONMap instances up to the given index
 		return get(index, JSONMap.class);
