@@ -51,7 +51,7 @@ public abstract class StandardEmbedConfig implements Serializable {
 	private String resultExpression;
 	private String embedIf;
 	private OnErrorAction onError;
-	@Singular private Map<String, Object> params;
+	@Singular(ignoreNullCollections=true) private Map<String, Object> params;
 	
 	public StandardEmbedConfig() {}
 	
