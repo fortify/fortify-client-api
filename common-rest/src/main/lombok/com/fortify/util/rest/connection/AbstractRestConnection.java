@@ -65,6 +65,8 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -449,6 +451,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 		clientConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
 		clientConfig.property(ApacheClientProperties.CREDENTIALS_PROVIDER, credentialsProvider);
 		clientConfig.property(ApacheClientProperties.PREEMPTIVE_BASIC_AUTHENTICATION, doPreemptiveBasicAuthentication());
+		clientConfig.property(ApacheClientProperties.REQUEST_CONFIG, getRequestConfig());
 		if ( connectionProperties != null ) {
 			for ( Map.Entry<String,Object> property : connectionProperties.entrySet() ) {
 				clientConfig.property(property.getKey(), property.getValue());
@@ -585,7 +588,12 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 * @param httpClientBuilder
 	 */
 	protected void updateHttpClientBuilder(HttpClientBuilder httpClientBuilder) {
+		httpClientBuilder.setDefaultRequestConfig(getRequestConfig());
 		httpClientBuilder.setServiceUnavailableRetryStrategy(getServiceUnavailableRetryStrategy());
+	}
+
+	protected RequestConfig getRequestConfig() {
+		return RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
 	}
 
 	protected static class JacksonFeature implements Feature {
