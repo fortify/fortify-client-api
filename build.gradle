@@ -1,7 +1,6 @@
 plugins {
-    id 'maven-publish'
+	id 'maven-publish'
     id 'base'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
     id 'io.freefair.lombok' version '5.3.0' apply false
     id 'com.jfrog.bintray' version "1.8.5" apply false
     id 'com.jfrog.artifactory' version "4.20.0" apply false
@@ -22,9 +21,13 @@ repositories {
 
 description = 'Utility classes for working with the REST API interfaces provided by the various Fortify products'
 
-subprojects {
+configure(subprojects.findAll {new File(it.projectDir, "src/main").exists()}) {
 	apply plugin: 'java-library'
 	apply plugin: 'maven-publish'
+	
+	dependencies {
+		api platform(project(':bom'))
+	}
 	
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
@@ -84,95 +87,11 @@ configure(subprojects.findAll {new File(it.projectDir, "src/main/lombok").exists
 allprojects {
 	group = 'com.fortify.client.api'
 	
-	apply plugin: 'io.spring.dependency-management'
 	apply plugin: 'maven-publish'
 	apply plugin: 'com.jfrog.bintray'
 	apply plugin: 'com.jfrog.artifactory'
 
 	version = getProjectVersion()
-	
-	ext {
-		dependencyVersion=[
-			spring:              '5.3.4',
-			log4j:               '2.14.0',
-			jersey:              '2.33',
-			jackson:             '2.12.1',
-			httpcore:            '4.4.14',
-			httpclient:          '4.5.13',
-			rs_api:              '2.1.6',
-			commons_lang:        '2.6',
-			commons_beanutils:   '1.9.4',
-			commons_codec:       '1.15',
-			commons_collections: '3.2.2',
-			commons_logging:     '1.2'
-		]
-	}
-	
-	// TODO Instead of defining dependency management in every project,
-	//      can we just define this in the root project and reference from
-	//      child modules? That would result in cleaner pom.xml files after
-	//      publishing. However as Gradle hierarchy is one-way (no parent 
-	//      reference), we would probably need to generate pom.xml sections
-	//      manually.
-	dependencyManagement {
-		//imports {
-			// Use in API clients: mavenBom("com.fortify.client.api:fortify-client-api:5.4-SNAPSHOT")
-		//}
-		dependencies {
-			// Do we need this to generate Maven BOM?
-			dependencySet(group:'com.fortify.client.api', version: "${project.version}") {
-				entry 'common-log'
-				entry 'common-spring'
-				entry 'common-rest'
-				entry 'client-api-fod'
-				entry 'client-api-ssc'
-				entry 'client-api-webinspect'
-				entry 'client-api-wie'
-			}
-			
-			dependencySet(group:'org.springframework', version: "${dependencyVersion.spring}") {
-				entry 'spring-beans'
-				entry 'spring-core'
-				entry 'spring-expression'
-				entry('spring-context') {
-					exclude 'aopalliance:aopalliance'
-				}
-			}
-			
-			dependencySet(group:'org.apache.logging.log4j', version: "${dependencyVersion.log4j}") {
-				entry 'log4j-api'
-				entry 'log4j-core'
-				entry 'log4j-jul'
-				entry 'log4j-jcl'
-			}
-			
-			dependencySet(group:'org.glassfish.jersey.core', version: "${dependencyVersion.jersey}") {
-				entry 'jersey-common'
-				entry 'jersey-client'
-			}
-			// TODO Can we bundle these in dependency set?
-			dependency "org.glassfish.jersey.media:jersey-media-multipart:${dependencyVersion.jersey}"
-			dependency "org.glassfish.jersey.connectors:jersey-apache-connector:${dependencyVersion.jersey}"
-			dependency("org.glassfish.jersey.inject:jersey-hk2:${dependencyVersion.jersey}") {
-				exclude 'org.glassfish.hk2.external:aopalliance-repackaged'
-			}
-			dependency "org.apache.httpcomponents:httpcore:${dependencyVersion.httpcore}"
-			dependency "org.apache.httpcomponents:httpclient:${dependencyVersion.httpclient}"
-			dependency "jakarta.ws.rs:jakarta.ws.rs-api:${dependencyVersion.rs_api}"
-			
-			dependencySet(group:'com.fasterxml.jackson.core', version: "${dependencyVersion.jackson}") {
-				entry 'jackson-core'
-				entry 'jackson-annotations'
-				entry 'jackson-databind'
-			}
-			dependency "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:${dependencyVersion.jackson}"
-			dependency "commons-lang:commons-lang:${dependencyVersion.commons_lang}"
-			dependency "commons-beanutils:commons-beanutils:${dependencyVersion.commons_beanutils}"
-			dependency "commons-codec:commons-codec:${dependencyVersion.commons_codec}"
-			dependency "commons-collections:commons-collections:${dependencyVersion.commons_collections}"
-			dependency "commons-logging:commons-logging:${dependencyVersion.commons_logging}"
-		}
-	}
 	
 	publishing {
 	    publications {

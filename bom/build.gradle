@@ -1,0 +1,44 @@
+plugins {
+    id 'java-platform'
+}
+
+description = 'Bill Of Materials for fortify-client-api'
+
+javaPlatform {
+    allowDependencies()
+}
+
+dependencies {
+	api platform('com.fasterxml.jackson:jackson-bom:2.12.1')
+	api platform('org.glassfish.jersey:jersey-bom:2.33')
+	api platform('org.apache.logging.log4j:log4j-bom:2.14.0')
+	api platform('org.springframework:spring-framework-bom:5.3.4')
+		
+	constraints {
+		api "org.apache.httpcomponents:httpcore:4.4.14"
+		api "org.apache.httpcomponents:httpclient:4.5.13"
+		api "jakarta.ws.rs:jakarta.ws.rs-api:2.1.6"
+		
+		api "commons-lang:commons-lang:2.6"
+		api "commons-beanutils:commons-beanutils:1.9.4"
+		api "commons-codec:commons-codec:1.15"
+		api "commons-collections:commons-collections:3.2.2"
+		api "commons-logging:commons-logging:1.2"
+		
+		api "com.fortify.client.api:common-log:${project.version}"
+		api "com.fortify.client.api:common-spring:${project.version}"
+		api "com.fortify.client.api:common-rest:${project.version}"
+		api "com.fortify.client.api:client-api-fod:${project.version}"
+		api "com.fortify.client.api:client-api-ssc:${project.version}"
+		api "com.fortify.client.api:client-api-webinspect:${project.version}"
+		api "com.fortify.client.api:client-api-wie:${project.version}"
+	}
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.javaPlatform
+        }
+    }
+}

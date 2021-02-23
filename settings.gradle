@@ -1,4 +1,5 @@
 rootProject.name = 'fortify-client-api'
+include 'bom'
 include 'common-log'
 include 'common-spring'
 include 'common-rest'
