@@ -1,10 +1,9 @@
 description = 'Common functionality related to the Spring framework'
 
 dependencies {
-    compile 'org.springframework:spring-beans'
-	compile 'org.springframework:spring-context'
-	compile 'org.springframework:spring-core'
-	compile 'org.springframework:spring-expression'
-	compile 'commons-lang:commons-lang'
-	compile 'commons-logging:commons-logging'
+    api 'org.springframework:spring-beans'
+	api 'org.springframework:spring-context'
+	api 'org.springframework:spring-expression'
+	implementation 'commons-lang:commons-lang'
+	implementation 'commons-logging:commons-logging'
 }

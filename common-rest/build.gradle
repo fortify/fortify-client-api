@@ -1,29 +1,29 @@
 description = 'Common functionality for implementing REST API clients'
 
 dependencies {
-	compile project(':common-log')
-	compile project(':common-spring')
+	api project(':common-spring')
+	api 'org.apache.httpcomponents:httpclient'	
+	api 'jakarta.ws.rs:jakarta.ws.rs-api'
+
+	implementation project(':common-log')
 		
-	compile 'org.glassfish.jersey.core:jersey-common'
-	compile 'org.glassfish.jersey.core:jersey-client'
-	compile 'org.glassfish.jersey.media:jersey-media-multipart'
-	compile 'org.glassfish.jersey.connectors:jersey-apache-connector'
-	compile 'org.glassfish.jersey.inject:jersey-hk2'
+	implementation 'org.glassfish.jersey.core:jersey-common'
+	implementation 'org.glassfish.jersey.core:jersey-client'
+	implementation 'org.glassfish.jersey.media:jersey-media-multipart'
+	implementation 'org.glassfish.jersey.connectors:jersey-apache-connector'
+	runtimeOnly 'org.glassfish.jersey.inject:jersey-hk2'
 		
-	compile 'org.apache.httpcomponents:httpcore'
-	compile 'org.apache.httpcomponents:httpclient'
+	implementation 'org.apache.httpcomponents:httpcore'
 		
-	compile 'jakarta.ws.rs:jakarta.ws.rs-api'
+	implementation 'com.fasterxml.jackson.core:jackson-core'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider'
 		
-	compile 'com.fasterxml.jackson.core:jackson-core'
-	compile 'com.fasterxml.jackson.core:jackson-databind'
-	compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider'
-		
-	compile 'org.springframework:spring-core'
-	compile 'org.springframework:spring-expression'
-	compile 'commons-collections:commons-collections'
-	compile 'commons-lang:commons-lang'
-	compile 'commons-logging:commons-logging'
+	implementation 'org.springframework:spring-core'
+	implementation 'org.springframework:spring-expression'
+	implementation 'commons-collections:commons-collections'
+	implementation 'commons-lang:commons-lang'
+	implementation 'commons-logging:commons-logging'
 	
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation 'org.junit.platform:junit-platform-launcher:1.1.0'

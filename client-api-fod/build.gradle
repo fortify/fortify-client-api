@@ -1,5 +1,8 @@
 description = 'Functionality for invoking Fortify on Demand (FoD) REST endpoints'
 
 dependencies {
-	compile project(':common-rest')
+	api project(':common-rest')
+	implementation project(':common-log')
+	implementation 'com.fasterxml.jackson.core:jackson-annotations'
+	implementation 'commons-lang:commons-lang'
 }

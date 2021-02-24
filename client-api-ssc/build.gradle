@@ -1,6 +1,11 @@
 description = 'Functionality for invoking Fortify Software Security Center (SSC) REST endpoints'
 
 dependencies {
-	compile project(':common-rest')
-	compile 'commons-codec:commons-codec'
+	api project(':common-rest')
+	implementation project(':common-log')
+	implementation 'commons-lang:commons-lang'
+	implementation 'commons-codec:commons-codec'
+	implementation 'commons-collections:commons-collections'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations'
+	implementation 'org.glassfish.jersey.media:jersey-media-multipart'
 }

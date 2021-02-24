@@ -1,5 +1,6 @@
 description = 'Functionality for invoking Fortify WebInspect REST endpoints'
 
 dependencies {
-	compile project(':common-rest')
+	api project(':common-rest')
+	implementation 'org.glassfish.jersey.media:jersey-media-multipart'
 }
