@@ -26,7 +26,7 @@ configure(subprojects.findAll {new File(it.projectDir, "src/main").exists()}) {
 	apply plugin: 'maven-publish'
 	
 	dependencies {
-		api platform(project(':bom'))
+		api platform(project(':fortify-client-api-bom'))
 	}
 	
 	sourceCompatibility = JavaVersion.VERSION_1_8
