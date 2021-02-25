@@ -27,6 +27,7 @@ package com.fortify.util.rest.query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -93,7 +94,7 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	private final WebTargetQueryParamUpdaterBuilder webTargetQueryParamUpdaterBuilder = new WebTargetQueryParamUpdaterBuilder();
 	private final WebTargetTemplateResolverBuilder webTargetTemplateResolverBuilder = new WebTargetTemplateResolverBuilder();
 	
-	private final List<Consumer<JSONList>> pagePreProcessors = new ArrayList<>();
+	private final List<BiConsumer<PagingData, JSONList>> pagePreProcessors = new ArrayList<>();
 	private final List<IJSONMapPreProcessor> preProcessors = new ArrayList<>();
 	private int maxResults = -1;
 	private final boolean pagingSupported;
@@ -107,15 +108,17 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 		this.pagingSupported = pagingSupported;
 	}
 	
-	public T pagePreProcessor(Consumer<JSONList> pagePreProcessor) {
+	public T pagePreProcessor(BiConsumer<PagingData, JSONList> pagePreProcessor) {
 		this.pagePreProcessors.add(pagePreProcessor);
 		return _this();
 	}
 	
+	public T pagePreProcessor(Consumer<JSONList> pagePreProcessor) {
+		return pagePreProcessor((pagingData,jsonList)->pagePreProcessor.accept(jsonList));
+	}
+	
 	public T pagePreProcessor(final int blockSize, final Consumer<JSONList> pagePreProcessor) {
-		this.pagePreProcessors.add(
-				jsonList->jsonList.forEachBlock(blockSize, pagePreProcessor));
-		return _this();
+		return pagePreProcessor(jsonList->jsonList.forEachBlock(blockSize, pagePreProcessor));
 	}
 	
 	@SuppressWarnings("unchecked")

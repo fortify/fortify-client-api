@@ -26,6 +26,7 @@ package com.fortify.util.rest.query;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.ws.rs.client.Entity;
@@ -59,7 +60,7 @@ import com.fortify.util.rest.webtarget.IWebTargetUpdater;
 public abstract class AbstractRestConnectionQuery<ResponseType> implements IRestConnectionQuery {
 	private final IRestConnection conn;
 	private final List<IWebTargetUpdater> webTargetUpdaters;
-	private final List<Consumer<JSONList>> pagePreProcessors;
+	private final List<BiConsumer<PagingData, JSONList>> pagePreProcessors;
 	private final List<IJSONMapPreProcessor> preProcessors;
 	private final int maxResults;
 	private final boolean pagingSupported;
@@ -194,8 +195,7 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 			while (pagingData.calculateNextPageSize() > 0) {
 				processor.notifyNextPage(pagingData);
 				WebTarget pagingTarget = updateWebTargetWithPagingData(target, pagingData);
-				ResponseType response = processSingleRequest(pagingTarget, processor, pagingData);
-				updatePagingDataFromResponse(pagingData, response);
+				processSingleRequest(pagingTarget, processor, pagingData);
 			}
 		}
 	}
@@ -203,11 +203,12 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
 	 */
-	private ResponseType processSingleRequest(WebTarget target, IJSONMapProcessor processor, PagingData pagingData) {
-		ResponseType data = executeRequest(target);
-		JSONList list = getJSONListFromResponse(data);
-		for (Consumer<JSONList> pagePreProcessor : pagePreProcessors ) {
-			pagePreProcessor.accept(list);
+	private void processSingleRequest(WebTarget target, IJSONMapProcessor processor, PagingData pagingData) {
+		ResponseType response = executeRequest(target);
+		updatePagingDataFromResponse(pagingData, response);
+		JSONList list = getJSONListFromResponse(response);
+		for (BiConsumer<PagingData, JSONList> pagePreProcessor : pagePreProcessors ) {
+			pagePreProcessor.accept(pagingData, list);
 		}
 		if ( processor != null ) {
 			for ( JSONMap obj : list.asValueType(JSONMap.class) ) {
@@ -215,6 +216,5 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 				processor.process(obj);
 			}
 		}
-		return data;
 	}
 }
