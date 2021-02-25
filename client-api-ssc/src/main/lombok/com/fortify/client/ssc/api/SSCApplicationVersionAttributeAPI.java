@@ -27,6 +27,7 @@ package com.fortify.client.ssc.api;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.ws.rs.HttpMethod;
@@ -66,7 +67,9 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 	 * with updating application version attributes. Don't forget to call 
 	 * {@link SSCApplicationVersionCustomTagUpdater#execute()} to actually send the 
 	 * update request to SSC. 
-	 * @return
+	 * 
+	 * @param applicationVersionId for which to update application version attributes
+	 * @return {@link SSCApplicationVersionAttributesUpdater} instance used to configure application version attributes to be updated
 	 */
 	public SSCApplicationVersionAttributesUpdater updateApplicationVersionAttributes(String applicationVersionId) {
 		return new SSCApplicationVersionAttributesUpdater(applicationVersionId);
@@ -94,8 +97,8 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 		 * this will potentially result in additional SSC API calls, it is recommended to re-use 
 		 * an existing {@link SSCAttributeDefinitionHelper} instance if possible. For optimal
 		 * performance, this method should be called before calling any of the other methods.
-		 * @param helper
-		 * @return
+		 * @param attributeDefinitionHelper for accessing attribute definitions
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionAttributesUpdater withAttributeDefinitionHelper(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
 			this.attributeDefinitionHelper = attributeDefinitionHelper;
@@ -106,9 +109,9 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 		 * Add a single attribute to be updated, by specifying either attribute name or id, and zero or
 		 * more attribute values (depending on attribute type).
 		 * 
-		 * @param attributeNameOrId
-		 * @param attributeValues
-		 * @return
+		 * @param attributeNameOrId Attribute name or id to be updated
+		 * @param attributeValues New value(s) for the given attribute
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionAttributesUpdater byNameOrId(String attributeNameOrId, List<Object> attributeValues) {
 			JSONMap attributeDefinition = getAttributeDefinitionsByNameOrId().get(attributeNameOrId, JSONMap.class);
@@ -139,8 +142,8 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Update all attributes specified in the given map.
-		 * @param attributeNameOrIdToValuesMap
-		 * @return
+		 * @param attributeNameOrIdToValuesMap {@link Map} containing attribute names or id's as keys, and the new values for each attribute
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionAttributesUpdater byNameOrId(MultiValueMap<String, Object> attributeNameOrIdToValuesMap) {
 			for (Entry<String, List<Object>> entry : attributeNameOrIdToValuesMap.entrySet()) {
@@ -151,7 +154,7 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Send the attribute(s) update request to SSC.
-		 * @return
+		 * @return {@link JSONList} containing the data for the attributes REST API call
 		 */
 		@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+/attributes"})
 		public JSONList execute() {

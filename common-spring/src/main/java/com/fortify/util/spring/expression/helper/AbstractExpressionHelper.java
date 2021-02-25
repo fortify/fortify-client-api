@@ -84,7 +84,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	 * Create the {@link TemplateParserContext} to be used for parsing
 	 * template expressions. This default implementation returns a
 	 * {@link TemplateParserContext} configured with <code>${</code>
-	 * as the expression prefix, and <code>}</code>> as the expression
+	 * as the expression prefix, and <code>}</code> as the expression
 	 * suffix. Subclasses can override this method to provide a 
 	 * customized {@link TemplateParserContext} instance.
 	 * @return

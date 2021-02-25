@@ -56,8 +56,8 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 	 * This method will invoke Audit Assistant for the given application version
 	 * and return immediately.
 	 * 
-	 * @param applicationVersionId
-	 * @return
+	 * @param applicationVersionId for which to invoke Audit Assistant
+	 * @return true if the request was successful, false otherwise
 	 */
 	public boolean invokeAuditAssistant(String applicationVersionId) {
 		JSONMap entity = new JSONMap();
@@ -73,8 +73,8 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 	 * This method will invoke Audit Assistant for the given application version,
 	 * and wait (up to the given time-out) for the audit assistant results to be processed.
 	 * 
-	 * @param applicationVersionId
-	 * @param timeOutSeconds
+	 * @param applicationVersionId for which to invoke Audit Assistant
+	 * @param timeOutSeconds specifies how many seconds to wait before timing out while waiting for Audit Assistant results to be processed
 	 * @return Artifact Id for the audit assistant artifact
 	 */
 	public String invokeAuditAssistant(String applicationVersionId, long timeOutSeconds) {

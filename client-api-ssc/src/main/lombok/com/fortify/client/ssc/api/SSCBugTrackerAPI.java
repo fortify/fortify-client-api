@@ -75,7 +75,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	/**
 	 * Get all short display names for all available native SSC bug tracker integrations,
 	 * indexed by bug tracker plugin id.
-	 * @return
+	 * @return {@link Map} containing bug tracker plugin id's as keys, names as values
 	 */
 	public Map<String, String> getBugTrackerShortDisplayNamesByIds() {
 		return getBugTrackers().toMap("pluginId", String.class, "shortDisplayName", String.class);
@@ -83,8 +83,8 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Get the bug tracker plugin id's for the given bug tracker names in unspecified order
-	 * @param bugTrackerPluginNames
-	 * @return
+	 * @param bugTrackerPluginNames for which to get the id's
+	 * @return Bug tracker plugin id's for the given set of bug tracker names, in arbitrary order
 	 */
 	public Set<String> getBugTrackerPluginIdsForNames(final Set<String> bugTrackerPluginNames) {
 		Map<String, String> namesById = getBugTrackerShortDisplayNamesByIds();
@@ -98,8 +98,8 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Get a JSON object describing the configured native bug tracker integration for the given application version
-	 * @param applicationVersionId
-	 * @return
+	 * @param applicationVersionId for which to get the bug tracker JSON data
+	 * @return {@link JSONMap} containing bug tracker JSON data for the given application version, or null if no bug tracker configured 
 	 */
 	public JSONMap getApplicationVersionBugTracker(String applicationVersionId) {
 		return queryApplicationVersionBugTracker(applicationVersionId).build().getUnique().get("bugTracker", JSONMap.class);
@@ -107,8 +107,8 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Get the short name for the configured native bug tracker integration for the given application version
-	 * @param applicationVersionId
-	 * @return
+	 * @param applicationVersionId for which to get the bug tracker short name
+	 * @return Bug tracker short display name for the given application version, or null if no bug tracker configured
 	 */
 	public String getApplicationVersionBugTrackerShortName(String applicationVersionId) {
 		return InternalExpressionHelper.get().evaluateSimpleExpression(getApplicationVersionBugTracker(applicationVersionId), "shortDisplayName", String.class);
@@ -116,9 +116,9 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Authenticate with SSC native bug tracker integration
-	 * @param applicationVersionId
-	 * @param bugTrackerUserName
-	 * @param bugTrackerPassword
+	 * @param applicationVersionId for which to authenticate with the configured bug tracker
+	 * @param bugTrackerUserName User name for the bug tracker
+	 * @param bugTrackerPassword Password for the bug tracker
 	 */
 	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/bugfilingrequirements/action"})
 	public void authenticateForBugFiling(String applicationVersionId, String bugTrackerUserName, String bugTrackerPassword) {
@@ -138,10 +138,10 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * File a bug via an SSC native bug tracker integration. Before calling this method, the 
 	 * {@link #authenticateForBugFiling(String, String, String)} must have been called
 	 * (if {@link #isBugTrackerAuthenticationRequired(String)} returns true).
-	 * @param applicationVersionId
-	 * @param issueDetails
-	 * @param issueInstanceIds
-	 * @return
+	 * @param applicationVersionId for which to submit a bug
+	 * @param issueDetails for the bug to be submitted
+	 * @param issueInstanceIds for which to submit the bug
+	 * @return {@link JSONMap} containing SSC response data
 	 */
 	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
 	public JSONMap fileBug(String applicationVersionId, Map<String,Object> issueDetails, List<String> issueInstanceIds) {
@@ -195,8 +195,8 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Check whether SSC bug tracker authentication is required
-	 * @param applicationVersionId
-	 * @return
+	 * @param applicationVersionId for which to check whether the configured bug tracker requires authentication
+	 * @return true if the configured bug tracker requires authentication, false otherwise
 	 */
 	public boolean isBugTrackerAuthenticationRequired(String applicationVersionId) {
 		JSONMap bugFilingRequirements = getInitialBugFilingRequirements(applicationVersionId);
@@ -205,8 +205,8 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Get a JSONMap describing the initial bug filing requirements for the given application version
-	 * @param applicationVersionId
-	 * @return
+	 * @param applicationVersionId for which to get the bug filing requirements
+	 * @return {@link JSONMap} containing bug filing requirements data
 	 */
 	private JSONMap getInitialBugFilingRequirements(String applicationVersionId) {
 		return queryApplicationVersionBugFilingRequirements(applicationVersionId).build().getUnique();
@@ -215,9 +215,9 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	/**
 	 * Get a JSONMap describing the bug filing requirements for the given application version and
 	 * given bug parameter data
-	 * @param applicationVersionId
-	 * @param data
-	 * @param changedParamIdentifier
+	 * @param applicationVersionId for which to get the bug filing requirements
+	 * @param data contains the current bug parameter data
+	 * @param changedParamIdentifier identifies the parameter that was last changed
 	 * @return
 	 */
 	private JSONMap getBugFilingRequirements(String applicationVersionId, JSONMap data, String changedParamIdentifier) {

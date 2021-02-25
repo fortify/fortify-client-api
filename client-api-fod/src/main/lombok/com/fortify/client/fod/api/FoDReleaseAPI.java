@@ -68,10 +68,10 @@ public class FoDReleaseAPI extends AbstractFoDAPI {
 	 * Download the FPR file for the given scan type from the given release id
 	 * to the given output {@link Path}, using the given copy options.
 	 * 
-	 * @param releaseId
+	 * @param releaseId from which to download the FPR file
 	 * @param scanType Any scan type supported by FoD for which an FPR can be downloaded 
-	 * @param outputPath
-	 * @param copyOptions
+	 * @param outputPath to which to write the FPR file
+	 * @param copyOptions describing the options for writing the FPR file
 	 */
 	public void saveFPR(String releaseId, String scanType, Path outputPath, CopyOption... copyOptions) {
 		conn().executeRequestAndSaveResponse(HttpMethod.GET, 

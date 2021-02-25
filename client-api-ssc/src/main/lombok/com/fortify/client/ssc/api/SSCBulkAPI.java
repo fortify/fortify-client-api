@@ -69,9 +69,6 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 	
 	/**
 	 * This class allows for building and executing SSC bulk requests
-	 * 
-	 * @author Ruud Senden
-	 * 
 	 */
 	public final class SSCBulkRequestBuilder {
 		private final SSCAuthenticatingRestConnection conn;
@@ -79,7 +76,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Create instance using the given {@link SSCAuthenticatingRestConnection}
-		 * @param conn
+		 * @param conn {@link SSCAuthenticatingRestConnection} used to connect to SSC
 		 */
 		public SSCBulkRequestBuilder(SSCAuthenticatingRestConnection conn) {
 			this.conn = conn;
@@ -93,7 +90,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * @param httpMethod {@link HttpMethod} for the request
 		 * @param webTarget {@link WebTarget} for the request
 		 * @param postData Data to be posted with the request
-		 * @return
+		 * @return Self for chaining
 		 */
 		public SSCBulkRequestBuilder addBulkRequest(String httpMethod, WebTarget webTarget, Object postData) {
 			JSONMap request = requests.addNewJSONMap();
@@ -110,9 +107,9 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * Similar to {@link #addBulkRequest(String, WebTarget, Object)}, but this method
 		 * doesn't post any data with the request.
 		 * 
-		 * @param httpMethod
-		 * @param webTarget
-		 * @return
+		 * @param httpMethod {@link HttpMethod} for the request
+		 * @param webTarget {@link WebTarget} for the request
+		 * @return Self for chaining
 		 */
 		public SSCBulkRequestBuilder addBulkRequest(String httpMethod, WebTarget webTarget) {
 			return addBulkRequest(httpMethod, webTarget, null);
@@ -124,7 +121,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * methods. In the order that requests were added, each entry in the 
 		 * returned {@link JSONList} contains the result of that request.
 		 * 
-		 * @return
+		 * @return {@link JSONList} containing the results for each of the requests in the bulk request
 		 */
 		@SSCRequiredActionsPermitted("POST=/api/v\\d+/bulk")
 		public JSONList execute() {
@@ -153,7 +150,8 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Create instance using the given {@link SSCAuthenticatingRestConnection}
-		 * @param conn
+		 * @param conn {@link SSCAuthenticatingRestConnection} used to connect to SSC
+		 * @param embedConfig {@link SSCEmbedConfig} instance
 		 */
 		public SSCBulkEmbedder(SSCAuthenticatingRestConnection conn, SSCEmbedConfig embedConfig) {
 			this.conn = conn;
@@ -161,10 +159,10 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		}
 		
 		/**
-		 * Return the configured instance of this class as a
-		 * page pre-processor to be used with the {@link AbstractRestConnectionQueryBuilder#pagePreProcessor(Consumer)}
+		 * Return the current (configured) instance as a page pre-processor to be used with 
+		 * the {@link AbstractRestConnectionQueryBuilder#pagePreProcessor(Consumer)}
 		 * method.
-		 * @return
+		 * @return Current instance as a {@link JSONList} {@link Consumer}
 		 */
 		public Consumer<JSONList> asPagePreProcessor() {
 			return jsonList->addBulkData(jsonList);
@@ -175,6 +173,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * for retrieving embedded data according to the configured {@link SSCEmbedConfig} instance. The retrieved
 		 * data is then added to each of the entries in the given {@link JSONList}, using the property name provided
 		 * in the configured {@link SSCEmbedConfig} instance.
+		 * @param jsonList {@link JSONList} containing the entities for extra data is to be embedded
 		 */
 		@SSCCopyToConstructors
 		public void addBulkData(JSONList jsonList) {
@@ -195,7 +194,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * The bulk result contents are then added to this {@link JSONMap} under the property
 		 * that was configured using the {@link #targetProperty(String)} method.
 		 *   
-		 * @param singleBulkResult
+		 * @param singleBulkResult The bulk result currently being processed
 		 */
 		private void addResultToInputList(JSONMap singleBulkResult) {
 			String uri = singleBulkResult.getPath("request.uri", String.class);
@@ -217,8 +216,8 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * {@link #addBulkRequest(SSCBulkRequestBuilder, JSONMap)} to add 
 		 * a corresponding request to the given {@link SSCBulkRequestBuilder}.
 		 * 
-		 * @param builder
-		 * @param jsonList
+		 * @param builder {@link SSCBulkRequestBuilder} used to configure the bulk request
+		 * @param jsonList {@link JSONList} containing the entities for which extra data is to be embedded
 		 */
 		private void addBulkRequests(SSCBulkRequestBuilder builder, JSONList jsonList) {
 			jsonList.asValueType(JSONMap.class).forEach(json->addBulkRequest(builder, json));
@@ -231,8 +230,8 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 *  <li>Add a request for the evaluated URI to the given {@link SSCBulkRequestBuilder}</li>
 		 *  <li>Store a mapping from the evaluated URI to the corresponding {@link JSONMap} in {@link #uriToObjectMap}</li>
 		 * </ul>
-		 * @param builder
-		 * @param input
+		 * @param builder {@link SSCBulkRequestBuilder} used to configure the bulk request
+		 * @param input {@link JSONMap} entity for which to add a bulk request entry
 		 */
 		private void addBulkRequest(SSCBulkRequestBuilder builder, JSONMap input) {
 			if ( embedDefinition.isEnabled(input) ) {

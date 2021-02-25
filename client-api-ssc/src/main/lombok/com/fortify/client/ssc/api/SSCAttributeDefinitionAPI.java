@@ -84,7 +84,7 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 	/**
 	 * Get an {@link SSCAttributeDefinitionHelper} instance for efficiently
 	 * working with attribute definition data.
-	 * @return
+	 * @return New {@link SSCAttributeDefinitionHelper} instance
 	 */
 	public SSCAttributeDefinitionHelper getAttributeDefinitionHelper() {
 		return new SSCAttributeDefinitionHelper();
@@ -113,7 +113,7 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		/**
 		 * Get the list of attribute definitions, lazy loading the list
 		 * if it hasn't been loaded before by this instance.
-		 * @return
+		 * @return {@link JSONList} containing attribute definitions
 		 */
 		public JSONList getAttributeDefinitions() {
 			if ( attributeDefinitions==null ) {
@@ -124,8 +124,8 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Get the attribute definition id for the given attribute name
-		 * @param attributeName
-		 * @return
+		 * @param attributeName for which to get the id
+		 * @return attribute id for the given attribute name 
 		 */
 		public String getAttributeIdForName(String attributeName) {
 			JSONList attributeDefinitions = getAttributeDefinitions();
@@ -134,8 +134,8 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Get the attribute name for the given attribute definition id
-		 * @param attributeName
-		 * @return
+		 * @param attributeId for which to get the name
+		 * @return attribute name for the given attribute id
 		 */
 		public String getAttributeNameForId(String attributeId) {
 			JSONList attributeDefinitions = getAttributeDefinitions();
@@ -145,7 +145,7 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		/**
 		 * Get a {@link Map} containing all attribute definitions indexed by both name and id,
 		 * useful for looking up attribute definitions by either name or id.
-		 * @return
+		 * @return {@link JSONMap} containing both attribute names and id's as keys, and the full attribute definition as values
 		 */
 		public JSONMap getAttributeDefinitionsByNameAndId() {
 			JSONList attributeDefinitions = getAttributeDefinitions();
@@ -159,7 +159,7 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		 * as keys, and one or more default values for that attribute as map value. Mainly
 		 * used to automatically set default attribute values when creating new SSC application
 		 * versions.
-		 * @return
+		 * @return {@link MultiValueMap}
 		 */
 		public MultiValueMap<String, Object> getRequiredAttributesWithDefaultValues() {
 			MultiValueMap<String, Object> result = new LinkedMultiValueMap<>();
@@ -194,7 +194,7 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 	 * with adding a new attribute definition to SSC. Don't forget to call
 	 * {@link SSCCreateAttributeDefinitionBuilder#execute()} to actually
 	 * send the update request to SSC. 
-	 * @return
+	 * @return New {@link SSCCreateAttributeDefinitionBuilder} instance
 	 */
 	public SSCCreateAttributeDefinitionBuilder createAttributeDefinition() {
 		return new SSCCreateAttributeDefinitionBuilder(conn());
@@ -215,7 +215,7 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 		/**
 		 * Private constructor; instances can only be created through
 		 * {@link SSCAttributeDefinitionAPI#createAttributeDefinition()}
-		 * @param applicationVersionId
+		 * @param conn The {@link SSCAuthenticatingRestConnection} instance used to make requests to SSC
 		 */
 		private SSCCreateAttributeDefinitionBuilder(SSCAuthenticatingRestConnection conn) {
 			this.conn = conn;

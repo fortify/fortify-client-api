@@ -66,7 +66,7 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	/**
 	 * Get an {@link SSCCustomTagHelper} instance for efficiently
 	 * working with custom tag data.
-	 * @return
+	 * @return New {@link SSCCustomTagHelper} instance
 	 */
 	public SSCCustomTagHelper getCustomTagHelper() {
 		return new SSCCustomTagHelper();
@@ -88,7 +88,7 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 
 		/**
 		 * Lazy-load the list of custom tags
-		 * @return
+		 * @return {@link JSONList} containing custom tag definitions
 		 */
 		public JSONList getCustomTags() {
 			if ( customTags==null ) {
@@ -99,8 +99,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Get the custom tag GUID for the given custom tag name
-		 * @param customTagName
-		 * @return
+		 * @param customTagName for which to get the custom tag GUID
+		 * @return Custom tag GUID for the given custom tag name
 		 */
 		public String getCustomTagGuid(String customTagName) {
 			return getCustomTags().mapValue("name.toLowerCase()", customTagName.toLowerCase(), "guid", String.class);
@@ -108,8 +108,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Get the custom tag name for the given custom tag GUID
-		 * @param customTagGUID
-		 * @return
+		 * @param customTagGUID for which to get the custom tag name
+		 * @return Custom tag name for the given custom tag GUID
 		 */
 		public String getCustomTagName(String customTagGUID) {
 			return getCustomTags().mapValue("guid", customTagGUID, "name", String.class);
@@ -122,8 +122,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Get the list of custom tag names defined for the given application version
-	 * @param applicationVersionId
-	 * @return
+	 * @param applicationVersionId for which to get the list of configured custom tag names
+	 * @return {@link List} of custom tag names configured for the given application version
 	 */
 	public List<String> getApplicationVersionCustomTagNames(String applicationVersionId) {
 		return getApplicationVersionCustomTags(applicationVersionId).getValues("name", String.class);
@@ -131,8 +131,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Get the list of custom tag GUID's defined for the given application version
-	 * @param applicationVersionId
-	 * @return
+	 * @param applicationVersionId for which to get the list of configured custom tag GUID's
+	 * @return {@link List} of custom tag GUID's configured for the given application version
 	 */
 	public List<String> getApplicationVersionCustomTagGuids(String applicationVersionId) {
 		return getApplicationVersionCustomTags(applicationVersionId).getValues("guid", String.class);
@@ -142,7 +142,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 	 * Return an {@link SSCApplicationVersionCustomTagUpdater} instance to assist
 	 * with updating custom tags. Don't forget to call {@link SSCApplicationVersionCustomTagUpdater#execute()} 
 	 * to actually send the request to SSC. 
-	 * @return
+	 * @param applicationVersionId for which to create an {@link SSCApplicationVersionCustomTagUpdater} instance
+	 * @return New {@link SSCApplicationVersionCustomTagUpdater} instance for the given application version id
 	 */
 	public SSCApplicationVersionCustomTagUpdater updateCustomTags(String applicationVersionId) {
 		return new SSCApplicationVersionCustomTagUpdater(applicationVersionId);
@@ -157,7 +158,7 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		/**
 		 * Private constructor; instances can only be created through
 		 * {@link SSCCustomTagAPI#updateCustomTags(String)}
-		 * @param applicationVersionId
+		 * @param applicationVersionId for which to update custom tags
 		 */
 		private SSCApplicationVersionCustomTagUpdater(String applicationVersionId) {
 			this.applicationVersionId = applicationVersionId;
@@ -170,8 +171,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		 * will be created when needed. As this will potentially result in additional SSC API calls, it is
 		 * recommended to re-use an existing {@link SSCCustomTagHelper} instance if possible. For optimal
 		 * performance, this method should be called before calling any of the other methods.
-		 * @param helper
-		 * @return
+		 * @param helper {@link SSCCustomTagHelper} instance
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionCustomTagUpdater withCustomTagHelper(SSCCustomTagHelper helper) {
 			this.customTagHelper = helper;
@@ -182,8 +183,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		 * Specify a single vulnerability for which custom tags should be updated. The given 
 		 * vulnerability is expected to contain 'id' and 'revision' properties; usually this
 		 * information is returned by the SSC issues endpoint.
-		 * @param vulnerability
-		 * @return
+		 * @param vulnerability for which to update one or more custom tags
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionCustomTagUpdater forVulnerability(Object vulnerability) {
 			JSONMap issue = new JSONMap();
@@ -200,8 +201,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		 * Specify a collection of vulnerabilities for which custom tags should be updated.
 		 * See {@link #forVulnerability(Object)} for a description of expected format of the
 		 * individual entries.
-		 * @param vulnerabilities
-		 * @return
+		 * @param vulnerabilities for which to update one or more custom tags
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionCustomTagUpdater forVulnerabilities(Collection<Object> vulnerabilities) {
 			for ( Object vuln : vulnerabilities ) {
@@ -212,9 +213,9 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Update the custom tag identified by the given custom tag guid with the given value.
-		 * @param customTagGuid
-		 * @param customTagValue
-		 * @return
+		 * @param customTagGuid for the custom tag to be updated
+		 * @param customTagValue specifies the new value for the given custom tag 
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionCustomTagUpdater byGuid(String customTagGuid, String customTagValue) {
 			JSONMap customTagAudit = new JSONMap();
@@ -227,9 +228,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		/**
 		 * Update the custom tags identified by the given custom tag guid's in the given {@link Map}
 		 * keys with the corresponding values.
-		 * @param customTagGuid
-		 * @param customTagValue
-		 * @return
+		 * @param customTagGuidToValueMap {@link Map} containing custom tag GUID's and corresponding values to be updated
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionCustomTagUpdater byGuid(Map<String, String> customTagGuidToValueMap) {
 			for ( Map.Entry<String, String> customTagGuidAndValue : customTagGuidToValueMap.entrySet() ) {
@@ -240,9 +240,9 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Update the custom tag identified by the given custom tag name with the given value.
-		 * @param customTagName
-		 * @param customTagValue
-		 * @return
+		 * @param customTagName for the custom tag to be updated
+		 * @param customTagValue specifies the new value for the given custom tag
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionCustomTagUpdater byName(String customTagName, String customTagValue) {
 			return byGuid(getCustomTagHelper().getCustomTagGuid(customTagName), customTagValue);
@@ -251,8 +251,8 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		/**
 		 * Update the custom tags identified by the given custom tag names in the given {@link Map}
 		 * keys with the corresponding values.
-		 * @param customTagNameToValueMap
-		 * @return
+		 * @param customTagNameToValueMap {@link Map} containing custom tag names and corresponding values to be updated
+		 * @return Self for chaining
 		 */
 		public SSCApplicationVersionCustomTagUpdater byName(Map<String, String> customTagNameToValueMap) {
 			for ( Map.Entry<String, String> customTagNameAndValue : customTagNameToValueMap.entrySet() ) {
@@ -263,7 +263,6 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Send the attribute(s) update request to SSC.
-		 * @return
 		 */
 		@SSCRequiredActionsPermitted({"POST=/api/v\\d+/projectVersions/\\d+/issues/action"})
 		public void execute() {

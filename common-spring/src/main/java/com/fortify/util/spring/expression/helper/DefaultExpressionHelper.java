@@ -29,8 +29,7 @@ package com.fortify.util.spring.expression.helper;
  * throughout an application. By default, {@link InternalExpressionHelper} is
  * registered as the default {@link IExpressionHelper}. Applications can use
  * a different default {@link IExpressionHelper} instance by calling the
- * {@link #setDefaultExpressionHelper(IExpressionHelper)} method on application 
- * start-up.</p>
+ * {@link #set(IExpressionHelper)} method on application start-up.</p>
  * 
  * <p>Note: To avoid classes storing the default expression helper instance at class
  * load time (when the application possibly hasn't had the chance yet to update the 

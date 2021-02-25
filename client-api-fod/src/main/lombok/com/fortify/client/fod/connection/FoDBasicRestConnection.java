@@ -54,7 +54,7 @@ import com.fortify.util.rest.connection.TooManyRequestsRetryStrategy;
  * {@link WebTarget}-based execute methods. Clients calling the
  * {@link #executeRequest(String, Builder, Class)} or
  * {@link #executeRequest(String, WebTarget, Entity, Class)} methods
- * must provide their on thread synchronization if applicable.
+ * must provide their own thread synchronization if applicable.
  */
 public class FoDBasicRestConnection extends AbstractRestConnection {
 	private final Map<String, Object> pathMutexes = new HashMap<>();

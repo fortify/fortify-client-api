@@ -62,7 +62,7 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	/**
 	 * Get an {@link SSCIssueTemplateHelper} instance for efficiently
 	 * working with issue template data.
-	 * @return
+	 * @return New {@link SSCIssueTemplateHelper} instance
 	 */
 	public SSCIssueTemplateHelper getIssueTemplateHelper() {
 		return new SSCIssueTemplateHelper();
@@ -90,7 +90,7 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Lazy-load the list of issue templates from SSC
-		 * @return
+		 * @return {@link JSONList} containing SSC issue template data
 		 */
 		public JSONList getIssueTemplates() {
 			if ( issueTemplates==null ) {
@@ -102,7 +102,7 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 		/**
 		 * Get the {@link JSONMap} object representing the default issue template
 		 * (if any). This method returns null if no default template is defined on SSC.
-		 * @return
+		 * @return {@link JSONMap} containing issue template data for the default SSC issue template, or null if no default issue template is defined
 		 */
 		public JSONMap getDefaultIssueTemplate() {
 			return getIssueTemplates().find("defaultTemplate", true, JSONMap.class);
@@ -111,7 +111,7 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 		/**
 		 * Get the id of the default issue template (if any). This method returns
 		 * null if no default template is defined on SSC.
-		 * @return
+		 * @return Id of the default issue template, or null if no default issue template is defined
 		 */
 		public String getDefaultIssueTemplateId() {
 			JSONMap defaultIssueTemplate = getDefaultIssueTemplate();
@@ -120,8 +120,8 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 		
 		/**
 		 * Get the issue template id for the given issue template name.
-		 * @param issueTemplateName
-		 * @return
+		 * @param issueTemplateName for which to get the issue template id
+		 * @return issue template id for the given issue template name
 		 */
 		public String getIssueTemplateIdForName(String issueTemplateName) {
 			JSONList issueTemplates = getIssueTemplates();
@@ -135,6 +135,7 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	
 	
 	/**
+	 * Find a filter set by GUID or title
 	 * @param applicationVersionId Application version id
 	 * @param filterSetGuidOrTitle filter set GUID or title
 	 * @return filter set matching the given GUID or title, or null if not found
@@ -145,7 +146,9 @@ public class SSCIssueTemplateAPI extends AbstractSSCAPI {
 	}
 	
 	/**
-	 * @return default filter set
+	 * Get the default filter set for the given application version id
+	 * @param applicationVersionId for which to retrieve the default filter set
+	 * @return default filter set for the given application version id
 	 */
 	public final JSONMap findDefaultFilterSet(String applicationVersionId) {
 		return getApplicationVersionFilterSets(applicationVersionId).find("defaultFilterSet", true, JSONMap.class);

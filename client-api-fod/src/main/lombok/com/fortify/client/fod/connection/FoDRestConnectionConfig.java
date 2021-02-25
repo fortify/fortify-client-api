@@ -45,7 +45,7 @@ import lombok.ToString;
  * 
  * @author Ruud Senden
  *
- * @param <T>
+ * @param <T> Concrete {@link FoDRestConnectionConfig} type
  */
 @Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {

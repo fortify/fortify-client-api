@@ -36,7 +36,7 @@ import lombok.ToString;
  * 
  * @author Ruud Senden
  *
- * @param <T>
+ * @param <T> Concrete {@link WebInspectRestConnectionConfig} type
  */
 @Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public class WebInspectRestConnectionConfig<T extends WebInspectRestConnectionConfig<T>> extends AbstractRestConnectionConfig<T> {

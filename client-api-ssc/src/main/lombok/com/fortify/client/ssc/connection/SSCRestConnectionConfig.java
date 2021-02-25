@@ -37,7 +37,7 @@ import lombok.ToString;
  * 
  * @author Ruud Senden
  *
- * @param <T>
+ * @param <T> Concrete {@link SSCRestConnectionConfig} type
  */
 @Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public class SSCRestConnectionConfig<T extends SSCRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {

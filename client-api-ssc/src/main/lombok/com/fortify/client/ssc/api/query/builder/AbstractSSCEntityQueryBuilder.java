@@ -62,8 +62,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	
 	/**
 	 * Create new instance for given {@link SSCAuthenticatingRestConnection} and indicator whether paging is supported.
-	 * @param conn
-	 * @param pagingSupported
+	 * @param conn {@link SSCAuthenticatingRestConnection} used to connect to SSC
+	 * @param pagingSupported indicates whether paging is supported by the configured SSC endpoint
 	 */
 	protected AbstractSSCEntityQueryBuilder(SSCAuthenticatingRestConnection conn, boolean pagingSupported) {
 		super(conn, pagingSupported);
@@ -73,7 +73,7 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * Build an {@link IRestConnectionQuery} instance from the current
 	 * configuration.
 	 * 
-	 * @return
+	 * @return {@link IRestConnectionQuery} instance
 	 */
 	@Override
 	public IRestConnectionQuery build() {
@@ -83,8 +83,9 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	/**
 	 * Add the 'embed' query parameter to the request configuration
 	 * 
-	 * @param entity
-	 * @return
+	 * @param ignoreIfBlank If set to true, the embed request parameter is not set if the given entity is blank
+	 * @param entity The entity to use as a value for the embed request parameter
+	 * @return Self for chaining
 	 */
 	protected T paramEmbed(boolean ignoreIfBlank, String entity) {
 		return queryParam(ignoreIfBlank, "embed", entity);
@@ -97,9 +98,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	/**
 	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
 	 * implementations that expose the {@link #paramEmbed(String)} method.
-	 * @author Ruud Senden
 	 *
-	 * @param <T>
+	 * @param <T> Concrete {@link AbstractSSCEntityQueryBuilder} instance
 	 */
 	public static interface ISSCEntityQueryBuilderParamEmbed<T extends AbstractSSCEntityQueryBuilder<T>> {
 		public T paramEmbed(boolean ignoreIfBlank, String entity);
@@ -108,8 +108,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	/**
 	 * Add the 'fields' query parameter to the request configuration
 	 * 
-	 * @param fields
-	 * @return
+	 * @param fields to be added to the fields request parameter
+	 * @return Self for chaining
 	 */
 	protected T paramFields(String... fields) {
 		return queryParam("fields", StringUtils.join(fields, ","));
@@ -118,19 +118,19 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	/**
 	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
 	 * implementations that expose the {@link #paramFields(String...)} method.
-	 * @author Ruud Senden
 	 *
-	 * @param <T>
+	 * @param <T> Concrete {@link AbstractSSCEntityQueryBuilder} instance
 	 */
 	public static interface ISSCEntityQueryBuilderParamFields<T extends AbstractSSCEntityQueryBuilder<T>> {
 		public T paramFields(String... fields);
 	}
 	
 	/**
-	 * Add the 'orderby' query parameter to the request configuration
+	 * Add the 'orderBy' query parameter to the request configuration.
 	 * 
-	 * @param orderBy
-	 * @return
+	 * @param ignoreIfBlank If set to true, the orderBy request parameter is not set if no value is specified in the given {@link SSCOrderBy} instance, or if the instance itself is null 
+	 * @param orderBy defines both the field and direction to order by
+	 * @return Self for chaining
 	 */
 	protected T paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
 		if ( isNull(!ignoreIfBlank, "orderBy", orderBy) || isBlank(!ignoreIfBlank, "orderBy.field", orderBy.getField()) ) {
@@ -147,9 +147,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	/**
 	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
 	 * implementations that expose the {@link #paramOrderBy(boolean, SSCOrderBy)} method.
-	 * @author Ruud Senden
 	 *
-	 * @param <T>
+	 * @param <T> Concrete {@link AbstractSSCEntityQueryBuilder} instance
 	 */
 	public static interface ISSCEntityQueryBuilderParamOrderBy<T extends AbstractSSCEntityQueryBuilder<T>> {
 		public T paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy);
@@ -158,8 +157,9 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	/**
 	 * Add the 'groupby' query parameter to the request configuration
 	 * 
-	 * @param groupBy
-	 * @return
+	 * @param ignoreIfBlank If set to true, the groupby request parameter is not set if the given groupBy is blank 
+	 * @param groupBy specifies the value for the groupby request parameter
+	 * @return Self for chaining
 	 */
 	protected T paramGroupBy(boolean ignoreIfBlank, String groupBy) {
 		return queryParam(ignoreIfBlank, "groupby", groupBy);
@@ -167,10 +167,9 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	
 	/**
 	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
-	 * implementations that expose the {@link #paramGroupBy(String)} method.
-	 * @author Ruud Senden
+	 * implementations that expose the {@link #paramGroupBy(boolean, String)} method.
 	 *
-	 * @param <T>
+	 * @param <T> Concrete {@link AbstractSSCEntityQueryBuilder} instance
 	 */
 	public static interface ISSCEntityQueryBuilderParamGroupBy<T extends AbstractSSCEntityQueryBuilder<T>> {
 		public T paramGroupBy(boolean ignoreIfBlank, String groupBy);
@@ -179,11 +178,12 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	/**
 	 * Add the 'q' query parameter to the request configuration.
 	 * This will take the given value literally, as opposed to
-	 * {@link #paramQAnd(String, Object)} that allows for building
+	 * {@link #paramQAnd(boolean, String, Object)} that allows for building
 	 * a multi-part 'q' parameter.
 	 * 
-	 * @param q
-	 * @return
+	 * @param ignoreIfBlank If set to true, the q request parameter is not set if the given value is blank
+	 * @param q specifies the value for the 1 request parameter
+	 * @return Self for chaining
 	 */
 	protected T paramQ(boolean ignoreIfBlank, String q) {
 		return queryParam(ignoreIfBlank, "q", q);
@@ -194,9 +194,10 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * already set, the new field and value will be 'and-ed' to the
 	 * current query parameter value.
 	 * 
-	 * @param field
-	 * @param value
-	 * @return
+	 * @param ignoreIfBlank If set to true, the field will not be added to the q request parameter if either field or value is blank 
+	 * @param field specifies a field to be added to the q request parameter
+	 * @param value specifies the corresponding value to be added to the q request parameter
+	 * @return Self for chaining
 	 */
 	protected T paramQAnd(boolean ignoreIfBlank, String field, Object value) {
 		if ( !isBlank(!ignoreIfBlank, field, value) ) {
@@ -208,9 +209,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	/**
 	 * This interface is to be implemented by all {@link AbstractSSCEntityQueryBuilder}
 	 * implementations that expose the various paramQ*() methods method.
-	 * @author Ruud Senden
 	 *
-	 * @param <T>
+	 * @param <T> Concrete {@link AbstractSSCEntityQueryBuilder} instance
 	 */
 	public static interface ISSCEntityQueryBuilderParamQ<T extends AbstractSSCEntityQueryBuilder<T>> {
 		public T paramQ(boolean ignoreIfBlank, String q);
@@ -224,8 +224,8 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * entities are either loaded on demand whenever they are accessed, or pre-loaded 
 	 * using SSC bulk requests.
 	 * 
-	 * @param descriptor
-	 * @return
+	 * @param embedConfig describes the entity to be embedded in the results
+	 * @return Self for chaining
 	 */
 	public T embed(SSCEmbedConfig embedConfig) {
 		EmbedType embedType = embedConfig.getEmbedType();

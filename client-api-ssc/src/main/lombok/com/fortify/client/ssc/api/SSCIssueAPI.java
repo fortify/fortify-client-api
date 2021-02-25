@@ -62,8 +62,8 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Update the issue search options for the given application version 
-	 * @param applicationVersionId
-	 * @param issueSearchOptions
+	 * @param applicationVersionId for which to update issue search options
+	 * @param issueSearchOptions {@link IssueSearchOptions} instance
 	 */
 	@SSCRequiredActionsPermitted({"PUT=/api/v\\d+/projectVersions/\\d+/issueSearchOptions"})
 	public void updateApplicationVersionIssueSearchOptions(String applicationVersionId, IssueSearchOptions issueSearchOptions) {
@@ -75,6 +75,8 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 	
 	/**
 	 * Validate the given issue search string.
+	 * @param searchString to be validated
+	 * @return {@link JSONMap} containing validation results
 	 */
 	@SSCRequiredActionsPermitted({"POST=/api/v\\d+/validateSearchString"})
 	public JSONMap validateIssueSearchString(String searchString) {

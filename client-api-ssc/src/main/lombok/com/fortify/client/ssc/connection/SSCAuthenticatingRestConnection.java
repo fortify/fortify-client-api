@@ -48,7 +48,7 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	 * Construct a new instance of this class based on the given {@link AbstractRestConnectionConfig}
 	 * instance. 
 	 * 
-	 * @param config
+	 * @param config {@link SSCRestConnectionConfig} instance used to configure the SSC connection
 	 */
 	public SSCAuthenticatingRestConnection(SSCRestConnectionConfig<?> config) {
 		super(config);
@@ -91,7 +91,7 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	/**
 	 * This method returns an {@link SSCAuthenticatingRestConnectionBuilder} instance
 	 * that allows for building {@link SSCAuthenticatingRestConnection} instances.
-	 * @return
+	 * @return New {@link SSCAuthenticatingRestConnectionBuilder} instance
 	 */
 	public static final SSCAuthenticatingRestConnectionBuilder builder() {
 		return new SSCAuthenticatingRestConnectionBuilder();

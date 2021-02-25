@@ -71,7 +71,7 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	/**
 	 * This method returns an {@link FoDAuthenticatingRestConnectionBuilder} instance
 	 * that allows for building {@link FoDAuthenticatingRestConnection} instances.
-	 * @return
+	 * @return new {@link FoDAuthenticatingRestConnectionBuilder} instance
 	 */
 	public static final FoDAuthenticatingRestConnectionBuilder builder() {
 		return new FoDAuthenticatingRestConnectionBuilder();
