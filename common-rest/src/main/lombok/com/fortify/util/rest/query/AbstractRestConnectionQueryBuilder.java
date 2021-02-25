@@ -95,6 +95,7 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	private final WebTargetTemplateResolverBuilder webTargetTemplateResolverBuilder = new WebTargetTemplateResolverBuilder();
 	
 	private final List<BiConsumer<PagingData, JSONList>> pagePreProcessors = new ArrayList<>();
+	private final List<BiConsumer<PagingData, JSONList>> pagePostProcessors = new ArrayList<>();
 	private final List<IJSONMapPreProcessor> preProcessors = new ArrayList<>();
 	private int maxResults = -1;
 	private final boolean pagingSupported;
@@ -119,6 +120,15 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	
 	public T pagePreProcessor(final int blockSize, final Consumer<JSONList> pagePreProcessor) {
 		return pagePreProcessor(jsonList->jsonList.forEachBlock(blockSize, pagePreProcessor));
+	}
+	
+	public T pagePostProcessor(BiConsumer<PagingData, JSONList> pagePostProcessor) {
+		this.pagePostProcessors.add(pagePostProcessor);
+		return _this();
+	}
+	
+	public T pagePostProcessor(Consumer<JSONList> pagePostProcessor) {
+		return pagePreProcessor((pagingData,jsonList)->pagePostProcessor.accept(jsonList));
 	}
 	
 	@SuppressWarnings("unchecked")

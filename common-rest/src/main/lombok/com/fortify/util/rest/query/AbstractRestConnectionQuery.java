@@ -61,6 +61,7 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	private final IRestConnection conn;
 	private final List<IWebTargetUpdater> webTargetUpdaters;
 	private final List<BiConsumer<PagingData, JSONList>> pagePreProcessors;
+	private final List<BiConsumer<PagingData, JSONList>> pagePostProcessors;
 	private final List<IJSONMapPreProcessor> preProcessors;
 	private final int maxResults;
 	private final boolean pagingSupported;
@@ -72,6 +73,7 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 		this.conn = config.getConn();
 		this.webTargetUpdaters = Collections.unmodifiableList(config.getWebTargetUpdaters());
 		this.pagePreProcessors =  Collections.unmodifiableList(config.getPagePreProcessors());
+		this.pagePostProcessors =  Collections.unmodifiableList(config.getPagePostProcessors());
 		this.preProcessors =  Collections.unmodifiableList(config.getPreProcessors());
 		this.maxResults = config.getMaxResults();
 		this.pagingSupported = config.isPagingSupported();
@@ -215,6 +217,9 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 				if ( pagingData.isMaxResultsReached() ) { break; }
 				processor.process(obj);
 			}
+		}
+		for (BiConsumer<PagingData, JSONList> pagePostProcessor : pagePostProcessors ) {
+			pagePostProcessor.accept(pagingData, list);
 		}
 	}
 }
