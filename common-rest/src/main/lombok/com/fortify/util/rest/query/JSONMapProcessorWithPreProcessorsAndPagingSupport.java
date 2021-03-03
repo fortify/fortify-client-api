@@ -51,9 +51,9 @@ class JSONMapProcessorWithPreProcessorsAndPagingSupport implements IJSONMapProce
 	 * an {@link IJSONMapProcessor} instance, and the {@link PagingData} for the current
 	 * query.
 	 * 
-	 * @param preProcessors
-	 * @param processor
-	 * @param pagingData
+	 * @param preProcessors that will pre-process the results
+	 * @param processor for processing the results
+	 * @param pagingData for the current query
 	 */
 	public JSONMapProcessorWithPreProcessorsAndPagingSupport(List<IJSONMapPreProcessor> preProcessors, IJSONMapProcessor processor, PagingData pagingData) {
 		this.preProcessors = preProcessors;
@@ -85,8 +85,8 @@ class JSONMapProcessorWithPreProcessorsAndPagingSupport implements IJSONMapProce
 	 * If any of them returns false, this method stops processing any remaining
 	 * {@link IJSONMapPreProcessor} instances and returns false as well, essentially
 	 * filtering out/ignoring the given {@link JSONMap} instance.
-	 * @param json
-	 * @return
+	 * @param json to be pre-processed
+	 * @return true if all configured pre-processors return true, false otherwise
 	 */
 	private boolean preProcess(JSONMap json) {
 		boolean result = true;

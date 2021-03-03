@@ -50,7 +50,7 @@ import lombok.ToString;
  * 
  * @author Ruud Senden
  *
- * @param <T>
+ * @param <T> Concrete {@link AbstractRestConnectionConfig} type
  */
 @Data @EqualsAndHashCode(callSuper=false) @ToString(callSuper=false)
 public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnectionConfig<T>> {
@@ -87,8 +87,8 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	
 	/**
 	 * @see #setConnectionId(String)
-	 * @param connectionId
-	 * @return
+	 * @param connectionId to be used for the connection
+	 * @return Self for chaining
 	 */
 	public T connectionId(String connectionId) {
 		setConnectionId(connectionId);
@@ -106,7 +106,7 @@ public abstract class AbstractRestConnectionConfig<T extends AbstractRestConnect
 	 * to de-serialize an {@link AbstractJSONMapOnDemandLoaderWithConnection} instance
 	 * that was serialized by another JVM invocation.</p>
 	 * 
-	 * @param connectionId
+	 * @param connectionId to be used for the connection
 	 */
 	protected void setConnectionId(String connectionId) {
 		if ( StringUtils.isBlank(connectionId) ) {

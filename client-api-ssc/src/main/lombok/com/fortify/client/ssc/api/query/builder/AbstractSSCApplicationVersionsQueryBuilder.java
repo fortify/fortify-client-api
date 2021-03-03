@@ -263,8 +263,8 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 		 * attribute values as the map value. Attributes without value(s) will not be 
 		 * included in the resulting map.
 		 * 
-		 * @param attrs
-		 * @return
+		 * @param attrs {@link JSONList} containing application version attributes
+		 * @return {@link JSONMap} containing attribute values indexed by name
 		 */
 		private JSONMap getAttributeValuesByName(JSONList attrs) {
 			JSONMap result = new JSONMap();

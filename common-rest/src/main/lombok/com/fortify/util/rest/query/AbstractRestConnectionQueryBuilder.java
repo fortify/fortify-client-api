@@ -195,10 +195,10 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	
 	/** 
 	 * Utility method for replacing a specific field in the given fields array
-	 * @param fieldToReplace
-	 * @param replacements
-	 * @param fields
-	 * @return
+	 * @param fieldToReplace identified the field to be replaced in the given fields array
+	 * @param replacements for the given field to be replaced
+	 * @param fields in which to replace the given field
+	 * @return Copy of the given fields array, with the given replacements replacing the field to be replaced
 	 */
 	protected String[] replaceField(String fieldToReplace, String[] replacements, String... fields) {
 		if ( fields==null ) { return null; }
@@ -215,8 +215,11 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	
 	/**
 	 * Utility method for checking that input parameter value is not blank
-	 * @param name
-	 * @param value
+	 * 
+	 * @param throwExceptionIfBlank indicated whether an exception should be thrown if the given value is blank
+	 * @param name of the field for which we're trying to set a value
+	 * @param value to be set for the given field
+	 * @return true if the given value is blank, false otherwise
 	 */
 	protected boolean isBlank(boolean throwExceptionIfBlank, String name, Object value) {
 		if ( isBlank(value) ) {
@@ -232,8 +235,10 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	
 	/**
 	 * Utility method for checking that input parameter value is not null
-	 * @param name
-	 * @param value
+	 * @param throwExceptionIfBlank indicated whether an exception should be thrown if the given value is null
+	 * @param name of the field for which we're trying to set a value
+	 * @param value to be set for the given field
+	 * @return true if the given value is null, false otherwise
 	 */
 	protected boolean isNull(boolean throwExceptionIfBlank, String name, Object value) {
 		if ( value==null ) {

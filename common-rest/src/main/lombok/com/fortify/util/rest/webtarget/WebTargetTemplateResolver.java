@@ -47,8 +47,8 @@ public class WebTargetTemplateResolver implements IWebTargetUpdater {
 	/**
 	 * Create a new instance for resolving the given template values
 	 * in {@link WebTarget} instances. 
-	 * @param templateValues
-	 * @param encodeSlashInPath
+	 * @param templateValues {@link Map} containing template parameter names and values
+	 * @param encodeSlashInPath indicates whether slashes in paths should be encoded
 	 */
 	public WebTargetTemplateResolver(Map<String,Object> templateValues, boolean encodeSlashInPath) {
 		this.templateValues = Collections.unmodifiableMap(templateValues);

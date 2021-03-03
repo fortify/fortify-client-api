@@ -49,7 +49,7 @@ public interface IJSONMapPreProcessor {
 	 * is processed by an {@link IJSONMapProcessor} instance, and/or exclude
 	 * the given {@link JSONMap} instance from further processing.
 	 * 
-	 * @param json
+	 * @param json to be pre-processed
 	 * @return true if the given {@link JSONMap} should be included, false otherwise
 	 */
 	public boolean preProcess(JSONMap json);

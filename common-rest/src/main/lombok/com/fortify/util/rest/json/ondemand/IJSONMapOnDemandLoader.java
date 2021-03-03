@@ -44,9 +44,9 @@ public interface IJSONMapOnDemandLoader extends Serializable {
 	 * property value to avoid re-loading the property value whenever
 	 * the property is requested.
 	 * 
-	 * @param propertyName
-	 * @param parent
-	 * @return
+	 * @param propertyName for which to retrieve the value
+	 * @param parent containing the {@link IJSONMapOnDemandLoader} instance on which this method is being invoked
+	 * @return On-demand value for the given property name
 	 */
 	public Object getAndStoreOnDemand(String propertyName, JSONMap parent);
 }

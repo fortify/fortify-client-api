@@ -43,20 +43,20 @@ public interface IRestConnectionQuery {
 	 * this method usually provides better performance and requires less
 	 * memory than the {@link #getAll()} method.
 	 * 
-	 * @param processor
+	 * @param processor used to process the results 
 	 */
 	void processAll(IJSONMapProcessor processor);
 	
 	/** 
 	 * Same as {@link #processAll(IJSONMapProcessor)}, but using lambda
 	 * expressions.
-	 * @param processor
+	 * @param processor used to process the results
 	 */
 	void processAll(Consumer<JSONMap> processor);
 
 	/**
 	 * Get all results from the REST API call
-	 * @return
+	 * @return {@link JSONList} containing all results from the REST API call
 	 */
 	JSONList getAll();
 
@@ -64,7 +64,7 @@ public interface IRestConnectionQuery {
 	 * Get a unique result from the REST API call. If there are no
 	 * results, null will be returned. If there is more than one result,
 	 * an exception will be thrown.
-	 * @return
+	 * @return Unique result from the REST API call
 	 */
 	JSONMap getUnique();
 

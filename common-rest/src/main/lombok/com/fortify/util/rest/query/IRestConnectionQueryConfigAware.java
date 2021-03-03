@@ -33,8 +33,8 @@ import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
  * 
  * @author Ruud Senden
  *
- * @param <T>
+ * @param <T> Concrete {@link AbstractRestConnectionQueryBuilder} instance
  */
-public interface IRestConnectionQueryConfigAware<T> {
+public interface IRestConnectionQueryConfigAware<T extends AbstractRestConnectionQueryBuilder<?,?>> {
 	public void setRestConnectionQueryConfig(T config);
 }

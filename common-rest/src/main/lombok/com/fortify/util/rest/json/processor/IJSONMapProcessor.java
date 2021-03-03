@@ -37,13 +37,14 @@ public interface IJSONMapProcessor {
 	/**
 	 * Allow implementations to process the current JSON object
 	 * from a list of one or more JSON objects.
-	 * @param json
+	 * @param json to be processed
 	 */
 	public void process(JSONMap json);
 	/**
 	 * For multi-page requests, this method will be invoked before 
 	 * loading the next page. For example this allows implementations
 	 * to display progress information.
+	 * @param pagingData for this notification
 	 */
 	public void notifyNextPage(PagingData pagingData);
 }

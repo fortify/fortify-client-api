@@ -23,7 +23,7 @@
  * IN THE SOFTWARE.
  ******************************************************************************/
 /**
- * <p>The {@link FoDEntityQuery} class in this
+ * <p>The {@link com.fortify.client.fod.api.query.FoDEntityQuery} class in this
  *    package is the main class for performing FoD-related queries. Instances of this
  *    class are created using the build() method in the various builder implementations
  *    in the {@link com.fortify.client.fod.api.query.builder} package.</p>   

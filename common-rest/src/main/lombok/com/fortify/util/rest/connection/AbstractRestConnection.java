@@ -140,6 +140,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 
 	/**
 	 * Execute a request for the given method using the given web resource.
+	 * @param <T>        The return type for the data returned by the request
 	 * @param httpMethod The HTTP method to be used, as specified by one of the constants
 	 *                   in {@link HttpMethod}
 	 * @param webResource The web resource used to execute the request. Usually this web resource 
@@ -153,6 +154,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	
 	/**
 	 * Execute a request for the given method using the given web resource and entity.
+	 * @param <T>        The return type for the data returned by the request
 	 * @param httpMethod The HTTP method to be used, as specified by one of the constants
 	 *                   in {@link HttpMethod}
 	 * @param webResource The web resource used to execute the request. Usually this web resource 
@@ -169,6 +171,15 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 * processing based on the given {@link WebTarget}, before the {@link WebTarget} 
 	 * is converted into a {@link Builder}. For example, a subclass could synchronize
 	 * on the target URI for rate-limited systems. 
+	 *
+	 * @param <T>         The return type for the data returned by the request
+	 * @param httpMethod  The HTTP method to be used, as specified by one of the constants
+	 *                    in {@link HttpMethod} 
+	 * @param webResource The web resource used to execute the request. Usually this web resource 
+	 * 					  is created using {@link #getBaseResource()}.path(...)...
+	 * @param entity      The entity to be sent in the request
+	 * @param returnType  The return type for the data returned by the request.
+	 * @return The result of executing the HTTP request.
 	 */
 	protected <T> T executeRequestWithFinalizedWebTarget(String httpMethod, WebTarget webResource, Entity<?> entity, Class<T> returnType) {
 		return executeRequest(httpMethod, webResource.request(), entity, returnType);
@@ -176,6 +187,8 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	
 	/**
 	 * Execute a request for the given method using the given builder.
+	 * 
+	 * @param <T>        The return type for the data returned by the request
 	 * @param httpMethod The HTTP method to be used, as specified by one of the constants
 	 *                   in {@link HttpMethod}
 	 * @param builder	 The builder used to execute the request. Usually this builder is created
@@ -189,6 +202,8 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	
 	/**
 	 * Execute a request for the given method using the given builder.
+	 * 
+	 * @param <T>        The return type for the data returned by the request
 	 * @param httpMethod The HTTP method to be used, as specified by one of the constants
 	 *                   in {@link HttpMethod}
 	 * @param builder	 The builder used to execute the request. Usually this builder is created
@@ -291,14 +306,17 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	/**
 	 * Check the response code. If successful, return the entity with the given return type,
 	 * otherwise throw an exception.
-	 * @param response
-	 * @param returnType
+	 * @param <T>         Return type for the contents to be retrieved from the given {@link Response}
+	 * @param httpMethod  HTTP method that was used to execute the request
+	 * @param builder     {@link Builder} that was used to execute the request
+	 * @param response    {@link Response} to be checked and from which to retrieve the response contents 
+	 * @param returnType  Return type for the contents to be retrieved from the given {@link Response}
 	 * @return The entity from the given {@link ClientResponse} if available
 	 */
 	protected <T> T checkResponseAndGetOutput(String httpMethod, Builder builder, Response response, Class<T> returnType) {
 		StatusType status = response.getStatusInfo();
 		if ( status != null && status.getFamily() == Family.SUCCESSFUL ) {
-			return getSuccessfulResponse(response, returnType, status);
+			return getSuccessfulResponse(response, returnType);
 		} else {
 			throw getUnsuccesfulResponseException(response);
 		}
@@ -306,18 +324,18 @@ public abstract class AbstractRestConnection implements IRestConnection {
 
 	/**
 	 * Get the return value for a successful response.
-	 * @param response
-	 * @param returnType
-	 * @param status
-	 * @return
+	 * @param <T>        Return type for the contents to be retrieved from the given {@link Response}
+	 * @param response   {@link Response} object from which to retrieve the response contents 
+	 * @param returnType Return type for the contents to be retrieved from the given {@link Response}
+	 * @return Response contents from the given {@link Response}
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T getSuccessfulResponse(Response response, Class<T> returnType, StatusType status) {
+	protected <T> T getSuccessfulResponse(Response response, Class<T> returnType) {
 		if ( returnType!=null && returnType.isAssignableFrom(response.getClass()) ) {
 			return (T)response;
 		} else {
 			try {
-				if ( status.getStatusCode() == Status.NO_CONTENT.getStatusCode() ) {
+				if ( response.getStatusInfo().getStatusCode() == Status.NO_CONTENT.getStatusCode() ) {
 					return null;
 				} else if (returnType == null || returnType.isAssignableFrom(Void.class)) {
 					return null; // TODO do we need to read the entity if there is any?
@@ -467,7 +485,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	
 	/**
 	 * This {@link ApacheHttpClientBuilderConfigurator} implementation simply calls
-	 * {@link AbstractRestConnection#updateHttpClientBuilder(HttpClientBuilder) to
+	 * {@link AbstractRestConnection#updateHttpClientBuilder(HttpClientBuilder)} to
 	 * update the given {@link HttpClientBuilder}.
 	 */
 	private final class HttpClientBuilderConfigurator implements ApacheHttpClientBuilderConfigurator {
@@ -480,8 +498,8 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	
 	/**
 	 * Create a {@link CredentialsProvider} for the given configuration.
-	 * @param config
-	 * @return
+	 * @param config {@link AbstractRestConnectionConfig} instance that optionally provides the credentials
+	 * @return {@link CredentialsProvider} instance, or null if no credentials available
 	 */
 	protected CredentialsProvider createCredentialsProvider(AbstractRestConnectionConfig<?> config) {
 		CredentialsProvider result = null;
@@ -496,7 +514,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 * Create the {@link CredentialsProvider} to use for requests.
 	 * This default implementation returns a {@link BasicCredentialsProvider}
 	 * instance.
-	 * @return
+	 * @return {@link CredentialsProvider} instance
 	 */
 	protected CredentialsProvider createCredentialsProvider() {
 		return new BasicCredentialsProvider();
@@ -512,7 +530,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 * instance. Subclasses can override this method to return
 	 * an alternative {@link CookieStore} implementation, or
 	 * null if cookies should not be maintained between requests.
-	 * @return
+	 * @return {@link CookieStore} instance
 	 */
 	protected CookieStore createCookieStore() {
 		return new BasicCookieStore();
@@ -570,7 +588,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	
 	/**
 	 * URL-encode the given input String using UTF-8 encoding.
-	 * @param input
+	 * @param input {@link String} to be encoded
 	 * @return The URL-encoded input string
 	 */
 	public static final String urlEncode(String input) {
@@ -584,8 +602,8 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	/** 
 	 * This method sets additional {@link HttpClientBuilder} properties.
 	 * Subclasses may override this method, but should call 
-	 * super.{@link #updateBuilder(Builder)} 
-	 * @param httpClientBuilder
+	 * super.{@link #updateHttpClientBuilder(HttpClientBuilder)} 
+	 * @param httpClientBuilder to be updated
 	 */
 	protected void updateHttpClientBuilder(HttpClientBuilder httpClientBuilder) {
 		httpClientBuilder.setDefaultRequestConfig(getRequestConfig());
