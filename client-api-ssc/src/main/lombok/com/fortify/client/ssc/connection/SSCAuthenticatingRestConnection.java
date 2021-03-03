@@ -61,14 +61,16 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 	 * {@link SSCTokenFactoryTokenCredentials} or {@link SSCTokenFactoryUserCredentials}
 	 * instance.
 	 *  
-	 * @param config
-	 * @return
+	 * @param config {@link SSCRestConnectionConfig} instance
+	 * @return {@link ISSCTokenFactory} instance
 	 */
 	private ISSCTokenFactory getTokenFactory(SSCRestConnectionConfig<?> config) {
 		if ( StringUtils.isNotBlank(config.getAuthToken()) ) {
 			return new SSCTokenFactoryTokenCredentials(config.getAuthToken());
 		} else if ( StringUtils.isNotBlank(config.getUserName()) && StringUtils.isNotBlank(config.getPassword()) ) {
-			return new SSCTokenFactoryUserCredentials(new SSCBasicRestConnection(config), config.getUserName(), config.getPassword());
+			try ( SSCBasicRestConnection conn = new SSCBasicRestConnection(config) ) {
+				return new SSCTokenFactoryUserCredentials(conn, config.getUserName(), config.getPassword());
+			}
 		} else {
 			throw new RuntimeException("Either SSC authentication token, or user name and password need to be specified");
 		}
