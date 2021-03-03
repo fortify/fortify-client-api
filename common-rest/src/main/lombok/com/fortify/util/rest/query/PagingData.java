@@ -49,7 +49,7 @@ public class PagingData {
 	 * Get the start position for the next page to be loaded.
 	 * {@link AbstractRestConnectionQuery} implementations will
 	 * usually add this information to paged REST requests.
-	 * @return
+	 * @return next page start index
 	 */
 	public int getNextPageStart() {
 		return processedTotalBeforeFilters;
@@ -59,7 +59,7 @@ public class PagingData {
 	 * Get the size for the next page to be loaded.
 	 * {@link AbstractRestConnectionQuery} implementations will
 	 * usually add this information to paged REST requests.
-	 * @return
+	 * @return next page size
 	 */
 	public int getNextPageSize() {
 		return nextPageSize;
@@ -68,7 +68,7 @@ public class PagingData {
 	/**
 	 * Indicate whether we've already loaded the maximum number of results
 	 * (if configured).
-	 * @return
+	 * @return true if maximum results is reached, false otherwise
 	 */
 	public boolean isMaxResultsReached() {
 		return maxResults != -1 && processedTotalAfterFilters >= maxResults;
@@ -80,7 +80,7 @@ public class PagingData {
 	 * in the {@link IJSONMapProcessor#notifyNextPage(PagingData)}
 	 * method).
 	 * 
-	 * @param totalAvailable
+	 * @param totalAvailable indicates how many results are available in total
 	 */
 	public void setTotalAvailable(int totalAvailable) {
 		this.totalAvailable = totalAvailable;
@@ -114,7 +114,7 @@ public class PagingData {
 	/**
 	 * Package-private method for updating the number
 	 * of processed results.
-	 * @param count
+	 * @param count number of items processed before filtering
 	 */
 	void addProcessedBeforeFilters(int count) {
 		processedTotalBeforeFilters += count; processedCurrentPageBeforeFilters += count;
@@ -123,7 +123,7 @@ public class PagingData {
 	/**
 	 * Package-private method for updating the number
 	 * of non-filtered processed results.
-	 * @param count
+	 * @param count number of items processed after filtering
 	 */
 	void addProcessedAfterFilters(int count) {
 		processedTotalAfterFilters += count;
@@ -132,8 +132,8 @@ public class PagingData {
 	/**
 	 * Configure the maximum number of results to
 	 * be loaded.
-	 * @param max
-	 * @return
+	 * @param max number of results to be processed
+	 * @return Self for chaining
 	 */
 	public PagingData maxResults(int max) {
 		this.maxResults  = max;
@@ -142,6 +142,8 @@ public class PagingData {
 	
 	/**
 	 * Configure the page size; default is 50
+	 * @param pageSize specifies the number of entries per page to be retrieved
+	 * @return Self for chaining
 	 */
 	public PagingData pageSize(int pageSize) {
 		this.pageSize = pageSize;

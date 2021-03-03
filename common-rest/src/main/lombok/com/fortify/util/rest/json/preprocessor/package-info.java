@@ -25,9 +25,7 @@
 /**
  * <p>This package provides various interfaces and classes for pre-processing 
  *    {@link com.fortify.util.rest.json.JSONMap} instances before 
- *    {@link IJSONMapProcessor#process(com.fortify.util.rest.json.JSONMap)} 
+ *    {@link com.fortify.util.rest.json.processor.IJSONMapProcessor#process(com.fortify.util.rest.json.JSONMap)} 
  *    is called.</p>
  */
 package com.fortify.util.rest.json.preprocessor;
-
-import com.fortify.util.rest.json.processor.IJSONMapProcessor;

@@ -34,7 +34,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
  * 
  * @author Ruud Senden
  *
- * @param <T>
+ * @param <T> Concrete {@link AbstractRestConnectionWithCredentialsConfig} type
  */
 public abstract class AbstractRestConnectionWithCredentialsConfig<T extends AbstractRestConnectionWithCredentialsConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> implements ICredentialsProvider {
 	@Override

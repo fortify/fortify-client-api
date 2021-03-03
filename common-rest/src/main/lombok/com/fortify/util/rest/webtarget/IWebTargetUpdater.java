@@ -40,8 +40,8 @@ public interface IWebTargetUpdater {
 	/**
 	 * Update the given {@link WebTarget}, returning the updated {@link WebTarget}.
 	 * 
-	 * @param target
-	 * @return
+	 * @param target to be updated
+	 * @return New {@link WebTarget} instance based on the given {@link WebTarget} instance
 	 */
 	public WebTarget update(WebTarget target);
 }

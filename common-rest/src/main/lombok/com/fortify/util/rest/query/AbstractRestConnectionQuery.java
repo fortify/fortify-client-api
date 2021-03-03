@@ -149,8 +149,8 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	 * {@link PagingData} object with information from the last request, for example the total
 	 * number of available results. This method is only called if this class is configured
 	 * with {@link #pagingSupported}==true.
-	 * @param pagingData
-	 * @param responseData
+	 * @param pagingData {@link PagingData} instance to be updated
+	 * @param responseData containing information to update the given {@link PagingData} instance
 	 */
 	protected void updatePagingDataFromResponse(PagingData pagingData, ResponseType responseData) {
 		throw new UnsupportedOperationException("Paging is not supported by "+this.getClass().getName());
@@ -160,8 +160,8 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	 * This method must be overridden by all implementations that support paging, to add information
 	 * about page start and size to the request. This method is only called if this class is configured
 	 * with {@link #pagingSupported}==true.
-	 * @param target
-	 * @param pagingData
+	 * @param target {@link WebTarget} to be updated with given {@link PagingData}, for example to set <code>start</code> and <code>limit</code> request parameters 
+	 * @param pagingData containing information to update the given {@link WebTarget} instance
 	 * @return Updated {@link WebTarget}
 	 */
 	protected WebTarget updateWebTargetWithPagingData(WebTarget target, PagingData pagingData) {
@@ -170,21 +170,21 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 	
 	/**
 	 * This method must be implemented by subclasses to return the response type class.
-	 * @return
+	 * @return Response type
 	 */
 	protected abstract Class<ResponseType> getResponseTypeClass();
 
 	/**
 	 * This method must be implemented by subclasses to get a {@link JSONList} instance
 	 * from the response data.
-	 * @param responseData
-	 * @return
+	 * @param responseData from which to retrieve the {@link JSONList} instance
+	 * @return {@link JSONList} containing array entries returned by a REST endpoint
 	 */
 	protected abstract JSONList getJSONListFromResponse(ResponseType responseData);
 	
 	/**
 	 * Process all results returned by the given {@link WebTarget} by calling the given {@link IJSONMapProcessor}.
-	 * Depending on the return value of {@link #isPagingSupported()}, this method will either directly invoke
+	 * Depending on the return value of {@link #pagingSupported}, this method will either directly invoke
 	 * the given web target (paging not supported), or retrieve all data page by page (paging is supported).
 	 * 
 	 */

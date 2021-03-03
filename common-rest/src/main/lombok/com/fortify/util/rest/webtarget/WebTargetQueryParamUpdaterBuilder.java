@@ -50,7 +50,9 @@ public class WebTargetQueryParamUpdaterBuilder implements IWebTargetUpdaterBuild
 	 * single blank value, then the {@link WebTargetQueryParamUpdater} 
 	 * implementation will not add the query parameter.
 	 * 
-	 * @param paramValues
+	 * @param paramName to be added to {@link WebTarget} instances
+	 * @param paramValues for the given parameter name
+	 * @return Self for chaining
 	 */
 	public final WebTargetQueryParamUpdaterBuilder queryParam(String paramName, String... paramValues) {
 		this.queryParams.put(paramName, paramValues); return this;

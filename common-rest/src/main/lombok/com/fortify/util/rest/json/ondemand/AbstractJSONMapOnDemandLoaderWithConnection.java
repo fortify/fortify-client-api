@@ -35,7 +35,7 @@ import com.fortify.util.rest.json.JSONMap;
  * 
  * @author Ruud Senden
  *
- * @param <C>
+ * @param <C> Concrete {@link IRestConnection} type
  */
 public abstract class AbstractJSONMapOnDemandLoaderWithConnection<C extends IRestConnection> extends AbstractJSONMapOnDemandLoader {
 	private static final long serialVersionUID = 1L;

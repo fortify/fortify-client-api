@@ -84,7 +84,7 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 		/**
 		 * Private constructor; instances can only be created through
 		 * {@link SSCApplicationVersionAttributeAPI#updateApplicationVersionAttributes(String)}
-		 * @param applicationVersionId
+		 * @param applicationVersionId SSC application version id for which attributes are to be updated 
 		 */
 		private SSCApplicationVersionAttributesUpdater(String applicationVersionId) {
 			this.applicationVersionId = applicationVersionId;

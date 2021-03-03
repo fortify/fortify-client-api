@@ -192,7 +192,7 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		 * this method looks up the corresponding {@link JSONMap} from {@link #uriToObjectMap}
 		 * (which is the {@link JSONMap} entry that was used to generate the bulk request).
 		 * The bulk result contents are then added to this {@link JSONMap} under the property
-		 * that was configured using the {@link #targetProperty(String)} method.
+		 * name configured in the {@link #embedDefinition}.
 		 *   
 		 * @param singleBulkResult The bulk result currently being processed
 		 */

@@ -218,7 +218,7 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 	 * @param applicationVersionId for which to get the bug filing requirements
 	 * @param data contains the current bug parameter data
 	 * @param changedParamIdentifier identifies the parameter that was last changed
-	 * @return
+	 * @return {@link JSONMap} describing bug filing requirements
 	 */
 	private JSONMap getBugFilingRequirements(String applicationVersionId, JSONMap data, String changedParamIdentifier) {
 		JSONList request = new JSONList();

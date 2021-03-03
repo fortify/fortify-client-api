@@ -37,7 +37,7 @@ import lombok.ToString;
  * 
  * @author Ruud Senden
  *
- * @param <T>
+ * @param <T> Concrete {@link AbstractRestConnectionWithUsernamePasswordConfig} type
  */
 @Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public abstract class AbstractRestConnectionWithUsernamePasswordConfig<T extends AbstractRestConnectionWithUsernamePasswordConfig<T>> extends AbstractRestConnectionConfig<T> {

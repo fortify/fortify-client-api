@@ -42,7 +42,7 @@ public class WebTargetPathUpdater implements IWebTargetUpdater {
 	/**
 	 * Create a new instance for adding the given paths to
 	 * {@link WebTarget} instances.
-	 * @param paths
+	 * @param paths to be added to {@link WebTarget} instances by this {@link IWebTargetUpdater}
 	 */
 	public WebTargetPathUpdater(String... paths) {
 		this.paths = paths;
@@ -51,7 +51,7 @@ public class WebTargetPathUpdater implements IWebTargetUpdater {
 	/**
 	 * Create a new instance for adding the given paths to
 	 * {@link WebTarget} instances.
-	 * @param paths
+	 * @param paths paths to be added to {@link WebTarget} instances by this {@link IWebTargetUpdater}
 	 */
 	public WebTargetPathUpdater(List<String> paths) {
 		this.paths = paths.toArray(new String[]{});

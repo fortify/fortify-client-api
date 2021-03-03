@@ -51,8 +51,8 @@ public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	 * given, or only a single blank value, then the query parameter will
 	 * not be added.
 	 * 
-	 * @param name
-	 * @param values
+	 * @param name of the query parameter to be added by this {@link IWebTargetUpdater}
+	 * @param values for the query parameter to be added
 	 */
 	public WebTargetQueryParamUpdater(String name, String... values) {
 		this.queryParams = Collections.singletonMap(name, values);
@@ -64,7 +64,8 @@ public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	 * instances. For any parameter, if no values are given, or only a single 
 	 * blank value, then the query parameter will not be added.
 	 * 
-	 * @param queryParams
+	 * @param queryParams {@link Map} containing zero or more query parameters and 
+	 *        corresponding values to be added by this {@link IWebTargetUpdater}
 	 */
 	public WebTargetQueryParamUpdater(Map<String, String[]> queryParams) {
 		this.queryParams = Collections.unmodifiableMap(new HashMap<>(queryParams));

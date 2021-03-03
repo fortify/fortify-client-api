@@ -63,6 +63,9 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 
 	/**
 	 * @see LinkedHashMap#LinkedHashMap(int, float, boolean)
+	 * @param initialCapacity for this {@link JSONMap}
+	 * @param loadFactor for this {@link JSONMap}
+	 * @param accessOrder for this {@link JSONMap}
 	 */
 	public JSONMap(int initialCapacity, float loadFactor, boolean accessOrder) {
 		super(initialCapacity, loadFactor, accessOrder);
@@ -70,13 +73,16 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 
 	/**
 	 * @see LinkedHashMap#LinkedHashMap(int, float)
+	 * @param initialCapacity for this {@link JSONMap}
+	 * @param loadFactor for this {@link JSONMap}
 	 */
 	public JSONMap(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 	}
 
 	/**
-	 * @see LinkedHashMap#LinkedHashMap(int)
+	 * @see LinkedHashMap#LinkedHashMap(int) 
+	 * @param initialCapacity for this {@link JSONMap}
 	 */
 	public JSONMap(int initialCapacity) {
 		super(initialCapacity);
@@ -84,6 +90,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 
 	/**
 	 * @see LinkedHashMap#LinkedHashMap(Map)
+	 * @param m {@link Map} from which to copy keys and values into this {@link JSONMap}
 	 */
 	public JSONMap(Map<? extends String, ? extends Object> m) {
 		super(m);
@@ -91,6 +98,9 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	
 	/**
 	 * Copy only the given fields from the source map into this new instance
+	 * @param source {@link Map} from which to copy fields
+	 * @param field to copy from the given source {@link Map}
+	 * @param extraFields to copy from the given source {@link Map}
 	 */
 	public JSONMap(Map<? extends String, ? extends Object> source, String field, String... extraFields) {
 		super((extraFields==null?0:extraFields.length)+1);
@@ -123,6 +133,11 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	/**
 	 * @see #getOrDefault(Object, Object)
 	 * This overloaded method adds support for converting the value to the given type.
+	 * @param <T> Return type
+	 * @param key for which to get the value from this {@link JSONMap}
+	 * @param defaultValue if given key is not defined in this {@link JSONMap}
+	 * @param type to which to convert the requested value
+	 * @return Potentially converted value for the given key
 	 */
 	public <T> T getOrDefault(Object key, T defaultValue, Class<T> type) {
 		return JSONConversionServiceFactory.getConversionService().convert(getOrDefault(key, defaultValue), type);
@@ -131,6 +146,10 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	/**
 	 * @see #get(Object)
 	 * This overloaded method adds support for converting the value to the given type.
+	 * @param <T> Return type
+	 * @param key for which to get the value from this {@link JSONMap}
+	 * @param type to which to convert the requested value
+	 * @return Potentially converted value for the given key
 	 */
 	public <T> T get(Object key, Class<T> type) {
 		return JSONConversionServiceFactory.getConversionService().convert(get(key), type);
@@ -139,6 +158,10 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	/**
 	 * This method allows for getting the value for the given property
 	 * path, and converts this value to the given type.
+	 * @param <T> Return type
+	 * @param path for which to get the value from this {@link JSONMap}
+	 * @param type to which to convert the requested value
+	 * @return Potentially converted value for the given path
 	 */
 	public <T> T getPath(String path, Class<T> type) {
 		return JSONConversionServiceFactory.getConversionService().convert(getPath(path), type);
@@ -147,6 +170,8 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	/**
 	 * This method allows for getting the value for the given property
 	 * path.
+	 * @param path for which to get the value from this {@link JSONMap}
+	 * @return Value for the given path
 	 */
 	public Object getPath(String path) {
 		return InternalExpressionHelper.get().evaluateSimpleExpression(this, path, Object.class);
@@ -155,8 +180,8 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	/**
 	 * Get the {@link JSONMap} instance with the given key, or create and
 	 * return a new {@link JSONMap} instance if the given key does not exist.
-	 * @param key
-	 * @return
+	 * @param key for which to retrieve a {@link JSONMap} instance
+	 * @return {@link JSONMap} instance for the given key, or a new instance if no entry with the given key is available
 	 */
 	public JSONMap getOrCreateJSONMap(String key) {
 		JSONMap result = get(key, JSONMap.class);
@@ -170,8 +195,8 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	/**
 	 * Get the {@link JSONList} instance with the given key, or create and
 	 * return a new {@link JSONList} instance if the given key does not exist.
-	 * @param key
-	 * @return
+	 * @param key key for which to retrieve a {@link JSONList} instance
+	 * @return {@link JSONList} instance for the given key, or a new instance if no entry with the given key is available
 	 */
 	public JSONList getOrCreateJSONList(String key) {
 		JSONList result = get(key, JSONList.class);
@@ -186,8 +211,8 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * Add multiple values to this {@link JSONMap}, each value under the
 	 * corresponding property path. See {@link #putPath(String, Object, boolean)}
 	 * for more information.
-	 * @param map
-	 * @param ignoreNullOrEmptyValues
+	 * @param map containing property paths as keys, and corresponding values as values, to be added to this {@link JSONMap} instance
+	 * @param ignoreNullOrEmptyValues Don't add null or empty values if set to true 
 	 */
 	public void putPaths(Map<String, Object> map, boolean ignoreNullOrEmptyValues) {
 		for ( Map.Entry<String, Object> entry : map.entrySet() ) {
@@ -199,7 +224,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * Add multiple values to this {@link JSONMap}, each value under the
 	 * corresponding property path. See {@link #putPath(String, Object)}
 	 * for more information.
-	 * @param map
+	 * @param map containing property paths as keys, and corresponding values as values, to be added to this {@link JSONMap} instance
 	 */
 	public void putPaths(Map<String, Object> map) {
 		for ( Map.Entry<String, Object> entry : map.entrySet() ) {
@@ -210,8 +235,8 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	/**
 	 * Add a value to this {@link JSONMap} under the given property path.
 	 * This will create the property path if it does not yet exist.
-	 * @param path
-	 * @param value
+	 * @param path to be added to this {@link JSONMap}
+	 * @param value to be stored under the given path
 	 */
 	public void putPath(String path, Object value) {
 		putPath(path, value, false);
@@ -222,8 +247,9 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * This will create the property path if it does not yet exist. Depending
 	 * on the ignoreNullOrEmptyValues parameter, values that are null, blank 
 	 * strings, or empty collections or arrays, will be ignored.
-	 * @param path
-	 * @param value
+	 * @param path to be added to this {@link JSONMap}
+	 * @param value to be stored under the given path
+	 * @param ignoreNullOrEmptyValues Don't add null or empty value if set to true 
 	 */
 	public void putPath(String path, Object value, boolean ignoreNullOrEmptyValues) {
 		putPath(Arrays.asList(path.split("\\.")), value, ignoreNullOrEmptyValues);
@@ -286,6 +312,7 @@ public class JSONMap extends LinkedHashMap<String, Object> {
 	 * Return an indented JSON string representation of this {@link JSONMap} instance.
 	 * Note that this is on a best-effort basis; the return value may not always be valid 
 	 * JSON.
+	 * @return Indented {@link String} representation of this {@link JSONMap} instance
 	 */
 	public String toIndentedString() {
 		try {

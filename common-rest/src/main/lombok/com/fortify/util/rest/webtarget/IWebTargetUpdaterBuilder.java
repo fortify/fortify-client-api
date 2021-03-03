@@ -33,7 +33,7 @@ package com.fortify.util.rest.webtarget;
 public interface IWebTargetUpdaterBuilder {
 	/**
 	 * Build an {@link IWebTargetUpdater} instance.
-	 * @return
+	 * @return {@link IWebTargetUpdater} instance
 	 */
 	public IWebTargetUpdater build();
 }
