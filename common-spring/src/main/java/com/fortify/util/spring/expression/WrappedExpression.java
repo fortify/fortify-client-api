@@ -38,262 +38,252 @@ public class WrappedExpression implements Expression {
 	private final Expression target;
 	
 	/**
-	 * @return
-	 * @throws EvaluationException
+	 * Constructor for configuring the expression to be wrapped
+	 * @param target {@link Expression} to be wrapped
+	 */
+	public WrappedExpression(Expression target) {
+		this.target = target;
+	}
+	
+	/**
 	 * @see org.springframework.expression.Expression#getValue()
+	 * @return The evaluation result
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
 	public Object getValue() throws EvaluationException {
 		return target.getValue();
 	}
 
 	/**
-	 * @param paramObject
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValue(java.lang.Object)
+	 * @see org.springframework.expression.Expression#getValue(Object)
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @return the evaluation result
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
-	public Object getValue(Object paramObject) throws EvaluationException {
-		return target.getValue(paramObject);
+	public Object getValue(Object rootObject) throws EvaluationException {
+		return target.getValue(rootObject);
 	}
 
 	/**
-	 * @param paramClass
-	 * @return
-	 * @throws EvaluationException
 	 * @see org.springframework.expression.Expression#getValue(java.lang.Class)
+	 * @param desiredResultType the class the caller would like the result to be
+	 * @return the evaluation result
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
-	public <T> T getValue(Class<T> paramClass) throws EvaluationException {
-		return target.getValue(paramClass);
+	public <T> T getValue(Class<T> desiredResultType) throws EvaluationException {
+		return target.getValue(desiredResultType);
 	}
 
 	/**
-	 * @param paramObject
-	 * @param paramClass
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValue(java.lang.Object, java.lang.Class)
+	 * @see org.springframework.expression.Expression#getValue(Object, java.lang.Class)
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @param desiredResultType the class the caller would like the result to be
+	 * @return the evaluation result
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
-	public <T> T getValue(Object paramObject, Class<T> paramClass)
-			throws EvaluationException {
-		return target.getValue(paramObject, paramClass);
+	public <T> T getValue(Object rootObject,Class<T> desiredResultType) throws EvaluationException {
+		return target.getValue(rootObject, desiredResultType);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValue(org.springframework.expression.EvaluationContext)
+	 * @see org.springframework.expression.Expression#getValue(EvaluationContext)
+	 * @param context the context in which to evaluate the expression
+	 * @return the evaluation result
+	 * @throws EvaluationException if there is a problem during evaluation
+	 * 
 	 */
-	public Object getValue(EvaluationContext paramEvaluationContext)
-			throws EvaluationException {
-		return target.getValue(paramEvaluationContext);
+	public Object getValue(EvaluationContext context) throws EvaluationException {
+		return target.getValue(context);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @param paramObject
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValue(org.springframework.expression.EvaluationContext, java.lang.Object)
+	 * @see org.springframework.expression.Expression#getValue(EvaluationContext, Object)
+	 * @param context the context in which to evaluate the expression
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @return the evaluation result
+	 * @throws EvaluationException if there is a problem during evaluation
+	 * 
 	 */
-	public Object getValue(EvaluationContext paramEvaluationContext,
-			Object paramObject) throws EvaluationException {
-		return target.getValue(paramEvaluationContext, paramObject);
+	public Object getValue(EvaluationContext context, Object rootObject) throws EvaluationException {
+		return target.getValue(context, rootObject);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @param paramClass
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValue(org.springframework.expression.EvaluationContext, java.lang.Class)
+	 * @see org.springframework.expression.Expression#getValue(EvaluationContext, java.lang.Class)
+	 * @param context the context in which to evaluate the expression
+	 * @param desiredResultType the class the caller would like the result to be
+	 * @return the evaluation result
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
-	public <T> T getValue(EvaluationContext paramEvaluationContext,
-			Class<T> paramClass) throws EvaluationException {
-		return target.getValue(paramEvaluationContext, paramClass);
+	public <T> T getValue(EvaluationContext context, Class<T> desiredResultType) throws EvaluationException {
+		return target.getValue(context, desiredResultType);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @param paramObject
-	 * @param paramClass
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValue(org.springframework.expression.EvaluationContext, java.lang.Object, java.lang.Class)
+	 * @see org.springframework.expression.Expression#getValue(EvaluationContext, Object, java.lang.Class)
+	 * @param context the context in which to evaluate the expression
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @param desiredResultType the class the caller would like the result to be
+	 * @return the evaluation result
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
-	public <T> T getValue(EvaluationContext paramEvaluationContext,
-			Object paramObject, Class<T> paramClass) throws EvaluationException {
-		return target.getValue(paramEvaluationContext, paramObject, paramClass);
+	public <T> T getValue(EvaluationContext context, Object rootObject, Class<T> desiredResultType) throws EvaluationException {
+		return target.getValue(context, rootObject, desiredResultType);
 	}
 
 	/**
-	 * @return
-	 * @throws EvaluationException
 	 * @see org.springframework.expression.Expression#getValueType()
+	 * @return the most general type of value that can be set on this context
+	 * @throws EvaluationException if there is a problem determining the type
 	 */
 	public Class<?> getValueType() throws EvaluationException {
 		return target.getValueType();
 	}
 
 	/**
-	 * @param paramObject
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValueType(java.lang.Object)
+	 * @see org.springframework.expression.Expression#getValueType(Object)
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @return the most general type of value that can be set on this context
+	 * @throws EvaluationException if there is a problem determining the type
 	 */
-	public Class<?> getValueType(Object paramObject) throws EvaluationException {
-		return target.getValueType(paramObject);
+	public Class<?> getValueType(Object rootObject) throws EvaluationException {
+		return target.getValueType(rootObject);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValueType(org.springframework.expression.EvaluationContext)
+	 * @see org.springframework.expression.Expression#getValueType(EvaluationContext)
+	 * @param context the context in which to evaluate the expression
+	 * @return the most general type of value that can be set on this context
+	 * @throws EvaluationException if there is a problem determining the type
 	 */
-	public Class<?> getValueType(EvaluationContext paramEvaluationContext)
-			throws EvaluationException {
-		return target.getValueType(paramEvaluationContext);
+	public Class<?> getValueType(EvaluationContext context) throws EvaluationException {
+		return target.getValueType(context);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @param paramObject
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValueType(org.springframework.expression.EvaluationContext, java.lang.Object)
+	 * @see org.springframework.expression.Expression#getValueType(EvaluationContext, Object)
+	 * @param context the context in which to evaluate the expression
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @return the most general type of value that can be set on this context
+	 * @throws EvaluationException if there is a problem determining the type
 	 */
-	public Class<?> getValueType(EvaluationContext paramEvaluationContext,
-			Object paramObject) throws EvaluationException {
-		return target.getValueType(paramEvaluationContext, paramObject);
+	public Class<?> getValueType(EvaluationContext context, Object rootObject) throws EvaluationException {
+		return target.getValueType(context, rootObject);
 	}
 
 	/**
-	 * @return
-	 * @throws EvaluationException
 	 * @see org.springframework.expression.Expression#getValueTypeDescriptor()
+	 * @return a type descriptor for values that can be set on this context
+	 * @throws EvaluationException if there is a problem determining the type
 	 */
 	public TypeDescriptor getValueTypeDescriptor() throws EvaluationException {
 		return target.getValueTypeDescriptor();
 	}
 
 	/**
-	 * @param paramObject
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValueTypeDescriptor(java.lang.Object)
+	 * @see org.springframework.expression.Expression#getValueTypeDescriptor(Object)
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @return a type descriptor for values that can be set on this context
+	 * @throws EvaluationException if there is a problem determining the type
 	 */
-	public TypeDescriptor getValueTypeDescriptor(Object paramObject)
-			throws EvaluationException {
-		return target.getValueTypeDescriptor(paramObject);
+	public TypeDescriptor getValueTypeDescriptor(Object rootObject) throws EvaluationException {
+		return target.getValueTypeDescriptor(rootObject);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValueTypeDescriptor(org.springframework.expression.EvaluationContext)
+	 * @see org.springframework.expression.Expression#getValueTypeDescriptor(EvaluationContext)
+	 * @param context the context in which to evaluate the expression
+	 * @return a type descriptor for values that can be set on this context
+	 * @throws EvaluationException if there is a problem determining the type
 	 */
-	public TypeDescriptor getValueTypeDescriptor(
-			EvaluationContext paramEvaluationContext)
-			throws EvaluationException {
-		return target.getValueTypeDescriptor(paramEvaluationContext);
+	public TypeDescriptor getValueTypeDescriptor(EvaluationContext context) throws EvaluationException {
+		return target.getValueTypeDescriptor(context);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @param paramObject
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#getValueTypeDescriptor(org.springframework.expression.EvaluationContext, java.lang.Object)
+	 * @see org.springframework.expression.Expression#getValueTypeDescriptor(EvaluationContext, Object)
+	 * @param context the context in which to evaluate the expression
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @return a type descriptor for values that can be set on this context
+	 * @throws EvaluationException if there is a problem determining the type
 	 */
-	public TypeDescriptor getValueTypeDescriptor(
-			EvaluationContext paramEvaluationContext, Object paramObject)
-			throws EvaluationException {
-		return target.getValueTypeDescriptor(paramEvaluationContext,
-				paramObject);
+	public TypeDescriptor getValueTypeDescriptor(EvaluationContext context, Object rootObject) throws EvaluationException {
+		return target.getValueTypeDescriptor(context, rootObject);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#isWritable(org.springframework.expression.EvaluationContext)
+	 * @see org.springframework.expression.Expression#isWritable(EvaluationContext)
+	 * @param context the context in which the expression should be checked
+	 * @return {@code true} if the expression is writable; {@code false} otherwise
+	 * @throws EvaluationException if there is a problem determining if it is writable
 	 */
-	public boolean isWritable(EvaluationContext paramEvaluationContext)
-			throws EvaluationException {
-		return target.isWritable(paramEvaluationContext);
+	public boolean isWritable(EvaluationContext context) throws EvaluationException {
+		return target.isWritable(context);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @param paramObject
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#isWritable(org.springframework.expression.EvaluationContext, java.lang.Object)
+	 * @see org.springframework.expression.Expression#isWritable(EvaluationContext, Object)
+	 * @param context the context in which the expression should be checked
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @return {@code true} if the expression is writable; {@code false} otherwise
+	 * @throws EvaluationException if there is a problem determining if it is writable
 	 */
-	public boolean isWritable(EvaluationContext paramEvaluationContext,
-			Object paramObject) throws EvaluationException {
-		return target.isWritable(paramEvaluationContext, paramObject);
+	public boolean isWritable(EvaluationContext context, Object rootObject) throws EvaluationException {
+		return target.isWritable(context, rootObject);
 	}
 
 	/**
-	 * @param paramObject
-	 * @return
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#isWritable(java.lang.Object)
+	 * @see org.springframework.expression.Expression#isWritable(Object)
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @return {@code true} if the expression is writable; {@code false} otherwise
+	 * @throws EvaluationException if there is a problem determining if it is writable
 	 */
-	public boolean isWritable(Object paramObject) throws EvaluationException {
-		return target.isWritable(paramObject);
+	public boolean isWritable(Object rootObject) throws EvaluationException {
+		return target.isWritable(rootObject);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @param paramObject
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#setValue(org.springframework.expression.EvaluationContext, java.lang.Object)
+	 * @see org.springframework.expression.Expression#setValue(EvaluationContext, Object)
+	 * @param context the context in which to set the value of the expression
+	 * @param value the new value
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
-	public void setValue(EvaluationContext paramEvaluationContext,
-			Object paramObject) throws EvaluationException {
-		target.setValue(paramEvaluationContext, paramObject);
+	public void setValue(EvaluationContext context, Object value) throws EvaluationException {
+		target.setValue(context, value);
 	}
 
 	/**
-	 * @param paramObject1
-	 * @param paramObject2
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#setValue(java.lang.Object, java.lang.Object)
+	 * @see org.springframework.expression.Expression#setValue(Object, Object)
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @param value the new value
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
-	public void setValue(Object paramObject1, Object paramObject2)
-			throws EvaluationException {
-		target.setValue(paramObject1, paramObject2);
+	public void setValue(Object rootObject, Object value) throws EvaluationException {
+		target.setValue(rootObject, value);
 	}
 
 	/**
-	 * @param paramEvaluationContext
-	 * @param paramObject1
-	 * @param paramObject2
-	 * @throws EvaluationException
-	 * @see org.springframework.expression.Expression#setValue(org.springframework.expression.EvaluationContext, java.lang.Object, java.lang.Object)
+	 * @see org.springframework.expression.Expression#setValue(EvaluationContext, Object, Object)
+	 * @param context the context in which to set the value of the expression
+	 * @param rootObject the root object against which to evaluate the expression
+	 * @param value the new value
+	 * @throws EvaluationException if there is a problem during evaluation
 	 */
-	public void setValue(EvaluationContext paramEvaluationContext,
-			Object paramObject1, Object paramObject2)
-			throws EvaluationException {
-		target.setValue(paramEvaluationContext, paramObject1, paramObject2);
+	public void setValue(EvaluationContext context, Object rootObject, Object value) throws EvaluationException {
+		target.setValue(context, rootObject, value);
 	}
 
 	/**
-	 * @return
 	 * @see org.springframework.expression.Expression#getExpressionString()
+	 * @return the original expression string
 	 */
 	public String getExpressionString() {
 		return target.getExpressionString();
 	}
-
-	public WrappedExpression(Expression target) {
-		this.target = target;
-	}
 	
+	/**
+	 * @return String representation for this {@link WrappedExpression}
+	 */
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName()+"("+getExpressionString()+")";

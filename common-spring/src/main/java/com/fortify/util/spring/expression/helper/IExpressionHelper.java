@@ -35,14 +35,14 @@ public interface IExpressionHelper {
 
 	/**
 	 * Parse the given string as a SpEL expression.
-	 * @param exprStr
+	 * @param exprStr to be parsed as a simple expression
 	 * @return The SpEL {@link Expression} object for the given expression string, or null if input is null
 	 */
 	SimpleExpression parseSimpleExpression(String exprStr);
 
 	/**
 	 * Parse the given string as a SpEL template expression.
-	 * @param exprStr
+	 * @param exprStr to be parsed as a template expression
 	 * @return The SpEL {@link Expression} object for the given expression string, or null if input is null 
 	 */
 	TemplateExpression parseTemplateExpression(String exprStr);

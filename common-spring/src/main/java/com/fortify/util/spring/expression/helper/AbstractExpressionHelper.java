@@ -62,7 +62,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	 * {@link #createSpelParserConfiguration()} method. Subclasses can
 	 * override this method to return a different {@link ExpressionParser}
 	 * implementation.
-	 * @return
+	 * @return {@link ExpressionParser} instance that can be used to parse expressions
 	 */
 	protected ExpressionParser createExpressionParser() {
 		return new SpelExpressionParser(createSpelParserConfiguration());
@@ -74,7 +74,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	 * {@link #createExpressionParser()} method. This default implementation
 	 * returns a default {@link SpelParserConfiguration} instance. Subclasses 
 	 * can override this method to modify the configuration. 
-	 * @return
+	 * @return {@link SpelParserConfiguration} instance used for configuring an {@link SpelExpressionParser}
 	 */
 	protected SpelParserConfiguration createSpelParserConfiguration() {
 		return new SpelParserConfiguration();
@@ -87,7 +87,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	 * as the expression prefix, and <code>}</code> as the expression
 	 * suffix. Subclasses can override this method to provide a 
 	 * customized {@link TemplateParserContext} instance.
-	 * @return
+	 * @return {@link TemplateParserContext} instance
 	 */
 	protected TemplateParserContext createTemplateParserContext() {
 		return new TemplateParserContext("${","}");
@@ -99,7 +99,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	 * {@link #createStandardEvaluationContext()} to create the {@link EvaluationContext}
 	 * instances. Subclasses can override this method to provide a customized 
 	 * {@link EvaluationContext} instance.
-	 * @return
+	 * @return {@link EvaluationContext} instance
 	 */
 	protected EvaluationContext createEvaluationContext() {
 		return createStandardEvaluationContext();
@@ -108,7 +108,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	/**
 	 * Create a {@link StandardEvaluationContext} configured with the property
 	 * accessors returned by the {@link #createPropertyAccessors()} method.
-	 * @return
+	 * @return {@link StandardEvaluationContext} instance
 	 */
 	protected final StandardEvaluationContext createStandardEvaluationContext() {
 		StandardEvaluationContext result = new StandardEvaluationContext();
@@ -121,7 +121,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	 * implementation adds {@link ReflectivePropertyAccessor} and
 	 * {@link MapAccessorIgnoreNonExistingProperties}. Subclasses can
 	 * override this method to modify this list of default accessors.
-	 * @return
+	 * @return {@link List} of {@link PropertyAccessor} instances
 	 */
 	protected List<PropertyAccessor> createPropertyAccessors() {
 		List<PropertyAccessor> result = new ArrayList<PropertyAccessor>();
@@ -132,7 +132,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 
 	/**
 	 * Parse the given string as a SpEL expression.
-	 * @param exprStr
+	 * @param exprStr to be parsed as a simple expression
 	 * @return The SpEL {@link Expression} object for the given expression string, or null if input is null
 	 */
 	@Override
@@ -142,7 +142,7 @@ public abstract class AbstractExpressionHelper implements IExpressionHelper {
 	
 	/**
 	 * Parse the given string as a SpEL template expression.
-	 * @param exprStr
+	 * @param exprStr to be parsed as a template expression
 	 * @return The SpEL {@link Expression} object for the given expression string, or null if input is null 
 	 */
 	@Override
