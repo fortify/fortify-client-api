@@ -39,7 +39,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.ReflectivePropertyAccessor;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import com.fortify.util.spring.MapAccessorIgnoreNonExistingProperties;
+import com.fortify.util.spring.context.expression.MapAccessorIgnoreNonExistingProperties;
 import com.fortify.util.spring.expression.SimpleExpression;
 import com.fortify.util.spring.expression.TemplateExpression;
 
