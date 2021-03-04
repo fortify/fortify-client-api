@@ -68,12 +68,16 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 		if ( StringUtils.isNotBlank(config.getAuthToken()) ) {
 			return new SSCTokenFactoryTokenCredentials(config.getAuthToken());
 		} else if ( StringUtils.isNotBlank(config.getUserName()) && StringUtils.isNotBlank(config.getPassword()) ) {
-			try ( SSCBasicRestConnection conn = new SSCBasicRestConnection(config) ) {
-				return new SSCTokenFactoryUserCredentials(conn, config.getUserName(), config.getPassword());
-			}
+			return new SSCTokenFactoryUserCredentials(config, config.getUserName(), config.getPassword());
 		} else {
 			throw new RuntimeException("Either SSC authentication token, or user name and password need to be specified");
 		}
+	}
+	
+	@Override
+	public void close() {
+		super.close();
+		this.tokenFactory.close();
 	}
 	
 	/**

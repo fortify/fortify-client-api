@@ -24,13 +24,16 @@
  ******************************************************************************/
 package com.fortify.client.ssc.connection;
 
+import java.io.Closeable;
+
 /**
  * Factory interface for SSC authentication tokens.
  * 
  * @author Ruud Senden
  *
  */
-public interface ISSCTokenFactory {
+public interface ISSCTokenFactory extends Closeable {
 	public String getToken();
 	public String getTokenSynchronized();
+	public void close();
 }

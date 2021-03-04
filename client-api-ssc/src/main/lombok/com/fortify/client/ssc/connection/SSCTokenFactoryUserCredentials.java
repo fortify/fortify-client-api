@@ -32,6 +32,7 @@ import javax.ws.rs.HttpMethod;
 import org.apache.commons.codec.binary.Base64;
 
 import com.fortify.util.log4j.LogMaskingHelper;
+import com.fortify.util.rest.connection.AbstractRestConnectionConfig;
 import com.fortify.util.rest.json.JSONMap;
 
 import lombok.Data;
@@ -54,8 +55,8 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	private final String userName;
 	private final String password;
 	private SSCTokenFactoryUserCredentials.TokenData tokenData = null;
-	public SSCTokenFactoryUserCredentials(SSCBasicRestConnection conn, String userName, String password) {
-		this.conn = conn;
+	public SSCTokenFactoryUserCredentials(AbstractRestConnectionConfig<?> config, String userName, String password) {
+		this.conn = new SSCBasicRestConnection(config);
 		this.userName = userName;
 		this.password = password;
 	}
@@ -63,6 +64,11 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	@Override
 	public synchronized String getTokenSynchronized() {
 		return getToken();
+	}
+	
+	@Override
+	public void close() {
+		this.conn.close();
 	}
 	
 	public String getToken() {

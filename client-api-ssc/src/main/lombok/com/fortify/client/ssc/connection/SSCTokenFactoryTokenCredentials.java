@@ -51,4 +51,9 @@ public final class SSCTokenFactoryTokenCredentials implements ISSCTokenFactory {
 	public String getTokenSynchronized() {
 		return token;
 	}
+	
+	@Override
+	public void close() {
+		// Nothing to close
+	}
 }
