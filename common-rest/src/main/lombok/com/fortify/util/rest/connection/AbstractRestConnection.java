@@ -159,6 +159,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 *                   in {@link HttpMethod}
 	 * @param webResource The web resource used to execute the request. Usually this web resource 
 	 * 					  is created using {@link #getBaseResource()}.path(...)...
+	 * @param entity The entity to be sent in the request
 	 * @param returnType The return type for the data returned by the request.
 	 * @return The result of executing the HTTP request.
 	 */
