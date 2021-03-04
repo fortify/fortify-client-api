@@ -24,6 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.fod.connection;
 
+import java.io.Closeable;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -45,7 +46,7 @@ import com.fortify.util.log4j.LogMaskingHelper;
  * API to request a REST token. The token will be automatically
  * refreshed as required.
  */
-public final class FoDTokenFactory {
+public final class FoDTokenFactory implements Closeable {
 	static final Log LOG = LogFactory.getLog(FoDTokenFactory.class);
 	private static final Pattern EXPR_TOKEN = Pattern.compile("\"access_token\":\"([^\"]+)\"");
 	private static final Pattern EXPR_PASSWORD = Pattern.compile("password=([^\\s&]+)");
@@ -54,11 +55,16 @@ public final class FoDTokenFactory {
 	private final Form auth;
 	private FoDTokenFactory.TokenData tokenData = null;
 	
-	public FoDTokenFactory(FoDBasicRestConnection basicConn, Form auth) {
-		this.basicConn = basicConn;
-		this.auth = auth;
+	public FoDTokenFactory(FoDRestConnectionConfig<?> config) {
+		this.basicConn = new FoDBasicRestConnection(config);
+		this.auth = config.getAuth();
 	}
 	
+	@Override
+	public void close() {
+		this.basicConn.close();
+	}
+
 	public synchronized String getTokenSynchronized() {
 		return getToken();
 	}
