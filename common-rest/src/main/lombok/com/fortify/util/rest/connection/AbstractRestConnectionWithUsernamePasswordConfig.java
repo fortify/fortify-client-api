@@ -48,8 +48,20 @@ public abstract class AbstractRestConnectionWithUsernamePasswordConfig<T extends
 		setUserName(userName); return getThis();
 	}
 	
+	public T user(String user) {
+		return userName(user);
+	}
+	
 	public T password(String password) {
 		setPassword(password); return getThis();
+	}
+	
+	public String getUser() {
+		return getUserName();
+	}
+	
+	public void setUser(String user) {
+		setUserName(user);
 	}
 	
 	@SuppressWarnings("deprecation")
