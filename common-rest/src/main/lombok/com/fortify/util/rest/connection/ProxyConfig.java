@@ -37,4 +37,12 @@ public class ProxyConfig implements Serializable {
 	private String url;
 	private String userName;
 	private String password;
+	
+	public String getUser() {
+		return getUserName();
+	}
+	
+	public void setUser(String user) {
+		setUserName(user);
+	}
 }
