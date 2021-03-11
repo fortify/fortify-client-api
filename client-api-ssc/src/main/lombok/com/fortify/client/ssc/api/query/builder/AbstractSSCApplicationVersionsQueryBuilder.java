@@ -31,8 +31,10 @@ import org.apache.commons.lang.StringUtils;
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI.SSCAttributeDefinitionHelper;
+import com.fortify.client.ssc.api.json.embed.SSCApplicationVersionEmbedConfig;
 import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig;
 import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.EmbedType;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.SSCEmbedConfigBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
@@ -43,6 +45,11 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	
 	public AbstractSSCApplicationVersionsQueryBuilder(SSCAuthenticatingRestConnection conn) {
 		super(conn, true);
+	}
+	
+	@Override
+	protected SSCEmbedConfigBuilder createEmbedConfigBuilder() {
+		return SSCApplicationVersionEmbedConfig.builder();
 	}
 	
 	@Override

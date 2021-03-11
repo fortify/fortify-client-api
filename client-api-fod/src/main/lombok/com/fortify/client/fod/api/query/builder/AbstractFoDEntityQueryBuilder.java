@@ -36,8 +36,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 
 import com.fortify.client.fod.api.json.embed.FoDEmbedConfig;
+import com.fortify.client.fod.api.json.embed.FoDEmbedConfig.FoDEmbedConfigBuilder;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.rest.json.embed.StandardEmbedConfig;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
@@ -204,11 +206,21 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	}
 	
 	public T embedSubEntity(String propertyName, String subEntity, String... fields) {
-		return embed(FoDEmbedConfig.builder()
+		return embed(createEmbedConfigBuilder()
 				.propertyName(propertyName)
 				.subEntity(subEntity)
 				.param("fields", fields==null?null : String.join(",", fields))
 				.build());
+	}
+
+	/**
+	 * Subclasses can override this method to create a builder for an
+	 * {@link FoDEmbedConfig} subclass that supports loading sub-entities
+	 * by providing an implementation for the {@link StandardEmbedConfig#getSubEntityUri(String)} method. 
+	 * @return
+	 */
+	protected FoDEmbedConfigBuilder<?, ?> createEmbedConfigBuilder() {
+		return FoDEmbedConfig.builder();
 	}
 	
 	/**

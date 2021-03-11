@@ -33,8 +33,10 @@ import org.apache.commons.lang.StringUtils;
 import com.fortify.client.ssc.api.SSCBulkAPI;
 import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig;
 import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.EmbedType;
+import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig.SSCEmbedConfigBuilder;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.rest.json.embed.StandardEmbedConfig;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 import com.fortify.util.rest.webtarget.IWebTargetUpdater;
@@ -237,12 +239,22 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	}
 	
 	public T embedSubEntity(String propertyName, String subEntity, EmbedType embedType, String... fields) {
-		return embed(SSCEmbedConfig.builder()
+		return embed(createEmbedConfigBuilder()
 				.propertyName(propertyName)
 				.subEntity(subEntity)
 				.embedType(embedType)
 				.param("fields", fields==null?null : String.join(",", fields))
 				.build());
+	}
+
+	/**
+	 * Subclasses can override this method to create a builder for an
+	 * {@link SSCEmbedConfig} subclass that supports loading sub-entities
+	 * by providing an implementation for the {@link StandardEmbedConfig#getSubEntityUri(String)} method. 
+	 * @return
+	 */
+	protected SSCEmbedConfigBuilder<?,?> createEmbedConfigBuilder() {
+		return SSCEmbedConfig.builder();
 	}
 
 	protected T embedPreload(SSCEmbedConfig embedConfig) {

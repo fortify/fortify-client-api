@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.fod.api.query.builder;
 
+import com.fortify.client.fod.api.json.embed.FoDEmbedConfig.FoDEmbedConfigBuilder;
+import com.fortify.client.fod.api.json.embed.FoDReleaseVulnerabilitiesEmbedConfig;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
@@ -48,6 +50,11 @@ public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChi
 		super(conn, releaseId, true);
 		appendPath("vulnerabilities");
 		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Issues/${vulnId}", DEEPLINK_FIELDS));
+	}
+	
+	@Override
+	protected FoDEmbedConfigBuilder<?, ?> createEmbedConfigBuilder() {
+		return FoDReleaseVulnerabilitiesEmbedConfig.builder();
 	}
 	
 	@Override
