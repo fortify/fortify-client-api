@@ -28,6 +28,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.client.fod.api.FoDApplicationAPI;
 import com.fortify.client.fod.api.json.embed.FoDEmbedConfig;
+import com.fortify.client.fod.api.json.embed.FoDEmbedConfig.FoDEmbedConfigBuilder;
+import com.fortify.client.fod.api.json.embed.FoDReleaseEmbedConfig;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
@@ -55,6 +57,11 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		super(conn, true);
 		appendPath("/api/v3/releases");
 		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Releases/${releaseId}", DEEPLINK_FIELDS));
+	}
+	
+	@Override
+	protected FoDEmbedConfigBuilder<?, ?> createEmbedConfigBuilder() {
+		return FoDReleaseEmbedConfig.builder();
 	}
 	
 	@Override

@@ -24,6 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.fod.api.query.builder;
 
+import com.fortify.client.fod.api.json.embed.FoDApplicationEmbedConfig;
+import com.fortify.client.fod.api.json.embed.FoDEmbedConfig.FoDEmbedConfigBuilder;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
@@ -51,6 +53,11 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 		super(conn, true);
 		appendPath("/api/v3/applications");
 		preProcessor(new JSONMapEnrichWithDeepLink(conn.getBrowserBaseUrl().toString()+"/redirect/Applications/${applicationId}", DEEPLINK_FIELDS));
+	}
+	
+	@Override
+	protected FoDEmbedConfigBuilder<?, ?> createEmbedConfigBuilder() {
+		return FoDApplicationEmbedConfig.builder();
 	}
 	
 	@Override
