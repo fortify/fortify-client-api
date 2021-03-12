@@ -27,6 +27,7 @@ package com.fortify.client.ssc.api;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -223,9 +224,12 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		}
 
 		private final JSONMap getExistingOrNewApplicationData() {
+			if ( StringUtils.isBlank(applicationName) && StringUtils.isBlank(applicationId) ) {
+				throw new IllegalStateException("Either application name or id must be specified");
+			}
 			JSONMap result = conn().api(SSCApplicationVersionAPI.class)
-					.queryApplicationVersions().applicationName(false, applicationName)
-					.applicationId(false, applicationId).maxResults(1).paramFields("project").build().getUnique();
+					.queryApplicationVersions().applicationName(true, applicationName)
+					.applicationId(true, applicationId).maxResults(1).paramFields("project").build().getUnique();
 			return result == null ? getNewApplicationData() : getExistingApplicationData(result.get("project", JSONMap.class));
 		}
 
