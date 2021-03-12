@@ -251,7 +251,7 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 	 * Subclasses can override this method to create a builder for an
 	 * {@link SSCEmbedConfig} subclass that supports loading sub-entities
 	 * by providing an implementation for the {@link StandardEmbedConfig#getSubEntityUri(String)} method. 
-	 * @return
+	 * @return {@link SSCEmbedConfigBuilder} instance
 	 */
 	protected SSCEmbedConfigBuilder<?,?> createEmbedConfigBuilder() {
 		return SSCEmbedConfig.builder();
