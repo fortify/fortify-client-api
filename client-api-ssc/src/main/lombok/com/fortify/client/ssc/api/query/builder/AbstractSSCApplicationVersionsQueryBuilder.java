@@ -48,7 +48,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 	
 	@Override
-	protected SSCEmbedConfigBuilder createEmbedConfigBuilder() {
+	protected SSCEmbedConfigBuilder<?,?> createEmbedConfigBuilder() {
 		return SSCApplicationVersionEmbedConfig.builder();
 	}
 	
@@ -62,9 +62,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 	
 	public T embedAttributeValuesByName(SSCAttributeDefinitionHelper attributeDefinitionHelper) {
-		embedAttributes(EmbedType.PRELOAD, "id", "value", "values");
-		preProcessor(new JSONMapEnrichWithAttributeValuesByName("attributeValuesByName", attributeDefinitionHelper));
-		return _this();
+		return embedAttributeValuesByName("attributeValuesByName", attributeDefinitionHelper);
 	}
 	
 	public T embedAttributeValuesByName(String propertyName) {
@@ -72,7 +70,7 @@ public abstract class AbstractSSCApplicationVersionsQueryBuilder<T extends Abstr
 	}
 	
 	public T embedAttributeValuesByName(String propertyName, SSCAttributeDefinitionHelper attributeDefinitionHelper) {
-		embedAttributes(EmbedType.PRELOAD, "id", "value", "values");
+		embedAttributes(EmbedType.PRELOAD);
 		preProcessor(new JSONMapEnrichWithAttributeValuesByName(propertyName, attributeDefinitionHelper));
 		return _this();
 	}

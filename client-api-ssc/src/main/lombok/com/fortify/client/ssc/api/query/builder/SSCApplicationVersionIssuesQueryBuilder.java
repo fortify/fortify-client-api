@@ -76,7 +76,7 @@ public class SSCApplicationVersionIssuesQueryBuilder
 	}
 	
 	@Override
-	protected SSCEmbedConfigBuilder createEmbedConfigBuilder() {
+	protected SSCEmbedConfigBuilder<?,?> createEmbedConfigBuilder() {
 		return SSCApplicationVersionIssuesEmbedConfig.builder();
 	}
 
