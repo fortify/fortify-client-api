@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -108,16 +109,16 @@ public class LogMaskingHelper {
 			}
 		}
 		
-		/*
-		public <R> R on(Callable<R> c) throws Exception {
+		public <R> R on(Callable<R> c) {
 			UUID uuid = add();
 			try {
 				return c.call();
+			} catch ( Exception e ) {
+				throw new RuntimeException("Exception in call() method", e);
 			} finally {
-				LogMaskingConverter.remove(uuid);
+				LogMaskingHelper.remove(uuid);
 			}
 		}
-		*/
 	}
 	
 	// TODO Replace duplicate expressions only once, across multiple instances of this class (but only for single invocation);
