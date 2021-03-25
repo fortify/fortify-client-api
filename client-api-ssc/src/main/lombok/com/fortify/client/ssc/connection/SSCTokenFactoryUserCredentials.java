@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.client.Entity;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -54,11 +55,13 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	private final SSCBasicRestConnection conn;
 	private final String userName;
 	private final String password;
+	private final String tokenDescription;
 	private SSCTokenFactoryUserCredentials.TokenData tokenData = null;
-	public SSCTokenFactoryUserCredentials(AbstractRestConnectionConfig<?> config, String userName, String password) {
+	public SSCTokenFactoryUserCredentials(AbstractRestConnectionConfig<?> config, String userName, String password, String tokenDescription) {
 		this.conn = new SSCBasicRestConnection(config);
 		this.userName = userName;
 		this.password = password;
+		this.tokenDescription = tokenDescription;
 	}
 	
 	@Override
@@ -68,15 +71,31 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	
 	@Override
 	public void close() {
+		revokeToken();
 		this.conn.close();
+	}
+	
+	private void revokeToken() {
+		if ( tokenData != null ) {
+			JSONMap postData = new JSONMap();
+			postData.putPath("tokens", new String[]{tokenData.getToken()});
+			tokenData = null;
+			try {
+				performTokenRequest("/api/v1/tokens/action/revoke", postData);
+				log.debug("[SSC] Revoked access token");
+			} catch ( RuntimeException e ) {
+				log.warn("[SSC] Error revoking access token");
+				log.debug("Token revocation exception details", e);
+			}
+		}
 	}
 	
 	public String getToken() {
 		if ( tokenData == null || tokenData.isExpired() ) {
-			String authHeaderValue = "Basic "+Base64.encodeBase64String((userName+":"+password).getBytes());
-			LogMaskingHelper.maskByPatternGroups().patterns(EXPR_TOKEN).on(() ->
-				tokenData = getTokenData(conn.executeRequest(HttpMethod.POST, conn.getBaseResource().path("/api/v1/auth/obtain_token").request().header("Authorization", authHeaderValue), null, JSONMap.class))
-			);
+			JSONMap postData = new JSONMap();
+			postData.putPath("type", "UnifiedLoginToken");
+			postData.putPath("description", tokenDescription);
+			tokenData = getTokenData(performTokenRequest("/api/v1/tokens", postData));
 			log.info("[SSC] Obtained access token, expiring at "+tokenData.getTerminalDate().toString());
 		}
 		return tokenData.getToken();
@@ -85,6 +104,14 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 	private TokenData getTokenData(JSONMap json) {
 		JSONMap data = json.get("data", JSONMap.class);
 		return new TokenData((String)data.get("token"), data.get("terminalDate", Date.class));
+	}
+	
+	private JSONMap performTokenRequest(String endpoint, JSONMap postData) {
+		String authHeaderValue = "Basic "+Base64.encodeBase64String((userName+":"+password).getBytes());
+		return LogMaskingHelper.maskByPatternGroups().patterns(EXPR_TOKEN).on(() ->
+			conn.executeRequest(HttpMethod.POST, conn.getBaseResource().path(endpoint)
+					.request().header("Authorization", authHeaderValue), 
+					Entity.entity(postData, "application/json"), JSONMap.class));
 	}
 
 	@Data
