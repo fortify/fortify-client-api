@@ -24,6 +24,15 @@
  ******************************************************************************/
 package com.fortify.client.fod.api.json.embed;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
+@SuperBuilder @AllArgsConstructor(access=AccessLevel.PROTECTED)
 public class FoDApplicationEmbedConfig extends FoDEmbedConfig {
 	private static final long serialVersionUID = 1L;
 	
