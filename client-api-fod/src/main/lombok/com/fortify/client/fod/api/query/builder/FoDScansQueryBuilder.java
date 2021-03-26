@@ -30,6 +30,7 @@ import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFields;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamOrderByWithDirection;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 
 /**
  * This class allows for building an {@link FoDEntityQuery} instance that allows for
@@ -48,12 +49,12 @@ public class FoDScansQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDScans
 	}
 	
 	@Override
-	public FoDScansQueryBuilder paramFields(boolean ignoreIfBlank, String... fields) {
-		return super.paramFields(ignoreIfBlank, fields);
+	public FoDScansQueryBuilder paramFields(IfBlankAction ifBlankAction, String... fields) {
+		return super.paramFields(ifBlankAction, fields);
 	}
 	
-	public FoDScansQueryBuilder paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public FoDScansQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, FoDOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
 	public FoDScansQueryBuilder paramStartedOnStartDate(Date dateTime) {

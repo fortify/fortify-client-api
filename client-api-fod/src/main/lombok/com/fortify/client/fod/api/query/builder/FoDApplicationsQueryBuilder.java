@@ -31,6 +31,7 @@ import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IF
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamOrderByWithDirection;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoader;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
@@ -61,34 +62,34 @@ public class FoDApplicationsQueryBuilder extends AbstractFoDEntityQueryBuilder<F
 	}
 	
 	@Override
-	public FoDApplicationsQueryBuilder paramFields(boolean ignoreIfBlank, String... fields) {
-		return super.paramFields(ignoreIfBlank, replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
+	public FoDApplicationsQueryBuilder paramFields(IfBlankAction ifBlankAction, String... fields) {
+		return super.paramFields(ifBlankAction, replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 	
 	@Override
-	public FoDApplicationsQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String field, String... values) {
-		return super.paramFilterAnd(ignoreIfBlank, field, values);
+	public FoDApplicationsQueryBuilder paramFilterAnd(IfBlankAction ifBlankAction, String field, String... values) {
+		return super.paramFilterAnd(ifBlankAction, field, values);
 	}
 	
 	@Override
-	public FoDApplicationsQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String filter) {
-		return super.paramFilterAnd(ignoreIfBlank, filter);
+	public FoDApplicationsQueryBuilder paramFilterAnd(IfBlankAction ifBlankAction, String filter) {
+		return super.paramFilterAnd(ifBlankAction, filter);
 	}
 	
-	public FoDApplicationsQueryBuilder paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public FoDApplicationsQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, FoDOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
-	public FoDApplicationsQueryBuilder applicationId(boolean ignoreIfBlank, String applicationId) {
-		return super.paramFilterAnd(ignoreIfBlank, "applicationId", applicationId);
+	public FoDApplicationsQueryBuilder applicationId(IfBlankAction ifBlankAction, String applicationId) {
+		return super.paramFilterAnd(ifBlankAction, "applicationId", applicationId);
 	}
 	
-	public FoDApplicationsQueryBuilder applicationName(boolean ignoreIfBlank, String applicationName) {
-		return super.paramFilterAnd(ignoreIfBlank, "applicationName", applicationName);
+	public FoDApplicationsQueryBuilder applicationName(IfBlankAction ifBlankAction, String applicationName) {
+		return super.paramFilterAnd(ifBlankAction, "applicationName", applicationName);
 	}
 	
-	public FoDApplicationsQueryBuilder applicationType(boolean ignoreIfBlank, String applicationType) {
-		return super.paramFilterAnd(ignoreIfBlank, "applicationType", applicationType);
+	public FoDApplicationsQueryBuilder applicationType(IfBlankAction ifBlankAction, String applicationType) {
+		return super.paramFilterAnd(ifBlankAction, "applicationType", applicationType);
 	}
 	
 	public FoDApplicationsQueryBuilder onDemandAll() {

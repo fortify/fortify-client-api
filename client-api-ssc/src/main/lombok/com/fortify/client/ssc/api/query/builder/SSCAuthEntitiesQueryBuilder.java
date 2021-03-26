@@ -31,6 +31,7 @@ import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.IS
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -55,20 +56,20 @@ public final class SSCAuthEntitiesQueryBuilder extends AbstractSSCEntityQueryBui
 		return super.paramFields(fields);
 	}
 
-	public final SSCAuthEntitiesQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public final SSCAuthEntitiesQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
-	public final SSCAuthEntitiesQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
-		return super.paramQ(ignoreIfBlank, q);
+	public final SSCAuthEntitiesQueryBuilder paramQ(IfBlankAction ifBlankAction, String q) {
+		return super.paramQ(ifBlankAction, q);
 	}
 
-	public final SSCAuthEntitiesQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
-		return super.paramQAnd(ignoreIfBlank, field, value);
+	public final SSCAuthEntitiesQueryBuilder paramQAnd(IfBlankAction ifBlankAction, String field, Object value) {
+		return super.paramQAnd(ifBlankAction, field, value);
 	}
 	
-	public final SSCAuthEntitiesQueryBuilder paramEmbed(boolean ignoreIfBlank, String entity) {
-		return super.paramEmbed(ignoreIfBlank, entity);
+	public final SSCAuthEntitiesQueryBuilder paramEmbed(IfBlankAction ifBlankAction, String entity) {
+		return super.paramEmbed(ifBlankAction, entity);
 	}
 	
 	public final SSCAuthEntitiesQueryBuilder paramEntityName(String entityName) {

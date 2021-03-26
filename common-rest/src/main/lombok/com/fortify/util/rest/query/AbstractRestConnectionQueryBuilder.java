@@ -36,6 +36,7 @@ import javax.ws.rs.client.Entity;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fortify.util.applier.ifblank.IfBlankAction;
 import com.fortify.util.rest.connection.IRestConnection;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.embed.StandardEmbedConfig;
@@ -155,8 +156,9 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 		return _this();
 	}
 	
-	protected T queryParam(boolean ignoreIfBlank, String paramName, String paramValue) {
-		return isBlank(!ignoreIfBlank, paramName, paramValue) ? _this() : queryParam(paramName, paramValue); 
+	protected T queryParam(IfBlankAction ifBlankAction, String paramName, String paramValue) {
+		ifBlankAction.apply(paramName, paramValue, StringUtils::isBlank, v->queryParam(paramName, v));
+		return _this();
 	}
 	
 	protected T appendPath(String path) {
@@ -211,26 +213,6 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 			}
 		}
 		return resultList.toArray(new String[] {});
-	}
-	
-	/**
-	 * Utility method for checking that input parameter value is not blank
-	 * 
-	 * @param throwExceptionIfBlank indicated whether an exception should be thrown if the given value is blank
-	 * @param name of the field for which we're trying to set a value
-	 * @param value to be set for the given field
-	 * @return true if the given value is blank, false otherwise
-	 */
-	protected boolean isBlank(boolean throwExceptionIfBlank, String name, Object value) {
-		if ( isBlank(value) ) {
-			if ( throwExceptionIfBlank ) { throw new IllegalArgumentException(String.format("%s must have a value", name)); }
-			return true;
-		}
-		return false;
-	}
-
-	protected boolean isBlank(Object value) {
-		return value==null || (value instanceof String && StringUtils.isBlank((String)value));
 	}
 	
 	/**

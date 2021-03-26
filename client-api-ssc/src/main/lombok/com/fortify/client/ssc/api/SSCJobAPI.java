@@ -33,6 +33,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import com.fortify.client.ssc.api.query.builder.SSCJobsQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlank;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.query.IRestConnectionQuery;
@@ -53,7 +54,7 @@ public class SSCJobAPI extends AbstractSSCAPI {
 	}
 	
 	public final JSONMap getJobById(String jobId, String... fields) {
-		return queryJobs().id(false, jobId).paramFields(fields).build().getUnique();
+		return queryJobs().id(IfBlank.ERROR(), jobId).paramFields(fields).build().getUnique();
 	}
 	
 	public JSONMap waitForJobCompletion(String jobId, int timeOutSeconds) {
