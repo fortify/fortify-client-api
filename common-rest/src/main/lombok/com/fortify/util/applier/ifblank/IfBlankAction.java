@@ -1,5 +1,5 @@
 /*******************************************************************************
- * (c) Copyright 2020 Micro Focus or one of its affiliates, a Micro Focus company
+ * (c) Copyright 2020 Micro Focus or one of its affiliates
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the 
@@ -22,33 +22,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
  * IN THE SOFTWARE.
  ******************************************************************************/
-package com.fortify.client.fod.api;
+package com.fortify.util.applier.ifblank;
 
-import com.fortify.client.fod.api.query.builder.FoDApplicationsQueryBuilder;
-import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
-import com.fortify.util.applier.ifblank.IfBlank;
-import com.fortify.util.rest.json.JSONMap;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-/**
- * This class is used to access FoD application-related functionality.
- * 
- * @author Ruud Senden
- *
- */
-public class FoDApplicationAPI extends AbstractFoDAPI {
-	public FoDApplicationAPI(FoDAuthenticatingRestConnection conn) {
-		super(conn);
-	}
-	
-	public FoDApplicationsQueryBuilder queryApplications() {
-		return new FoDApplicationsQueryBuilder(conn());
-	}
-	
-	public JSONMap getApplicationById(String applicationId) {
-		return queryApplications().applicationId(IfBlank.ERROR(), applicationId).onDemandAttributesMap().build().getUnique();
-	}
-	
-	public JSONMap getApplicationByName(String applicationName) {
-		return queryApplications().applicationName(IfBlank.ERROR(), applicationName).onDemandAttributesMap().build().getUnique();
-	}
+@FunctionalInterface
+public interface IfBlankAction {
+	public <V> void apply(String name, V value, Function<V,Boolean> isBlankFunction, Consumer<V> consumer);
 }

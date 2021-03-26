@@ -35,6 +35,8 @@ import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IF
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamOrderByWithDirection;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlank;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.ondemand.AbstractJSONMapOnDemandLoaderWithConnection;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
@@ -65,92 +67,92 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 	}
 	
 	@Override
-	public FoDReleasesQueryBuilder paramFields(boolean ignoreIfBlank, String... fields) {
-		return super.paramFields(ignoreIfBlank, replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
+	public FoDReleasesQueryBuilder paramFields(IfBlankAction ifBlankAction, String... fields) {
+		return super.paramFields(ifBlankAction, replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 	
 	@Override
-	public FoDReleasesQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String field, String... values) {
-		return super.paramFilterAnd(ignoreIfBlank, field, values);
+	public FoDReleasesQueryBuilder paramFilterAnd(IfBlankAction ifBlankAction, String field, String... values) {
+		return super.paramFilterAnd(ifBlankAction, field, values);
 	}
 	
 	@Override
-	public FoDReleasesQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String filter) {
-		return super.paramFilterAnd(ignoreIfBlank, filter);
+	public FoDReleasesQueryBuilder paramFilterAnd(IfBlankAction ifBlankAction, String filter) {
+		return super.paramFilterAnd(ifBlankAction, filter);
 	}
 	
-	public FoDReleasesQueryBuilder paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public FoDReleasesQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, FoDOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
-	public FoDReleasesQueryBuilder releaseId(boolean ignoreIfBlank, String releaseId) {
-		return super.paramFilterAnd(ignoreIfBlank, "releaseId", releaseId);
+	public FoDReleasesQueryBuilder releaseId(IfBlankAction ifBlankAction, String releaseId) {
+		return super.paramFilterAnd(ifBlankAction, "releaseId", releaseId);
 	}
 	
-	public FoDReleasesQueryBuilder releaseName(boolean ignoreIfBlank, String releaseName) {
-		return super.paramFilterAnd(ignoreIfBlank, "releaseName", releaseName);
+	public FoDReleasesQueryBuilder releaseName(IfBlankAction ifBlankAction, String releaseName) {
+		return super.paramFilterAnd(ifBlankAction, "releaseName", releaseName);
 	}
 	
-	public FoDReleasesQueryBuilder applicationAndOrReleaseName(boolean ignoreIfBlank, String applicationAndOrReleaseName) {
-		return applicationAndOrReleaseName(ignoreIfBlank, applicationAndOrReleaseName, ":");
+	public FoDReleasesQueryBuilder applicationAndOrReleaseName(IfBlankAction ifBlankAction, String applicationAndOrReleaseName) {
+		return applicationAndOrReleaseName(ifBlankAction, applicationAndOrReleaseName, ":");
 	}
 	
-	public FoDReleasesQueryBuilder applicationAndOrReleaseName(boolean ignoreIfBlank, String applicationAndOrReleaseName, String separator) {
-		if ( !isBlank(!ignoreIfBlank, "applicationAndOrReleaseName", applicationAndOrReleaseName)) {
-			String[] elts = applicationAndOrReleaseName.split(separator);
+	public FoDReleasesQueryBuilder applicationAndOrReleaseName(IfBlankAction ifBlankAction, String applicationAndOrReleaseName, String separator) {
+		ifBlankAction.apply("applicationAndOrReleaseName", applicationAndOrReleaseName, StringUtils::isBlank, v-> {
+			String[] elts = v.split(separator);
 			if ( elts.length == 1 && StringUtils.isNotBlank(elts[0]) || elts.length == 2 && StringUtils.isBlank(elts[1]) ) {
-				return applicationName(false, elts[0]);
+				applicationName(IfBlank.ERROR(), elts[0]);
 			} else if ( elts.length == 2 && StringUtils.isBlank(elts[0]) ) {
-				return releaseName(false, elts[1]);
+				releaseName(IfBlank.ERROR(), elts[1]);
 			} else if ( elts.length == 2 ) {
-				return applicationName(false, elts[0]).releaseName(false, elts[1]);
+				applicationName(IfBlank.ERROR(), elts[0]).releaseName(IfBlank.ERROR(), elts[1]);
 			} else {
 				throw new IllegalArgumentException("Applications or releases containing a '"+separator+"' are unsupported");
 			}
-		}
+		});
 		return _this();
 	}
 	
-	public FoDReleasesQueryBuilder applicationAndReleaseName(boolean ignoreIfBlank, String applicationName, String releaseName) {
-		return applicationName(ignoreIfBlank, applicationName).releaseName(ignoreIfBlank, releaseName);
+	public FoDReleasesQueryBuilder applicationAndReleaseName(IfBlankAction ifBlankAction, String applicationName, String releaseName) {
+		return applicationName(ifBlankAction, applicationName).releaseName(ifBlankAction, releaseName);
 	}
 	
-	public FoDReleasesQueryBuilder applicationId(boolean ignoreIfBlank, String applicationId) {
-		return super.paramFilterAnd(ignoreIfBlank, "applicationId", applicationId);
+	public FoDReleasesQueryBuilder applicationId(IfBlankAction ifBlankAction, String applicationId) {
+		return super.paramFilterAnd(ifBlankAction, "applicationId", applicationId);
 	}
 	
-	public FoDReleasesQueryBuilder applicationName(boolean ignoreIfBlank, String applicationName) {
-		return super.paramFilterAnd(ignoreIfBlank, "applicationName", applicationName);
+	public FoDReleasesQueryBuilder applicationName(IfBlankAction ifBlankAction, String applicationName) {
+		return super.paramFilterAnd(ifBlankAction, "applicationName", applicationName);
 	}
 	
-	public FoDReleasesQueryBuilder nameOrId(boolean ignoreIfBlank, String applicationAndReleaseNameOrId, String separator) {
-		if ( !isBlank(!ignoreIfBlank, "applicationAndReleaseNameOrId", applicationAndReleaseNameOrId)) {
-			String[] appVersionElements = applicationAndReleaseNameOrId.split(separator);
+	public FoDReleasesQueryBuilder nameOrId(IfBlankAction ifBlankAction, String applicationAndReleaseNameOrId, String separator) {
+		ifBlankAction.apply("applicationAndReleaseNameOrId", applicationAndReleaseNameOrId, StringUtils::isBlank, v-> {
+			String[] appVersionElements = v.split(separator);
 			if ( appVersionElements.length == 1 ) {
-				return releaseId(ignoreIfBlank, appVersionElements[0]);
+				releaseId(IfBlank.ERROR(), appVersionElements[0]);
 			} else if ( appVersionElements.length == 2 ) {
-				return applicationAndReleaseName(ignoreIfBlank, appVersionElements[0], appVersionElements[1]);
+				applicationAndReleaseName(IfBlank.ERROR(), appVersionElements[0], appVersionElements[1]);
 			} else {
 				throw new IllegalArgumentException("Applications or releases containing a '+separator+' can only be specified by id");
 			}
-		}
+		});
 		return _this();
 	}
 	
-	public FoDReleasesQueryBuilder nameOrId(boolean ignoreIfBlank, String applicationAndReleaseNameOrId) {
-		return nameOrId(ignoreIfBlank, applicationAndReleaseNameOrId, ":");
+	public FoDReleasesQueryBuilder nameOrId(IfBlankAction ifBlankAction, String applicationAndReleaseNameOrId) {
+		return nameOrId(ifBlankAction, applicationAndReleaseNameOrId, ":");
 	}
 	
-	public FoDReleasesQueryBuilder rating(boolean ignoreIfBlank, Integer rating) {
-		return super.paramFilterAnd(ignoreIfBlank, "rating", rating+"");
+	public FoDReleasesQueryBuilder rating(IfBlankAction ifBlankAction, Integer rating) {
+		return super.paramFilterAnd(ifBlankAction, "rating", rating+"");
 	}
 	
-	public FoDReleasesQueryBuilder sdlcStatusType(boolean ignoreIfBlank, String sdlcStatusType) {
-		return super.paramFilterAnd(ignoreIfBlank, "sdlcStatusType", sdlcStatusType);
+	public FoDReleasesQueryBuilder sdlcStatusType(IfBlankAction ifBlankAction, String sdlcStatusType) {
+		return super.paramFilterAnd(ifBlankAction, "sdlcStatusType", sdlcStatusType);
 	}
 	
-	public FoDReleasesQueryBuilder isPassed(boolean ignoreIfBlank, Boolean isPassed) {
-		return super.paramFilterAnd(ignoreIfBlank, "isPassed", Boolean.toString(isPassed));
+	public FoDReleasesQueryBuilder isPassed(IfBlankAction ifBlankAction, Boolean isPassed) {
+		return super.paramFilterAnd(ifBlankAction, "isPassed", Boolean.toString(isPassed));
 	}
 	
 	public FoDReleasesQueryBuilder embed(FoDEmbedConfig embedConfig) {
@@ -195,7 +197,7 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		@Override
 		public Object getOnDemand(FoDAuthenticatingRestConnection conn, String propertyName, JSONMap parent) {
 			return conn.api(FoDApplicationAPI.class).queryApplications()
-				.applicationId(false, parent.get("applicationId", String.class))
+				.applicationId(IfBlank.ERROR(), parent.get("applicationId", String.class))
 				.onDemandAttributesMap()
 				.onDemandBugTracker()
 				.build().getUnique();

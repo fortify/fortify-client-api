@@ -30,6 +30,7 @@ import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.IS
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.enrich.AbstractJSONMapEnrich;
@@ -68,15 +69,15 @@ public final class SSCAttributeDefinitionsQueryBuilder extends AbstractSSCEntity
 		return super.paramFields(fields);
 	}
 
-	public final SSCAttributeDefinitionsQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public final SSCAttributeDefinitionsQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
-	public final SSCAttributeDefinitionsQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
-		return super.paramQ(ignoreIfBlank, q);
+	public final SSCAttributeDefinitionsQueryBuilder paramQ(IfBlankAction ifBlankAction, String q) {
+		return super.paramQ(ifBlankAction, q);
 	}
 
-	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
-		return super.paramQAnd(ignoreIfBlank, field, value);
+	public final SSCAttributeDefinitionsQueryBuilder paramQAnd(IfBlankAction ifBlankAction, String field, Object value) {
+		return super.paramQAnd(ifBlankAction, field, value);
 	}
 }

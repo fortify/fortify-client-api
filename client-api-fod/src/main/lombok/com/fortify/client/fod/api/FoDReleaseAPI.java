@@ -31,6 +31,7 @@ import javax.ws.rs.HttpMethod;
 
 import com.fortify.client.fod.api.query.builder.FoDReleasesQueryBuilder;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlank;
 import com.fortify.util.rest.json.JSONMap;
 
 /**
@@ -49,19 +50,19 @@ public class FoDReleaseAPI extends AbstractFoDAPI {
 	}
 	
 	public JSONMap getReleaseById(String releaseId) {
-		return queryReleases().releaseId(false, releaseId).build().getUnique();
+		return queryReleases().releaseId(IfBlank.ERROR(), releaseId).build().getUnique();
 	}
 	
 	public JSONMap getReleaseByName(String applicationName, String releaseName) {
-		return queryReleases().applicationName(false, applicationName).releaseName(false, releaseName).build().getUnique();
+		return queryReleases().applicationName(IfBlank.ERROR(), applicationName).releaseName(IfBlank.ERROR(), releaseName).build().getUnique();
 	}
 	
 	public JSONMap getReleaseByNameOrId(String nameOrId, String separator) {
-		return queryReleases().nameOrId(false, nameOrId, separator).build().getUnique();
+		return queryReleases().nameOrId(IfBlank.ERROR(), nameOrId, separator).build().getUnique();
 	}
 	
 	public JSONMap getReleaseByNameOrId(String nameOrId) {
-		return queryReleases().nameOrId(false, nameOrId).build().getUnique();
+		return queryReleases().nameOrId(IfBlank.ERROR(), nameOrId).build().getUnique();
 	}
 	
 	/**

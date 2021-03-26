@@ -37,6 +37,7 @@ import com.fortify.client.ssc.api.SSCIssueTemplateAPI.SSCIssueTemplateHelper;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsOfAuthEntityQueryBuilder;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionsQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlank;
 import com.fortify.util.rest.json.JSONMap;
 
 /**
@@ -65,19 +66,19 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 	}
 	
 	public JSONMap getApplicationVersionById(String applicationVersionId) {
-		return queryApplicationVersions().id(false, applicationVersionId).build().getUnique();
+		return queryApplicationVersions().id(IfBlank.ERROR(), applicationVersionId).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByName(String applicationName, String versionName) {
-		return queryApplicationVersions().applicationName(false, applicationName).versionName(false, versionName).build().getUnique();
+		return queryApplicationVersions().applicationName(IfBlank.ERROR(), applicationName).versionName(IfBlank.ERROR(), versionName).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByNameOrId(String nameOrId, String separator) {
-		return queryApplicationVersions().nameOrId(false, nameOrId, separator).build().getUnique();
+		return queryApplicationVersions().nameOrId(IfBlank.ERROR(), nameOrId, separator).build().getUnique();
 	}
 	
 	public JSONMap getApplicationVersionByNameOrId(String nameOrId) {
-		return queryApplicationVersions().nameOrId(false, nameOrId).build().getUnique();
+		return queryApplicationVersions().nameOrId(IfBlank.ERROR(), nameOrId).build().getUnique();
 	}
 	
 	public void deleteApplicationVersion(JSONMap applicationVersion) {
@@ -228,8 +229,8 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 				throw new IllegalStateException("Either application name or id must be specified");
 			}
 			JSONMap result = conn().api(SSCApplicationVersionAPI.class)
-					.queryApplicationVersions().applicationName(true, applicationName)
-					.applicationId(true, applicationId).maxResults(1).paramFields("project").build().getUnique();
+					.queryApplicationVersions().applicationName(IfBlank.SKIP(), applicationName)
+					.applicationId(IfBlank.SKIP(), applicationId).maxResults(1).paramFields("project").build().getUnique();
 			return result == null ? getNewApplicationData() : getExistingApplicationData(result.get("project", JSONMap.class));
 		}
 

@@ -29,6 +29,7 @@ import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -56,12 +57,12 @@ public class SSCApplicationVersionIssueGroupsQueryBuilder
 		return super.paramFields(fields);
 	}
 	
-	public final SSCApplicationVersionIssueGroupsQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
-		return super.paramQ(ignoreIfBlank, q);
+	public final SSCApplicationVersionIssueGroupsQueryBuilder paramQ(IfBlankAction ifBlankAction, String q) {
+		return super.paramQ(ifBlankAction, q);
 	}
 
-	public final SSCApplicationVersionIssueGroupsQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
-		return super.paramQAnd(ignoreIfBlank, field, value);
+	public final SSCApplicationVersionIssueGroupsQueryBuilder paramQAnd(IfBlankAction ifBlankAction, String field, Object value) {
+		return super.paramQAnd(ifBlankAction, field, value);
 	}
 	
 	public final SSCApplicationVersionIssueGroupsQueryBuilder paramGroupingType(String groupingType) {

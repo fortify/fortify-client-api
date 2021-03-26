@@ -30,6 +30,7 @@ import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.IS
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -53,19 +54,19 @@ public final class SSCRulepackQueryBuilder extends AbstractSSCEntityQueryBuilder
 		return super.paramFields(fields);
 	}
 
-	public final SSCRulepackQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public final SSCRulepackQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
-	public final SSCRulepackQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
-		return super.paramQ(ignoreIfBlank, q);
+	public final SSCRulepackQueryBuilder paramQ(IfBlankAction ifBlankAction, String q) {
+		return super.paramQ(ifBlankAction, q);
 	}
 
-	public final SSCRulepackQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
-		return super.paramQAnd(ignoreIfBlank, field, value);
+	public final SSCRulepackQueryBuilder paramQAnd(IfBlankAction ifBlankAction, String field, Object value) {
+		return super.paramQAnd(ifBlankAction, field, value);
 	}
 
-	public SSCRulepackQueryBuilder id(boolean ignoreIfBlank, String id) {
-		return paramQAnd(ignoreIfBlank, "id", id);
+	public SSCRulepackQueryBuilder id(IfBlankAction ifBlankAction, String id) {
+		return paramQAnd(ifBlankAction, "id", id);
 	}
 }

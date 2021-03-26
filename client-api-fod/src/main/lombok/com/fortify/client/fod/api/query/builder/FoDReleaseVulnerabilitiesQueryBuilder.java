@@ -31,6 +31,7 @@ import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IF
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamFilter;
 import com.fortify.client.fod.api.query.builder.AbstractFoDEntityQueryBuilder.IFoDEntityQueryBuilderParamOrderByWithDirection;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 
 /**
@@ -58,38 +59,38 @@ public class FoDReleaseVulnerabilitiesQueryBuilder extends AbstractFoDReleaseChi
 	}
 	
 	@Override
-	public FoDReleaseVulnerabilitiesQueryBuilder paramFields(boolean ignoreIfBlank, String... fields) {
-		return super.paramFields(ignoreIfBlank, replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
+	public FoDReleaseVulnerabilitiesQueryBuilder paramFields(IfBlankAction ifBlankAction, String... fields) {
+		return super.paramFields(ifBlankAction, replaceField(JSONMapEnrichWithDeepLink.DEEPLINK_FIELD, DEEPLINK_FIELDS, fields));
 	}
 	
 	@Override
-	public FoDReleaseVulnerabilitiesQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String field, String... values) {
-		return super.paramFilterAnd(ignoreIfBlank, field, values);
+	public FoDReleaseVulnerabilitiesQueryBuilder paramFilterAnd(IfBlankAction ifBlankAction, String field, String... values) {
+		return super.paramFilterAnd(ifBlankAction, field, values);
 	}
 	
 	@Override
-	public FoDReleaseVulnerabilitiesQueryBuilder paramFilterAnd(boolean ignoreIfBlank, String filter) {
-		return super.paramFilterAnd(ignoreIfBlank, filter);
+	public FoDReleaseVulnerabilitiesQueryBuilder paramFilterAnd(IfBlankAction ifBlankAction, String filter) {
+		return super.paramFilterAnd(ifBlankAction, filter);
 	}
 	
-	public FoDReleaseVulnerabilitiesQueryBuilder paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public FoDReleaseVulnerabilitiesQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, FoDOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
-	public FoDReleaseVulnerabilitiesQueryBuilder paramExcludeFilters(boolean ignoreIfBlank, Boolean excludeFilters) {
-		return super.queryParam(ignoreIfBlank, "excludeFilters", Boolean.toString(excludeFilters));
+	public FoDReleaseVulnerabilitiesQueryBuilder paramExcludeFilters(IfBlankAction ifBlankAction, Boolean excludeFilters) {
+		return super.queryParam(ifBlankAction, "excludeFilters", Boolean.toString(excludeFilters));
 	}
 	
-	public FoDReleaseVulnerabilitiesQueryBuilder paramIncludeFixed(boolean ignoreIfBlank, Boolean includeFixed) {
-		return super.queryParam(ignoreIfBlank, "includeFixed", Boolean.toString(includeFixed));
+	public FoDReleaseVulnerabilitiesQueryBuilder paramIncludeFixed(IfBlankAction ifBlankAction, Boolean includeFixed) {
+		return super.queryParam(ifBlankAction, "includeFixed", Boolean.toString(includeFixed));
 	}
 	
-	public FoDReleaseVulnerabilitiesQueryBuilder paramIncludeSuppressed(boolean ignoreIfBlank, Boolean includeSuppressed) {
-		return super.queryParam(ignoreIfBlank, "includeSuppressed", Boolean.toString(includeSuppressed));
+	public FoDReleaseVulnerabilitiesQueryBuilder paramIncludeSuppressed(IfBlankAction ifBlankAction, Boolean includeSuppressed) {
+		return super.queryParam(ifBlankAction, "includeSuppressed", Boolean.toString(includeSuppressed));
 	}
 	
-	public FoDReleaseVulnerabilitiesQueryBuilder paramKeywordSearch(boolean ignoreIfBlank, String keywordSearch) {
-		return super.queryParam(ignoreIfBlank, "keywordSearch", keywordSearch);
+	public FoDReleaseVulnerabilitiesQueryBuilder paramKeywordSearch(IfBlankAction ifBlankAction, String keywordSearch) {
+		return super.queryParam(ifBlankAction, "keywordSearch", keywordSearch);
 	}
 	
 	public FoDReleaseVulnerabilitiesQueryBuilder onDemandAll() {

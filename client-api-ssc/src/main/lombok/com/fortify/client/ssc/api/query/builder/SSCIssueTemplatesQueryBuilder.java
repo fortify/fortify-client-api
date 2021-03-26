@@ -29,6 +29,7 @@ import com.fortify.client.ssc.api.query.SSCEntityQuery;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamFields;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -51,7 +52,7 @@ public final class SSCIssueTemplatesQueryBuilder extends AbstractSSCEntityQueryB
 		return super.paramFields(fields);
 	}
 	
-	public final SSCIssueTemplatesQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public final SSCIssueTemplatesQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 }

@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 
@@ -39,6 +40,7 @@ import com.fortify.client.fod.api.json.embed.FoDEmbedConfig;
 import com.fortify.client.fod.api.json.embed.FoDEmbedConfig.FoDEmbedConfigBuilder;
 import com.fortify.client.fod.api.query.FoDEntityQuery;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 import com.fortify.util.rest.json.embed.StandardEmbedConfig;
 import com.fortify.util.rest.query.AbstractRestConnectionQueryBuilder;
 import com.fortify.util.rest.query.IRestConnectionQuery;
@@ -87,67 +89,45 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	}
 	
 	/**
-	 * Add the 'orderBy' query parameter to the request configuration
-	 * 
-	 * @param ignoreIfBlank If set to true, the orderBy request parameter is not set if the given field is blank 
-	 * @param field The field to use as a value for the orderBy request parameter
-	 * @return Self for chaining
-	 */
-	protected T paramOrderBy(boolean ignoreIfBlank, String field) {
-		return queryParam(ignoreIfBlank, "orderBy", field);
-	}
-	
-	/**
-	 * Add the 'orderByDirection' query parameter to the request configuration
-	 * 
-	 * @param ignoreIfBlank If set to true, the orderByDirection request parameter is not set if the given orderByDirection is blank 
-	 * @param orderByDirection The value for the orderByDirection request parameter
-	 * @return Self for chaining
-	 */
-	protected T paramOrderByDirection(boolean ignoreIfBlank, FoDOrderByDirection orderByDirection) {
-		return queryParam(ignoreIfBlank, "orderByDirection", orderByDirection==null?null:orderByDirection.name());
-	}
-	
-	/**
 	 * Add the 'orderBy' and 'orderByDirection' query parameters to the request configuration
 	 * 
-	 * @param ignoreIfBlank If set to true, the orderBy and/or orderByDirection request parameters are not set if no value is specified in the given {@link FoDOrderBy} instance, or if the instance itself is null 
+	 * @param ifBlankAction specifies how to handle blank values  
 	 * @param orderBy defines both the field and direction to order by
 	 * @return Self for chaining
 	 */
-	protected T paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy) {
-		if ( orderBy!=null ) {
-			if ( StringUtils.isNotBlank(orderBy.getField()) ) {
-				paramOrderBy(ignoreIfBlank, orderBy.getField());
-			}
-			if ( orderBy.getDirection()!=null ) {
-				paramOrderByDirection(ignoreIfBlank, orderBy.getDirection());
-			}
-		}
+	protected T paramOrderBy(IfBlankAction ifBlankAction, FoDOrderBy orderBy) {
+		ifBlankAction.apply("orderBy", orderBy, this::isBlankOrderBy, v-> {
+			String field = v.getField();
+			String direction = FoDOrderByDirection.DESC.equals(v.getDirection())?"DESC":"ASC";
+			queryParam("orderBy", field);
+			queryParam("orderByDirection", direction);
+		});
 		return _this();
+	}
+	
+	private boolean isBlankOrderBy(FoDOrderBy orderBy) {
+		return orderBy==null || StringUtils.isBlank(orderBy.getField());
 	}
 	
 	/**
 	 * This interface is to be implemented by all {@link AbstractFoDEntityQueryBuilder}
-	 * implementations that expose the {@link #paramOrderBy(boolean, FoDOrderBy)} method.
+	 * implementations that expose the {@link #paramOrderBy(IfBlankAction, FoDOrderBy)} method.
 	 *
 	 * @param <T> Concrete {@link AbstractFoDEntityQueryBuilder} type
 	 */
 	public static interface IFoDEntityQueryBuilderParamOrderByWithDirection<T extends AbstractFoDEntityQueryBuilder<T>> {
-		public T paramOrderBy(boolean ignoreIfBlank, FoDOrderBy orderBy);
+		public T paramOrderBy(IfBlankAction ifBlankAction, FoDOrderBy orderBy);
 	}
 	
 	/**
 	 * Add the 'fields' query parameter to the request configuration
 	 * 
-	 * @param ignoreIfBlank If set to true, the fields request parameter is not set if the given fields array is null
+	 * @param ifBlankAction specifies how to handle blank values
 	 * @param fields to be added to the fields request parameter
 	 * @return Self for chaining
 	 */
-	protected T paramFields(boolean ignoreIfBlank, String... fields) {
-		if ( !isBlank(!ignoreIfBlank, "fields", fields) ) {
-			queryParam("fields", StringUtils.join(fields, ","));
-		}
+	protected T paramFields(IfBlankAction ifBlankAction, String... fields) {
+		ifBlankAction.apply("fields", fields, ArrayUtils::isEmpty, v->queryParam("fields", StringUtils.join(fields, ",")));
 		return _this();
 	}
 	
@@ -158,7 +138,7 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param <T> Concrete {@link AbstractFoDEntityQueryBuilder} type
 	 */
 	public static interface IFoDEntityQueryBuilderParamFields<T extends AbstractFoDEntityQueryBuilder<T>> {
-		public T paramFields(boolean ignoreIfBlank, String... fields);
+		public T paramFields(IfBlankAction ifBlankAction, String... fields);
 	}
 	
 	/**
@@ -167,15 +147,13 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * through a single call or multiple calls to this method)
 	 * will be OR-ed together.
 	 * 
-	 * @param ignoreIfBlank If set to true, don't add the filter if the given values array is null
+	 * @param ifBlankAction specifies how to handle blank values
 	 * @param field The field to be added to the filter query parameter
 	 * @param values The values to filter on
 	 * @return Self for chaining
 	 */
-	protected T paramFilterAnd(boolean ignoreIfBlank, String field, String... values) {
-		if ( !isBlank(!ignoreIfBlank, "paramFilter."+field, values) ) {
-			paramFilter.paramFilterAnd(field, values);
-		}
+	protected T paramFilterAnd(IfBlankAction ifBlankAction, String field, String... values) {
+		ifBlankAction.apply("paramFilter."+field, values, ArrayUtils::isEmpty, v->paramFilter.paramFilterAnd(field, v));
 		return _this();
 	}
 	
@@ -183,14 +161,12 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * Add the given filter string (formatted according to FoD
 	 * REST API documentation) to the 'filter' query parameter.
 	 * 
-	 * @param ignoreIfBlank If set to true, don't add the filter if it is blank
+	 * @param ifBlankAction specifies how to handle blank values
 	 * @param filter to be added to the filter request parameter
 	 * @return Self for chaining
 	 */
-	protected T paramFilterAnd(boolean ignoreIfBlank, String filter) {
-		if ( !isBlank(!ignoreIfBlank, "paramFilter", filter) ) {
-			paramFilter.paramFilterAnd(filter); return _this();
-		}
+	protected T paramFilterAnd(IfBlankAction ifBlankAction, String filter) {
+		ifBlankAction.apply("paramFilter", filter, StringUtils::isBlank, v->paramFilter.paramFilterAnd(v));
 		return _this();
 	}
 	
@@ -201,8 +177,8 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @param <T> Concrete {@link AbstractFoDEntityQueryBuilder} type
 	 */
 	public static interface IFoDEntityQueryBuilderParamFilter<T extends AbstractFoDEntityQueryBuilder<T>> {
-		public T paramFilterAnd(boolean ignoreIfBlank, String field, String... values);
-		public T paramFilterAnd(boolean ignoreIfBlank, String filter);
+		public T paramFilterAnd(IfBlankAction ifBlankAction, String field, String... values);
+		public T paramFilterAnd(IfBlankAction ifBlankAction, String filter);
 	}
 	
 	public T embedSubEntity(String propertyName, String subEntity, String... fields) {
@@ -217,7 +193,7 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * Subclasses can override this method to create a builder for an
 	 * {@link FoDEmbedConfig} subclass that supports loading sub-entities
 	 * by providing an implementation for the {@link StandardEmbedConfig#getSubEntityUri(String)} method. 
-	 * @return
+	 * @return {@link FoDEmbedConfig} builder
 	 */
 	protected FoDEmbedConfigBuilder<?, ?> createEmbedConfigBuilder() {
 		return FoDEmbedConfig.builder();

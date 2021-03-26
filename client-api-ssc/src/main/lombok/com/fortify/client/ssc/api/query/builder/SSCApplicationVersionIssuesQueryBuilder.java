@@ -35,6 +35,7 @@ import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.IS
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 import com.fortify.util.rest.json.preprocessor.enrich.JSONMapEnrichWithDeepLink;
 import com.fortify.util.rest.query.IRestConnectionQuery;
 
@@ -84,37 +85,37 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return super.paramFields(fields);
 	}
 
-	public final SSCApplicationVersionIssuesQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public final SSCApplicationVersionIssuesQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
-	public final SSCApplicationVersionIssuesQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
-		return super.paramQ(ignoreIfBlank, q);
+	public final SSCApplicationVersionIssuesQueryBuilder paramQ(IfBlankAction ifBlankAction, String q) {
+		return super.paramQ(ifBlankAction, q);
 	}
 
-	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
-		return super.paramQAnd(ignoreIfBlank, field, value);
+	public final SSCApplicationVersionIssuesQueryBuilder paramQAnd(IfBlankAction ifBlankAction, String field, Object value) {
+		return super.paramQAnd(ifBlankAction, field, value);
 	}
 	
-	public final SSCApplicationVersionIssuesQueryBuilder paramGroupId(boolean ignoreIfBlank, String groupId) {
-		return super.queryParam(ignoreIfBlank, "groupid", groupId);
+	public final SSCApplicationVersionIssuesQueryBuilder paramGroupId(IfBlankAction ifBlankAction, String groupId) {
+		return super.queryParam(ifBlankAction, "groupid", groupId);
 	}
 	
-	public final SSCApplicationVersionIssuesQueryBuilder paramGroupingType(boolean ignoreIfBlank, String groupingType) {
-		return super.queryParam(ignoreIfBlank, "groupingtype", groupingType);
+	public final SSCApplicationVersionIssuesQueryBuilder paramGroupingType(IfBlankAction ifBlankAction, String groupingType) {
+		return super.queryParam(ifBlankAction, "groupingtype", groupingType);
 	}
 	
-	public final SSCApplicationVersionIssuesQueryBuilder paramFilterSetId(boolean ignoreIfBlank, String filterSetId) {
+	public final SSCApplicationVersionIssuesQueryBuilder paramFilterSetId(IfBlankAction ifBlankAction, String filterSetId) {
 		this.filterSetId = filterSetId; // Used for building deep link pre-processor
-		return super.queryParam(ignoreIfBlank, "filterset", filterSetId);
+		return super.queryParam(ifBlankAction, "filterset", filterSetId);
 	}
 	
-	public final SSCApplicationVersionIssuesQueryBuilder paramFilter(boolean ignoreIfBlank, String filter) {
-		return super.queryParam(ignoreIfBlank, "filter", filter);
+	public final SSCApplicationVersionIssuesQueryBuilder paramFilter(IfBlankAction ifBlankAction, String filter) {
+		return super.queryParam(ifBlankAction, "filter", filter);
 	}
 	
-	public final SSCApplicationVersionIssuesQueryBuilder paramQm(boolean ignoreIfBlank, QueryMode queryMode) {
-		return super.queryParam(ignoreIfBlank, "qm", queryMode.name());
+	public final SSCApplicationVersionIssuesQueryBuilder paramQm(IfBlankAction ifBlankAction, QueryMode queryMode) {
+		return super.queryParam(ifBlankAction, "qm", queryMode.name());
 	}
 	
 	public SSCApplicationVersionIssuesQueryBuilder paramShowHidden(boolean showHidden) {

@@ -32,6 +32,7 @@ import javax.ws.rs.client.Entity;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlank;
 import com.fortify.util.rest.json.JSONList;
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.filter.AbstractJSONMapFilter.MatchMode;
@@ -83,7 +84,7 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 		Date now = new Date();
 		IRestConnectionQuery jobQuery = jobApi.queryJobs()
 				// Query for artifact upload job
-			.jobClassName(false, "com.fortify.manager.BLL.jobs.ArtifactUploadJob")
+			.jobClassName(IfBlank.ERROR(), "com.fortify.manager.BLL.jobs.ArtifactUploadJob")
 				// Only for selected application version 
 			.preProcessor(new JSONMapFilterRegEx(MatchMode.INCLUDE, "projectVersionId", applicationVersionId))
 				// Only for artifact names starting with 'AA_' (Audit Assistant)

@@ -30,6 +30,7 @@ import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.IS
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamOrderBy;
 import com.fortify.client.ssc.api.query.builder.AbstractSSCEntityQueryBuilder.ISSCEntityQueryBuilderParamQ;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
+import com.fortify.util.applier.ifblank.IfBlankAction;
 
 /**
  * This class allows for building an {@link SSCEntityQuery} instance that allows for
@@ -53,31 +54,31 @@ public final class SSCJobsQueryBuilder extends AbstractSSCEntityQueryBuilder<SSC
 		return super.paramFields(fields);
 	}
 
-	public final SSCJobsQueryBuilder paramOrderBy(boolean ignoreIfBlank, SSCOrderBy orderBy) {
-		return super.paramOrderBy(ignoreIfBlank, orderBy);
+	public final SSCJobsQueryBuilder paramOrderBy(IfBlankAction ifBlankAction, SSCOrderBy orderBy) {
+		return super.paramOrderBy(ifBlankAction, orderBy);
 	}
 	
-	public final SSCJobsQueryBuilder paramQ(boolean ignoreIfBlank, String q) {
-		return super.paramQ(ignoreIfBlank, q);
+	public final SSCJobsQueryBuilder paramQ(IfBlankAction ifBlankAction, String q) {
+		return super.paramQ(ifBlankAction, q);
 	}
 
-	public final SSCJobsQueryBuilder paramQAnd(boolean ignoreIfBlank, String field, Object value) {
-		return super.paramQAnd(ignoreIfBlank, field, value);
+	public final SSCJobsQueryBuilder paramQAnd(IfBlankAction ifBlankAction, String field, Object value) {
+		return super.paramQAnd(ifBlankAction, field, value);
 	}
 	
-	public final SSCJobsQueryBuilder id(boolean ignoreIfBlank, String id) {
-		return super.paramQAnd(ignoreIfBlank, "id", id);
+	public final SSCJobsQueryBuilder id(IfBlankAction ifBlankAction, String id) {
+		return super.paramQAnd(ifBlankAction, "id", id);
 	}
 
-	public final SSCJobsQueryBuilder jobClassName(boolean ignoreIfBlank, String jobClassName) {
-		return super.paramQAnd(ignoreIfBlank, "jobClassName", jobClassName);
+	public final SSCJobsQueryBuilder jobClassName(IfBlankAction ifBlankAction, String jobClassName) {
+		return super.paramQAnd(ifBlankAction, "jobClassName", jobClassName);
 	}
 
-	public final SSCJobsQueryBuilder priority(boolean ignoreIfBlank, int priority) {
-		return super.paramQAnd(ignoreIfBlank, "priority", "" + priority);
+	public final SSCJobsQueryBuilder priority(IfBlankAction ifBlankAction, int priority) {
+		return super.paramQAnd(ifBlankAction, "priority", "" + priority);
 	}
 
-	public final SSCJobsQueryBuilder state(boolean ignoreIfBlank, String state) {
-		return super.paramQAnd(ignoreIfBlank, "state", state);
+	public final SSCJobsQueryBuilder state(IfBlankAction ifBlankAction, String state) {
+		return super.paramQAnd(ifBlankAction, "state", state);
 	}
 }
