@@ -184,7 +184,6 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 		
 		JSONMap request = new JSONMap();
 		request.put("type", "FILE_BUG");
-		request.put("actionResponse", "false");
 		request.putPath("values.bugParams", bugFilingRequirements.get("bugParams", JSONList.class));
 		request.putPath("values.issueInstanceIds", issueInstanceIds);
 		return conn().executeRequest(HttpMethod.POST, 

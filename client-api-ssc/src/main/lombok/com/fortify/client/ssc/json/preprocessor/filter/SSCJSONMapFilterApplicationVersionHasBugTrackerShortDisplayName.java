@@ -43,8 +43,7 @@ public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName ext
 	private final EmbedType embedType;
 	
 	public SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName(MatchMode matchMode, String bugTrackerPluginShortDisplayName) {
-		// For backward compatibility we use EmbedType.ONDEMAND by default
-		this(matchMode, EmbedType.ONDEMAND, bugTrackerPluginShortDisplayName);
+		this(matchMode, EmbedType.PRELOAD, bugTrackerPluginShortDisplayName);
 	}
 	
 	public SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName(MatchMode matchMode, EmbedType embedType, String bugTrackerPluginShortDisplayName) {
@@ -55,7 +54,7 @@ public class SSCJSONMapFilterApplicationVersionHasBugTrackerShortDisplayName ext
 	
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		JSONList bugTrackers = json.get("bugTracker", JSONList.class);
+		JSONList bugTrackers = json.get("bugtracker", JSONList.class);
 		if ( bugTrackers!=null && bugTrackers.size()>0 ) {
 			return bugTrackers.find("bugTracker?.shortDisplayName", bugTrackerPluginShortDisplayName, JSONMap.class) != null;
 		}

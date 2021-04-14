@@ -47,8 +47,7 @@ public class SSCJSONMapFilterApplicationVersionHasAllCustomTags extends Abstract
 	private final EmbedType embedType;
 	
 	public SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode matchMode, String... customTagNames) {
-		// For backward compatibility we use EmbedType.ONDEMAND by default
-		this(matchMode, EmbedType.ONDEMAND, customTagNames);
+		this(matchMode, EmbedType.PRELOAD, customTagNames);
 	}
 	
 	public SSCJSONMapFilterApplicationVersionHasAllCustomTags(MatchMode matchMode, EmbedType embedType, String... customTagNames) {

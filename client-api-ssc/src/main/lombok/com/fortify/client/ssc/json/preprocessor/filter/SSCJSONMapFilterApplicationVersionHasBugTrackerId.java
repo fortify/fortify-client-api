@@ -42,8 +42,7 @@ public class SSCJSONMapFilterApplicationVersionHasBugTrackerId extends AbstractJ
 	private final EmbedType embedType;
 	
 	public SSCJSONMapFilterApplicationVersionHasBugTrackerId(MatchMode matchMode, String bugTrackerPluginId) {
-		// For backward compatibility we use EmbedType.ONDEMAND by default
-		this(matchMode, EmbedType.ONDEMAND, bugTrackerPluginId);
+		this(matchMode, EmbedType.PRELOAD, bugTrackerPluginId);
 	}
 	
 	public SSCJSONMapFilterApplicationVersionHasBugTrackerId(MatchMode matchMode, EmbedType embedType, String bugTrackerPluginId) {
@@ -54,7 +53,7 @@ public class SSCJSONMapFilterApplicationVersionHasBugTrackerId extends AbstractJ
 	
 	@Override
 	protected boolean isMatching(JSONMap json) {
-		return bugTrackerPluginId.equals(json.getPath("bugTracker.bugTracker.id"));
+		return bugTrackerPluginId.equals(json.getPath("bugtracker.bugTracker.id"));
 	}
 	
 	@Override
