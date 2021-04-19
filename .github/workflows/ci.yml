@@ -1,0 +1,46 @@
+on: 
+  push: 
+    branches:
+      - '**'
+
+name: CI
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Check-out source code
+        uses: actions/checkout@v2
+    
+      - name: Prepare GitHub release
+        id: create_prod_release
+        uses: GoogleCloudPlatform/release-please-action@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          command: github-release
+          release-type: simple
+          package-name: ${{ github.event.repository.name }}
+          
+      - name: Define build properties
+        run: |
+          echo DO_RELEASE=${{ steps.create_prod_release.outputs.release_created || false }} >> $GITHUB_ENV
+          
+      - name: Build
+        run: ./gradlew build
+          
+      - name: Publish to OSSRH
+        if: github.ref == 'refs/heads/main'
+        run: ./gradlew publishToOSSRH closeAndReleaseOSSRHStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PWD }}
+          ORG_GRADLE_PROJECT_OSSRHUsername: ${{ secrets.OSSRH_USER_NAME }}
+          ORG_GRADLE_PROJECT_OSSRHPassword: ${{ secrets.OSSRH_PASSWORD }}
+          
+      - name: Prepare release PR
+        uses: GoogleCloudPlatform/release-please-action@v2
+        if: github.ref == 'refs/heads/main'
+        with:
+          command: release-pr
+          release-type: simple
+          package-name: ${{ github.event.repository.name }}
+          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"api","section":"API changes","hidden":false}]'
