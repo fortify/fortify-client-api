@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.0.1](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.0.0...v6.0.1) (2021-04-22)
+
+
+### Bug Fixes
+
+* Properly handle blank values ([e480e92](https://www.github.com/fortify-ps/fortify-client-api/commit/e480e9271f0645424e0c183e217a2ebf962a2527))
+
 ## [6.0.0](https://www.github.com/fortify-ps/fortify-client-api/compare/v2.0.0...v6.0.0) (2021-04-19)
 
 
