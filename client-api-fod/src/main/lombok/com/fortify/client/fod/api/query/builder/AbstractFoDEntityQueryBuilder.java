@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 
@@ -127,7 +126,7 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @return Self for chaining
 	 */
 	protected T paramFields(IfBlankAction ifBlankAction, String... fields) {
-		ifBlankAction.apply("fields", fields, ArrayUtils::isEmpty, v->queryParam("fields", StringUtils.join(fields, ",")));
+		ifBlankAction.apply("fields", fields, this::isBlankStringArray, v->queryParam("fields", StringUtils.join(fields, ",")));
 		return _this();
 	}
 	
@@ -153,7 +152,7 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 	 * @return Self for chaining
 	 */
 	protected T paramFilterAnd(IfBlankAction ifBlankAction, String field, String... values) {
-		ifBlankAction.apply("paramFilter."+field, values, ArrayUtils::isEmpty, v->paramFilter.paramFilterAnd(field, v));
+		ifBlankAction.apply("paramFilter."+field, values, this::isBlankStringArray, v->paramFilter.paramFilterAnd(field, v));
 		return _this();
 	}
 	

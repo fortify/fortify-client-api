@@ -25,11 +25,11 @@
 package com.fortify.util.rest.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Entity;
@@ -216,22 +216,13 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 	}
 	
 	/**
-	 * Utility method for checking that input parameter value is not null
-	 * @param throwExceptionIfBlank indicated whether an exception should be thrown if the given value is null
-	 * @param name of the field for which we're trying to set a value
-	 * @param value to be set for the given field
-	 * @return true if the given value is null, false otherwise
+	 * Utility method for checking whether the given {@link String} array
+	 * is null, empty or contains only blank string values 
+	 * @param values to be checked
+	 * @return true if the given string array is null, empty, or contains only blank string values, false otherwise
 	 */
-	protected boolean isNull(boolean throwExceptionIfBlank, String name, Object value) {
-		if ( value==null ) {
-			if ( throwExceptionIfBlank ) { throw new IllegalArgumentException(String.format("%s must have a value", name)); }
-			return true;
-		}
-		return false;
-	}
-	
-	protected T ignoreIfBlank(String value, Function<String, T> ifNotBlankFunction) {
-		return StringUtils.isBlank(value) ? _this() : ifNotBlankFunction.apply(value);
+	protected boolean isBlankStringArray(String[] values) {
+		return values==null || Arrays.stream(values).filter(StringUtils::isNotBlank).count()==0;
 	}
 
 	public abstract IRestConnectionQuery build();
