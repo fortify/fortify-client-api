@@ -55,7 +55,11 @@ public class SSCEntityQuery extends AbstractRestConnectionQuery<JSONMap> {
 	
 	@Override
 	protected void updatePagingDataFromResponse(PagingData pagingData, JSONMap data) {
-		pagingData.setTotalAvailable( data.get("count", Integer.class) );
+		if (data.containsKey("count")) {
+			pagingData.setTotalAvailable( data.get("count", Integer.class) );
+		} else {
+			pagingData.setTotalAvailable(1);
+		}
 	}
 	
 	@Override
