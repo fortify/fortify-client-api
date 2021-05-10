@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.0.2](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.0.1...v6.0.2) (2021-05-10)
+
+
+### Bug Fixes
+
+* SSC: Handle API responses that do not include a count field ([95459e5](https://www.github.com/fortify-ps/fortify-client-api/commit/95459e5848af0cab5f95618b0b2c6ede48cb2b4b))
+
 ### [6.0.1](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.0.0...v6.0.1) (2021-04-22)
 
 
