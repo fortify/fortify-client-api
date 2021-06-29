@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.0.3](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.0.2...v6.0.3) (2021-06-29)
+
+
+### Bug Fixes
+
+* Improve JSON date parsing (fixes [#12](https://www.github.com/fortify-ps/fortify-client-api/issues/12)) ([a47038d](https://www.github.com/fortify-ps/fortify-client-api/commit/a47038dc1a4bb1c1a4801b6028928353644d7e22))
+
 ### [6.0.2](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.0.1...v6.0.2) (2021-05-10)
 
 
