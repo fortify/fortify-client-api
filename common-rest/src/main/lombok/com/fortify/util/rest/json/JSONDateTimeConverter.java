@@ -46,7 +46,7 @@ public final class JSONDateTimeConverter implements Converter<String,Date> {
 	}
 	
 	private static final DateTimeFormatter createDefaultDateTimeFormatter() {
-		return DateTimeFormatter.ofPattern("yyyy-MM-dd[['T'][' ']HH:mm:ss[.SSS][.SS]][Z]");
+		return DateTimeFormatter.ofPattern("yyyy-MM-dd[['T'][' ']HH:mm:ss[.SSS][.SS]][ZZZZ][Z][XXX][XX][X]");
 	}
 	
 	@Override
