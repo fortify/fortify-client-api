@@ -36,15 +36,25 @@ import org.springframework.core.convert.converter.Converter;
 
 public final class JSONDateTimeConverter implements Converter<String,Date> {
 	private final DateTimeFormatter fmtDateTime;
+	private final ZoneId defaultZoneId;
 	
 	public JSONDateTimeConverter() {
-		this(null);
+		this(null, null);
 	}
 	
 	public JSONDateTimeConverter(DateTimeFormatter fmtDateTime) {
-		this.fmtDateTime = fmtDateTime!=null ? fmtDateTime : createDefaultDateTimeFormatter();
+		this(fmtDateTime, null);
 	}
 	
+	public JSONDateTimeConverter(ZoneId defaultZoneId) {
+		this(null, defaultZoneId);
+	}
+	
+	public JSONDateTimeConverter(DateTimeFormatter fmtDateTime, ZoneId defaultZoneId) {
+		this.fmtDateTime = fmtDateTime!=null ? fmtDateTime : createDefaultDateTimeFormatter();
+		this.defaultZoneId = defaultZoneId!=null ? defaultZoneId : ZoneId.systemDefault();
+	}
+
 	private static final DateTimeFormatter createDefaultDateTimeFormatter() {
 		return DateTimeFormatter.ofPattern("yyyy-MM-dd[['T'][' ']HH:mm:ss[.SSS][.SS]][ZZZZ][Z][XXX][XX][X]");
 	}
@@ -64,9 +74,9 @@ public final class JSONDateTimeConverter implements Converter<String,Date> {
 		    return ((ZonedDateTime) temporalAccessor);
 		}
 		if (temporalAccessor instanceof LocalDateTime) {
-		    return ((LocalDateTime) temporalAccessor).atZone(ZoneId.systemDefault());
+		    return ((LocalDateTime) temporalAccessor).atZone(defaultZoneId);
 		}
-		return ((LocalDate) temporalAccessor).atStartOfDay(ZoneId.systemDefault());
+		return ((LocalDate) temporalAccessor).atStartOfDay(defaultZoneId);
 	}
 
 	public TemporalAccessor parseTemporalAccessor(String source) {
