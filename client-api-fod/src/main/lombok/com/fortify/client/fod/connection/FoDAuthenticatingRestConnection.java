@@ -25,11 +25,14 @@
 package com.fortify.client.fod.connection;
 
 import java.net.URI;
+import java.time.ZoneId;
 
 import javax.ws.rs.client.Invocation.Builder;
 
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.IRestConnectionBuilder;
+
+import lombok.Getter;
 
 /**
  * This class provides an authenticated REST connection for FoD. Low-level API's are
@@ -42,11 +45,15 @@ import com.fortify.util.rest.connection.IRestConnectionBuilder;
  */
 public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	private final FoDTokenFactory tokenProvider;
-	private final URI browserBaseUrl;
+	@Getter private final URI browserBaseUrl;
+	@Getter private final String instanceName;
+	@Getter private final ZoneId serverZoneId;
 	
 	public FoDAuthenticatingRestConnection(FoDRestConnectionConfig<?> config) {
 		super(config);
 		this.browserBaseUrl = config.getBrowserBaseUrl();
+		this.instanceName = config.getInstanceName();
+		this.serverZoneId = config.getServerZoneId();
 		this.tokenProvider = new FoDTokenFactory(config);
 	}
 	
@@ -54,10 +61,6 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 	public void close() {
 		super.close();
 		this.tokenProvider.close();
-	}
-	
-	public URI getBrowserBaseUrl() {
-		return browserBaseUrl;
 	}
 	
 	/**

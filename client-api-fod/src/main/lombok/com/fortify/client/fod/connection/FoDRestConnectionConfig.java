@@ -26,6 +26,9 @@ package com.fortify.client.fod.connection;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZoneId;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.core.Form;
 
@@ -33,8 +36,10 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fortify.util.rest.connection.AbstractRestConnectionWithUsernamePasswordConfig;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -49,18 +54,22 @@ import lombok.ToString;
  */
 @Data @EqualsAndHashCode(callSuper=true) @ToString(callSuper=true)
 public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> extends AbstractRestConnectionWithUsernamePasswordConfig<T> {
+	private static final Map<String, ZoneId> instanceToZoneNames = _getInstanceToZoneNames();
+	
 	private String[] scopes = {"api-tenant"};
 	private String clientId;
 	private String clientSecret;
 	private String tenant;
-	private URI    browserBaseUrl;
+	@Setter(AccessLevel.PRIVATE) private URI browserBaseUrl;
+	@Setter(AccessLevel.PRIVATE) private String instanceName;
+	private ZoneId serverZoneId;
 	private int    rateLimitMaxRetries = 1;
 	
 	public T clientId(String clientId) {
 		setClientId(clientId);
 		return getThis();
 	}
-	
+
 	public T clientSecret(String clientSecret) {
 		setClientSecret(clientSecret);
 		return getThis();
@@ -78,6 +87,11 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 	
 	public T rateLimitMaxRetries(int rateLimitMaxRetries) {
 		setRateLimitMaxRetries(rateLimitMaxRetries);
+		return getThis();
+	}
+	
+	public T serverZoneId(ZoneId zoneId) {
+		setServerZoneId(zoneId);
 		return getThis();
 	}
 	
@@ -102,11 +116,21 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 			}
 			super.setBaseUrl(apiUrl);
 			setBrowserBaseUrl(browserUrl);
+			String instanceName = StringUtils.substringBefore(browserUrl.getHost(), ".");
+			ZoneId serverZoneId = this.serverZoneId!=null 
+					? this.serverZoneId 
+					: instanceToZoneNames.getOrDefault(instanceName, ZoneId.systemDefault());
+			setInstanceName(instanceName);
+			setServerZoneId(serverZoneId);
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("Error constructing URI");
 		}
 	}
 	
+	public ZoneId getServerZoneId() {
+		return serverZoneId==null ? ZoneId.systemDefault() : serverZoneId;
+	}
+
 	Form getAuth() {
 		if ( StringUtils.isNotBlank(getClientId()) && StringUtils.isNotBlank(getClientSecret()) ) {
 			return getAuthClientCredentials();
@@ -166,5 +190,14 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 	
 	private String getScope() {
 		return StringUtils.join(getScopes(), ' ');
+	}
+	
+	private static Map<String, ZoneId> _getInstanceToZoneNames() {
+		Map<String, ZoneId> result = new HashMap<>();
+		result.put("ams", ZoneId.of("America/Los_Angeles"));
+		result.put("emea", ZoneId.of("Europe/London"));
+		result.put("apac", ZoneId.of("Australia/Sydney"));
+		result.put("fed", ZoneId.of("America/New_York"));
+		return result;
 	}
 }
