@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.1.0](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.0.3...v6.1.0) (2021-08-13)
+
+
+### Features
+
+* FoD: Add methods to get instance name and server ZoneId ([e4671dc](https://www.github.com/fortify-ps/fortify-client-api/commit/e4671dc85c5e19a50a2cbc038473328f797c5456))
+* JSONDateTimeFormatter: Configurable default ZoneId ([8f0a7df](https://www.github.com/fortify-ps/fortify-client-api/commit/8f0a7df8666c8eb93089168d8f1d74ae648d6869))
+
 ### [6.0.3](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.0.2...v6.0.3) (2021-06-29)
 
 
