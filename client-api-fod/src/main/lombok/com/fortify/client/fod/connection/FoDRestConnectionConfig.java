@@ -127,6 +127,14 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		}
 	}
 	
+	public void setServerZoneId(ZoneId zoneId) {
+		this.serverZoneId = zoneId;
+	}
+	
+	public void setServerZoneId(String zoneId) {
+		setServerZoneId(ZoneId.of(zoneId));
+	}
+	
 	public ZoneId getServerZoneId() {
 		return serverZoneId==null ? ZoneId.systemDefault() : serverZoneId;
 	}
@@ -196,8 +204,8 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		Map<String, ZoneId> result = new HashMap<>();
 		result.put("ams", ZoneId.of("America/Los_Angeles"));
 		result.put("emea", ZoneId.of("Europe/London"));
-		result.put("apac", ZoneId.of("Australia/Sydney"));
-		result.put("fed", ZoneId.of("America/New_York"));
+		result.put("apac", ZoneId.of("Etc/UTC"));
+		result.put("fed", ZoneId.of("Etc/UTC"));
 		return result;
 	}
 }
