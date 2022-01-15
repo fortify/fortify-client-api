@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.1.3](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.1.2...v6.1.3) (2022-01-15)
+
+
+### Bug Fixes
+
+* Update (potentially vulnerable) dependency versions ([94a4141](https://www.github.com/fortify-ps/fortify-client-api/commit/94a4141e23c1daa37d2f46d977314b750bbde5bb))
+
 ### [6.1.2](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.1.1...v6.1.2) (2021-12-15)
 
 
