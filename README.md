@@ -1,19 +1,32 @@
 # Fortify Client API libraries
 
-The **fortify-client-api** project provides the following Java modules for working with various Fortify products:
+The `fortify-client-api` project provides the following Java modules for working with various Fortify products:
 
-* **client-api-fod** Client library for working with the Fortify on Demand (FoD) REST API
-* **client-api-ssc** Client library for working with the Fortify Software Security Center (SSC) REST API
-* **client-api-webinspect** Client library for working with the Fortify WebInspect REST API
-* **client-api-wie** Client library for working with the Fortify WebInspect Enterprise (WIE) REST API
+* `client-api-fod`: Client library for working with the Fortify on Demand (FoD) REST API
+* `client-api-ssc`: Client library for working with the Fortify Software Security Center (SSC) REST API
+* `client-api-webinspect`: Client library for working with the Fortify WebInspect REST API
+* `client-api-wie`: Client library for working with the Fortify WebInspect Enterprise (WIE) REST API
 
 The following modules in this project do not contain any Fortify-specific functionality,
 but provide common, low-level functionality that is used by the various client modules
 listed above:
 
-* **common-log** Low-level functionality related to logging
-* **common-spring** Low-level functionality related to the Spring framework and Spring Expression Language
-* **common-rest** Low-level functionality for invoking REST API's and handling JSON data.
+* `common-log` Low-level functionality related to logging
+* `common-spring` Low-level functionality related to the Spring framework and Spring Expression Language
+* `common-rest` Low-level functionality for invoking REST API's and handling JSON data.
+
+## Disclaimer
+
+Please note that `fortify-client-api` is by no means meant to be an official Fortify client SDK. It is mainly used as a shared library by various Fortify-provided integration utilities. In particular, please note the following before considering using `fortify-client-api` in any application:
+
+* Absolutely no support is provided for `fortify-client-api`
+* There is absolutely no guarantee that any functionality provided by `fortify-client-api` actually works; functionality is only tested indirectly through the various integration utilities that utilize `fortify-client-api`
+* `fortify-client-api` only covers a subset of the API's provided by the various Fortify products, as required by the various integration utilities
+* New versions of `fortify-client-api` may introduce significant changes to the API without taking backward compatibility into account, and existing functionality may cease to exist; upgrading to a new version of `fortify-client-api` may require significant effort
+* Absolutely no maintenance is being done on older versions of `fortify-client-api`
+* Feature requests are not accepted
+* Bug fixes may only be considered if a bug affects any of the Fortify-provided integration utilities
+
 
 ### Related links
 
