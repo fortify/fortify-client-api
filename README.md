@@ -1,191 +1,58 @@
-# Fortify Client API libraries
+# Fortify Client API Libraries 
 
-The `fortify-client-api` project provides the following Java modules for working with various Fortify products:
 
-* `client-api-fod`: Client library for working with the Fortify on Demand (FoD) REST API
-* `client-api-ssc`: Client library for working with the Fortify Software Security Center (SSC) REST API
-* `client-api-webinspect`: Client library for working with the Fortify WebInspect REST API
-* `client-api-wie`: Client library for working with the Fortify WebInspect Enterprise (WIE) REST API
+<!-- START-INCLUDE:p.marketing-intro.md -->
 
-The following modules in this project do not contain any Fortify-specific functionality,
-but provide common, low-level functionality that is used by the various client modules
-listed above:
+Build secure software fast with [Fortify](https://www.microfocus.com/en-us/solutions/application-security). Fortify offers end-to-end application security solutions with the flexibility of testing on-premises and on-demand to scale and cover the entire software development lifecycle.  With Fortify, find security issues early and fix at the speed of DevOps. 
 
-* `common-log` Low-level functionality related to logging
-* `common-spring` Low-level functionality related to the Spring framework and Spring Expression Language
-* `common-rest` Low-level functionality for invoking REST API's and handling JSON data.
+<!-- END-INCLUDE:p.marketing-intro.md -->
 
-## Disclaimer
 
-Please note that `fortify-client-api` is by no means meant to be an official Fortify client SDK. It is mainly used as a shared library by various Fortify-provided integration utilities. In particular, please note the following before considering using `fortify-client-api` in any application:
 
-* Absolutely no support is provided for `fortify-client-api`
-* There is absolutely no guarantee that any functionality provided by `fortify-client-api` actually works; functionality is only tested indirectly through the various integration utilities that utilize `fortify-client-api`
+<!-- START-INCLUDE:repo-intro.md -->
+
+This repository contains various modules for interacting with Fortify products through their respective REST API's. This is by no means meant to act like an official Fortify client SDK; its primary purpose is to provide shared libraries for use by Fortify-provided integration utilities. Use of these libraries in 3<sup>rd</sup>-party utilities is neither endorsed nor recommended. In particular, please note the following before considering using `fortify-client-api` in any application:
+
+* There is no guarantee that any functionality provided by `fortify-client-api` actually works; functionality is only tested indirectly through the various integration utilities that utilize `fortify-client-api`
 * `fortify-client-api` only covers a subset of the API's provided by the various Fortify products, as required by the various integration utilities
-* New versions of `fortify-client-api` may introduce significant changes to the API without taking backward compatibility into account, and existing functionality may cease to exist; upgrading to a new version of `fortify-client-api` may require significant effort
-* Absolutely no maintenance is being done on older versions of `fortify-client-api`
+* New versions of `fortify-client-api` may introduce significant changes without taking backward compatibility into account, and existing functionality may cease to exist; upgrading to a new version of `fortify-client-api` may require a significant rewrite of code dependent on `fortify-client-api`
+* No maintenance, including bug fixes, is being done on older versions of `fortify-client-api`
 * Feature requests are not accepted
-* Bug fixes may only be considered if a bug affects any of the Fortify-provided integration utilities
+* Bug fixes are only considered if a bug affects any of the Fortify-provided integration utilities
+
+<!-- END-INCLUDE:repo-intro.md -->
 
 
-### Related links
+## Resources
 
-* **Source code**: https://github.com/fortify-ps/fortify-client-api
-* **Automated builds**: https://github.com/fortify-ps/fortify-client-api/actions
+
+<!-- START-INCLUDE:repo-resources.md -->
+
+* **Usage**: [USAGE.md](USAGE.md)
+* **Source code**: https://github.com/fortify/fortify-client-api
+* **Automated builds**: https://github.com/fortify/fortify-client-api/actions
 * **Maven Repositories**
-  * **Releases**: https://repo1.maven.org/maven2/ 
-  * **Snapshots**: https://s01.oss.sonatype.org/content/repositories/snapshots/
+    * **Releases**: https://repo1.maven.org/maven2/ 
+    * **Snapshots**: https://s01.oss.sonatype.org/content/repositories/snapshots/
 * **Sample Projects using fortify-client-api**
   * https://github.com/fortify-ps/FortifyBugTrackerUtility
   * https://github.com/fortify-ps/FortifySyncFoDToSSC
-  * https://github.com/fortify-ps/fortify-integration-sonarqube
   * https://github.com/fortify-ps/fortify-integration-maven-webinspect 
+* **Contributing Guidelines**: [CONTRIBUTING.md](CONTRIBUTING.md)
+* **Code of Conduct**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+* **License**: [LICENSE.txt](LICENSE.txt)
+
+<!-- END-INCLUDE:repo-resources.md -->
 
 
-## Usage
+## Support
 
-### API
-Please refer to the JavaDoc and sample projects listed in the [Related Links](#related-links) section
-for details on how to use these client libraries.
+The software is provided "as is", without warranty of any kind, and is not supported through the regular Micro Focus Support channels. Support requests may be submitted through the [GitHub Issues](https://github.com/fortify/fortify-client-api/issues) page for this repository. A (free) GitHub account is required to submit new issues or to comment on existing issues. 
 
-### Build System
-The Maven artifacts for this project are automatically deployed to
-the Maven repositories listed in the [Related Links](#related-links) section.
+Support requests created through the GitHub Issues page may include bug reports, enhancement requests and general usage questions. Please avoid creating duplicate issues by checking whether there is any existing issue, either open or closed, that already addresses your question, bug or enhancement request. If an issue already exists, please add a comment to provide additional details if applicable.
 
-The published pom.xml file for fortify-client-api-bom provides a dependencyManagement 
-section that can be imported to declare the correct dependency versions. The 
-following examples show how to configure Gradle or Maven to use the `client-api-ssc` 
-project provided by fortify-client-api. Obviously, these examples need to be adjusted 
-according to:
+Support requests on the GitHub Issues page are handled on a best-effort basis; there is no guaranteed response time, no guarantee that reported bugs will be fixed, and no guarantee that enhancement requests will be implemented. If you require dedicated support for this and other Fortify software, please consider purchasing Micro Focus Fortify Professional Services. Micro Focus Fortify Professional Services can assist with general usage questions, integration of the software into your processes, and implementing customizations, bug fixes, and feature requests (subject to feasibility analysis). Please contact your Micro Focus Sales representative or fill in the [Professional Services Contact Form](https://www.microfocus.com/en-us/cyberres/contact/professional-services) to obtain more information on pricing and the services that Micro Focus Fortify Professional Services can provide.
 
-* The version of fortify-client-api to be used
-* Specific module(s) to be used from fortify-client-api 
- 
-Please refer to the sample projects listed in the [Related Links](#related-links) sections
-for more examples on how to add the `fortify-client-api` libraries to your projects.
+---
 
-#### Gradle Example
-
-```groovy
-
-dependencies {
-	implementation platform('com.fortify.client.api:fortify-client-api-bom:<version>')
-
-   implementation 'com.fortify.client.api:client-api-ssc'
-}
-```
-
-The configuration listed above will only allow access to release versions of this library.
-Usually it is not recommended to depend on snapshot versions of this library, but if necessary
-you can use the example below to access snapshot versions of this library. Note the additional
-repository definition, and the `changing: true` property on `implementation`.
-
-```groovy
-
-repositories {
-   maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
-}
-
-dependencies {
-	implementation platform('com.fortify.client.api:fortify-client-api-bom:<version>')
-
-   implementation('com.fortify.client.api:client-api-ssc', changing: true) 
-}
-```
-
-
-#### Maven Example
-
-```xml
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.fortify.client.api</groupId>
-				<artifactId>fortify-client-api-bom</artifactId>
-				<version>[version]</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	
-	<dependencies>
-		<dependency>
-			<groupId>com.fortify.client.api</groupId>
-			<artifactId>client-api-ssc</artifactId>
-		</dependency>
-	</dependencies>
-```
-
-
-## Information for library developers
-
-The following sections provide information that may be useful for developers of the 
-`fortify-client-api` library.
-
-### IDE's
-
-Most of the modules in this project use Lombok. In order to have your IDE compile these
-projects without errors, you may need to add Lombok support to your IDE. Please see
-https://projectlombok.org/setup/overview for more information.
-
-### Conventional commits & versioning
-
-Versioning is handled automatically by [`release-please-action`](https://github.com/google-github-actions/release-please-action) based on [Conventional Commits](https://www.conventionalcommits.org/). Every commit to the `main`
-branch should follow the Conventional Commits convention, for example:
-
-* `fix: Some fix (#2)`
-* `feat: New feature (#3)`
-* `api: Some API change`
-* `api!: Some breaking API change`
-
-`release-please-action` invoked from the GitHub CI workflow generates pull requests containing updated `CHANGELOG.md` and `version.txt` files based on these commit messages. Merging the pull request will
-result in a new release version being published.
-
-The `build.gradle` script reads the version number of the last published release from `version.txt`,
-by default this will result in a version named `x.y.z.SP-SNAPSHOT`, indicating that this is a snapshot
-of an upcoming Service Pack release. Note the 'Service Pack' here just means 'the next version after the last
-published release'. We never actually release service packs; once the 'Service Pack' is ready for release, 
-a new version number will be generated by `release-please-action` based on the Conventional Commit
-messages.
-
-This default behavior can be modified by passing the `-PisReleaseVersion` property, in which case the `build.gradle` will generate a version named `x.y.z.RELEASE`. This should fit nicely with [Gradle semantics](https://docs.gradle.org/current/userguide/single_versions.html), which states that for example `1.0-RELEASE < 1.0-SP1`.
-
-### Commonly used commands
-
-All commands listed below use Linux/bash notation; adjust accordingly if you
-are running on a different platform. All commands are to be executed from
-the main project directory.
-
-It is strongly recommended to build this project using the included Gradle Wrapper
-scripts; using other Gradle versions may result in build errors and other issues.
-
-* `./gradlew tasks --all`: List all available tasks
-* Build & publish:
-  * `./gradlew clean build`: Clean and build the project
-  * `./gradlew build`: Build the project without cleaning
-  * `./gradlew publish`: Publish this build as a snapshot version to the local Maven repository
-  * `./gradlew publishToOSSRH`: Publish this build as a snapshot version to OSSRH; usually only done from a GitHub Actions workflow
-  * `./gradlew publishToOSSRH closeOSSRHStagingRepository -PisReleaseVersion=true`: Publish this build as a release version to the OSSRH staging area; use this for first-time publishing to check release contents
-  * `./gradlew publishToOSSRH closeAndReleaseOSSRHStagingRepository -PisReleaseVersion=true`: Publish this build as a release version to Maven Central; usually only done from a GitHub Actions workflow
-  
-All OSSRH-related tasks require the following Gradle properties to be set:
-
-* `signingKey`: GPG secret key used to sign the artifacts
-* `signingPassword`: Password for the GPG secret key
-* `OSSRHUsername`: Sonatype OSSRH user name
-* `OSSRHPassword`: Sonatype OSSRH password
-
-These properties can be set on the command line, in a local `gradle.properties` file, or through environment variables named `ORG_GRADLE_PROJECT_<propertyName>`. For automated build pipelines, it is recommended to use a Sonatype OSSRH token rather than actual username and password.
-
-
-### Automated Builds & publishing
-
-A GitHub Actions `ci.yml` workflow is used to automatically build and publish both snapshot versions and release versions to OSSRH/Maven Central.
-
-See the [Related Links](#related-links) section for the relevant links.
-
-
-# Licensing
-See [LICENSE.TXT](LICENSE.TXT)
-
+*This document was auto-generated from README.template.md; do not edit by hand*
