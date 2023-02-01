@@ -3,4 +3,4 @@
 * **Automated builds**: https://github.com/fortify/fortify-client-api/actions
 {{include:nocomments.li.repo-target-maven-repos.md}}
 {{include:nocomments.li.repo-sample-projects.md}}
-{{include:nocomments.li.standard-resources.md}}
+{{include:resources/nocomments.li.contrib-conduct-licence.md}}
