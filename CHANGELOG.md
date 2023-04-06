@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.1.6](https://www.github.com/fortify/fortify-client-api/compare/v6.1.5...v6.1.6) (2023-04-06)
+
+
+### Bug Fixes
+
+* Update dependency versions & gradle wrapper ([15b74c9](https://www.github.com/fortify/fortify-client-api/commit/15b74c93f59238ea790a50603b208b9c505423f9))
+
 ### [6.1.5](https://www.github.com/fortify-ps/fortify-client-api/compare/v6.1.4...v6.1.5) (2022-04-13)
 
 
