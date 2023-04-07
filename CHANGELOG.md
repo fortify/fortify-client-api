@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.1.7](https://www.github.com/fortify/fortify-client-api/compare/v6.1.6...v6.1.7) (2023-04-07)
+
+
+### Bug Fixes
+
+* Republish due to incomplete Maven Central deployment ([9fece84](https://www.github.com/fortify/fortify-client-api/commit/9fece8444742674cfdbd2dd0c7d81ba37d029467))
+
 ### [6.1.6](https://www.github.com/fortify/fortify-client-api/compare/v6.1.5...v6.1.6) (2023-04-06)
 
 
