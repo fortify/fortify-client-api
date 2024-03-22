@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.1.8](https://www.github.com/fortify/fortify-client-api/compare/v6.1.7...v6.1.8) (2024-03-22)
+
+
+### Bug Fixes
+
+* Update dependency versions ([3dde69f](https://www.github.com/fortify/fortify-client-api/commit/3dde69fca6b6f62855a6fb24d82c7eaeb1822fe9))
+
 ### [6.1.7](https://www.github.com/fortify/fortify-client-api/compare/v6.1.6...v6.1.7) (2023-04-07)
 
 
