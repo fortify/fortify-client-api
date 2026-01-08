@@ -24,12 +24,12 @@ ext {
 version = latestReleaseVersion+versionSuffix
 
 nexusPublishing {
-	repositories {
-		OSSRH {
-			nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-			snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-		}
-	}
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://central.sonatype.com/api/v1/publisher/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/api/v1/publisher/"))
+        }
+    }
 }
 
 allprojects {
@@ -85,7 +85,7 @@ allprojects {
 		def signingKey = findProperty("signingKey")
 		def signingPassword = findProperty("signingPassword")
 		useInMemoryPgpKeys(signingKey, signingPassword)
-		required { gradle.taskGraph.hasTask("publishToOSSRH") }
+		required { gradle.taskGraph.hasTask("publishToSonatype") }
 		sign publishing.publications.mavenJava
 	}
 }

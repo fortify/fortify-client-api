@@ -27,14 +27,14 @@ jobs:
       - name: Build
         run: ./gradlew build
           
-      - name: Publish to OSSRH
+      - name: Publish to Maven Central
         if: github.ref == 'refs/heads/main'
-        run: ./gradlew publishToOSSRH closeAndReleaseOSSRHStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
+        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository -PisReleaseVersion=${{ env.DO_RELEASE }}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_GPG_SECRET_KEY_PWD }}
-          ORG_GRADLE_PROJECT_OSSRHUsername: ${{ secrets.OSSRH_USER_NAME }}
-          ORG_GRADLE_PROJECT_OSSRHPassword: ${{ secrets.OSSRH_PASSWORD }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           
       - name: Prepare release PR
         uses: GoogleCloudPlatform/release-please-action@v2
