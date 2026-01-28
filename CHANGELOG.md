@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.2.0](https://www.github.com/fortify/fortify-client-api/compare/v6.1.8...v6.2.0) (2026-01-28)
+
+
+### Features
+
+* Migrate from OSSRH to Maven Central Publishing API ([#28](https://www.github.com/fortify/fortify-client-api/issues/28)) ([f21962a](https://www.github.com/fortify/fortify-client-api/commit/f21962a0576515d46ba957c57ec46894e51769ca))
+
+
+### Bug Fixes
+
+* Update dependencies ([8a5e6b4](https://www.github.com/fortify/fortify-client-api/commit/8a5e6b4c6dc361150f83dbeae8f1089d318ce3c3))
+
 ### [6.1.8](https://www.github.com/fortify/fortify-client-api/compare/v6.1.7...v6.1.8) (2024-03-22)
 
 
