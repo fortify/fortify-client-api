@@ -12,11 +12,11 @@ jobs:
       pull-requests: write
     steps: 
       - name: Check-out source code
-        uses: actions/checkout@v6
+        uses: fortify/shared-github/actions/3rdparty/actions/checkout/v6@5ad1afec0f56a21b03f0887eea35505cb6a66554
     
       - name: Prepare GitHub release
         id: create_prod_release
-        uses: fortify/3rdparty-actions/actions/googleapis/release-please-action/v5@main
+        uses: fortify/shared-github/actions/3rdparty/googleapis/release-please-action/v5@5ad1afec0f56a21b03f0887eea35505cb6a66554
         if: github.ref == 'refs/heads/main'
         with:
           command: github-release
@@ -40,7 +40,7 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           
       - name: Prepare release PR
-        uses: fortify/3rdparty-actions/actions/googleapis/release-please-action/v5@main
+        uses: fortify/shared-github/actions/3rdparty/googleapis/release-please-action/v5@5ad1afec0f56a21b03f0887eea35505cb6a66554
         if: github.ref == 'refs/heads/main'
         with:
           command: release-pr
