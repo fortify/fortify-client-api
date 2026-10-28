@@ -24,8 +24,8 @@
  ******************************************************************************/
 package com.fortify.util.rest.json.preprocessor.enrich;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.WebTarget;
 
 import com.fortify.util.rest.connection.IRestConnection;
 import com.fortify.util.rest.json.JSONMap;
@@ -68,3 +68,4 @@ public class JSONMapEnrichWithOnDemandRestData extends JSONMapEnrichWithOnDemand
 		}
 	}
 }
+

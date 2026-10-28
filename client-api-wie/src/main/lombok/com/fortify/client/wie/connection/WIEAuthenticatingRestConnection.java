@@ -28,10 +28,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.media.multipart.Boundary;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -134,3 +134,4 @@ public class WIEAuthenticatingRestConnection extends WIEBasicRestConnection {
 		}
 	}
 }
+

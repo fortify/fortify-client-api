@@ -26,9 +26,9 @@ package com.fortify.util.rest.connection;
 
 import java.net.URI;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation.Builder;
+import jakarta.ws.rs.client.WebTarget;
 
 /**
  * Interface providing low-level methods for building and executing REST requests.
@@ -46,3 +46,4 @@ public interface IRestConnection extends AutoCloseable {
 	public abstract String getConnectionId();
 	public abstract void close();
 }
+

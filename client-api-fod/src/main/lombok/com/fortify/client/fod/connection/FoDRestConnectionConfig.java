@@ -30,9 +30,9 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.core.Form;
+import jakarta.ws.rs.core.Form;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fortify.util.rest.connection.AbstractRestConnectionWithUsernamePasswordConfig;
 
@@ -209,3 +209,4 @@ public class FoDRestConnectionConfig<T extends FoDRestConnectionConfig<T>> exten
 		return result;
 	}
 }
+

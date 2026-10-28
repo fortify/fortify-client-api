@@ -24,10 +24,10 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -261,3 +261,5 @@ public class SSCApplicationVersionAPI extends AbstractSSCAPI {
 		}
 	}
 }
+
+

@@ -30,8 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
@@ -251,3 +251,4 @@ public class SSCAttributeDefinitionAPI extends AbstractSSCAPI {
 	}
 
 }
+

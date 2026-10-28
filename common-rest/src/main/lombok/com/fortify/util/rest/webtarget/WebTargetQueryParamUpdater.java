@@ -28,9 +28,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This {@link IWebTargetUpdater} implementation allows for adding
@@ -89,3 +89,5 @@ public class WebTargetQueryParamUpdater implements IWebTargetUpdater {
 	}
 
 }
+
+

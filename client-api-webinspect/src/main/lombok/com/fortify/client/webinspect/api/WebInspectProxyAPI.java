@@ -27,9 +27,9 @@ package com.fortify.client.webinspect.api;
 import java.nio.file.CopyOption;
 import java.nio.file.Path;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
 
 import com.fortify.client.webinspect.connection.WebInspectAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
@@ -78,3 +78,4 @@ public class WebInspectProxyAPI extends AbstractWebInspectAPI {
 	}
 	
 }
+

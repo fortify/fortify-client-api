@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
 import org.springframework.util.MultiValueMap;
 
@@ -207,3 +207,4 @@ public class SSCApplicationVersionAttributeAPI extends AbstractSSCAPI {
 	}
 
 }
+

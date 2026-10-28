@@ -26,7 +26,7 @@ package com.fortify.client.wie.api.query;
 
 import java.util.Arrays;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
 import com.fortify.client.wie.connection.WIEAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
@@ -69,3 +69,4 @@ public class WIEEntityQuery extends AbstractRestConnectionQuery<JSONMap> {
 		return JSONMap.class;
 	}
 }
+

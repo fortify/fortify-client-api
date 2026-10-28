@@ -27,7 +27,7 @@ package com.fortify.util.spring.beans;
 import java.beans.PropertyDescriptor;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
@@ -95,3 +95,4 @@ public class BeanWrapperWithMapSupport extends BeanWrapperImpl {
 	}
 
 }
+

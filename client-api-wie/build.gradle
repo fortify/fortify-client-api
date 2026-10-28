@@ -2,6 +2,7 @@ description = 'Functionality for invoking Fortify WebInspect Enterprise (WIE) RE
 
 dependencies {
 	api project(':common-rest')
+	api 'jakarta.ws.rs:jakarta.ws.rs-api'
 	implementation 'commons-codec:commons-codec'
 	implementation 'org.glassfish.jersey.media:jersey-media-multipart'
 }

@@ -27,7 +27,7 @@ package com.fortify.client.fod.connection;
 import java.net.URI;
 import java.time.ZoneId;
 
-import javax.ws.rs.client.Invocation.Builder;
+import jakarta.ws.rs.client.Invocation.Builder;
 
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.IRestConnectionBuilder;
@@ -100,3 +100,4 @@ public class FoDAuthenticatingRestConnection extends FoDBasicRestConnection {
 		}
 	}
 }
+

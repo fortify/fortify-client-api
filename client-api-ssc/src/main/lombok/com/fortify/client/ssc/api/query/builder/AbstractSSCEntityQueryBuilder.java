@@ -27,8 +27,8 @@ package com.fortify.client.ssc.api.query.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fortify.client.ssc.api.SSCBulkAPI;
 import com.fortify.client.ssc.api.json.embed.SSCEmbedConfig;
@@ -306,3 +306,5 @@ public abstract class AbstractSSCEntityQueryBuilder<T extends AbstractSSCEntityQ
 
 	} 
 }
+
+

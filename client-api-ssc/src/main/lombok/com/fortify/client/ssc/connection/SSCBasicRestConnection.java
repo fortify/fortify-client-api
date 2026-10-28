@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.ssc.connection;
 
-import javax.ws.rs.client.Invocation.Builder;
+import jakarta.ws.rs.client.Invocation.Builder;
 
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.AbstractRestConnectionConfig;
@@ -53,3 +53,4 @@ public class SSCBasicRestConnection extends AbstractRestConnection {
 				.accept("application/json").header("Content-Type", "application/json");
 	}
 }
+

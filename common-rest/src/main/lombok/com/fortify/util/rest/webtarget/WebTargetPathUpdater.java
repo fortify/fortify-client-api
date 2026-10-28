@@ -26,7 +26,7 @@ package com.fortify.util.rest.webtarget;
 
 import java.util.List;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
 /**
  * This {@link IWebTargetUpdater} implementation allows for 
@@ -70,3 +70,4 @@ public class WebTargetPathUpdater implements IWebTargetUpdater {
 	}
 
 }
+

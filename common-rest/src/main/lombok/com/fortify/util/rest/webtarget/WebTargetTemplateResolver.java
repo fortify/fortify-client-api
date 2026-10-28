@@ -27,9 +27,9 @@ package com.fortify.util.rest.webtarget;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 
 /**
  * This {@link IWebTargetUpdater} implementation allows for resolving template
@@ -68,3 +68,5 @@ public class WebTargetTemplateResolver implements IWebTargetUpdater {
 	}
 
 }
+
+

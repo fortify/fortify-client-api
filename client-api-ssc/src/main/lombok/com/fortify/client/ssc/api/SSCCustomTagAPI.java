@@ -28,8 +28,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionCustomTagsQueryBuilder;
@@ -286,3 +286,4 @@ public class SSCCustomTagAPI extends AbstractSSCAPI {
 		
 	}
 }
+

@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.convert.support.DefaultConversionService;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -326,3 +326,4 @@ public class JSONList extends ArrayList<Object> {
 		}
 	}
 }
+

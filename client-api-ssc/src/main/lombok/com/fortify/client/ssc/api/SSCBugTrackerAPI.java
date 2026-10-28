@@ -33,8 +33,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionBugFilingRequirementsQueryBuilder;
@@ -227,3 +227,4 @@ public class SSCBugTrackerAPI extends AbstractSSCAPI {
 				.build().getUnique();
 	}
 }
+

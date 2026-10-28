@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.util.rest.webtarget;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
 /**
  * This interface allows for updating {@link WebTarget} instances, for
@@ -45,3 +45,4 @@ public interface IWebTargetUpdater {
 	 */
 	public WebTarget update(WebTarget target);
 }
+

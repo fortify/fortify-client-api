@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.wie.api;
 
-import javax.ws.rs.HttpMethod;
+import jakarta.ws.rs.HttpMethod;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -56,3 +56,4 @@ public class WIEMacroAPI extends AbstractWIEAPI {
 	}
 
 }
+

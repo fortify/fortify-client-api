@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.FastDateFormat;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.fortify.client.fod.api.json.embed.FoDEmbedConfig;
 import com.fortify.client.fod.api.json.embed.FoDEmbedConfig.FoDEmbedConfigBuilder;
@@ -254,3 +254,4 @@ public abstract class AbstractFoDEntityQueryBuilder<T extends AbstractFoDEntityQ
 
 	} 
 }
+

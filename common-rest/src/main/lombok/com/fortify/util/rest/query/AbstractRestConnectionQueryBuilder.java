@@ -31,10 +31,10 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fortify.util.applier.ifblank.IfBlankAction;
 import com.fortify.util.rest.connection.IRestConnection;
@@ -227,3 +227,4 @@ public abstract class AbstractRestConnectionQueryBuilder<ConnType extends IRestC
 
 	public abstract IRestConnectionQuery build();
 }
+
