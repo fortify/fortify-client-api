@@ -57,6 +57,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.Response.Status.Family;
 import jakarta.ws.rs.core.Response.StatusType;
+import jakarta.ws.rs.ext.ContextResolver;
 
 import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
@@ -81,6 +82,7 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import com.fortify.util.log4j.LogMaskingHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortify.util.rest.json.JSONObjectMapperSupplier;
 
 import lombok.Getter;
@@ -615,9 +617,9 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	}
 
 	protected static class JacksonFeature implements Feature {
+	    private static final ContextResolver<ObjectMapper> OBJECT_MAPPER_RESOLVER = type -> JSONObjectMapperSupplier.getObjectMapper();
 	    public boolean configure(FeatureContext context) {
-	        // Jersey 3.1 with jersey-media-json-jackson provides automatic Jackson support
-	        // This custom feature is kept for potential future customization
+	        context.register(OBJECT_MAPPER_RESOLVER);
 	        return true;
 	    }
 	}
