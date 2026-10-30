@@ -1,5 +1,18 @@
 # Changelog
 
+## [7.0.0](https://github.com/fortify/fortify-client-api/compare/v6.2.0...v7.0.0) (2026-10-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* Migrate to Java 17
+* Upgrade dependency versions
+
+### Bug Fixes
+
+* Migrate to Java 17 ([6199a86](https://github.com/fortify/fortify-client-api/commit/6199a8637b3da9ea9ef02e13a11b3e5d73a981bb))
+* Upgrade dependency versions ([6199a86](https://github.com/fortify/fortify-client-api/commit/6199a8637b3da9ea9ef02e13a11b3e5d73a981bb))
+
 ## [6.2.0](https://www.github.com/fortify/fortify-client-api/compare/v6.1.8...v6.2.0) (2026-01-28)
 
 
