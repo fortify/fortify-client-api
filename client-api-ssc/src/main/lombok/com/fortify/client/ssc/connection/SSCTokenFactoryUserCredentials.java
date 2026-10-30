@@ -27,8 +27,8 @@ package com.fortify.client.ssc.connection;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -124,3 +124,4 @@ public final class SSCTokenFactoryUserCredentials implements ISSCTokenFactory {
 		}
 	}
 }
+

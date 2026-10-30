@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.fod.api.query.builder;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fortify.client.fod.api.FoDApplicationAPI;
 import com.fortify.client.fod.api.json.embed.FoDEmbedConfig;
@@ -209,3 +209,4 @@ public class FoDReleasesQueryBuilder extends AbstractFoDEntityQueryBuilder<FoDRe
 		}
 	}
 }
+

@@ -27,7 +27,7 @@ package com.fortify.client.fod.api;
 import java.nio.file.CopyOption;
 import java.nio.file.Path;
 
-import javax.ws.rs.HttpMethod;
+import jakarta.ws.rs.HttpMethod;
 
 import com.fortify.client.fod.api.query.builder.FoDReleasesQueryBuilder;
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
@@ -83,3 +83,4 @@ public class FoDReleaseAPI extends AbstractFoDAPI {
 				outputPath, copyOptions);
 	}
 }
+

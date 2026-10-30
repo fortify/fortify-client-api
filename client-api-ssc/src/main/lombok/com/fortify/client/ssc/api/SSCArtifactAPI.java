@@ -31,9 +31,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCFileUpDownloadAPI.FileTokenType;
@@ -145,3 +145,4 @@ public class SSCArtifactAPI extends AbstractSSCAPI {
 		return artifactId;
 	}
 }
+

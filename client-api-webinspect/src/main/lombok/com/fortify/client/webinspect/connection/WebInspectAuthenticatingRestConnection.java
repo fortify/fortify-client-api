@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.webinspect.connection;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.IRestConnectionBuilder;
@@ -66,3 +66,4 @@ public class WebInspectAuthenticatingRestConnection extends WebInspectBasicRestC
 		}
 	}
 }
+

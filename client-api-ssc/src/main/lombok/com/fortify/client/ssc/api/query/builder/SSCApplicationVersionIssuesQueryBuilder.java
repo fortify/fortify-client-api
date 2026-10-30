@@ -24,7 +24,7 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.json.embed.SSCApplicationVersionIssuesEmbedConfig;
@@ -161,3 +161,4 @@ public class SSCApplicationVersionIssuesQueryBuilder
 		return embedSubEntity(propertyName, "details", embedType);
 	}
 }
+

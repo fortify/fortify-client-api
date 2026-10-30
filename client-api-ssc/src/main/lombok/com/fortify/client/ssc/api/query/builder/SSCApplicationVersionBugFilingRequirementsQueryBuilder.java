@@ -24,8 +24,8 @@
  ******************************************************************************/
 package com.fortify.client.ssc.api.query.builder;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.SSCEntityQuery;
@@ -65,3 +65,4 @@ public class SSCApplicationVersionBugFilingRequirementsQueryBuilder
 		return _this();
 	}
 }
+

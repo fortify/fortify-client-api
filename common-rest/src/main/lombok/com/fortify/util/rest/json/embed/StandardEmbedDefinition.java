@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.spring.expression.helper.InternalExpressionHelper;
@@ -135,3 +135,4 @@ public class StandardEmbedDefinition implements Serializable, IEmbedDefinition {
 	}
 	
 }
+

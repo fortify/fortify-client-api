@@ -27,8 +27,8 @@ package com.fortify.client.ssc.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.query.builder.SSCApplicationVersionIssuesQueryBuilder;
@@ -130,3 +130,4 @@ public class SSCIssueAPI extends AbstractSSCAPI {
 		}
 	}
 }
+

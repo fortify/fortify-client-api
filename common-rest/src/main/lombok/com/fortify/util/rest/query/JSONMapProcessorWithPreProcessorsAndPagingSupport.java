@@ -26,7 +26,7 @@ package com.fortify.util.rest.query;
 
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import com.fortify.util.rest.json.JSONMap;
 import com.fortify.util.rest.json.preprocessor.IJSONMapPreProcessor;
@@ -113,3 +113,4 @@ class JSONMapProcessorWithPreProcessorsAndPagingSupport implements IJSONMapProce
 	
 
 }
+

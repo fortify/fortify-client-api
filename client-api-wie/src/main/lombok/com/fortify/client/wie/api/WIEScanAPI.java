@@ -27,9 +27,9 @@ package com.fortify.client.wie.api;
 import java.io.File;
 import java.util.UUID;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
 
 import com.fortify.client.wie.connection.WIEAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
@@ -112,3 +112,4 @@ public class WIEScanAPI extends AbstractWIEAPI {
 	}
 
 }
+

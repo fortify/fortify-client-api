@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
 
 import com.fortify.util.rest.connection.IRestConnection;
 import com.fortify.util.rest.json.JSONList;
@@ -223,3 +223,4 @@ public abstract class AbstractRestConnectionQuery<ResponseType> implements IRest
 		}
 	}
 }
+

@@ -26,7 +26,7 @@ package com.fortify.client.ssc.api.query.builder;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCAttributeDefinitionAPI;

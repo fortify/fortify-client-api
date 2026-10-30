@@ -26,7 +26,7 @@ package com.fortify.client.ssc.api;
 
 import java.nio.file.Path;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
 import com.fortify.client.ssc.annotation.SSCRequiredActionsPermitted;
 import com.fortify.client.ssc.api.SSCFileUpDownloadAPI.FileTokenType;
@@ -56,3 +56,4 @@ public class SSCRulepackAPI extends AbstractSSCAPI {
 		return conn().api(SSCFileUpDownloadAPI.class).downloadFile(webTarget, FileTokenType.DOWNLOAD, target);
 	}
 }
+

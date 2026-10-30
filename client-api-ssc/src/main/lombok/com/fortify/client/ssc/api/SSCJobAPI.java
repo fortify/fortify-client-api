@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import com.fortify.client.ssc.api.query.builder.SSCJobsQueryBuilder;
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
@@ -82,3 +82,4 @@ public class SSCJobAPI extends AbstractSSCAPI {
 		return jobs;
 	}
 }
+

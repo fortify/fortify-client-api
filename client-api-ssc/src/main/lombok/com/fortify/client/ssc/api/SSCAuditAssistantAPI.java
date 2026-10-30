@@ -26,10 +26,10 @@ package com.fortify.client.ssc.api;
 
 import java.util.Date;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.applier.ifblank.IfBlank;
@@ -103,3 +103,5 @@ public class SSCAuditAssistantAPI extends AbstractSSCAPI {
 		return result;
 	}
 }
+
+

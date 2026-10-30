@@ -28,9 +28,9 @@ import java.io.Closeable;
 import java.util.Date;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Form;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -102,3 +102,4 @@ public final class FoDTokenFactory implements Closeable {
 		}
 	}
 }
+

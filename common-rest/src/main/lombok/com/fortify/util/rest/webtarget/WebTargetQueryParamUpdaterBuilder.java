@@ -27,7 +27,7 @@ package com.fortify.util.rest.webtarget;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
 /**
  * {@link IWebTargetUpdaterBuilder} implementation for building
@@ -69,3 +69,4 @@ public class WebTargetQueryParamUpdaterBuilder implements IWebTargetUpdaterBuild
 	}
 
 }
+

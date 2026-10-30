@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.expression.Expression;
 
 import com.fortify.client.ssc.annotation.SSCCopyToConstructors;
@@ -245,3 +245,5 @@ public class SSCBulkAPI extends AbstractSSCAPI {
 		}
 	}
 }
+
+

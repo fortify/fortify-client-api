@@ -24,9 +24,9 @@
  ******************************************************************************/
 package com.fortify.client.ssc.connection;
 
-import javax.ws.rs.client.Invocation.Builder;
+import jakarta.ws.rs.client.Invocation.Builder;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fortify.util.rest.connection.AbstractRestConnection;
 import com.fortify.util.rest.connection.AbstractRestConnectionConfig;
@@ -117,3 +117,5 @@ public class SSCAuthenticatingRestConnection extends SSCBasicRestConnection {
 		}
 	}
 }
+
+

@@ -26,7 +26,7 @@ package com.fortify.client.ssc.api.query;
 
 import java.util.Arrays;
 
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.WebTarget;
 
 import com.fortify.client.ssc.connection.SSCAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONList;
@@ -73,3 +73,4 @@ public class SSCEntityQuery extends AbstractRestConnectionQuery<JSONMap> {
 		return JSONMap.class;
 	}
 }
+

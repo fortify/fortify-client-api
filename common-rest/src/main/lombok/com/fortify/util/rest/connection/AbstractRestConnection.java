@@ -44,23 +44,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.Response.Status.Family;
-import javax.ws.rs.core.Response.StatusType;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation.Builder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response.Status.Family;
+import jakarta.ws.rs.core.Response.StatusType;
+import jakarta.ws.rs.ext.ContextResolver;
 
-import org.apache.commons.lang.CharEncoding;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.reflect.ConstructorUtils;
+import org.apache.commons.lang3.CharEncoding;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
@@ -80,8 +81,8 @@ import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.fortify.util.log4j.LogMaskingHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fortify.util.rest.json.JSONObjectMapperSupplier;
 
 import lombok.Getter;
@@ -439,7 +440,7 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	 * implementation creates a client based on Apache HttpClient
 	 * 4.x by calling {@link #createClientConfig()} to get the
 	 * client configuration, and then calls 
-	 * {@link ClientBuilder#newClient(javax.ws.rs.core.Configuration)}
+	 * {@link ClientBuilder#newClient(jakarta.ws.rs.core.Configuration)}
 	 * to generate a new Client instance.
 	 * Some of the Jersey-specific settings like the CookieStore
 	 * and whether to use preemptive basic authentication can
@@ -616,14 +617,13 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	}
 
 	protected static class JacksonFeature implements Feature {
-	    private static final JacksonJaxbJsonProvider provider =
-	        new JacksonJaxbJsonProvider(){{
-	            setMapper(JSONObjectMapperSupplier.getObjectMapper());
-	        }};
-	 
+	    private static final ContextResolver<ObjectMapper> OBJECT_MAPPER_RESOLVER = type -> JSONObjectMapperSupplier.getObjectMapper();
 	    public boolean configure(FeatureContext context) {
-	        context.register(provider);
+	        context.register(OBJECT_MAPPER_RESOLVER);
 	        return true;
 	    }
 	}
 }
+
+
+

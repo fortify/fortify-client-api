@@ -27,9 +27,9 @@ package com.fortify.client.fod.connection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation.Builder;
+import jakarta.ws.rs.client.WebTarget;
 
 import org.apache.http.client.ServiceUnavailableRetryStrategy;
 
@@ -98,3 +98,4 @@ public class FoDBasicRestConnection extends AbstractRestConnection {
 				.maxRetries(rateLimitMaxRetries);
 	}
 }
+

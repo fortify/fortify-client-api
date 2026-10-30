@@ -26,9 +26,9 @@ package com.fortify.client.fod.api;
 
 import java.util.Collection;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
 
 import com.fortify.client.fod.connection.FoDAuthenticatingRestConnection;
 import com.fortify.util.rest.json.JSONMap;
@@ -52,3 +52,4 @@ public class FoDBugTrackerAPI extends AbstractFoDAPI {
 		conn().executeRequest(HttpMethod.POST, conn().getBaseResource().path(path), Entity.entity(data,MediaType.APPLICATION_JSON), JSONMap.class);
 	}
 }
+

@@ -23,12 +23,13 @@
  * IN THE SOFTWARE.
  ******************************************************************************/
 /**
- * <p>This package contains interfaces and implementations for updating {@link javax.ws.rs.client.WebTarget}
+ * <p>This package contains interfaces and implementations for updating {@link jakarta.ws.rs.client.WebTarget}
  *    instances, for example adding a path or request parameters to an existing 
- *    {@link javax.ws.rs.client.WebTarget} instance. In general, 
+ *    {@link jakarta.ws.rs.client.WebTarget} instance. In general, 
  *    {@link com.fortify.util.rest.webtarget.IWebTargetUpdater} implementations
  *    should be immutable; corresponding {@link com.fortify.util.rest.webtarget.IWebTargetUpdaterBuilder}
  *    implementations can be used to build such {@link com.fortify.util.rest.webtarget.IWebTargetUpdater}
  *    instances.</p>
  */
 package com.fortify.util.rest.webtarget;
+
