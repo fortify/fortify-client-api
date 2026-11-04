@@ -16,7 +16,8 @@ jobs:
       - name: Setup Java
         uses: fortify/shared-github/actions/3rdparty/actions/setup-java/v5@5ad1afec0f56a21b03f0887eea35505cb6a66554
         with:
-          java-version: 11
+          distribution: temurin
+          java-version: '17'
       
       - name: Download Fortify ScanCentral Client
         uses: fortify/gha-setup-scancentral-client@v1
