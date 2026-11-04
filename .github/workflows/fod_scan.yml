@@ -8,6 +8,10 @@ name: FoD scan
 jobs:
   FoD-SAST-Scan-And-Import:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
 
     steps:
       - name: Check Out Source Code
@@ -49,6 +53,6 @@ jobs:
           fod_release_id: ${{ secrets.OSS_FOD_RELEASE_ID }}
       
       - name: Import results to GitHub Security Code Scanning
-        uses: github/codeql-action/upload-sarif@v1
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ./gh-fortify-sast.sarif
