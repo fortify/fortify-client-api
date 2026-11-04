@@ -14,6 +14,12 @@ jobs:
       - name: Check-out source code
         uses: fortify/shared-github/actions/3rdparty/actions/checkout/v6@5ad1afec0f56a21b03f0887eea35505cb6a66554
     
+      - name: Setup Java
+        uses: fortify/shared-github/actions/3rdparty/actions/setup-java/v5@5ad1afec0f56a21b03f0887eea35505cb6a66554
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - name: Prepare GitHub release
         id: create_prod_release
         uses: fortify/shared-github/actions/3rdparty/googleapis/release-please-action/v5@5ad1afec0f56a21b03f0887eea35505cb6a66554
