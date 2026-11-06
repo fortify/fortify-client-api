@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.0.1](https://github.com/fortify/fortify-client-api/compare/v7.0.0...v7.0.1) (2026-11-06)
+
+
+### Bug Fixes
+
+* Register typed Jackson resolver for Jersey 3 ([6540879](https://github.com/fortify/fortify-client-api/commit/65408799d701af5295f9c29b980cf06c26c14e49))
+* Update dependencies ([ff1377a](https://github.com/fortify/fortify-client-api/commit/ff1377a8aa44c707915d286042fa3ee153bb46cb))
+
 ## [7.0.0](https://github.com/fortify/fortify-client-api/compare/v6.2.0...v7.0.0) (2026-10-30)
 
 
