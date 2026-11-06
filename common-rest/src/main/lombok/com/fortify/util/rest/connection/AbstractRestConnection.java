@@ -617,7 +617,12 @@ public abstract class AbstractRestConnection implements IRestConnection {
 	}
 
 	protected static class JacksonFeature implements Feature {
-	    private static final ContextResolver<ObjectMapper> OBJECT_MAPPER_RESOLVER = type -> JSONObjectMapperSupplier.getObjectMapper();
+	    private static final ContextResolver<ObjectMapper> OBJECT_MAPPER_RESOLVER = new ContextResolver<ObjectMapper>() {
+			@Override
+			public ObjectMapper getContext(Class<?> type) {
+				return JSONObjectMapperSupplier.getObjectMapper();
+			}
+		};
 	    public boolean configure(FeatureContext context) {
 	        context.register(OBJECT_MAPPER_RESOLVER);
 	        return true;
